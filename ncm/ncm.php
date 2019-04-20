@@ -203,9 +203,16 @@
 			{
 				$amount_array[1] = substr( $amount_array[1], 0, -1 );	
 			}
-		
-			return number_format( $amount_array[0], 0, '', $C['separator']['thousand'] ) . '.' . $amount_array[1];
-		
+			
+			if( strlen( $amount_array[1] ) < 1 )
+			{
+				return number_format( $amount_array[0], 0, '', $C['separator']['thousand'] );
+			}
+			else
+			{
+				return number_format( $amount_array[0], 0, '', $C['separator']['thousand'] ) . '.' . $amount_array[1];
+			}
+				
 		}
 
 		return number_format( $number, $decimals, $C['separator']['decimal'], $C['separator']['thousand'] );
@@ -430,7 +437,7 @@
 						
 							if( isset( vs_currencies[strtoupper( $fav_vs_currency )] ) )
 							{
-								$array[$key][] = custom_number( NanoTools::raw2den( $value, 'NANO' ) * vs_currencies[strtoupper( $fav_vs_currency )] ) . ' ' . strtoupper( $fav_vs_currency );
+								$array[$key][] = custom_number( number_format( NanoTools::raw2den( $value, 'NANO' ) * vs_currencies[strtoupper( $fav_vs_currency )], 8, '.', '' ) ) . ' ' . strtoupper( $fav_vs_currency );
 							}
 							
 						}

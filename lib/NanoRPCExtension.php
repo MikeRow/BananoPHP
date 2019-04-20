@@ -54,7 +54,7 @@
 		public function wallet_wipe( array $args )
 		{
 			
-			// Check input
+			// Check all args
 			
 			if( !isset( $args['wallet'] ) || !isset( $args['destination'] ) )
 			{
@@ -65,6 +65,8 @@
 			
 			$destination = $args['destination'];
 			
+			// Wallet ok?
+			
 			$wallet_info = $this->wallet_info( ['wallet' => $wallet] );
 			
 			if( isset( $wallet_info['error'] ) )
@@ -72,10 +74,14 @@
 				return ['error'=>'Bad wallet number'];
 			}
 			
+			// Balance ok?
+			
 			if( gmp_cmp( $wallet_info['balance'], 1 ) < 0 )
 			{
 				return ['error'=>'Insufficient balance'];
 			}
+			
+			// Destination ok?
 			
 			$check_destination = $this->validate_account_number( ['account'=>$destination] );
 			
@@ -99,40 +105,37 @@
 			foreach( $wallet_balances['balances'] as $account => $balances )
 			{
 				
-				if( gmp_cmp( $balances['balance'], 0 ) > 0 )
+				$args =
+				[
+					'wallet' => $wallet,
+					'source' => $account,
+					'destination' => $destination,
+					'amount' => $balances['balance'],
+					'id' => uniqid()
+				];
+				
+				$send = $this->send($args);
+				
+				if( $send['block'] != '0000000000000000000000000000000000000000000000000000000000000000' )
 				{
 				
-					$args =
+					$return['balances'][$account] =
 					[
-						'wallet' => $wallet,
-						'source' => $account,
-						'destination' => $destination,
-						'amount' => $balances['balance'],
-						'id' => uniqid()
+						'block' => $send['block'],
+						'amount' => $balances['balance']
 					];
-					
-					$send = $this->send($args);
-					
-					if( $send['block'] != '0000000000000000000000000000000000000000000000000000000000000000' )
-					{
-					
-						$return['balances'][$account] =
-						[
-							'block' => $send['block'],
-							'amount' => $balances['balance']
-						];
-					
-					}
-					else
-					{
-					
-						$return['balances'][$account] =
-						[
-							'block' => '0000000000000000000000000000000000000000000000000000000000000000',
-							'amount' => $balances['balance']
-						];
-					
-					}
+				
+				}
+				else
+				{
+				
+					$return['error'] = 'Insufficient balance';
+				
+					$return['balances'][$account] =
+					[
+						'block' => '0000000000000000000000000000000000000000000000000000000000000000',
+						'amount' => $balances['balance']
+					];
 				
 				}
 				
@@ -155,7 +158,7 @@
 		public function wallet_send( array $args )
 		{
 			
-			// Check input
+			// Check all args
 			
 			if( !isset( $args['wallet'] ) || !isset( $args['destination'] ) || !isset( $args['amount'] ) )
 			{
@@ -168,6 +171,8 @@
 			
 			$amount = $args['amount'];
 			
+			// Wallet ok?
+			
 			$wallet_info = $this->wallet_info( ['wallet' => $wallet] );
 			
 			if( isset( $wallet_info['error'] ) )
@@ -175,12 +180,16 @@
 				return ['error'=>'Bad wallet number'];
 			}
 		
+			// Destination ok?
+		
 			$check_destination = $this->validate_account_number( ['account'=>$destination] );
 			
 			if( $check_destination['valid'] != 1 )
 			{
 				return ['error'=>'Bad destination'];
 			}
+			
+			// Amount ok?
 			
 			if( !ctype_digit( $amount ) )
 			{
@@ -219,19 +228,10 @@
 			
 			foreach( $wallet_balances['balances'] as $account => $balances )
 			{
-			
-				if( gmp_cmp( $balances['balance'], 0 ) > 0 )
-				{
-				
-					$selected_accounts[$account] = $balances['balance'];
+		
+				$selected_accounts[$account] = $balances['balance'];
 					
-					$sum = gmp_add( $sum, $balances['balance'] );
-				
-				}
-				else
-				{
-					continue;
-				}
+				$sum = gmp_add( $sum, $balances['balance'] );
 				
 				if( gmp_cmp( $sum, $amount ) >= 0 )
 				{
@@ -244,13 +244,7 @@
 			
 			if( gmp_cmp( $sum, $amount ) < 0 )
 			{
-			
-				$return['amount'] = 0;
-				
-				$return['status'] = 0;
-				
 				return ['error'=>'Insufficient balance'];
-			
 			}
 			
 			// Amount reached
@@ -287,6 +281,8 @@
 				}
 				else
 				{
+					
+					$return['error'] = 'Insufficient balance';
 				
 					$return['balances'][$selected_account] =
 					[
@@ -308,14 +304,14 @@
 		
 		
 		
-		// *** Generate keypair of account starting or ending with ['string'] ***
+		// *** Generate keypair of account with ['string'] at ['position'] ***
 		
 		
 		
 		public function vanity_account( array $args )
 		{
 			
-			// Check input
+			// Check all args
 			
 			if( !isset( $args['string'] ) )
 			{
@@ -323,6 +319,12 @@
 			}
 			
 			$string = strtolower( $args['string'] );
+			
+			// Position ok?
+			
+			$position = isset( $args['position'] ) ? $args['position'] : 'start';
+			
+			// String ok?
 			
 			if( !ctype_alnum( $string ) || preg_match( '/[lv02]/', $string ) == 1 )
 			{
@@ -350,9 +352,23 @@
 				
 				$account = $return['account'];
 				
-				if( substr_compare( $account, $string, -strlen( $string ) ) === 0 || strpos( $account, 'xrb_' . $string ) === 0 || strpos( $account, 'nano_' . $string ) === 0 || strpos( $account, 'xrb_1' . $string ) === 0 || strpos( $account, 'xrb_3' . $string ) === 0 || strpos( $account, 'nano_1' . $string ) === 0 || strpos( $account, 'nano_3' . $string ) === 0 )
+				if( $position == 'start' )
 				{
-					$i = 1;
+
+					if( strpos( $account, 'xrb_' . $string ) === 0 || strpos( $account, 'nano_' . $string ) === 0 || strpos( $account, 'xrb_1' . $string ) === 0 || strpos( $account, 'xrb_3' . $string ) === 0 || strpos( $account, 'nano_1' . $string ) === 0 || strpos( $account, 'nano_3' . $string ) === 0 )
+					{
+						$i = 1;
+					}
+					
+				}
+				else
+				{
+				
+					if( substr_compare( $account, $string, -strlen( $string ) ) === 0 )
+					{
+						$i = 1;
+					}
+				
 				}
 				
 				$a++;

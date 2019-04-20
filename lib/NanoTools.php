@@ -48,7 +48,7 @@
 	
 	
 	
-		public static function den2raw( float $amount, string $denomination )
+		public static function den2raw( string $amount, string $denomination )
 		{
 			
 			$raw2denomination = self::raw2[$denomination];
@@ -114,7 +114,7 @@
 		
 			// Remove useless zeroes from left
 		
-			while( substr( $amount, 0, 1 ) == '0' && substr( $amount, 1, 2 ) != '.' )
+			while( substr( $amount, 0, 1 ) == '0' && substr( $amount, 1, 1 ) != '.' )
 			{
 				$amount = substr( $amount, 1 );	
 			}
