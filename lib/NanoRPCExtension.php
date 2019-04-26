@@ -90,9 +90,15 @@
 				return ['error'=>'Bad destination'];
 			}
 			
+			
+			
 			// Execution
 		
+		
+		
 			$return = ['balances' => []];
+			
+			// Get wallet balances
 			
 			$args =
 			[
@@ -100,7 +106,18 @@
 				'threshold' => 1
 			];
 			
-			$wallet_balances = $this->wallet_balances( $args ); // Get wallet balances
+			$wallet_balances = $this->wallet_balances( $args );
+			
+			// Sort from higher to lower balance
+			
+			uasort( $wallet_balances['balances'], function( $a, $b )
+			{
+				
+				return gmp_cmp( $b['balance'], $a['balance'] );
+				
+			});
+			
+			// Wipe wallet
 			
 			foreach( $wallet_balances['balances'] as $account => $balances )
 			{
@@ -206,7 +223,11 @@
 				return ['error'=>'Insufficient balance'];
 			}
 			
+			
+			
 			// Execution
+		
+		
 		
 			$return = ['balances' => []];
 			
@@ -216,15 +237,26 @@
 			
 			$diff_amount = $amount;
 			
+			// Get wallet balances
+			
 			$args =
 			[
 				'wallet' => $wallet,
 				'threshold' => 1
 			];
 			
-			$wallet_balances = $this->wallet_balances( $args ); // Get wallet balances
+			$wallet_balances = $this->wallet_balances( $args );
+				
+			// Sort from higher to lower balance
 			
-			// Select funds from accounts
+			uasort( $wallet_balances['balances'], function( $a, $b )
+			{
+				
+				return gmp_cmp( $b['balance'], $a['balance'] );
+				
+			});
+			
+			// Select accounts
 			
 			foreach( $wallet_balances['balances'] as $account => $balances )
 			{
@@ -240,14 +272,7 @@
 			
 			}
 			
-			// Amount not reached
-			
-			if( gmp_cmp( $sum, $amount ) < 0 )
-			{
-				return ['error'=>'Insufficient balance'];
-			}
-			
-			// Amount reached
+			// Send from selected accounts
 			
 			foreach( $selected_accounts as $selected_account => $balance ){
 				
@@ -341,7 +366,11 @@
 				return ['error'=>'Long string'];
 			}
 			
+			
+			
 			// Execution
+			
+			
 			
 			$i = 0; $a = 0; $start = time();
 
