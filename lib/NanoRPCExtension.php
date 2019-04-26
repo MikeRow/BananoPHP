@@ -233,9 +233,7 @@
 			
 			$selected_accounts = [];
 			
-			$sum = 0;
-			
-			$diff_amount = $amount;
+			$amount_left = $amount;
 			
 			// Get wallet balances
 			
@@ -260,48 +258,55 @@
 			
 			foreach( $wallet_balances['balances'] as $account => $balances )
 			{
-		
-				$selected_accounts[$account] = $balances['balance'];
-					
-				$sum = gmp_add( $sum, $balances['balance'] );
 				
-				if( gmp_cmp( $sum, $amount ) >= 0 )
+				if( gmp_cmp( $balances['balance'], $amount_left ) >= 0 )
+				{
+					
+					$selected_accounts[$account] = $amount_left;
+					
+					$amount_left = '0';
+					
+				}
+				else
+				{
+					
+					$selected_accounts[$account] = $balances['balance'];
+					
+					$amount_left = gmp_strval( gmp_sub( $amount_left, $balances['balance'] ) );
+					
+				}
+				
+				if( gmp_cmp( $amount_left, '0' ) <= 0 )
 				{
 					break; // Amount reached
 				}
-			
+				
 			}
-			
+
 			// Send from selected accounts
 			
-			foreach( $selected_accounts as $selected_account => $balance ){
-				
-				if( gmp_cmp( $diff_amount, $balance ) <= 0 )
-				{
-					$balance = gmp_strval( $diff_amount );
-				}
+			foreach( $selected_accounts as $account => $balance )
+			{
 				
 				$args =
 				[
 					'wallet' => $wallet,
-					'source' => $selected_account,
+					'source' => $account,
 					'destination' => $destination,
 					'amount' => $balance,
 					'id' => uniqid()
 				];
 				
 				$send = $this->send( $args );
-				
+
 				if( $send['block'] != '0000000000000000000000000000000000000000000000000000000000000000' )
 				{
 				
-					$return['balances'][$selected_account] =
+					$return['balances'][$account] =
 					[
 						'block' => $send['block'],
 						'amount' => $balance
 					];
-					
-					$diff_amount = gmp_sub( $diff_amount, $balance );
 				
 				}
 				else
@@ -309,7 +314,7 @@
 					
 					$return['error'] = 'Insufficient balance';
 				
-					$return['balances'][$selected_account] =
+					$return['balances'][$account] =
 					[
 						'block' => '0000000000000000000000000000000000000000000000000000000000000000',
 						'amount' => $balance
