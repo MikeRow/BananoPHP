@@ -45,16 +45,30 @@
 	class NanoRPCExtension extends NanoRPC
 	{
 	
+		const hash0 = '0000000000000000000000000000000000000000000000000000000000000000';
 	
 	
+	
+	
+	
+	
+		// *********************************************************
 		// *** Send all funds from ['wallet'] to ['destination'] ***
+		// *********************************************************
+		
+		
+		
 		
 		
 		
 		public function wallet_wipe( array $args )
 		{
 			
-			// Check all args
+			
+			
+			// *** Check args ***
+			
+			
 			
 			if( !isset( $args['wallet'] ) || !isset( $args['destination'] ) )
 			{
@@ -92,7 +106,7 @@
 			
 			
 			
-			// Execution
+			// *** Execution ***
 		
 		
 		
@@ -122,6 +136,8 @@
 			foreach( $wallet_balances['balances'] as $account => $balances )
 			{
 				
+				if( $account == $destination ) continue;
+				
 				$args =
 				[
 					'wallet' => $wallet,
@@ -133,7 +149,9 @@
 				
 				$send = $this->send($args);
 				
-				if( $send['block'] != '0000000000000000000000000000000000000000000000000000000000000000' )
+				// Send
+				
+				if( $send['block'] != self::hash0 )
 				{
 				
 					$return['balances'][$account] =
@@ -143,6 +161,9 @@
 					];
 				
 				}
+				
+				// Error sending
+				
 				else
 				{
 				
@@ -150,7 +171,7 @@
 				
 					$return['balances'][$account] =
 					[
-						'block' => '0000000000000000000000000000000000000000000000000000000000000000',
+						'block' => self::hash0,
 						'amount' => $balances['balance']
 					];
 				
@@ -168,14 +189,26 @@
 		
 		
 		
+		
+		
+		
+		// **************************************************************
 		// *** Send raw ['amount'] from ['wallet'] to ['destination'] ***
+		// **************************************************************
+		
+		
+		
 		
 		
 		
 		public function wallet_send( array $args )
 		{
 			
-			// Check all args
+			
+			
+			// *** Check args ***
+			
+			
 			
 			if( !isset( $args['wallet'] ) || !isset( $args['destination'] ) || !isset( $args['amount'] ) )
 			{
@@ -225,7 +258,7 @@
 			
 			
 			
-			// Execution
+			// *** Execution ***
 		
 		
 		
@@ -288,6 +321,8 @@
 			foreach( $selected_accounts as $account => $balance )
 			{
 				
+				if( $account == $destination ) continue;
+				
 				$args =
 				[
 					'wallet' => $wallet,
@@ -299,7 +334,9 @@
 				
 				$send = $this->send( $args );
 
-				if( $send['block'] != '0000000000000000000000000000000000000000000000000000000000000000' )
+				// Send
+
+				if( $send['block'] != self::hash0 )
 				{
 				
 					$return['balances'][$account] =
@@ -309,6 +346,9 @@
 					];
 				
 				}
+				
+				// Error sending
+				
 				else
 				{
 					
@@ -316,7 +356,7 @@
 				
 					$return['balances'][$account] =
 					[
-						'block' => '0000000000000000000000000000000000000000000000000000000000000000',
+						'block' => self::hash0,
 						'amount' => $balance
 					];
 				
@@ -334,14 +374,26 @@
 		
 		
 		
+		
+		
+		
+		// *******************************************************************
 		// *** Generate keypair of account with ['string'] at ['position'] ***
+		// *******************************************************************
+		
+		
+		
 		
 		
 		
 		public function vanity_account( array $args )
 		{
 			
-			// Check all args
+			
+			
+			// *** Check args ***
+			
+			
 			
 			if( !isset( $args['string'] ) )
 			{
@@ -373,7 +425,7 @@
 			
 			
 			
-			// Execution
+			// *** Execution ***
 			
 			
 			
