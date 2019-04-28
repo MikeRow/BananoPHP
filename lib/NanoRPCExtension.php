@@ -52,9 +52,9 @@
 	
 	
 	
-		// *********************************************************
-		// *** Send all funds from ['wallet'] to ['destination'] ***
-		// *********************************************************
+		// ************************************************************************
+		// *** Send all funds from ['wallet'] to ['destination'] with ['order'] ***
+		// ************************************************************************
 		
 		
 		
@@ -103,6 +103,10 @@
 			{
 				return ['error'=>'Bad destination'];
 			}
+
+			// Order ok?
+			
+			$order = isset( $args['order'] ) ? $args['order'] : 'list';
 			
 			
 			
@@ -122,14 +126,34 @@
 			
 			$wallet_balances = $this->wallet_balances( $args );
 			
-			// Sort from higher to lower balance
+			// Sort balances
 			
-			uasort( $wallet_balances['balances'], function( $a, $b )
+			if( $order == 'asc' )
 			{
-				
-				return gmp_cmp( $b['balance'], $a['balance'] );
-				
-			});
+			
+				uasort( $wallet_balances['balances'], function( $a, $b )
+				{
+					
+					return gmp_cmp( $a['balance'], $b['balance'] );
+					
+				});
+			
+			}
+			elseif( $order == 'desc' )
+			{
+
+				uasort( $wallet_balances['balances'], function( $a, $b )
+				{
+					
+					return gmp_cmp( $b['balance'], $a['balance'] );
+					
+				});
+
+			}
+			else
+			{
+				// Do nothing
+			}
 			
 			// Wipe wallet
 			
@@ -151,30 +175,15 @@
 				
 				// Send
 				
-				if( $send['block'] != self::hash0 )
+				$return['balances'][$account] =
+				[
+					'block' => $send['block'],
+					'amount' => $balances['balance']
+				];
+				
+				if( $send['block'] == self::hash0 )
 				{
-				
-					$return['balances'][$account] =
-					[
-						'block' => $send['block'],
-						'amount' => $balances['balance']
-					];
-				
-				}
-				
-				// Error sending
-				
-				else
-				{
-				
-					$return['error'] = 'Insufficient balance';
-				
-					$return['balances'][$account] =
-					[
-						'block' => self::hash0,
-						'amount' => $balances['balance']
-					];
-				
+					$return['error'] = 'Bad send';
 				}
 				
 			}
@@ -192,9 +201,9 @@
 		
 		
 		
-		// **************************************************************
-		// *** Send raw ['amount'] from ['wallet'] to ['destination'] ***
-		// **************************************************************
+		// *****************************************************************************
+		// *** Send raw ['amount'] from ['wallet'] to ['destination'] with ['order'] ***
+		// *****************************************************************************
 		
 		
 		
@@ -254,7 +263,12 @@
 			if( gmp_cmp( $wallet_info['balance'], $amount ) < 0 )
 			{
 				return ['error'=>'Insufficient balance'];
+			
 			}
+			
+			// Order ok?
+			
+			$order = isset( $args['order'] ) ? $args['order'] : 'list';
 			
 			
 			
@@ -278,14 +292,34 @@
 			
 			$wallet_balances = $this->wallet_balances( $args );
 				
-			// Sort from higher to lower balance
+			// Sort balances
 			
-			uasort( $wallet_balances['balances'], function( $a, $b )
+			if( $order == 'asc' )
 			{
-				
-				return gmp_cmp( $b['balance'], $a['balance'] );
-				
-			});
+			
+				uasort( $wallet_balances['balances'], function( $a, $b )
+				{
+					
+					return gmp_cmp( $a['balance'], $b['balance'] );
+					
+				});
+			
+			}
+			elseif( $order == 'desc' )
+			{
+
+				uasort( $wallet_balances['balances'], function( $a, $b )
+				{
+					
+					return gmp_cmp( $b['balance'], $a['balance'] );
+					
+				});
+
+			}
+			else
+			{
+				// Do nothing
+			}
 			
 			// Select accounts
 			
@@ -335,31 +369,16 @@
 				$send = $this->send( $args );
 
 				// Send
-
-				if( $send['block'] != self::hash0 )
+				
+				$return['balances'][$account] =
+				[
+					'block' => $send['block'],
+					'amount' => $balances['balance']
+				];
+				
+				if( $send['block'] == self::hash0 )
 				{
-				
-					$return['balances'][$account] =
-					[
-						'block' => $send['block'],
-						'amount' => $balance
-					];
-				
-				}
-				
-				// Error sending
-				
-				else
-				{
-					
-					$return['error'] = 'Insufficient balance';
-				
-					$return['balances'][$account] =
-					[
-						'block' => self::hash0,
-						'amount' => $balance
-					];
-				
+					$return['error'] = 'Bad send';
 				}
 			
 			}
