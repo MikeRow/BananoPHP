@@ -75,10 +75,10 @@
 			
 			// Node call extension
 			
-			ncm wallet_wipe wallet=tag1 destination=tag2
-			ncm wallet_send wallet=tag1 destination=tag2 amount=1
-			ncm wallet_send wallet=tag1 destination=tag2 amount=1-USD (if ticker enabled)
-			ncm vanity_account string=test
+			ncm wallet_wipe wallet=tag1 destination=tag2 order=desc
+			ncm wallet_send wallet=tag1 destination=tag2 amount=1 order=desc
+			ncm wallet_send wallet=tag1 destination=tag2 amount=1-USD order=desc (if ticker enabled)
+			ncm vanity_account string=test position=start
 	
 	*/
 	
