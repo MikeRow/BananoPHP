@@ -76,14 +76,27 @@
 				
 			$this->response_raw = shell_exec( $this->path_to_app . $request );
 				
-			$this->response = explode( "\n", $this->response_raw );
-			
-			foreach( $this->response as $key => $value )
+			if( $this->response_raw != null )
 			{
-				if( $value == null ) unset( $this->response[$key] );
-			}
 				
-			return $this->response;
+				$this->response = explode( "\n", $this->response_raw );
+				
+				foreach( $this->response as $key => $value )
+				{
+					if( $value == null ) unset( $this->response[$key] );
+				}
+					
+				return $this->response;
+				
+			}
+			else
+			{
+				
+				$this->response = null;
+				
+				return $this->response;
+				
+			}
 			
 		}
 		
