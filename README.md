@@ -1,5 +1,5 @@
 # php4nano
-PHP libraries and tools for Nano
+PHP libraries and tools for Nano currency
 
 *Read usage and examples in files header*
 
