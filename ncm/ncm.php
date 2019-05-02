@@ -26,7 +26,7 @@
 				*** A big THANK YOU to http://coingecko.com for its free and accessible API! ***
 				********************************************************************************
 			
-				Before enabling the ticker option, crontab 'php PATH/php4nano/ncm/ncm.php ticker_update' (I suggest execution every 30 minutes)
+				Before enabling the ticker option, crontab 'php PATH/php4nano/ncm/ncm.php ticker_update' (I suggest execution every 20 minutes)
 				Also, initialize it by executing it manually the first time
 			
 			- Tags
@@ -757,7 +757,7 @@
 	
 		$ticker_delay = time() - ticker_last;
 	
-		if( $ticker_delay > 60*31 )
+		if( $ticker_delay > 60*21 )
 		{
 			echo notable_string( 'Ticker is not updated' ) . PHP_EOL;
 		}
