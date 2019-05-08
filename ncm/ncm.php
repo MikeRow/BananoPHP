@@ -185,14 +185,14 @@
 	
 	
 	
-	function custom_number( string $number, $decimals = 'auto' )
+	function custom_number( string $number, int $decimals = -1 )
 	{
 		
 		global $C;
 		
 		// $number = sprintf( "%s", $number );
 		
-		if( $decimals == 'auto' )
+		if( $decimals < 0 )
 		{
 		
 			$amount_array = explode( '.', $number );
@@ -219,22 +219,17 @@
 			}
 			else
 			{
-				return number_format( $number, 0, '', $C['separator']['thousand'] );
+				return number_format( floor( $number ), 0, '', $C['separator']['thousand'] );
 			}
 			
 		}
+		elseif( $decimals == 0 )
+		{
+			return number_format( floor( $number ), 0, $C['separator']['decimal'], $C['separator']['thousand'] );
+		}
 		else
 		{
-			
-			if( $decimals <= 0 )
-			{
-				return number_format( floor( $number ), 0, $C['separator']['decimal'], $C['separator']['thousand'] );
-			}
-			else
-			{
-				return number_format( $number, $decimals, $C['separator']['decimal'], $C['separator']['thousand'] );
-			}
-			
+			return number_format( $number, $decimals, $C['separator']['decimal'], $C['separator']['thousand'] );
 		}
 	
 	}
