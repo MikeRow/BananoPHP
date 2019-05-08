@@ -96,13 +96,13 @@
 	
 	
 	
-	require_once( __DIR__ . '/../lib/NanoTools.php' );
+	require_once __DIR__ . '/../lib/NanoTools.php';
 	
-	require_once( __DIR__ . '/../lib/NanoCLI.php' );
+	require_once __DIR__ . '/../lib/NanoCLI.php';
 	
-	require_once( __DIR__ . '/../lib/NanoRPC.php' );
+	require_once __DIR__ . '/../lib/NanoRPC.php';
 	
-	require_once( __DIR__ . '/../lib/NanoRPCExtension.php' );
+	require_once __DIR__ . '/../lib/NanoRPCExtension.php';
 	
 	
 	
@@ -185,37 +185,57 @@
 	
 	
 	
-	function custom_number( string $number, int $decimals = null )
+	function custom_number( string $number, $decimals = 'auto' )
 	{
 		
 		global $C;
 		
 		// $number = sprintf( "%s", $number );
 		
-		$amount_array = explode( '.', $number );
-		
-		if( isset( $amount_array[1] ) && $decimals == null )
+		if( $decimals == 'auto' )
 		{
 		
-			// Remove useless decimals
-		
-			while( substr( $amount_array[1], -1 ) == '0' )
-			{
-				$amount_array[1] = substr( $amount_array[1], 0, -1 );	
-			}
+			$amount_array = explode( '.', $number );
 			
-			if( strlen( $amount_array[1] ) < 1 )
+			if( isset( $amount_array[1] ) )
 			{
-				return number_format( $amount_array[0], 0, '', $C['separator']['thousand'] );
+		
+				// Remove useless decimals
+			
+				while( substr( $amount_array[1], -1 ) == '0' )
+				{
+					$amount_array[1] = substr( $amount_array[1], 0, -1 );	
+				}
+				
+				if( strlen( $amount_array[1] ) < 1 )
+				{
+					return number_format( $amount_array[0], 0, '', $C['separator']['thousand'] );
+				}
+				else
+				{
+					return number_format( $amount_array[0], 0, '', $C['separator']['thousand'] ) . '.' . $amount_array[1];
+				}
+			
 			}
 			else
 			{
-				return number_format( $amount_array[0], 0, '', $C['separator']['thousand'] ) . '.' . $amount_array[1];
+				return number_format( $number, 0, '', $C['separator']['thousand'] );
 			}
-				
+			
 		}
-
-		return number_format( $number, $decimals, $C['separator']['decimal'], $C['separator']['thousand'] );
+		else
+		{
+			
+			if( $decimals <= 0 )
+			{
+				return number_format( floor( $number ), 0, $C['separator']['decimal'], $C['separator']['thousand'] );
+			}
+			else
+			{
+				return number_format( $number, $decimals, $C['separator']['decimal'], $C['separator']['thousand'] );
+			}
+			
+		}
 	
 	}
 	
@@ -552,7 +572,17 @@
 			
 				if( in_array( $key, $check_words ) && is_numeric( $value ) )
 				{
-					$array[$key] = custom_number( $value/1000000, 0 ) . ' MB';
+					$array[$key] = custom_number( $value/1000000, 0 ) . ' MiB';
+				}
+				
+				$check_words = 
+				[
+					'average_size'
+				];
+			
+				if( in_array( $key, $check_words ) && is_numeric( $value ) )
+				{
+					$array[$key] = custom_number( $value, 0 ) . ' B';
 				}
 				
 				// Error format
@@ -1155,6 +1185,10 @@
 		$call_return['blocks']['count'] = $block_count["count"];
 		
 		$call_return['blocks']['unchecked'] = $block_count["unchecked"];
+		
+		// Bytes per block
+		
+		$call_return['blocks']['average_size'] = round( filesize( $C['nano']['data_dir'] . '/data.ldb' ) / $block_count["count"] );
 		
 		// Summary wallets info
 		
