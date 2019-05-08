@@ -8,7 +8,7 @@
 
 	Include NanoCLI.php
 		
-		require_once('PATH/php4nano/lib/NanoCLI.php');
+		require_once 'PATH/php4nano/lib/NanoCLI.php';
 
 	Initialize Nano connection/object
 	

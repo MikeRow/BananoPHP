@@ -6,7 +6,7 @@
 
 	Include NanoTools.php
 		
-		require_once('PATH/php4nano/lib/NanoTools.php');
+		require_once 'PATH/php4nano/lib/NanoTools.php';
 
 	Example of call:
 	

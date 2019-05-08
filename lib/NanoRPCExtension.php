@@ -6,7 +6,7 @@
 
 	Include NanoRPC.php
 		
-		require_once('PATH/php4nano/lib/NanoRPC.php');
+		require_once 'PATH/php4nano/lib/NanoRPC.php';
 		
 	Include NanoRPCExtension.php
 		
