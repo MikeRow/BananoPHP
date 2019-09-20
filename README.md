@@ -30,7 +30,3 @@ You can find denomination/raw conversion functions and other usefull stuffs in [
 
 * [aceat64](https://github.com/aceat64): [EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
 * [coingecko.com](https://www.coingecko.com): [API](https://www.coingecko.com/en/api)
-
-## Donations
-
-<pre>nano_1undcod8mwabf3743uaij91w841wjk1wg7e3hu38hgshgqztjcceak3m9skm</pre>
