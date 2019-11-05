@@ -13,7 +13,7 @@ PHP libraries and tools for the Nano currency
 
 <pre>node CLI manager</pre>
 
-## A clarification on the huge integers
+## A clarification about the huge integers
 
 Nano uses huge integers to represent even a tiny amount (1 nano is 10^24 raw), but PHP supports much lower integers.
 
