@@ -71,7 +71,7 @@
 			ncm send wallet=tag1 source=tag2 destination=tag3 amount=1-USD id=uniqid (if ticker enabled)
 			ncm accounts_balances accounts=tag1,xrb_1nanode8ngaakzbck8smq6ru9bethqwyehomf79sae1k7xd47dkidjqzffeg,tag2 (example of array parameter)
 			
-			Read full RPC documentation at https://github.com/nanocurrency/nano-node/wiki/RPC-protocol or https://developers.nano.org/docs/rpc
+			Read full RPC documentation at https://docs.nano.org/commands/rpc-protocol/
 			
 			// Node call extension
 			
