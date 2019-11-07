@@ -2,7 +2,7 @@
 
 	/*
 
-	Read full RPC documentation at https://github.com/nanocurrency/nano-node/wiki/RPC-protocol or https://developers.nano.org/docs/rpc
+	Read full RPC documentation at https://docs.nano.org/commands/rpc-protocol/
 	
 	USAGE:
 
