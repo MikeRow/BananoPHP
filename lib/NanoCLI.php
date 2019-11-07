@@ -2,7 +2,7 @@
 
 	/*
 
-	Read full CLI documentation at https://github.com/nanocurrency/nano-node/wiki/Command-line-interface or https://developers.nano.org/docs/command-line-interface/
+	Read full CLI documentation at https://docs.nano.org/commands/command-line-interface/
 	
 	USAGE:
 
