@@ -1,0 +1,6 @@
+02/24/2020 20:53:50 block_count:[] {"count":"38,933","unchecked":"24,243,191","cemented":"541"}
+02/24/2020 20:57:40 status:[] {"version":"Nano V20.0","uptime":"0.06 h","peers":"229","data.ldb":"12,254 MiB","blocks":{"count":"39,142","unchecked":"24,354,559","average_size":"313,085 B"},"wallets":{"balance":"0 NANO","pending":"0 NANO","count":"0","accounts_count":"0"}}
+02/24/2020 21:01:19 block_count:[] {"count":"39,329","unchecked":"24,481,408","cemented":"551"}
+02/24/2020 21:01:49 status:[] {"version":"Nano V20.0","uptime":"0.13 h","peers":"229","data.ldb":"12,332 MiB","blocks":{"count":"39,342","unchecked":"24,491,391","cemented":"552","average_size":"313,481 B"},"wallets":{"balance":"0 NANO","pending":"0 NANO","count":"0","accounts_count":"0"}}
+02/24/2020 21:07:39 ticker:[] {"amount":["1 NANO","0.00009328 BTC","0.894665 USD","0.824374 EUR"]}
+02/24/2020 23:42:13 status:[] {"version":"Nano V20.0","uptime":"2.81 h","peers":"235","data.ldb":"13,848 MiB","blocks":{"count":"44,283","unchecked":"27,666,174","cemented":"647","average_size":"312,738 B"},"wallets":{"balance":["0 NANO","0 BTC","0 USD","0 EUR"],"pending":["0 NANO","0 BTC","0 USD","0 EUR"],"count":"0","accounts_count":"0"}}

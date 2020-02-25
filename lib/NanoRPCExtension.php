@@ -10,7 +10,7 @@
 		
 	Include NanoRPCExtension.php
 		
-		require_once('PATH/php4nano/lib/NanoRPCExtension.php');
+		require_once 'PATH/php4nano/lib/NanoRPCExtension.php';
 	
 	Initialize Nano connection/object
 	
@@ -20,10 +20,12 @@
 
 		$args =
 		[
-			'string' => 'hello'
+			'wallet' => '7BDC980DCCFD23254DBDE7BB3DF8D9FF19B585D238B0D60B4067E3C016CAF9FE',
+			'destination' => 'nano_1abcp8j755owefwsxcbww56jqmimsojy1xxduz7m3idze677hkrnjs98da55',
+			'order' => 'asc'
 		];
 		
-		$response = $nanorpc->vanity_account( $args );
+		$response = $nanorpc->wallet_wipe( $args );
 		
 		print_r( $response );
 		
@@ -389,115 +391,6 @@
 			
 			return $this->response;
 			
-		}
-		
-		
-		
-		
-		
-		
-		// *******************************************************************
-		// *** Generate keypair of account with ['string'] at ['position'] ***
-		// *******************************************************************
-		
-		
-		
-		
-		
-		
-		public function vanity_account( array $args )
-		{
-			
-			
-			
-			// *** Check args ***
-			
-			
-			
-			if( !isset( $args['string'] ) )
-			{
-				return ['error'=>'Unable to parse Array'];
-			}
-			
-			$string = strtolower( $args['string'] );
-			
-			// Position ok?
-			
-			$position = isset( $args['position'] ) ? $args['position'] : 'start';
-			
-			// String ok?
-			
-			if( !ctype_alnum( $string ) || preg_match( '/[lv02]/', $string ) == 1 )
-			{
-				return ['error'=>'Bad string'];
-			}
-			
-			if( strlen( $string ) < 1 )
-			{
-				return ['error'=>'Bad string'];
-			}
-			
-			if( strlen( $string ) > 10 )
-			{
-				return ['error'=>'Long string'];
-			}
-			
-			
-			
-			// *** Execution ***
-			
-			
-			
-			$i = 0; $a = 0; $start = time();
-
-			do
-			{
-				
-				$return = $this->key_create();
-				
-				$account = $return['account'];
-				
-				if( $position == 'start' )
-				{
-
-					if( strpos( $account, 'xrb_' . $string ) === 0 || strpos( $account, 'nano_' . $string ) === 0 || strpos( $account, 'xrb_1' . $string ) === 0 || strpos( $account, 'xrb_3' . $string ) === 0 || strpos( $account, 'nano_1' . $string ) === 0 || strpos( $account, 'nano_3' . $string ) === 0 )
-					{
-						$i = 1;
-					}
-					
-				}
-				else
-				{
-				
-					if( substr_compare( $account, $string, -strlen( $string ) ) === 0 )
-					{
-						$i = 1;
-					}
-				
-				}
-				
-				$a++;
-				
-			}while( $i != 1 );
-			
-			$end = time();
-			
-			$gap = $end - $start;
-
-			$gap = ( $gap <= 0 ) ? 1 : $gap;
-			
-			$return['count'] = $a;
-			
-			$return['seconds'] = $gap;
-			
-			$return['aps'] = $a/$gap;
-				
-			$this->response_raw = json_encode( $return );
-				
-			$this->response = $return;
-			
-			return $this->response;
-		
 		}
 	
 	}

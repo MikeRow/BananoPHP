@@ -17,10 +17,6 @@
 		echo NanoTools::raw2den( '5000000000000000000000000000000', 'NANO' );
 
 		// Output 5
-		
-		echo NanoTools::den2den( 5, 'NANO', 'knano' );
-
-		// Output 5000
 
 	*/
 	
@@ -133,36 +129,6 @@
 				$amount = substr( $amount, 0, -1 );	
 			}	
 		
-			return $amount;
-		
-		}
-	
-	
-	
-		// *** Converts $amount $denomination_from to $denomination_to ***
-	
-	
-	
-		public static function den2den( float $amount, string $denomination_from, string $denomination_to )
-		{
-			
-			$raw2denomination_from = self::raw2[$denomination_from];
-			
-			$raw2denomination_to = self::raw2[$denomination_to];
-			
-			if( $amount == 0 )
-			{
-				return 0;
-			}
-			
-			$zeros_from = strlen( $raw2denomination_from ) -1;
-			
-			$zeros_to = strlen( $raw2denomination_to ) -1;
-			
-			$exponent = $zeros_from - $zeros_to;
-			
-			$amount *= pow( 10, $exponent );
-			
 			return $amount;
 		
 		}

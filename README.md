@@ -15,7 +15,7 @@ PHP libraries and tools for the Nano currency
 
 ## A clarification about the huge integers
 
-Nano uses huge integers to represent even a tiny amount (1 nano is 10^24 raw), but PHP supports much lower integers.
+Nano uses huge integers to represent even a tiny amount (1 nano is 10^24 raw), but PHP supports much lower integers
 
 If you need to perform arithmetic operations directly with the raw amounts, I suggest the [GMP library](https://www.php.net/manual/en/book.gmp.php)
 
@@ -23,8 +23,8 @@ You can find denomination/raw conversion functions and other usefull stuffs in [
 
 ## To do
 
-* Add IPC call classes
-* Add nano_lib functions as standalone
+* Add IPC class
+* Add IPC support for ncm
 
 ## Credits
 

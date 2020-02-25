@@ -1,0 +1,38 @@
+{
+    "nano": {
+        "denomination": "NANO",
+        "node_file": "/home/nano/nano_node",
+        "data_dir": "/home/nano/Nano",
+        "connection": "rpc",
+        "rpc": {
+            "host": "localhost",
+            "port": "7076"
+        }
+    },
+    "log": {
+        "save": true,
+        "privacy": true
+    },
+    "timezone": "UTC",
+    "format": {
+        "timestamp": "m/d/Y H:i:s"
+    },
+    "separator": {
+        "decimal": ".",
+        "thousand": ",",
+        "tag": " : "
+    },
+    "ticker": {
+        "enable": true,
+        "fav_vs_currencies": "BTC,USD,EUR"
+    },
+    "tags": {
+        "account": {
+            "genesis": "xrb_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3"
+        },
+        "block": {
+            "genesis": "991CF190094C00F0B68E2E5F75F6BEE95A2E0BD93CEAA4A6734DB9F19B728948"
+        },
+        "wallet": []
+    }
+}

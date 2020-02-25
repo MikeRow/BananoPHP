@@ -56,8 +56,7 @@
 			ncm ticker amount=1
 			ncm ticker amount=1-USD
 			ncm ticker_update                                                                  update ticker.json
-			ncm nanoconfig                                                                     print  Nano config.json
-			ncm config                                                                         print  ncm config.json (no tags)
+			ncm config                                                                         print  config.json (no tags)
 			ncm tags                                                                           print  tags
 			ncm tag_add cat=account|block|wallet tag=tag value=accountID|blockID|walletID      add    tag
 			ncm tag_edit cat=account|block|wallet tag=tag value=accountID|blockID|walletID     edit   tag
@@ -78,7 +77,6 @@
 			ncm wallet_wipe wallet=tag1 destination=tag2 order=desc
 			ncm wallet_send wallet=tag1 destination=tag2 amount=1 order=desc
 			ncm wallet_send wallet=tag1 destination=tag2 amount=1-USD order=desc (if ticker enabled)
-			ncm vanity_account string=test position=start
 	
 	*/
 	
@@ -393,8 +391,6 @@
 			
 			if( is_array( $value ) )
 			{
-				
-				
 				
 				unset( $array[$key] );
 				
@@ -812,6 +808,7 @@
 	if( $C['nano']['connection'] == 'rpc' )
 	{
 		$nanoconn = new NanoRPCExtension( $C['nano']['rpc']['host'], $C['nano']['rpc']['port'] );
+		
 	}
 	
 	
@@ -1180,6 +1177,8 @@
 		$call_return['blocks']['count'] = $block_count["count"];
 		
 		$call_return['blocks']['unchecked'] = $block_count["unchecked"];
+		
+		$call_return['blocks']['cemented'] = $block_count["cemented"];
 		
 		// Bytes per block
 		
@@ -1622,17 +1621,6 @@
 	
 	
 	
-	// *** Print Nano config.json ***
-	
-	
-	
-	elseif( $command == 'nanoconfig' ) 
-	{
-		$call_return = json_decode( file_get_contents( $C['nano']['data_dir'] . '/config.json' ), true );
-	}
-	
-	
-	
 	// *** Initialize config.json ***
 	
 	
@@ -1671,11 +1659,20 @@
 	
 	
 	
-	$call_return = pretty_array( $call_return );
+	if( empty( $call_return ) )
+	{
+		echo notable_string( 'Error connecting to node' );
+	}
+	else
+	{
 	
-	echo PHP_EOL;
-	
-	echo pretty_print_r( $call_return );
+		$call_return = pretty_array( $call_return );
+		
+		echo PHP_EOL;
+		
+		echo pretty_print_r( $call_return );
+
+	}
 	
 	echo PHP_EOL;
 	

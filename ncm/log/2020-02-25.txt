@@ -1,0 +1,17 @@
+02/25/2020 00:07:00 status:[] {"version":"Nano V20.0","uptime":"3.22 h","peers":"234","data.ldb":"14,065 MiB","blocks":{"count":"45,024","unchecked":"28,111,621","cemented":"658","average_size":"312,406 B"},"wallets":{"balance":["0 NANO","0 BTC","0 USD","0 EUR"],"pending":["0 NANO","0 BTC","0 USD","0 EUR"],"count":"0","accounts_count":"0"}}
+02/25/2020 00:23:17 status:[] 
+02/25/2020 00:23:20 status:[] 
+02/25/2020 00:23:28 status:[] 
+02/25/2020 00:23:41 status:[] 
+02/25/2020 00:39:50 status:[] 
+02/25/2020 00:57:24 ticker:[] {"amount":["1 NANO","0.00009362 BTC","0.900617 USD","0.829945 EUR"]}
+02/25/2020 01:01:07 block_count:[] false
+02/25/2020 01:01:08 block_count:[] false
+02/25/2020 01:01:51 block_count:[] false
+02/25/2020 01:02:22 block_count:[] false
+02/25/2020 01:02:27 block_count:[] false
+02/25/2020 01:09:23 block_count:[] {"count":"46,459","unchecked":"28,941,138","cemented":"751"}
+02/25/2020 01:09:26 status:[] {"version":"Nano V20.0","uptime":"0.01 h","peers":"229","data.ldb":"14,476 MiB","blocks":{"count":"46,459","unchecked":"28,941,138","cemented":"751","average_size":"311,590 B"},"wallets":{"balance":["0 NANO","0 BTC","0 USD","0 EUR"],"pending":["0 NANO","0 BTC","0 USD","0 EUR"],"count":"0","accounts_count":"0"}}
+02/25/2020 01:09:30 ticker:[] {"amount":["1 NANO","0.00009334 BTC","0.897925 USD","0.827513 EUR"]}
+02/25/2020 01:09:32 status:[] {"version":"Nano V20.0","uptime":"0.01 h","peers":"229","data.ldb":"14,476 MiB","blocks":{"count":"46,459","unchecked":"28,941,140","cemented":"751","average_size":"311,590 B"},"wallets":{"balance":["0 NANO","0 BTC","0 USD","0 EUR"],"pending":["0 NANO","0 BTC","0 USD","0 EUR"],"count":"0","accounts_count":"0"}}
+02/25/2020 01:10:26 status:[] {"version":"Nano V20.0","uptime":"0.03 h","peers":"232","data.ldb":"14,476 MiB","blocks":{"count":"46,471","unchecked":"28,951,452","cemented":"751","average_size":"311,521 B"},"wallets":{"balance":["0 NANO","0 BTC","0 USD","0 EUR"],"pending":["0 NANO","0 BTC","0 USD","0 EUR"],"count":"0","accounts_count":"0"}}
