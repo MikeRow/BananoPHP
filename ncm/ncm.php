@@ -518,6 +518,7 @@
 						'bootstrap_connections',
 						'bootstrap_connections_max',
 						'bootstrap_fraction_numerator',
+						'cemented',
 						'chain_request_limit',
 						'change',
 						'clients',
