@@ -355,6 +355,8 @@
 		
 		global $C;
 		
+		global $command;
+		
 		foreach( $array as $key => $value )
 		{	
 
@@ -459,132 +461,144 @@
 				
 				// Date format
 				
-				$check_words = 
-				[
-					'local_timestamp',
-					'modified_timestamp',
-					'time',
-					'timestamp'
-				];
-			
-				if( in_array( $key, $check_words ) && is_numeric( $value ) )
-				{
-					$array[$key] = date( $C['format']['timestamp'], $value );
-				}
+					$check_words = 
+					[
+						'local_timestamp',
+						'modified_timestamp',
+						'time',
+						'timestamp'
+					];
+				
+					if( in_array( $key, $check_words ) && is_numeric( $value ) )
+					{
+						$array[$key] = date( $C['format']['timestamp'], $value );
+					}
 
 				// Duration format
 				
-				$check_words = 
-				[
-					'seconds',
-					'stat_duration_seconds'
-				];
-			
-				if( in_array( $key, $check_words ) && is_numeric( $value ) )
-				{
-					$array[$key] = custom_number( $value, 0 ) . ' s';
-				}
+					$check_words = 
+					[
+						'seconds',
+						'stat_duration_seconds'
+					];
 				
-				if( $key == 'duration' && is_numeric( $value ) ) $array[$key] = custom_number( $value, 0 ) . ' ms';
-				
-				if( $key == 'uptime'   && is_numeric( $value ) ) $array[$key] = custom_number( $value / 3600, 2 ) . ' h';
+					if( in_array( $key, $check_words ) && is_numeric( $value ) )
+					{
+						$array[$key] = custom_number( $value, 0 ) . ' s';
+					}
+					
+					if( $key == 'duration' && is_numeric( $value ) ) $array[$key] = custom_number( $value, 0 ) . ' ms';
+					
+					if( $key == 'uptime'   && is_numeric( $value ) ) $array[$key] = custom_number( $value / 3600, 2 ) . ' h';
+					
+					// Duration exceptions
+					
+					$check_words = 
+					[
+						'bootstrap_status'
+					];
+					
+					if( in_array( $command, $check_words ) )
+					{
+						$array['duration'] = custom_number( $value, 0 ) . ' s';
+					}
 				
 				// Default numeric format
 				
-				$check_words = 
-				[
-					'accounts',
-					'accounts_count',
-					'adhoc_count',
-					'aps',
-					'average',
-					'blocks',
-					'block_count',
-					'block_processor_batch_max_time',
-					'bootstrap_connections',
-					'bootstrap_connections_max',
-					'bootstrap_fraction_numerator',
-					'chain_request_limit',
-					'change',
-					'clients',
-					'confirmation_height',
-					'connections',
-					'count',
-					'deterministic_count',
-					'deterministic_index',
-					'frontier_request_limit',
-					'height',
-					'idle',
-					'io_threads',
-					'io_timeout',
-					'lazy_state_unknown',
-					'lazy_balances',
-					'lazy_pulls',
-					'lazy_stopped',
-					'lazy_keys',
-					'lmdb_max_dbs',
-					'max_json_depth',
-					'network_threads',
-					'number',
-					'online_weight_quorum',
-					'open',
-					'password_fanout',
-					'peers',
-					'pulls',
-					'pulling',
-					'receive',
-					'restored_count',
-					'send',
-					'signature_checker_threads',
-					'size',
-					'state',
-					'target_connections',
-					'threads',
-					'total_blocks',
-					'work_threads',
-					'unchecked',
-					'unchecked_cutoff_time'
-				];
-			
-				if( in_array( $key, $check_words ) && is_numeric( $value ) )
-				{
-					$array[$key] = custom_number( $value, 0 );
-				}
+					$check_words = 
+					[
+						'accounts',
+						'accounts_count',
+						'adhoc_count',
+						'aps',
+						'average',
+						'blocks',
+						'block_count',
+						'block_processor_batch_max_time',
+						'bootstrap_connections',
+						'bootstrap_connections_max',
+						'bootstrap_fraction_numerator',
+						'chain_request_limit',
+						'change',
+						'clients',
+						'confirmation_height',
+						'connections',
+						'count',
+						'deterministic_count',
+						'deterministic_index',
+						'frontier_request_limit',
+						'height',
+						'idle',
+						'io_threads',
+						'io_timeout',
+						'lazy_state_unknown',
+						'lazy_balances',
+						'lazy_pulls',
+						'lazy_stopped',
+						'lazy_keys',
+						'lmdb_max_dbs',
+						'max_json_depth',
+						'network_threads',
+						'number',
+						'online_weight_quorum',
+						'open',
+						'password_fanout',
+						'peers',
+						'pulls',
+						'pulling',
+						'receive',
+						'restored_count',
+						'send',
+						'signature_checker_threads',
+						'size',
+						'state',
+						'target_connections',
+						'threads',
+						'total_blocks',
+						'work_threads',
+						'unchecked',
+						'unchecked_cutoff_time'
+					];
+				
+					if( in_array( $key, $check_words ) && is_numeric( $value ) )
+					{
+						$array[$key] = custom_number( $value, 0 );
+					}
 				
 				// Size format
 				
-				$check_words = 
-				[
-					'data.ldb',
-					'max_size',
-					'rotation_size',
-					'size'
-				];
-			
-				if( in_array( $key, $check_words ) && is_numeric( $value ) )
-				{
-					$array[$key] = custom_number( $value/1000000, 0 ) . ' MiB';
-				}
+					$check_words = 
+					[
+						'data.ldb',
+						'max_size',
+						'rotation_size',
+						'size'
+					];
 				
-				$check_words = 
-				[
-					'average_size'
-				];
-			
-				if( in_array( $key, $check_words ) && is_numeric( $value ) )
-				{
-					$array[$key] = custom_number( $value, 0 ) . ' B';
-				}
+					if( in_array( $key, $check_words ) && is_numeric( $value ) )
+					{
+						$array[$key] = custom_number( $value/1000000, 0 ) . ' MiB';
+					}
+					
+					$check_words = 
+					[
+						'average_size'
+					];
 				
+					if( in_array( $key, $check_words ) && is_numeric( $value ) )
+					{
+						$array[$key] = custom_number( $value, 0 ) . ' B';
+					}
+					
 				// Error format
 				
-				if( $key == 'error' && $value == 'Unable to parse JSON' ) $array[$key] = bad_call;
-				
-				if( $key == 'error' && $value == 'Unable to parse Array' ) $array[$key] = bad_call;
+					if( $key == 'error' && $value == 'Unable to parse JSON' ) $array[$key] = bad_call;
+					
+					if( $key == 'error' && $value == 'Unable to parse Array' ) $array[$key] = bad_call;
 				
 				// Tag replacement
 				
-				$array[$key] = tag_replace( $array[$key] );
+					$array[$key] = tag_replace( $array[$key] );
 				
 			}
 			

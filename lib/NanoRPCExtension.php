@@ -65,12 +65,8 @@
 		
 		public function wallet_wipe( array $args )
 		{
-			
-			
-			
+				
 			// *** Check args ***
-			
-			
 			
 			if( !isset( $args['wallet'] ) || !isset( $args['destination'] ) )
 			{
@@ -215,11 +211,7 @@
 		public function wallet_send( array $args )
 		{
 			
-			
-			
 			// *** Check args ***
-			
-			
 			
 			if( !isset( $args['wallet'] ) || !isset( $args['destination'] ) || !isset( $args['amount'] ) )
 			{
