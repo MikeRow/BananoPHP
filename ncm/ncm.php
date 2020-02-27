@@ -1676,7 +1676,7 @@
 	
 	if( empty( $call_return ) )
 	{
-		echo notable_string( 'Error connecting to node' );
+		echo notable_string( 'No output: check node connection' );
 	}
 	else
 	{
