@@ -1251,37 +1251,46 @@
 		
 		$wallet_ID = [];
 		
-		foreach( $wallet_list as $row )
+		if( is_array( $wallet_list ) && count( $wallet_list ) > 0 )
 		{
-
-			$columns = explode( ': ', $row );
-			
-			if( $columns[0] == 'Wallet ID' )
+		
+			foreach( $wallet_list as $row )
 			{
-				$wallet_ID[] = $columns[1];
+
+				$columns = explode( ': ', $row );
+				
+				if( $columns[0] == 'Wallet ID' )
+				{
+					$wallet_ID[] = $columns[1];
+				}
+			
+			}
+			
+			foreach( $wallet_ID as $id )
+			{
+			
+				$wallet_info = $nanoconn->wallet_info( ['wallet' => $id] );
+				
+				$wallet_locked = $nanoconn->wallet_locked( ['wallet' => $id] );
+				
+				$call_return[$id]['balance'] = $wallet_info['balance'];
+				
+				$call_return[$id]['pending'] = $wallet_info['pending'];
+				
+				$call_return[$id]['accounts_count'] = $wallet_info['accounts_count'];
+				
+				$call_return[$id]['locked'] = $wallet_locked['locked'];
+				
+				// $wallet_balances = $nanoconn->wallet_balances( ['wallet'=>$id] );
+				
+				// $call_return[$id]['balances'] = $wallet_balances['balances'];
+			
 			}
 		
 		}
-		
-		foreach( $wallet_ID as $id )
+		else
 		{
-		
-			$wallet_info = $nanoconn->wallet_info( ['wallet' => $id] );
-			
-			$wallet_locked = $nanoconn->wallet_locked( ['wallet' => $id] );
-			
-			$call_return[$id]['balance'] = $wallet_info['balance'];
-			
-			$call_return[$id]['pending'] = $wallet_info['pending'];
-			
-			$call_return[$id]['accounts_count'] = $wallet_info['accounts_count'];
-			
-			$call_return[$id]['locked'] = $wallet_locked['locked'];
-			
-			// $wallet_balances = $nanoconn->wallet_balances( ['wallet'=>$id] );
-			
-			// $call_return[$id]['balances'] = $wallet_balances['balances'];
-		
+			$call_return['error'] = 'No wallets found';
 		}
 		
 	}
