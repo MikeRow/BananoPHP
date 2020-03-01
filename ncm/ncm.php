@@ -570,7 +570,6 @@
 				
 					$check_words = 
 					[
-						'data.ldb',
 						'max_size',
 						'rotation_size',
 						'size'
@@ -579,6 +578,16 @@
 					if( in_array( $key, $check_words ) && is_numeric( $value ) )
 					{
 						$array[$key] = custom_number( $value/1000000, 0 ) . ' MiB';
+					}
+					
+					$check_words = 
+					[
+						'data.ldb'
+					];
+					
+					if( in_array( $key, $check_words ) && is_numeric( $value ) )
+					{
+						$array[$key] = custom_number( $value/1000000, 0 ) . ' MB';
 					}
 					
 					$check_words = 
