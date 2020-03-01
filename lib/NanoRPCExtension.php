@@ -384,6 +384,115 @@
 			return $this->response;
 			
 		}
+		
+		
+		
+		
+		
+		
+		// ****************************************************************
+		// *** Return raw weight of ['wallet'] and of every its account ***
+		// ****************************************************************
+		
+		
+		
+		
+		
+		
+		public function wallet_weight( array $args )
+		{
+			
+			// *** Check args ***
+			
+			if( !isset( $args['wallet'] ) )
+			{
+				return ['error'=>'Unable to parse Array'];
+			}
+			
+			$wallet = $args['wallet'];
+			
+			// Wallet ok?
+			
+			$wallet_info = $this->wallet_info( ['wallet' => $wallet] );
+			
+			if( isset( $wallet_info['error'] ) )
+			{
+				return ['error'=>'Bad wallet number'];
+			}
+			
+			// Order ok?
+			
+			$order = isset( $args['order'] ) ? $args['order'] : 'list';
+			
+			
+			// *** Execution ***
+		
+		
+		
+			$return = ['weight' => '', 'weights' => []];
+			
+			$wallet_weight = '0';
+			
+			// Get wallet balances
+			
+			$args =
+			[
+				'wallet' => $wallet
+			];
+			
+			$wallet_accounts = $this->account_list( $args );
+			
+			// Check every weight and sum them
+			
+			foreach( $wallet_accounts['accounts'] as $account )
+			{
+			
+				$account_weight = $this->account_weight( ['account'=>$account] );
+			
+				$wallet_weight = gmp_add( $wallet_weight, $account_weight['weight'] );
+			
+				$return['weights'][$account] = gmp_strval( $account_weight['weight'] );
+			
+			}
+			
+			$return['weight'] = gmp_strval( $wallet_weight );
+			
+			// Sort weights
+			
+			if( $order == 'asc' )
+			{
+			
+				uasort( $return['weights'], function( $a, $b )
+				{
+					
+					return gmp_cmp( $a, $b );
+					
+				});
+			
+			}
+			elseif( $order == 'desc' )
+			{
+
+				uasort( $return['weights'], function( $a, $b )
+				{
+					
+					return gmp_cmp( $b, $a );
+					
+				});
+
+			}
+			else
+			{
+				// Do nothing
+			}
+			
+			$this->response_raw = json_encode( $return );
+			
+			$this->response = $return;
+			
+			return $this->response;
+			
+		}
 	
 	}
 	

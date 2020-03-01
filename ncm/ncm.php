@@ -623,18 +623,19 @@
 	
 	
 	
-	define( 'data_dir'   , __DIR__ . '/data' );
+	define( 'data_dir'   	, __DIR__ . '/data' );
 	
-	define( 'log_dir'    , __DIR__ . '/log' );
+	define( 'log_dir'    	, __DIR__ . '/log' );
 	
-	define( 'config_file', data_dir . '/config.json' );
+	define( 'config_file'	, data_dir . '/config.json' );
 	
-	define(	'ticker_file', data_dir . '/ticker.json' );
+	define(	'ticker_file'	, data_dir . '/ticker.json' );
 	
-	define( 'tabulation' , '    ' );
+	define( 'tabulation' 	, '    ' );
 	
-	define( 'bad_call'   , 'Bad call' );
+	define( 'bad_call'   	, 'Bad call' );
 
+	define( 'no_connection' , 'No node connection' );
 	
 	
 	// *** Create data folder if not exsist ***
@@ -1201,18 +1202,22 @@
 		
 		// Summary wallets info
 		
-		$wallets_count = 0;
+		$wallets_count = '0';
 		
-		$wallets_accounts = 0;
+		$wallets_accounts = '0';
 		
-		$wallets_balance = 0;
+		$wallets_balance = '0';
 		
-		$wallets_pending = 0;
+		$wallets_pending = '0';
+		
+		$wallets_weight = '0';
 		
 		foreach( $C['tags']['wallet'] as $tag => $id )
 		{
 		
 			$wallet_info = $nanoconn->wallet_info( ['wallet'=>$id] );
+			
+			$wallet_weight = $nanoconn->wallet_weight( ['wallet'=>$id] );
 			
 			$wallets_accounts += $wallet_info['accounts_count'];
 			
@@ -1222,19 +1227,32 @@
 			
 			$wallets_pending = gmp_add( $wallets_pending, $wallet_info['pending'] );
 		
+			$wallets_weight = gmp_add( $wallets_weight, $wallet_weight['weight'] );
+		
 		}
 		
 		$wallets_balance = gmp_strval( $wallets_balance );
 		
 		$wallets_pending = gmp_strval( $wallets_pending );
 		
+		$wallets_weight = gmp_strval( $wallets_weight );
+		
+		$wallet_weight = $nanoconn->wallet_weight( ['wallet'=>$id] );
+		
 		$call_return['wallets']['balance'] = $wallets_balance;
 		
 		$call_return['wallets']['pending'] = $wallets_pending;
 		
+		$call_return['wallets']['weight'] = $wallets_weight;
+		
 		$call_return['wallets']['count'] = $wallets_count;
 		
 		$call_return['wallets']['accounts_count'] = $wallets_accounts;
+		
+		if( !is_null( $nanoconn->error ) )
+		{
+			$call_return['error'] = no_connection;
+		}
 		
 	}
 	
@@ -1293,6 +1311,11 @@
 			$call_return['error'] = 'No wallets found';
 		}
 		
+		if( !is_null( $nanoconn->error ) )
+		{
+			$call_return['error'] = no_connection;
+		}
+		
 	}
 	
 	
@@ -1317,9 +1340,13 @@
 			{
 				$wallet_locked = $nanoconn->wallet_locked( ['wallet' => $arguments['wallet']] );
 				
+				$wallet_weight = $nanoconn->wallet_weight( ['wallet'=>$arguments['wallet']] );
+				
 				$call_return[$arguments['wallet']]['balance'] = $wallet_info['balance'];
 				
 				$call_return[$arguments['wallet']]['pending'] = $wallet_info['pending'];
+				
+				$call_return[$arguments['wallet']]['weight'] = $wallet_weight['weight'];
 				
 				$call_return[$arguments['wallet']]['accounts_count'] = $wallet_info['accounts_count'];
 				
@@ -1341,6 +1368,11 @@
 		else
 		{
 			$call_return['error'] = 'Bad wallet number';
+		}
+		
+		if( !is_null( $nanoconn->error ) )
+		{
+			$call_return['error'] = no_connection;
 		}
 		
 	}
@@ -1665,12 +1697,19 @@
 	
 	
 	else
-	{ 
+	{
+		
 		$call_return = $nanoconn->{ $command }( $arguments );
+		
+		if( !is_null( $nanoconn->error ) )
+		{
+			$call_return['error'] = no_connection;
+		}
+		
 	}
 	
 	
-	
+
 	
 	
 	
@@ -1683,21 +1722,12 @@
 	
 	
 	
-	if( empty( $call_return ) )
-	{
-		echo notable_string( 'No output: check node connection' );
-	}
-	else
-	{
-	
-		$call_return = pretty_array( $call_return );
+	$call_return = pretty_array( $call_return );
 		
-		echo PHP_EOL;
+	echo PHP_EOL;
 		
-		echo pretty_print_r( $call_return );
+	echo pretty_print_r( $call_return );
 
-	}
-	
 	echo PHP_EOL;
 	
 	
