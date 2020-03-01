@@ -66,7 +66,7 @@
 			
 			ncm block_count
 			ncm wallet_balances wallet=tag
-			ncm send wallet=tag1 source=tag2 destination=tag3 amount=1 id=uniqid
+			ncm send wallet=tag1 source=tag2 destination=tag3 amount=1 id=uniqid (uniqid value will create a php random unique id)
 			ncm send wallet=tag1 source=tag2 destination=tag3 amount=1-USD id=uniqid (if ticker enabled)
 			ncm accounts_balances accounts=tag1,xrb_1nanode8ngaakzbck8smq6ru9bethqwyehomf79sae1k7xd47dkidjqzffeg,tag2 (example of array parameter)
 			
@@ -77,6 +77,7 @@
 			ncm wallet_wipe wallet=tag1 destination=tag2 order=desc
 			ncm wallet_send wallet=tag1 destination=tag2 amount=1 order=desc
 			ncm wallet_send wallet=tag1 destination=tag2 amount=1-USD order=desc (if ticker enabled)
+			ncm wallet_weight wallet=tag1 order=desc
 	
 	*/
 	
