@@ -53,6 +53,8 @@
 			ncm wallet_list                                                                    print  all wallets summary
 			ncm wallet_info wallet=tag                                                         print  wallet summary (override regular call)
 			ncm delegators account=tag														   print  delegators summary (override regular call)
+			ncm representatives count=limit													   print  representatives and their weight (override regular call)
+			ncm representatives_online count=limit											   print  online representatives (override regular call)
 			ncm ticker                                                                         print  latest NANO price compared to favourite vs currencies (if ticker enabled)
 			ncm ticker amount=1
 			ncm ticker amount=1-USD
@@ -78,7 +80,7 @@
 			ncm wallet_wipe wallet=tag1 destination=tag2 order=desc
 			ncm wallet_send wallet=tag1 destination=tag2 amount=1 order=desc
 			ncm wallet_send wallet=tag1 destination=tag2 amount=1-USD order=desc (if ticker enabled)
-			ncm wallet_weight wallet=tag1 order=desc
+			ncm wallet_weight wallet=tag1
 	
 	*/
 	
@@ -420,46 +422,47 @@
 				
 				// Amount format
 				
-				$check_words = 
-				[
-					'amount',
-					'balance',
-					'online_weight_minimum',
-					'pending',
-					'receive_minimum',
-					'vote_minimum',
-					'weight'
-				];
-			
-				if( in_array( $key, $check_words ) && is_numeric( $value ) )
-				{
+					$check_words = 
+					[
+						'amount',
+						'available',
+						'balance',
+						'online_weight_minimum',
+						'pending',
+						'receive_minimum',
+						'vote_minimum',
+						'weight'
+					];
 				
-					$array[$key] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ) ) . ' ' . $C['nano']['denomination'];
-					
-					// If ticker is enabled shows amounts in favourite vs currencies
-					
-					if( $C['ticker']['enable'] )
+					if( in_array( $key, $check_words ) && is_numeric( $value ) )
 					{
-						
-						$array[$key] = [];
-						
-						$array[$key][] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ) ) . ' ' . $C['nano']['denomination'];
 					
-						$fav_vs_currencies = explode( ',', $C['ticker']['fav_vs_currencies'] );
-					
-						foreach( $fav_vs_currencies as $fav_vs_currency )
+						$array[$key] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ) ) . ' ' . $C['nano']['denomination'];
+						
+						// If ticker is enabled shows amounts in favourite vs currencies
+						
+						if( $C['ticker']['enable'] )
 						{
+							
+							$array[$key] = [];
+							
+							$array[$key][] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ) ) . ' ' . $C['nano']['denomination'];
 						
-							if( isset( vs_currencies[strtoupper( $fav_vs_currency )] ) )
+							$fav_vs_currencies = explode( ',', $C['ticker']['fav_vs_currencies'] );
+						
+							foreach( $fav_vs_currencies as $fav_vs_currency )
 							{
-								$array[$key][] = custom_number( number_format( NanoTools::raw2den( $value, 'NANO' ) * vs_currencies[strtoupper( $fav_vs_currency )], 8, '.', '' ) ) . ' ' . strtoupper( $fav_vs_currency );
+							
+								if( isset( vs_currencies[strtoupper( $fav_vs_currency )] ) )
+								{
+									$array[$key][] = custom_number( number_format( NanoTools::raw2den( $value, 'NANO' ) * vs_currencies[strtoupper( $fav_vs_currency )], 8, '.', '' ) ) . ' ' . strtoupper( $fav_vs_currency );
+								}
+								
 							}
 							
 						}
 						
 					}
-					
-				}
 				
 				// Date format
 				
@@ -647,6 +650,12 @@
 	define( 'bad_call'   	, 'Bad call' );
 
 	define( 'no_connection' , 'No node connection' );
+	
+	define( 'bad_wallet'    , 'Bad wallet number' );
+	
+	define( 'bad_account'   , 'Bad account' );
+	
+	define( 'available_supply' , '133248061996216572282917317807824970865');
 	
 	
 	// *** Create data folder if not exsist ***
@@ -1345,7 +1354,7 @@
 		
 			if( isset( $wallet_info['error'] ) )
 			{
-				$call_return['error'] = 'Bad wallet number';
+				$call_return['error'] = bad_wallet;
 			}
 			else
 			{
@@ -1378,7 +1387,63 @@
 		}
 		else
 		{
-			$call_return['error'] = 'Bad wallet number';
+			$call_return['error'] = bad_wallet;
+		}
+		
+		if( !is_null( $nanoconn->error ) )
+		{
+			$call_return['error'] = no_connection;
+		}
+		
+	}
+	
+	
+	
+	// *** Wallet weight ***
+	
+	
+	
+	elseif( $command == 'wallet_weight' )
+	{
+
+		if( isset( $arguments['wallet'] ) )
+		{
+		
+			$wallet_info = $nanoconn->wallet_info( ['wallet' => $arguments['wallet']] );
+		
+			if( isset( $wallet_info['error'] ) )
+			{
+				$call_return['error'] = bad_wallet;
+			}
+			else
+			{
+				
+				$wallet_weight = $nanoconn->wallet_weight( ['wallet'=>$arguments['wallet'],'order'=>'desc'] );
+				
+				$call_return['weight'] = $wallet_weight['weight'];
+				
+				foreach( $wallet_weight['weights'] as $account => $weight )
+				{
+				
+					$call_return['weights'][$account]['weight'] = $weight;
+					
+					if( gmp_cmp( $weight, '0' ) > 0 )
+					{
+						$call_return['weights'][$account]['percent'] = gmp_strval( gmp_div_q( gmp_mul( $weight, '100' ), $wallet_weight['weight'] ) );
+					}
+					else
+					{
+						$call_return['weights'][$account]['percent'] = '0';
+					}
+					
+				}
+				
+			}
+			
+		}
+		else
+		{
+			$call_return['error'] = bad_wallet;
 		}
 		
 		if( !is_null( $nanoconn->error ) )
@@ -1404,12 +1469,16 @@
 			
 			if( $check_account['valid'] != 1 )
 			{
-				$call_return['error'] = 'Bad account';
+				$call_return['error'] = bad_account;
 			}
 			else
 			{
 			
 				$delegators_count = $nanoconn->delegators_count( ['account'=>$arguments['account']] );
+				
+				$account_weight = $nanoconn->account_weight( ['account'=>$arguments['account']] );
+				
+				$call_return['weight'] = $account_weight['weight'];
 				
 				$call_return['count'] = $delegators_count['count'];
 			
@@ -1419,6 +1488,15 @@
 				{
 				
 					$call_return['delegators'][$delegator]['balance'] = $balance;
+					
+					if( gmp_cmp( $balance, '0' ) > 0 )
+					{
+						$call_return['delegators'][$delegator]['percent'] = gmp_strval( gmp_div_q( gmp_mul( $balance, '100' ), $account_weight['weight'] ) );
+					}
+					else
+					{
+						$call_return['delegators'][$delegator]['percent'] = '0';
+					}
 					
 				}
 				
@@ -1434,7 +1512,7 @@
 		}
 		else
 		{
-			$call_return['error'] = 'Bad account';
+			$call_return['error'] = bad_account;
 		}
 		
 		if( !is_null( $nanoconn->error ) )
@@ -1453,11 +1531,97 @@
 	elseif( $command == 'representatives' )
 	{
 	
+		// Any limit?
+			
+		$limit = isset( $arguments['count'] ) ? (int) $arguments['count'] : 0;
+	
 		$representatives = $nanoconn->representatives( ['sorting'=>true] );
 		
-		foreach( $representatives['representatives'] as $account => $weight )
+		$i = 0;
+		
+		foreach( $representatives['representatives'] as $representative => $weight )
 		{
-			$call_return['representatives'][$account]['weight'] = $weight;
+			
+			if( $limit <= 0 )
+			{}
+			else
+			{
+			
+				if( $i >= $limit ) break;
+			
+				$i++;
+			
+			}
+			
+			$call_return['representatives'][$representative]['weight'] = $weight;
+			
+			if( gmp_cmp( $weight, '0' ) > 0 )
+			{
+				$call_return['representatives'][$representative]['percent'] = gmp_strval( gmp_div_q( gmp_mul( $weight, '100' ), available_supply ) );
+			}
+			else
+			{
+				$call_return['representatives'][$representative]['percent'] = '0';
+			}
+			
+		}
+		
+		if( !is_null( $nanoconn->error ) )
+		{
+			$call_return['error'] = no_connection;
+		}
+	
+	}
+	
+	
+	
+	// *** Representatives online ***
+	
+	
+	
+	elseif( $command == 'representatives_online' )
+	{
+	
+		// Any limit?
+			
+		$limit = isset( $arguments['count'] ) ? (int) $arguments['count'] : 0;
+	
+		$representatives_online = $nanoconn->representatives_online( ['weight'=>true] );
+		
+		uasort( $representatives_online['representatives'], function( $a, $b )
+		{
+			
+			return gmp_cmp( $b['weight'], $a['weight'] );
+			
+		});
+		
+		$i = 0;
+		
+		foreach( $representatives_online['representatives'] as $representative => $data )
+		{
+			
+			if( $limit <= 0 )
+			{}
+			else
+			{
+			
+				if( $i >= $limit ) break;
+			
+				$i++;
+			
+			}
+			
+			$call_return['representatives_online'][$representative]['weight'] = $data['weight'];
+			
+			if( gmp_cmp( $data['weight'], '0' ) > 0 )
+			{
+				$call_return['representatives_online'][$representative]['percent'] = gmp_strval( gmp_div_q( gmp_mul( $data['weight'], '100' ), available_supply ) );
+			}
+			else
+			{
+				$call_return['representatives_online'][$representative]['percent'] = '0';
+			}
+			
 		}
 		
 		if( !is_null( $nanoconn->error ) )
