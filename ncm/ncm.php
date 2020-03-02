@@ -48,10 +48,11 @@
 		
 			// ncm dedicated
 		
-			ncm init                                                                           init  configuration file
+			ncm init                                                                           init   configuration file
 			ncm status                                                                         print  node summary
 			ncm wallet_list                                                                    print  all wallets summary
 			ncm wallet_info wallet=tag                                                         print  wallet summary (override regular call)
+			ncm delegators account=tag														   print  delegators summary (override regular call)
 			ncm ticker                                                                         print  latest NANO price compared to favourite vs currencies (if ticker enabled)
 			ncm ticker amount=1
 			ncm ticker amount=1-USD
@@ -1385,6 +1386,85 @@
 			$call_return['error'] = no_connection;
 		}
 		
+	}
+	
+	
+	
+	// *** Delegators ***
+	
+	
+	
+	elseif( $command == 'delegators' )
+	{
+	
+		if( isset( $arguments['account'] ) )
+		{
+		
+			$check_account = $nanoconn->validate_account_number( ['account'=>$arguments['account']] );
+			
+			if( $check_account['valid'] != 1 )
+			{
+				$call_return['error'] = 'Bad account';
+			}
+			else
+			{
+			
+				$delegators_count = $nanoconn->delegators_count( ['account'=>$arguments['account']] );
+				
+				$call_return['count'] = $delegators_count['count'];
+			
+				$delegators = $nanoconn->delegators( ['account'=>$arguments['account']] );
+				
+				foreach( $delegators['delegators'] as $delegator => $balance )
+				{
+				
+					$call_return['delegators'][$delegator]['balance'] = $balance;
+					
+				}
+				
+				uasort( $call_return['delegators'], function( $a, $b )
+				{
+					
+					return gmp_cmp( $b['balance'], $a['balance'] );
+					
+				});
+			
+			}
+			
+		}
+		else
+		{
+			$call_return['error'] = 'Bad account';
+		}
+		
+		if( !is_null( $nanoconn->error ) )
+		{
+			$call_return['error'] = no_connection;
+		}
+	
+	}
+	
+	
+	
+	// *** Representatives ***
+	
+	
+	
+	elseif( $command == 'representatives' )
+	{
+	
+		$representatives = $nanoconn->representatives( ['sorting'=>true] );
+		
+		foreach( $representatives['representatives'] as $account => $weight )
+		{
+			$call_return['representatives'][$account]['weight'] = $weight;
+		}
+		
+		if( !is_null( $nanoconn->error ) )
+		{
+			$call_return['error'] = no_connection;
+		}
+	
 	}
 	
 	
