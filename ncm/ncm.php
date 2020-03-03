@@ -227,27 +227,27 @@
 				
 				if( strlen( $amount_array[1] ) < 1 )
 				{
-					return number_format( $amount_array[0], 0, '', $C['separator']['thousand'] );
+					return number_format( $amount_array[0], 0, '', $C['format']['thousand'] );
 				}
 				else
 				{
-					return number_format( $amount_array[0], 0, '', $C['separator']['thousand'] ) . '.' . $amount_array[1];
+					return number_format( $amount_array[0], 0, '', $C['format']['thousand'] ) . '.' . $amount_array[1];
 				}
 			
 			}
 			else
 			{
-				return number_format( floor( $number ), 0, '', $C['separator']['thousand'] );
+				return number_format( floor( $number ), 0, '', $C['format']['thousand'] );
 			}
 			
 		}
 		elseif( $decimals == 0 )
 		{
-			return number_format( floor( $number ), 0, $C['separator']['decimal'], $C['separator']['thousand'] );
+			return number_format( floor( $number ), 0, $C['format']['decimal'], $C['format']['thousand'] );
 		}
 		else
 		{
-			return number_format( $number, $decimals, $C['separator']['decimal'], $C['separator']['thousand'] );
+			return number_format( $number, $decimals, $C['format']['decimal'], $C['format']['thousand'] );
 		}
 	
 	}
@@ -325,35 +325,34 @@
 		
 		global $C;
 		
-		if( is_array( $value ) )
-		{
-			return $value;
-		}
+		if( !$C['tag']['view'] ) return $value;
+		
+		if( is_array( $value ) ) return $value;
 		
 		$key_check = explode( '_', $value );
 	
 		if( array_search( $value, $C['tags']['wallet'] ) ) // Find a wallet tag
 		{
-			return array_search( $value, $C['tags']['wallet'] ) . $C['separator']['tag'] . $value;
+			return array_search( $value, $C['tags']['wallet'] ) . $C['tag']['separator'] . $value;
 		}
 		elseif( isset( $key_check[1] ) && ( $key_check[0] == 'xrb' || $key_check[0] == 'nano' ) ) // Find an account tag
 		{
 
 			if( array_search( 'xrb_' . $key_check[1], $C['tags']['account'] ) )
 			{
-				return array_search( 'xrb_' . $key_check[1], $C['tags']['account'] ) . $C['separator']['tag'] . $value;
+				return array_search( 'xrb_' . $key_check[1], $C['tags']['account'] ) . $C['tag']['separator'] . $value;
 			}
 			elseif( array_search( 'nano_' . $key_check[1], $C['tags']['account'] ) )
 			{
-				return array_search( 'nano_' . $key_check[1], $C['tags']['account'] ) . $C['separator']['tag'] . $value;
+				return array_search( 'nano_' . $key_check[1], $C['tags']['account'] ) . $C['tag']['separator'] . $value;
 			}
 			elseif( $C['3tags']['enable'] && array_search( 'xrb_' . $key_check[1], thirdtags['account'] ) )
 			{
-				return array_search( 'xrb_' . $key_check[1], thirdtags['account'] ) . $C['separator']['tag'] . $value;
+				return array_search( 'xrb_' . $key_check[1], thirdtags['account'] ) . $C['tag']['separator'] . $value;
 			}
 			elseif( $C['3tags']['enable'] && array_search( 'nano_' . $key_check[1], thirdtags['account'] ) )
 			{
-				return array_search( 'nano_' . $key_check[1], thirdtags['account'] ) . $C['separator']['tag'] . $value;
+				return array_search( 'nano_' . $key_check[1], thirdtags['account'] ) . $C['tag']['separator'] . $value;
 			}
 			else
 			{
@@ -363,7 +362,7 @@
 		}
 		elseif( array_search( $value, $C['tags']['block'] ) ) // Find a block tag
 		{
-			return array_search( $value, $C['tags']['block'] ) . $C['separator']['tag'] . $value;
+			return array_search( $value, $C['tags']['block'] ) . $C['tag']['separator'] . $value;
 		}
 		else
 		{
@@ -728,16 +727,17 @@
 		},
 		"timezone": "UTC",
 		"format": {
-			"timestamp": "m/d/Y H:i:s"
-		},
-		"separator": {
+			"timestamp": "m/d/Y H:i:s",
 			"decimal": ".",
-			"thousand": ",",
-			"tag": " : "
+			"thousand": ","
 		},
 		"ticker": {
 			"enable": false,
 			"fav_vs_currencies": "BTC,USD"
+		},
+		"tag": {
+			"view" : true,
+			"separator": " > "
 		},
 		"tags": {
 			"account": {
@@ -2216,5 +2216,79 @@
 		file_put_contents( $log_file, $newline . date( 'm/d/Y H:i:s', time() ) . ' ' . $command . ':' . json_encode( $argv ) . ' ' . json_encode( $call_return ), FILE_APPEND );
 	
 	}
+	
+	/*
+	
+		It starts with one thing
+		I don't know why
+		It doesn't even matter how hard you try
+		Keep that in mind
+		I designed this rhyme
+		To explain in due time
+		All I know
+		Time is a valuable thing
+		Watch it fly by as the pendulum swings
+		Watch it count down to the end of the day
+		The clock ticks life away
+		It's so unreal
+		Didn't look out below
+		Watch the time go right out the window
+		Trying to hold on, but you didn't even know
+		Wasted it all just to watch you go
+		I kept everything inside
+		And even though I tried, it all fell apart
+		What it meant to me
+		Will eventually be a memory of a time when
+		I tried so hard
+		And got so far
+		But in the end
+		It doesn't even matter
+		I had to fall
+		To lose it all
+		But in the end
+		It doesn't even matter
+		One thing, I don't know why
+		It doesn't even matter how hard you try
+		Keep that in mind
+		I designed this rhyme
+		To remind myself of a time when
+		I tried so hard
+		In spite of the way you were mocking me
+		Acting like I was part of your property
+		Remembering all the times you fought with me
+		I'm surprised it got so
+		Things aren't the way they were before
+		You wouldn't even recognize me anymore
+		Not that you knew me back then
+		But it all comes back to me in the end
+		You kept everything inside
+		And even though I tried, it all fell apart
+		What it meant to me will eventually be a memory of a time when
+		I tried so hard
+		And got so far
+		But in the end
+		It doesn't even matter
+		I had to fall
+		To lose it all
+		But in the end
+		It doesn't even matter
+		I've put my trust in you
+		Pushed as far as I can go
+		For all this
+		There's only one thing you should know
+		I've put my trust in you
+		Pushed as far as I can go
+		For all this
+		There's only one thing you should know
+		I tried so hard
+		And got so far
+		But in the end
+		It doesn't even matter
+		I had to fall
+		To lose it all
+		But in the end
+		It doesn't even matter
+	
+	*/
 	
 ?>
