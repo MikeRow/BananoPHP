@@ -737,7 +737,7 @@
 		},
 		"tag": {
 			"view" : true,
-			"separator": " > "
+			"separator": "|"
 		},
 		"tags": {
 			"account": {
@@ -1532,31 +1532,31 @@
 				
 				$account_info['weight_percent'] = gmp_strval( gmp_div_q( gmp_mul( $account_info['weight'], '100' ), available_supply ) );
 				
-				$call_return['frontier'] = $account_info['frontier'];
+				$call_return[$arguments['account']]['frontier'] = $account_info['frontier'];
 				
-				$call_return['open_block'] = $account_info['open_block'];
+				$call_return[$arguments['account']]['open_block'] = $account_info['open_block'];
 				
-				$call_return['representative'] = $account_info['representative'];
+				$call_return[$arguments['account']]['representative'] = $account_info['representative'];
 				
-				$call_return['representative_block'] = $account_info['representative_block'];
+				$call_return[$arguments['account']]['representative_block'] = $account_info['representative_block'];
 				
-				$call_return['balance'] = $account_info['balance'];
+				$call_return[$arguments['account']]['balance'] = $account_info['balance'];
 				
-				$call_return['pending'] = $account_info['pending'];
+				$call_return[$arguments['account']]['pending'] = $account_info['pending'];
 				
-				$call_return['weight'] = $account_info['weight'];
+				$call_return[$arguments['account']]['weight'] = $account_info['weight'];
 				
-				$call_return['weight_percent'] = $account_info['weight_percent'];
+				$call_return[$arguments['account']]['weight_percent'] = $account_info['weight_percent'];
 				
-				$call_return['modified_timestamp'] = $account_info['modified_timestamp'];
+				$call_return[$arguments['account']]['modified_timestamp'] = $account_info['modified_timestamp'];
 				
-				$call_return['block_count'] = $account_info['block_count'];
+				$call_return[$arguments['account']]['block_count'] = $account_info['block_count'];
 				
-				$call_return['confirmation_height'] = $account_info['confirmation_height'];
+				$call_return[$arguments['account']]['confirmation_height'] = $account_info['confirmation_height'];
 				
-				// $call_return['confirmation_height_frontier'] = $account_info['confirmation_height_frontier'];
+				// $call_return[$arguments['account']]['confirmation_height_frontier'] = $account_info['confirmation_height_frontier'];
 				
-				$call_return['account_version'] = $account_info['account_version'];
+				$call_return[$arguments['account']]['account_version'] = $account_info['account_version'];
 			
 			}
 			
