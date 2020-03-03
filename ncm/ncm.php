@@ -19,7 +19,16 @@
 			- Log privacy
 			
 				Disable logging for sensitive information
+				
+			- Third Party Tags (3tags)
 			
+				********************************************************************************
+				*** A big THANK YOU to https://mynano.ninja for its free and accessible API! ***
+				********************************************************************************
+				
+				Enable 3tags option and run 'php PATH/php4nano/ncm/ncm.php 3tags_update' to populate third party tags
+				You may crontab it to keep it updated
+							
 			- Ticker
 			
 				********************************************************************************
@@ -33,7 +42,10 @@
 			
 				Do not leave empty tags!
 				Only one tag for each wallet/account/block ID
-
+				In order to have a clean and flowing tag list, I recommend using only alphanumeric characters, dashes(-) and dottes(.)
+				
+				Note: tags set by you will always take precedence over those of third party
+				
 	USAGE:
 	
 		Default input/output amount denomination in NANO (Mnano)
@@ -50,8 +62,10 @@
 		
 			ncm init                                                                           init   configuration file
 			ncm status                                                                         print  node summary
+			ncm account_info account=tag													   print  account info (override regular call)
 			ncm wallet_list                                                                    print  all wallets summary
 			ncm wallet_info wallet=tag                                                         print  wallet summary (override regular call)
+			ncm wallet_weight wallet=tag													   print  wallet weight (override regular call)
 			ncm delegators account=tag														   print  delegators summary (override regular call)
 			ncm representatives count=limit													   print  representatives and their weight (override regular call)
 			ncm representatives_online count=limit											   print  online representatives (override regular call)
@@ -61,6 +75,7 @@
 			ncm ticker_update                                                                  update ticker.json
 			ncm config                                                                         print  config.json (no tags)
 			ncm tags                                                                           print  tags
+			ncm 3tags																		   print  3tags
 			ncm tag_add cat=account|block|wallet tag=tag value=accountID|blockID|walletID      add    tag
 			ncm tag_edit cat=account|block|wallet tag=tag value=accountID|blockID|walletID     edit   tag
 			ncm tag_remove cat=account|block|wallet tag=tag                                    remove tag
@@ -80,7 +95,7 @@
 			ncm wallet_wipe wallet=tag1 destination=tag2 order=desc
 			ncm wallet_send wallet=tag1 destination=tag2 amount=1 order=desc
 			ncm wallet_send wallet=tag1 destination=tag2 amount=1-USD order=desc (if ticker enabled)
-			ncm wallet_weight wallet=tag1
+			ncm wallet_weight wallet=tag order=desc
 	
 	*/
 	
@@ -330,6 +345,14 @@
 			elseif( array_search( 'nano_' . $key_check[1], $C['tags']['account'] ) )
 			{
 				return array_search( 'nano_' . $key_check[1], $C['tags']['account'] ) . $C['separator']['tag'] . $value;
+			}
+			elseif( $C['3tags']['enable'] && array_search( 'xrb_' . $key_check[1], thirdtags['account'] ) )
+			{
+				return array_search( 'xrb_' . $key_check[1], thirdtags['account'] ) . $C['separator']['tag'] . $value;
+			}
+			elseif( $C['3tags']['enable'] && array_search( 'nano_' . $key_check[1], thirdtags['account'] ) )
+			{
+				return array_search( 'nano_' . $key_check[1], thirdtags['account'] ) . $C['separator']['tag'] . $value;
 			}
 			else
 			{
@@ -637,25 +660,27 @@
 	
 	
 	
-	define( 'data_dir'   	, __DIR__ . '/data' );
+	define( 'data_dir'   		, __DIR__ . '/data' );
 	
-	define( 'log_dir'    	, __DIR__ . '/log' );
+	define( 'log_dir'    		, __DIR__ . '/log' );
 	
-	define( 'config_file'	, data_dir . '/config.json' );
+	define( 'config_file'		, data_dir . '/config.json' );
+	 
+	define(	'ticker_file'	 	, data_dir . '/ticker.json' );
 	
-	define(	'ticker_file'	, data_dir . '/ticker.json' );
+	define( 'thirdtags_file' 	, data_dir . '/3tags.json' );
 	
-	define( 'tabulation' 	, '    ' );
+	define( 'tabulation' 		, '    ' );
 	
-	define( 'bad_call'   	, 'Bad call' );
+	define( 'bad_call'   	 	, 'Bad call' );
 
-	define( 'no_connection' , 'No node connection' );
+	define( 'no_connection'  	, 'No node connection' );
 	
-	define( 'bad_wallet'    , 'Bad wallet number' );
+	define( 'bad_wallet'     	, 'Bad wallet number' );
 	
-	define( 'bad_account'   , 'Bad account' );
+	define( 'bad_account'   	, 'Bad account' );
 	
-	define( 'available_supply' , '133248061996216572282917317807824970865');
+	define( 'available_supply'	, '133248061996216572282917317807824970865');
 	
 	
 	// *** Create data folder if not exsist ***
@@ -715,12 +740,15 @@
 		},
 		"tags": {
 			"account": {
-				"genesis": "xrb_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3"
+				"genesis": "nano_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3"
 			},
 			"block": {
 				"genesis": "991CF190094C00F0B68E2E5F75F6BEE95A2E0BD93CEAA4A6734DB9F19B728948"
 			},
 			"wallet": {}
+		},
+		"3tags": {
+			"enable": false
 		}
 	}';
 	
@@ -765,6 +793,11 @@
 		
 		define( 'ticker_last', $ticker_array['last_updated_at'] );
 		
+	}
+	
+	if( $C['3tags']['enable'] )
+	{
+		define( 'thirdtags', json_decode( file_get_contents( thirdtags_file ), true ) );
 	}
 	
 	// Save config.json
@@ -895,6 +928,12 @@
 				{
 					$argument_raw = $C['tags']['account'][$argument_raw];
 				}
+				elseif( $C['3tags']['enable'] && array_key_exists( $argument_raw, thirdtags['account'] ) )
+				{
+					$argument_raw = thirdtags['account'][$argument_raw];
+				}
+				else
+				{}
 				
 				$arguments_row_array[] = $argument_raw;
 			
@@ -964,6 +1003,12 @@
 			{
 				$arguments_row[1] = $C['tags']['account'][$arguments_row[1]];
 			}
+			elseif( $C['3tags']['enable'] && array_key_exists( $arguments_row[1], thirdtags['account'] ) )
+			{
+				$arguments_row[1] = thirdtags['account'][$arguments_row[1]];
+			}
+			else
+			{}
 			
 		}
 		
@@ -1278,7 +1323,7 @@
 	
 	
 	
-	// *** Print wallets info ***
+	// *** Print wallet list ***
 	
 	
 	
@@ -1309,11 +1354,15 @@
 			
 				$wallet_info = $nanoconn->wallet_info( ['wallet' => $id] );
 				
+				$wallet_weight = $nanoconn->wallet_weight( ['wallet' => $id] );
+				
 				$wallet_locked = $nanoconn->wallet_locked( ['wallet' => $id] );
 				
 				$call_return[$id]['balance'] = $wallet_info['balance'];
 				
 				$call_return[$id]['pending'] = $wallet_info['pending'];
+				
+				$call_return[$id]['weight'] = $wallet_weight['weight'];
 				
 				$call_return[$id]['accounts_count'] = $wallet_info['accounts_count'];
 				
@@ -1367,6 +1416,8 @@
 				$call_return[$arguments['wallet']]['pending'] = $wallet_info['pending'];
 				
 				$call_return[$arguments['wallet']]['weight'] = $wallet_weight['weight'];
+				
+				// $call_return[$arguments['wallet']]['weight_percent'] = gmp_strval( gmp_div_q( gmp_mul( $wallet_weight['weight'], '100' ), available_supply ) );
 				
 				$call_return[$arguments['wallet']]['accounts_count'] = $wallet_info['accounts_count'];
 				
@@ -1422,6 +1473,8 @@
 				
 				$call_return['weight'] = $wallet_weight['weight'];
 				
+				$call_return['percent'] = gmp_strval( gmp_div_q( gmp_mul( $wallet_weight['weight'], '100' ), available_supply ) );
+				
 				foreach( $wallet_weight['weights'] as $account => $weight )
 				{
 				
@@ -1429,11 +1482,11 @@
 					
 					if( gmp_cmp( $weight, '0' ) > 0 )
 					{
-						$call_return['weights'][$account]['percent'] = gmp_strval( gmp_div_q( gmp_mul( $weight, '100' ), $wallet_weight['weight'] ) );
+						$call_return['weights'][$account]['wallet_percent'] = gmp_strval( gmp_div_q( gmp_mul( $weight, '100' ), $wallet_weight['weight'] ) );
 					}
 					else
 					{
-						$call_return['weights'][$account]['percent'] = '0';
+						$call_return['weights'][$account]['wallet_percent'] = '0';
 					}
 					
 				}
@@ -1451,6 +1504,72 @@
 			$call_return['error'] = no_connection;
 		}
 		
+	}
+	
+	
+	
+	// *** Account info ***
+	
+	
+	
+	elseif( $command == 'account_info' )
+	{
+	
+		if( isset( $arguments['account'] ) )
+		{
+		
+			$check_account = $nanoconn->validate_account_number( ['account'=>$arguments['account']] );
+			
+			if( $check_account['valid'] != 1 )
+			{
+				$call_return['error'] = bad_account;
+			}
+			else
+			{
+			
+				$account_info = $nanoconn->account_info( ['account'=>$arguments['account'],'pending'=>true,'weight'=>true,'representative'=>true] );
+				
+				$account_info['weight_percent'] = gmp_strval( gmp_div_q( gmp_mul( $account_info['weight'], '100' ), available_supply ) );
+				
+				$call_return['frontier'] = $account_info['frontier'];
+				
+				$call_return['open_block'] = $account_info['open_block'];
+				
+				$call_return['representative'] = $account_info['representative'];
+				
+				$call_return['representative_block'] = $account_info['representative_block'];
+				
+				$call_return['balance'] = $account_info['balance'];
+				
+				$call_return['pending'] = $account_info['pending'];
+				
+				$call_return['weight'] = $account_info['weight'];
+				
+				$call_return['weight_percent'] = $account_info['weight_percent'];
+				
+				$call_return['modified_timestamp'] = $account_info['modified_timestamp'];
+				
+				$call_return['block_count'] = $account_info['block_count'];
+				
+				$call_return['confirmation_height'] = $account_info['confirmation_height'];
+				
+				// $call_return['confirmation_height_frontier'] = $account_info['confirmation_height_frontier'];
+				
+				$call_return['account_version'] = $account_info['account_version'];
+			
+			}
+			
+		}
+		else
+		{
+			$call_return['error'] = bad_account;
+		}
+		
+		if( !is_null( $nanoconn->error ) )
+		{
+			$call_return['error'] = no_connection;
+		}
+	
 	}
 	
 	
@@ -1714,6 +1833,52 @@
 	
 	
 	
+	// *** Update Third Party Tags ***
+	
+	
+	
+	elseif( $command == '3tags_update' )
+	{
+	
+		$thirdy_party_tags_elaborated = [];
+	
+		$third_party_tags_json = file_get_contents( 'https://mynano.ninja/api/accounts/aliases' );
+		
+		$third_party_tags_array = json_decode( $third_party_tags_json, true );
+		
+		if( !$third_party_tags_json ) exit; // If error exit
+		
+		foreach( $third_party_tags_array as $index => $data )
+		{
+		
+			$tag = $data['alias'];
+		
+			$tag = preg_replace( '/[^a-z0-9. ]+/i', '', $tag );
+		
+			$tag = str_replace( ' ', '-', $tag );
+			
+			//$tag = str_replace( '.', '-', $tag );
+			
+			$tag = strtolower( $tag );
+		
+			if( $tag == '' ) continue;
+		
+			$thirdy_party_tags_elaborated['account'][$tag] = $data['account'];
+		
+		}
+		
+		ksort( $thirdy_party_tags_elaborated['account'] );
+		
+		// Save ticker.json
+		
+		file_put_contents( thirdtags_file, json_encode( $thirdy_party_tags_elaborated, JSON_PRETTY_PRINT ) );
+		
+		exit;
+	
+	}
+	
+	
+	
 	// *** Print config.json (except tags) ***
 	
 	
@@ -1749,6 +1914,26 @@
 		foreach( $C['tags']['block'] as $tag => $id )
 		{
 			$call_return['block'][] = $id;
+		}
+		
+	}
+	
+	
+	
+	// *** Print 3tags ***
+	
+	
+	
+	elseif( $command == '3tags' ) 
+	{
+		
+		if( !$C['3tags']['enable'] ) exit;
+		
+		$thirdtags_array = json_decode( file_get_contents( thirdtags_file ), true );
+
+		foreach( $thirdtags_array['account'] as $tag => $id )
+		{
+			$call_return['account'][] = $id;
 		}
 		
 	}
