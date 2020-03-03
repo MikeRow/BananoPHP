@@ -67,7 +67,7 @@
 
 				$dot_pos = strpos( $amount, '.' );
 				
-				$number_len = strlen( $amount ) -1;
+				$number_len = strlen( $amount ) - 1;
 
 				$raw2denomination = substr( $raw2denomination, 0, - ( $number_len - $dot_pos ) );
 			
