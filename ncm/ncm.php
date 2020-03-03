@@ -1858,7 +1858,7 @@
 		
 			$tag = str_replace( ' ', '-', $tag );
 			
-			//$tag = str_replace( '.', '-', $tag );
+			// $tag = str_replace( '.', '-', $tag );
 			
 			$tag = strtolower( $tag );
 		
