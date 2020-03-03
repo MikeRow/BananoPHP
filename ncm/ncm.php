@@ -73,6 +73,7 @@
 			ncm ticker amount=1
 			ncm ticker amount=1-USD
 			ncm ticker_update                                                                  update ticker.json
+			ncm 3tags_update                                                                   update 3tags.json
 			ncm config                                                                         print  config.json (no tags)
 			ncm tags                                                                           print  tags
 			ncm 3tags																		   print  3tags
