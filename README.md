@@ -11,7 +11,7 @@ PHP libraries and tools for the Nano currency
 
 [ncm](ncm)
 
-<pre>node CLI manager - to exhaustively manage Nano node using bash</pre>
+<pre>node CLI manager - exhaustively manage Nano node using bash</pre>
 
 ## A clarification about the huge integers
 
