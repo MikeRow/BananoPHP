@@ -1,5 +1,5 @@
 # php4nano/lib
-Library for Nano
+Classes for Nano
 
 *Read usage and examples in files header*
 

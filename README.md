@@ -7,11 +7,11 @@ PHP libraries and tools for the Nano currency
 
 [lib](lib)
 
-<pre>library for Nano</pre>
+<pre>classes for Nano</pre>
 
 [ncm](ncm)
 
-<pre>node CLI manager</pre>
+<pre>node CLI manager - to exhaustively manage Nano node using bash</pre>
 
 ## A clarification about the huge integers
 

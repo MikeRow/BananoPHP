@@ -7,4 +7,4 @@ Node CLI manager
 
 [ncm.php](ncm.php)
 
-<pre>node CLI manager</pre>
+<pre>node CLI manager - to exhaustively manage Nano node using bash</pre>
