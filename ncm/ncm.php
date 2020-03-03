@@ -19,15 +19,6 @@
 			- Log privacy
 			
 				Disable logging for sensitive information
-				
-			- Third Party Tags (3tags)
-			
-				********************************************************************************
-				*** A big THANK YOU to https://mynano.ninja for its free and accessible API! ***
-				********************************************************************************
-				
-				Enable 3tags option and run 'php PATH/php4nano/ncm/ncm.php 3tags_update' to populate third party tags
-				You may crontab it to keep it updated
 							
 			- Ticker
 			
@@ -45,6 +36,15 @@
 				In order to have a clean and flowing tag list, I recommend using only alphanumeric characters, dashes(-) and dottes(.)
 				
 				Note: tags set by you will always take precedence over those of third party
+				
+			- Third Party Tags (3tags)
+			
+				********************************************************************************
+				*** A big THANK YOU to https://mynano.ninja for its free and accessible API! ***
+				********************************************************************************
+				
+				Enable 3tags option and run 'php PATH/php4nano/ncm/ncm.php 3tags_update' to populate third party tags
+				You may crontab it to keep it updated
 				
 	USAGE:
 	
@@ -66,7 +66,7 @@
 			ncm wallet_list                                                                    print  all wallets summary
 			ncm wallet_info wallet=tag                                                         print  wallet summary (override regular call)
 			ncm wallet_weight wallet=tag													   print  wallet weight (override regular call)
-			ncm delegators account=tag														   print  delegators summary (override regular call)
+			ncm delegators account=tag count=limit											   print  delegators summary (override regular call)
 			ncm representatives count=limit													   print  representatives and their weight (override regular call)
 			ncm representatives_online count=limit											   print  online representatives (override regular call)
 			ncm ticker                                                                         print  latest NANO price compared to favourite vs currencies (if ticker enabled)
@@ -97,6 +97,10 @@
 			ncm wallet_send wallet=tag1 destination=tag2 amount=1 order=desc
 			ncm wallet_send wallet=tag1 destination=tag2 amount=1-USD order=desc (if ticker enabled)
 			ncm wallet_weight wallet=tag order=desc
+			
+			// Tips
+			
+			- Adding output_raw=true as argument it will output a raw encoded json
 	
 	*/
 	
@@ -897,6 +901,8 @@
 	
 	$arguments = [];
 	
+	$output_raw = false;
+	
 	foreach( $argv as $arg )
 	{
 		
@@ -907,6 +913,17 @@
 		if( !isset( $arguments_row[1] ) )
 		{
 			$arguments_row[1] = '';
+		}
+		
+		// Output as json or pretty?
+		
+		if( $arguments_row[0] == 'output_raw' && $arguments_row[1] )
+		{
+			
+			$output_raw = true;
+			
+			continue;
+		
 		}
 		
 		// Elaborate accounts array
@@ -1408,6 +1425,7 @@
 			}
 			else
 			{
+				
 				$wallet_locked = $nanoconn->wallet_locked( ['wallet' => $arguments['wallet']] );
 				
 				$wallet_weight = $nanoconn->wallet_weight( ['wallet'=>$arguments['wallet']] );
@@ -1593,6 +1611,10 @@
 			}
 			else
 			{
+				
+				// Any limit?
+			
+				$limit = isset( $arguments['count'] ) ? (int) $arguments['count'] : 0;
 			
 				$delegators_count = $nanoconn->delegators_count( ['account'=>$arguments['account']] );
 				
@@ -1604,8 +1626,28 @@
 			
 				$delegators = $nanoconn->delegators( ['account'=>$arguments['account']] );
 				
+				uasort( $delegators['delegators'], function( $a, $b )
+				{
+					
+					return gmp_cmp( $b, $a );
+					
+				});
+				
+				$i = 0;
+				
 				foreach( $delegators['delegators'] as $delegator => $balance )
 				{
+				
+					if( $limit <= 0 )
+					{}
+					else
+					{
+					
+						if( $i >= $limit ) break;
+					
+						$i++;
+					
+					}
 				
 					$call_return['delegators'][$delegator]['balance'] = $balance;
 					
@@ -1619,13 +1661,6 @@
 					}
 					
 				}
-				
-				uasort( $call_return['delegators'], function( $a, $b )
-				{
-					
-					return gmp_cmp( $b['balance'], $a['balance'] );
-					
-				});
 			
 			}
 			
@@ -2162,13 +2197,22 @@
 	
 	
 	
-	$call_return = pretty_array( $call_return );
-		
-	echo PHP_EOL;
-		
-	echo pretty_print_r( $call_return );
+	if( $output_raw )
+	{
+		echo json_encode( $call_return );
+	}
+	else
+	{
+	
+		$call_return = pretty_array( $call_return );
+			
+		echo PHP_EOL;
+			
+		echo pretty_print_r( $call_return );
 
-	echo PHP_EOL;
+		echo PHP_EOL;
+	
+	}
 	
 	
 	
