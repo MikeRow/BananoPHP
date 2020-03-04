@@ -1880,7 +1880,7 @@
 
 		if( !$vs_currency_json )
 		{
-			echo 'ticker_update API #1 Error'; 
+			// echo 'ticker_update API #1 Error'; 
 			exit;
 		}
 		
@@ -1894,7 +1894,7 @@
 		
 		if( !$nano_vs_currency_json )
 		{
-			echo 'ticker_update API #2 Error'; 
+			// echo 'ticker_update API #2 Error'; 
 			exit;
 		}
 		
@@ -1951,7 +1951,7 @@
 		
 		if( !$third_party_tags_json )
 		{
-			echo '3tags_update API #1 Error'; 
+			// echo '3tags_update API #1 Error'; 
 			exit;
 		}
 		
@@ -2267,7 +2267,7 @@
 	
 		if( $ticker_delay > 60*30 )
 		{
-			$alerts[] = 'ticker not updated';
+			$alerts[] = 'ticker-not-updated';
 		}
 	
 	}
