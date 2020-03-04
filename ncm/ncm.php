@@ -898,8 +898,6 @@
 	foreach( $argv as $index => $arg )
 	{
 		
-		$arguments_row = [];
-		
 		$arguments_row = explode( '=', $arg, 2 );
 		
 		if( $arguments_row[0] == 'flag' )
