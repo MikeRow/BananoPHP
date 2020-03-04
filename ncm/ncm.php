@@ -60,47 +60,56 @@
 		
 			// ncm dedicated
 		
-			ncm init                                                                           init   configuration file
-			ncm status                                                                         print  node summary
-			ncm account_info account=tag													   print  account info (override regular call)
-			ncm wallet_list                                                                    print  all wallets summary
-			ncm wallet_info wallet=tag                                                         print  wallet summary (override regular call)
-			ncm wallet_weight wallet=tag													   print  wallet weight (override regular call)
-			ncm delegators account=tag count=limit											   print  delegators summary (override regular call)
-			ncm representatives count=limit													   print  representatives and their weight (override regular call)
-			ncm representatives_online count=limit											   print  online representatives (override regular call)
-			ncm ticker                                                                         print  latest NANO price compared to favourite vs currencies (if ticker enabled)
+			ncm init                                                                           		init   configuration file
+			ncm status                                                                         		print  node summary
+			ncm account_info account=<accountID|tag>												print  account info (override regular call)
+			ncm wallet_list                                                                    		print  all wallets summary
+			ncm wallet_info wallet=<walletID|tag>	                                                print  wallet summary (override regular call)
+			ncm wallet_weight wallet=<walletID|tag>													print  wallet weight (override regular call)
+			ncm delegators account=<accountID|tag> count=<limit> atleast=<balance>					print  delegators summary (override regular call)
+			ncm representatives count=<limit> atleast=<weight>										print  representatives and their weight (override regular call)
+			ncm representatives_online count=<limit> atleast=<weight>								print  online representatives (override regular call)
+			ncm ticker                                                                         		print  latest NANO price compared to favourite vs currencies (if ticker enabled)
 			ncm ticker amount=1
 			ncm ticker amount=1-USD
-			ncm ticker_update                                                                  update ticker.json
-			ncm 3tags_update                                                                   update 3tags.json
-			ncm config                                                                         print  config.json (no tags)
-			ncm tags                                                                           print  tags
-			ncm 3tags																		   print  3tags
-			ncm tag_add cat=account|block|wallet tag=tag value=accountID|blockID|walletID      add    tag
-			ncm tag_edit cat=account|block|wallet tag=tag value=accountID|blockID|walletID     edit   tag
-			ncm tag_remove cat=account|block|wallet tag=tag                                    remove tag
+			ncm ticker_update                                                                		update ticker.json
+			ncm 3tags_update                                                                 		update 3tags.json
+			ncm config                                                                        		print  config.json (no tags)
+			ncm tags                                                                          		print  tags
+			ncm 3tags																		  		print  3tags
+			ncm tag_add cat=<account|block|wallet> tag=<tag> value=<accountID|blockID|walletID>     add    tag
+			ncm tag_edit cat=<account|block|wallet> tag=<tag> value=<accountID|blockID|walletID>    edit   tag
+			ncm tag_remove cat=<account|block|wallet> tag=<tag>                                   	remove tag
 			
 			// Node call
 			
 			ncm block_count
-			ncm wallet_balances wallet=tag
-			ncm send wallet=tag1 source=tag2 destination=tag3 amount=1 id=uniqid (uniqid value will create a php random unique id)
-			ncm send wallet=tag1 source=tag2 destination=tag3 amount=1-USD id=uniqid (if ticker enabled)
+			ncm wallet_balances wallet=<walletID|tag>
+			ncm send wallet=<walletID|tag> source=<accountID|tag> destination=<accountID|tag> amount=1 id=uniqid (uniqid value will create a php random unique id)
+			ncm send wallet=<walletID|tag> source=<accountID|tag> destination=<accountID|tag> amount=1-USD id=uniqid (if ticker enabled)
 			ncm accounts_balances accounts=tag1,xrb_1nanode8ngaakzbck8smq6ru9bethqwyehomf79sae1k7xd47dkidjqzffeg,tag2 (example of array parameter)
 			
 			Read full RPC documentation at https://docs.nano.org/commands/rpc-protocol/
 			
 			// Node call extension
 			
-			ncm wallet_wipe wallet=tag1 destination=tag2 order=desc
-			ncm wallet_send wallet=tag1 destination=tag2 amount=1 order=desc
-			ncm wallet_send wallet=tag1 destination=tag2 amount=1-USD order=desc (if ticker enabled)
-			ncm wallet_weight wallet=tag order=desc
+			ncm wallet_wipe wallet=<walletID|tag> destination=<accountID|tag> order=<asc|desc>
+			ncm wallet_send wallet=<walletID|tag> destination=<accountID|tag> amount=1 order=<asc|desc>
+			ncm wallet_send wallet=<walletID|tag> destination=<accountID|tag> amount=1-USD order=<asc|desc> (if ticker enabled)
+			ncm wallet_weight wallet=<walletID|tag> order=<asc|desc>
 			
-			// Tips
+	TIPS:
 			
-			- Adding output_raw=true as argument it will output a raw encoded json
+		- Using input_raw=true as argument will skip any input elaboration (gain: faster execution, machine-easier input | loss: human-harder input)
+			
+			- to be effective it must be the first argument, example: ncm wallet_balance input_raw=true wallet=<walletID>
+			- input tags not available, Nano-raw only input amounts, simplified input array not available
+				
+		- Using output_raw=true as argument will output a raw encoded json (gain: faster execution, machine-easier reading | loss: human-harder reading)
+			
+			- output tags not available, Nano-raw only output amounts
+			
+		- Using log_inore=true as argument won't save log regardless of what you set up in config.json
 	
 	*/
 	
@@ -454,8 +463,12 @@
 						'amount',
 						'available',
 						'balance',
+						'online_stake_total',
 						'online_weight_minimum',
+						'peers_stake_required',
+						'peers_stake_total',
 						'pending',
+						'quorum_delta',
 						'receive_minimum',
 						'vote_minimum',
 						'weight'
@@ -838,32 +851,6 @@
 	
 	
 	
-	// **********************************
-	// *** Check if ticker is updated ***
-	// **********************************
-	
-	
-	
-	
-	
-	
-	if( $C['ticker']['enable'] )
-	{
-	
-		$ticker_delay = time() - ticker_last;
-	
-		if( $ticker_delay > 60*21 )
-		{
-			echo notable_string( 'Ticker is not updated' ) . PHP_EOL;
-		}
-	
-	}
-	
-	
-	
-	
-	
-	
 	// ************************
 	// *** Node connections ***
 	// ************************
@@ -901,7 +888,11 @@
 	
 	$arguments = [];
 	
+	$input_raw = false;
+	
 	$output_raw = false;
+	
+	$log_ignore = false;
 	
 	foreach( $argv as $arg )
 	{
@@ -915,6 +906,17 @@
 			$arguments_row[1] = '';
 		}
 		
+		// Skip input elaboration?
+		
+		if( $arguments_row[0] == 'input_raw' && $arguments_row[1] )
+		{
+			
+			$input_raw = true;
+			
+			continue;
+		
+		}
+		
 		// Output as json or pretty?
 		
 		if( $arguments_row[0] == 'output_raw' && $arguments_row[1] )
@@ -925,6 +927,38 @@
 			continue;
 		
 		}
+		
+		// Ignore log?
+		
+		if( $arguments_row[0] == 'log_ignore' && $arguments_row[1] )
+		{
+			
+			$log_ignore = true;
+			
+			continue;
+		
+		}
+		
+		
+		
+		// *** Raw input ***
+		
+		
+		
+		if( $input_raw )
+		{
+			
+			$arguments[$arguments_row[0]] = $arguments_row[1];
+			
+			continue;
+		
+		}
+		
+		
+		
+		// *** Elaborated input ***
+		
+		
 		
 		// Elaborate accounts array
 		
@@ -1046,7 +1080,7 @@
 		
 		// Convert denomination to raw
 		
-		$check_words = ['amount'];
+		$check_words = ['amount','atleast'];
 		
 		if( in_array( $arguments_row[0], $check_words ) )
 		{
@@ -1108,114 +1142,119 @@
 	
 	
 	
-
-	$check_words = ['send','wallet_wipe','wallet_send'];
-		
-	if( in_array( $command, $check_words ) )
+	
+	if( !$input_raw )
 	{
-	
-		// send call
-	
-		if( $command == 'send' )
+
+		$check_words = ['send','wallet_wipe','wallet_send'];
+			
+		if( in_array( $command, $check_words ) )
 		{
 		
-			if( isset( $arguments['wallet'] ) && isset( $arguments['source'] ) && isset( $arguments['destination'] ) && isset( $arguments['amount'] ) )
+			// send call
+		
+			if( $command == 'send' )
 			{
-				
-				$confirmation_amount = $arguments['amount'];
-				
-			}
-			else
-			{
-				$confirmation_amount = 0;
-				
-			}
-		
-		}
-		
-		// wallet_send call
-		
-		elseif( $command == 'wallet_send' )
-		{
-		
-			if( isset( $arguments['wallet'] ) && isset( $arguments['destination'] ) && isset( $arguments['amount'] ) )
-			{
-				
-				$wallet_info = $nanoconn->wallet_info( ['wallet'=>$arguments['wallet']] );
-				
-				if( !isset( $wallet_info['error'] ) )
+			
+				if( isset( $arguments['wallet'] ) && isset( $arguments['source'] ) && isset( $arguments['destination'] ) && isset( $arguments['amount'] ) )
 				{
+					
 					$confirmation_amount = $arguments['amount'];
+					
 				}
 				else
 				{
 					$confirmation_amount = 0;
+					
 				}
-				
+			
 			}
-			else
+			
+			// wallet_send call
+			
+			elseif( $command == 'wallet_send' )
 			{
-				$confirmation_amount = 0;
-				
-			}
-		
-		}
-		
-		// wallet_wipe call
-		
-		elseif( $command == 'wallet_wipe' )
-		{
-		
-			if( isset( $arguments['wallet'] ) && isset( $arguments['destination'] ) )
-			{
-				
-				$wallet_info = $nanoconn->wallet_info( ['wallet'=>$arguments['wallet']] );
-				
-				if( !isset( $wallet_info['error'] ) )
+			
+				if( isset( $arguments['wallet'] ) && isset( $arguments['destination'] ) && isset( $arguments['amount'] ) )
 				{
-					$confirmation_amount = $wallet_info['balance'];
+					
+					$wallet_info = $nanoconn->wallet_info( ['wallet'=>$arguments['wallet']] );
+					
+					if( !isset( $wallet_info['error'] ) )
+					{
+						$confirmation_amount = $arguments['amount'];
+					}
+					else
+					{
+						$confirmation_amount = 0;
+					}
+					
 				}
 				else
 				{
 					$confirmation_amount = 0;
+					
 				}
-				
+			
 			}
+			
+			// wallet_wipe call
+			
+			elseif( $command == 'wallet_wipe' )
+			{
+			
+				if( isset( $arguments['wallet'] ) && isset( $arguments['destination'] ) )
+				{
+					
+					$wallet_info = $nanoconn->wallet_info( ['wallet'=>$arguments['wallet']] );
+					
+					if( !isset( $wallet_info['error'] ) )
+					{
+						$confirmation_amount = $wallet_info['balance'];
+					}
+					else
+					{
+						$confirmation_amount = 0;
+					}
+					
+				}
+				else
+				{
+					$confirmation_amount = 0;
+					
+				}
+			
+			}
+			
+			// Impossible
+			
 			else
 			{
 				$confirmation_amount = 0;
-				
 			}
-		
-		}
-		
-		// Impossible
-		
-		else
-		{
-			$confirmation_amount = 0;
-		}
-		
-		// Confirmation
-		
-		if( $confirmation_amount != 0 )
-		{
 			
-			$confirmation_amount = custom_number( NanoTools::raw2den( $confirmation_amount, $C['nano']['denomination'] ) ) . ' ' . $C['nano']['denomination'];
+			// Confirmation
 			
-			echo notable_string( "Sending $confirmation_amount" ) . PHP_EOL;
-			
-			echo 'Do you want to proceed? Type \'confirm\' to proceed: ';
-			
-			$line = stream_get_line( STDIN, 10, PHP_EOL );
-			
-			if( $line != 'confirm' )
+			if( $confirmation_amount != 0 )
 			{
-			
-				echo PHP_EOL;
 				
-				exit;
-			
+				$confirmation_amount = custom_number( NanoTools::raw2den( $confirmation_amount, $C['nano']['denomination'] ) ) . ' ' . $C['nano']['denomination'];
+				
+				echo notable_string( "Sending $confirmation_amount" ) . PHP_EOL;
+				
+				echo 'Do you want to proceed? Type \'confirm\' to proceed: ';
+				
+				$line = stream_get_line( STDIN, 10, PHP_EOL );
+				
+				if( $line != 'confirm' )
+				{
+				
+					echo PHP_EOL;
+					
+					exit;
+				
+				}
+				
 			}
 			
 		}
@@ -1237,6 +1276,24 @@
 	
 	
 	$call_return = [];
+	
+	
+	
+	// *** Check if ticker is updated ***
+	
+	
+	
+	if( $C['ticker']['enable'] )
+	{
+	
+		$ticker_delay = time() - ticker_last;
+	
+		if( $ticker_delay > 60*30 )
+		{
+			$call_return['alert'] = 'Ticker is not updated';
+		}
+	
+	}
 	
 	
 	
@@ -1612,6 +1669,10 @@
 			else
 			{
 				
+				// Any atleast?
+				
+				$atleast = isset( $arguments['atleast'] ) ? $arguments['atleast'] : '0';
+				
 				// Any limit?
 			
 				$limit = isset( $arguments['count'] ) ? (int) $arguments['count'] : 0;
@@ -1637,6 +1698,8 @@
 				
 				foreach( $delegators['delegators'] as $delegator => $balance )
 				{
+					
+					if( gmp_cmp( $balance, $atleast ) < 0 ) continue;
 				
 					if( $limit <= 0 )
 					{}
@@ -1686,6 +1749,10 @@
 	elseif( $command == 'representatives' )
 	{
 	
+		// Any atleast?
+				
+		$atleast = isset( $arguments['atleast'] ) ? $arguments['atleast'] : '0';
+	
 		// Any limit?
 			
 		$limit = isset( $arguments['count'] ) ? (int) $arguments['count'] : 0;
@@ -1696,6 +1763,8 @@
 		
 		foreach( $representatives['representatives'] as $representative => $weight )
 		{
+			
+			if( gmp_cmp( $weight, $atleast ) < 0 ) continue;
 			
 			if( $limit <= 0 )
 			{}
@@ -1737,6 +1806,10 @@
 	elseif( $command == 'representatives_online' )
 	{
 	
+		// Any atleast?
+				
+		$atleast = isset( $arguments['atleast'] ) ? $arguments['atleast'] : '0';
+	
 		// Any limit?
 			
 		$limit = isset( $arguments['count'] ) ? (int) $arguments['count'] : 0;
@@ -1754,6 +1827,8 @@
 		
 		foreach( $representatives_online['representatives'] as $representative => $data )
 		{
+			
+			if( gmp_cmp( $data['weight'], $atleast ) < 0 ) continue;
 			
 			if( $limit <= 0 )
 			{}
@@ -1905,7 +1980,7 @@
 		
 		ksort( $thirdy_party_tags_elaborated['account'] );
 		
-		// Save ticker.json
+		// Save 3tags.json
 		
 		file_put_contents( thirdtags_file, json_encode( $thirdy_party_tags_elaborated, JSON_PRETTY_PRINT ) );
 		
@@ -2228,36 +2303,41 @@
 	
 	
 	
-	$check_words = 
-	[
-		'deterministic_key',
-		'key_create',
-		'key_expand',
-		'node_id',
-		'password_change',
-		'password_enter',
-		'vanity_account',
-		'wallet_add',
-		'wallet_change_seed',
-		'wallet_create',
-		'wallet_export'
-	];
-	
-	if( $C['log']['save'] && ( !in_array( $command, $check_words ) || !$C['log']['privacy'] ) )
+	if( !$log_ignore )
 	{
 	
-		$log_file = log_dir . '/' . date( 'Y-m-d' ) . '.txt';
-	
-		if( !file_exists( $log_file ) )
-		{
-			$newline = null;
-		}
-		else
-		{
-			$newline = PHP_EOL;
-		}
+		$check_words = 
+		[
+			'deterministic_key',
+			'key_create',
+			'key_expand',
+			'node_id',
+			'password_change',
+			'password_enter',
+			'vanity_account',
+			'wallet_add',
+			'wallet_change_seed',
+			'wallet_create',
+			'wallet_export'
+		];
 		
-		file_put_contents( $log_file, $newline . date( 'm/d/Y H:i:s', time() ) . ' ' . $command . ':' . json_encode( $argv ) . ' ' . json_encode( $call_return ), FILE_APPEND );
+		if( $C['log']['save'] && ( !in_array( $command, $check_words ) || !$C['log']['privacy'] ) )
+		{
+		
+			$log_file = log_dir . '/' . date( 'Y-m-d' ) . '.txt';
+		
+			if( !file_exists( $log_file ) )
+			{
+				$newline = null;
+			}
+			else
+			{
+				$newline = PHP_EOL;
+			}
+			
+			file_put_contents( $log_file, $newline . date( 'm/d/Y H:i:s', time() ) . ' ' . $command . ':' . json_encode( $argv ) . ' ' . json_encode( $call_return ), FILE_APPEND );
+		
+		}
 	
 	}
 	
