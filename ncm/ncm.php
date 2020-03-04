@@ -99,10 +99,8 @@
 			ncm wallet_weight wallet=<walletID|tag> order=<asc|desc>
 			
 	FLAGS:
-			
-		*** To be effective, flags must be the first argument, example: ncm wallet_balance flag=raw_in wallet=<walletID> ***
 		
-		*** Flags must be combined in the same argument, example: ncm wallet_balance flag=raw_in,raw_out,no_log wallet=<walletID> ***
+		*** Flags must be combined in the same argument, example: ncm wallet_balance wallet=<walletID> flag=raw_in,raw_out,no_log ***
 		
 		- raw_in: skip any input elaboration (faster execution, machine-like input)
 
@@ -895,6 +893,30 @@
 	
 	$alerts = [];
 	
+	// Search for flags
+	
+	foreach( $argv as $index => $arg )
+	{
+		
+		$arguments_row = [];
+		
+		$arguments_row = explode( '=', $arg, 2 );
+		
+		if( $arguments_row[0] == 'flag' )
+		{
+			
+			$flags = explode( ',', $arguments_row[1] );
+			
+			unset( $argv[$index] );
+			
+			break;
+		
+		}
+		
+	}
+	
+	// Fetch arguments
+	
 	foreach( $argv as $arg )
 	{
 		
@@ -907,22 +929,7 @@
 			$arguments_row[1] = '';
 		}
 		
-		// Search for flag
-		
-		if( $arguments_row[0] == 'flag' )
-		{
-			
-			$flags = explode( ',', $arguments_row[1] );
-			
-			continue;
-		
-		}
-		
-		
-		
-		// *** Raw input ***
-		
-		
+		// Raw input
 		
 		if( in_array( 'raw_in', $flags ) )
 		{
@@ -933,11 +940,7 @@
 		
 		}
 		
-		
-		
-		// *** Elaborated input ***
-		
-		
+		// Elaborated input
 		
 		// Elaborate accounts array
 		
