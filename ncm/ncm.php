@@ -87,7 +87,7 @@
 			ncm wallet_balances wallet=<walletID|tag>
 			ncm send wallet=<walletID|tag> source=<accountID|tag> destination=<accountID|tag> amount=1 id=uniqid (uniqid value will create a php random unique id)
 			ncm send wallet=<walletID|tag> source=<accountID|tag> destination=<accountID|tag> amount=1-USD id=uniqid (if ticker enabled)
-			ncm accounts_balances accounts=tag1,xrb_1nanode8ngaakzbck8smq6ru9bethqwyehomf79sae1k7xd47dkidjqzffeg,tag2 (example of array parameter)
+			ncm accounts_balances accounts=tag1,nano_1nanode8ngaakzbck8smq6ru9bethqwyehomf79sae1k7xd47dkidjqzffeg,tag2 (example of array parameter)
 			
 			Read full RPC documentation at https://docs.nano.org/commands/rpc-protocol/
 			
