@@ -98,18 +98,21 @@
 			ncm wallet_send wallet=<walletID|tag> destination=<accountID|tag> amount=1-USD order=<asc|desc> (if ticker enabled)
 			ncm wallet_weight wallet=<walletID|tag> order=<asc|desc>
 			
-	TIPS:
+	FLAGS:
 			
-		- Using raw_in=true as argument will skip any input elaboration (faster execution, machine-like input)
-			
-			- *** To be effective it must be the first argument, example: ncm wallet_balance raw_in=true wallet=<walletID> ***
-			- Input elaborations like tag,non-nano-raw amount,ticker,array are disabled
+		*** To be effective, flags must be the first argument, example: ncm wallet_balance flag=raw_in wallet=<walletID> ***
+		
+		*** Flags must be combined in the same argument, example: ncm wallet_balance flag=raw_in,raw_out,no_log wallet=<walletID> ***
+		
+		- raw_in: skip any input elaboration (faster execution, machine-like input)
+
+			Input elaborations like tag,non-nano-raw amount,ticker,array are disabled
 				
-		- Using raw_out=true as argument will output a raw encoded json (faster execution, machine-like output)
+		- raw_out: output a raw encoded json (faster execution, machine-like output)
 			
-			- Output elaborations like tag,non-nano-raw amount,ticker are disabled
+			Output elaborations like tag,non-nano-raw amount,ticker are disabled
 			
-		- Using no_log=true as argument won't save log regardless of what you set up in config.json
+		- no_log: don't save log regardless of what you set up in config.json
 	
 	*/
 	
@@ -888,11 +891,7 @@
 	
 	$arguments = [];
 	
-	$raw_in = false;
-	
-	$raw_out = false;
-	
-	$no_log = false;
+	$flags = [];
 	
 	$alerts = [];
 	
@@ -908,34 +907,12 @@
 			$arguments_row[1] = '';
 		}
 		
-		// Skip input elaboration?
+		// Search for flag
 		
-		if( $arguments_row[0] == 'raw_in' && $arguments_row[1] )
+		if( $arguments_row[0] == 'flag' )
 		{
 			
-			$raw_in = true;
-			
-			continue;
-		
-		}
-		
-		// Output as json or pretty?
-		
-		if( $arguments_row[0] == 'raw_out' && $arguments_row[1] )
-		{
-			
-			$raw_out = true;
-			
-			continue;
-		
-		}
-		
-		// Ignore log?
-		
-		if( $arguments_row[0] == 'no_log' && $arguments_row[1] )
-		{
-			
-			$no_log = true;
+			$flags = explode( ',', $arguments_row[1] );
 			
 			continue;
 		
@@ -947,7 +924,7 @@
 		
 		
 		
-		if( $raw_in )
+		if( in_array( 'raw_in', $flags ) )
 		{
 			
 			$arguments[$arguments_row[0]] = $arguments_row[1];
@@ -1145,7 +1122,7 @@
 	
 	
 	
-	if( !$raw_in )
+	if( !in_array( 'raw_in', $flags ) )
 	{
 
 		$check_words = ['send','wallet_wipe','wallet_send'];
@@ -2286,7 +2263,7 @@
 	
 	
 	
-	if( $raw_out )
+	if( in_array( 'raw_out', $flags ) )
 	{
 		
 		if( count( $alerts ) > 0 ) $call_return['alert'] = $alerts;
@@ -2323,7 +2300,7 @@
 	
 	
 	
-	if( !$no_log )
+	if( !in_array( 'no_log', $flags ) )
 	{
 	
 		$check_words = 
