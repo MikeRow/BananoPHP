@@ -2343,34 +2343,12 @@
 	
 	/*
 	
-		It starts with one thing
-		I don't know why
-		It doesn't even matter how hard you try
-		Keep that in mind
-		I designed this rhyme
-		To explain in due time
-		All I know
-		Time is a valuable thing
-		Watch it fly by as the pendulum swings
-		Watch it count down to the end of the day
-		The clock ticks life away
-		It's so unreal
-		Didn't look out below
-		Watch the time go right out the window
-		Trying to hold on, but you didn't even know
-		Wasted it all just to watch you go
-		I kept everything inside
-		And even though I tried, it all fell apart
-		What it meant to me
-		Will eventually be a memory of a time when
-		I tried so hard
-		And got so far
-		But in the end
-		It doesn't even matter
-		I had to fall
-		To lose it all
-		But in the end
-		It doesn't even matter
+		In every loss in every lie
+		In every truth that you deny
+		And each regret and each goodbye
+		Was a mistake too great to hide
+		And your voice was all I heard
+		That I get what I deserve
 	
 	*/
 	
