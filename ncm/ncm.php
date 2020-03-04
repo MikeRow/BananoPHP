@@ -100,16 +100,16 @@
 			
 	TIPS:
 			
-		- Using input_raw=true as argument will skip any input elaboration (gain: faster execution, machine-easier input | loss: human-harder input)
+		- Using raw_in=true as argument will skip any input elaboration (faster execution, machine-like input)
 			
-			- to be effective it must be the first argument, example: ncm wallet_balance input_raw=true wallet=<walletID>
-			- input tags not available, Nano-raw only input amounts, simplified input array not available
+			- to be effective it must be the first argument, example: ncm wallet_balance raw_in=true wallet=<walletID>
+			- input tags not available, only Nano-raw input amounts, simplified input array not available
 				
-		- Using output_raw=true as argument will output a raw encoded json (gain: faster execution, machine-easier reading | loss: human-harder reading)
+		- Using raw_out=true as argument will output a raw encoded json (faster execution, machine-like output)
 			
-			- output tags not available, Nano-raw only output amounts
+			- output tags not available, only Nano-raw output amounts
 			
-		- Using log_inore=true as argument won't save log regardless of what you set up in config.json
+		- Using no_log=true as argument won't save log regardless of what you set up in config.json
 	
 	*/
 	
@@ -888,11 +888,13 @@
 	
 	$arguments = [];
 	
-	$input_raw = false;
+	$raw_in = false;
 	
-	$output_raw = false;
+	$raw_out = false;
 	
-	$log_ignore = false;
+	$no_log = false;
+	
+	$alerts = [];
 	
 	foreach( $argv as $arg )
 	{
@@ -908,10 +910,10 @@
 		
 		// Skip input elaboration?
 		
-		if( $arguments_row[0] == 'input_raw' && $arguments_row[1] )
+		if( $arguments_row[0] == 'raw_in' && $arguments_row[1] )
 		{
 			
-			$input_raw = true;
+			$raw_in = true;
 			
 			continue;
 		
@@ -919,10 +921,10 @@
 		
 		// Output as json or pretty?
 		
-		if( $arguments_row[0] == 'output_raw' && $arguments_row[1] )
+		if( $arguments_row[0] == 'raw_out' && $arguments_row[1] )
 		{
 			
-			$output_raw = true;
+			$raw_out = true;
 			
 			continue;
 		
@@ -930,10 +932,10 @@
 		
 		// Ignore log?
 		
-		if( $arguments_row[0] == 'log_ignore' && $arguments_row[1] )
+		if( $arguments_row[0] == 'no_log' && $arguments_row[1] )
 		{
 			
-			$log_ignore = true;
+			$no_log = true;
 			
 			continue;
 		
@@ -945,7 +947,7 @@
 		
 		
 		
-		if( $input_raw )
+		if( $raw_in )
 		{
 			
 			$arguments[$arguments_row[0]] = $arguments_row[1];
@@ -1143,7 +1145,7 @@
 	
 	
 	
-	if( !$input_raw )
+	if( !$raw_in )
 	{
 
 		$check_words = ['send','wallet_wipe','wallet_send'];
@@ -1276,24 +1278,6 @@
 	
 	
 	$call_return = [];
-	
-	
-	
-	// *** Check if ticker is updated ***
-	
-	
-	
-	if( $C['ticker']['enable'] )
-	{
-	
-		$ticker_delay = time() - ticker_last;
-	
-		if( $ticker_delay > 60*30 )
-		{
-			$call_return['alert'] = 'Ticker is not updated';
-		}
-	
-	}
 	
 	
 	
@@ -1894,7 +1878,11 @@
 
 		$vs_currency_json = file_get_contents( 'https://api.coingecko.com/api/v3/simple/supported_vs_currencies' );
 
-		if( !$vs_currency_json ) exit; // If error exit
+		if( !$vs_currency_json )
+		{
+			echo 'ticker_update API #1 Error'; 
+			exit;
+		}
 		
 		$vs_currencies_array = json_decode( $vs_currency_json, true );
 		
@@ -1904,7 +1892,11 @@
 		
 		$nano_vs_currency_json = file_get_contents( 'https://api.coingecko.com/api/v3/simple/price?ids=nano&vs_currencies=' . $vs_currencies_string . '&include_last_updated_at=true' );
 		
-		if( !$nano_vs_currency_json ) exit; // If error exit
+		if( !$nano_vs_currency_json )
+		{
+			echo 'ticker_update API #2 Error'; 
+			exit;
+		}
 		
 		$nano_vs_currencies_array = json_decode( $nano_vs_currency_json, true );
 		
@@ -1957,7 +1949,11 @@
 		
 		$third_party_tags_array = json_decode( $third_party_tags_json, true );
 		
-		if( !$third_party_tags_json ) exit; // If error exit
+		if( !$third_party_tags_json )
+		{
+			echo '3tags_update API #1 Error'; 
+			exit;
+		}
 		
 		foreach( $third_party_tags_array as $index => $data )
 		{
@@ -2259,7 +2255,25 @@
 	}
 	
 	
-
+	
+	// *** Check if ticker is updated ***
+	
+	
+	
+	if( $C['ticker']['enable'] )
+	{
+	
+		$ticker_delay = time() - ticker_last;
+	
+		if( $ticker_delay > 60*30 )
+		{
+			$alerts[] = 'ticker not updated';
+		}
+	
+	}
+	
+	
+	
 	
 	
 	
@@ -2272,9 +2286,13 @@
 	
 	
 	
-	if( $output_raw )
+	if( $raw_out )
 	{
+		
+		if( count( $alerts ) > 0 ) $call_return['alert'] = $alerts;
+		
 		echo json_encode( $call_return );
+		
 	}
 	else
 	{
@@ -2282,6 +2300,8 @@
 		$call_return = pretty_array( $call_return );
 			
 		echo PHP_EOL;
+			
+		if( count( $alerts ) > 0 ) $call_return['alert'] = $alerts;
 			
 		echo pretty_print_r( $call_return );
 
@@ -2303,7 +2323,7 @@
 	
 	
 	
-	if( !$log_ignore )
+	if( !$no_log )
 	{
 	
 		$check_words = 
