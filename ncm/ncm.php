@@ -102,12 +102,12 @@
 			
 		- Using raw_in=true as argument will skip any input elaboration (faster execution, machine-like input)
 			
-			- to be effective it must be the first argument, example: ncm wallet_balance raw_in=true wallet=<walletID>
-			- input tags not available, only Nano-raw input amounts, simplified input array not available
+			- *** To be effective it must be the first argument, example: ncm wallet_balance raw_in=true wallet=<walletID> ***
+			- Input elaborations like tag,non-nano-raw amount,ticker,array are disabled
 				
 		- Using raw_out=true as argument will output a raw encoded json (faster execution, machine-like output)
 			
-			- output tags not available, only Nano-raw output amounts
+			- Output elaborations like tag,non-nano-raw amount,ticker are disabled
 			
 		- Using no_log=true as argument won't save log regardless of what you set up in config.json
 	
