@@ -1744,7 +1744,7 @@
 			
 		}
 		
-		$call_return['count'] = $i;
+		$call_return['count'] = count( $representatives['representatives'] );
 		
 		if( !is_null( $nanoconn->error ) )
 		{
@@ -1808,7 +1808,7 @@
 			
 		}
 		
-		$call_return['count'] = $i;
+		$call_return['count'] = count( $representatives_online['representatives'] );
 		
 		if( !is_null( $nanoconn->error ) )
 		{
