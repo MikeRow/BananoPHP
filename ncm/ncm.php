@@ -1056,7 +1056,7 @@
 		
 		// Convert denomination to raw
 		
-		$check_words = ['amount','atleast'];
+		$check_words = ['amount','atleast','nomore'];
 		
 		if( in_array( $arguments_row[0], $check_words ) )
 		{
@@ -1631,6 +1631,10 @@
 				
 				$atleast = isset( $arguments['atleast'] ) ? $arguments['atleast'] : '0';
 				
+				// Any nomore?
+				
+				$nomore = isset( $arguments['nomore'] ) ? $arguments['nomore'] : available_supply;
+				
 				// Any limit?
 			
 				$limit = isset( $arguments['count'] ) ? (int) $arguments['count'] : 0;
@@ -1656,10 +1660,14 @@
 				
 				$cumulative_balance = '0';
 				
+				$call_return['delegators'] = [];
+				
 				foreach( $delegators['delegators'] as $delegator => $balance )
 				{
 					
 					if( gmp_cmp( $balance, $atleast ) < 0 ) continue;
+					
+					if( gmp_cmp( $balance, $nomore ) > 0 ) continue;
 				
 					if( $limit <= 0 )
 					{}
@@ -1727,6 +1735,10 @@
 		// Any atleast?
 				
 		$atleast = isset( $arguments['atleast'] ) ? $arguments['atleast'] : '0';
+		
+		// Any nomore?
+		
+		$nomore = isset( $arguments['nomore'] ) ? $arguments['nomore'] : available_supply;
 	
 		// Any limit?
 			
@@ -1738,10 +1750,14 @@
 		
 		$cumulative_weight = '0';
 		
+		$call_return['representatives'] = [];
+		
 		foreach( $representatives['representatives'] as $representative => $weight )
 		{
 			
 			if( gmp_cmp( $weight, $atleast ) < 0 ) continue;
+			
+			if( gmp_cmp( $weight, $nomore ) > 0 ) continue;
 			
 			if( $limit <= 0 )
 			{}
@@ -1794,6 +1810,10 @@
 		// Any atleast?
 				
 		$atleast = isset( $arguments['atleast'] ) ? $arguments['atleast'] : '0';
+		
+		// Any nomore?
+		
+		$nomore = isset( $arguments['nomore'] ) ? $arguments['nomore'] : available_supply;
 	
 		// Any limit?
 			
@@ -1812,10 +1832,14 @@
 		
 		$cumulative_weight = '0';
 		
+		$call_return['representatives_online'] = [];
+		
 		foreach( $representatives_online['representatives'] as $representative => $data )
 		{
 			
 			if( gmp_cmp( $data['weight'], $atleast ) < 0 ) continue;
+			
+			if( gmp_cmp( $data['weight'], $nomore ) > 0 ) continue;
 			
 			if( $limit <= 0 )
 			{}
