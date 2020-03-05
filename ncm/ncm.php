@@ -60,26 +60,26 @@
 		
 			- ncm dedicated
 			
-				ncm init                                                                           		init   configuration file
-				ncm status                                                                         		print  node summary
-				ncm account_info account=<accountID|tag>												print  account info (override regular call)
-				ncm wallet_list                                                                    		print  all wallets summary
-				ncm wallet_info wallet=<walletID|tag>	                                                print  wallet summary (override regular call)
-				ncm wallet_weight wallet=<walletID|tag>													print  wallet weight (override regular call)
-				ncm delegators account=<accountID|tag> count=<limit> atleast=<balance>					print  delegators summary (override regular call)
-				ncm representatives count=<limit> atleast=<weight>										print  representatives and their weight (override regular call)
-				ncm representatives_online count=<limit> atleast=<weight>								print  online representatives (override regular call)
-				ncm ticker                                                                         		print  latest NANO price compared to favourite vs currencies (if ticker enabled)
+				ncm init                                                                           			init   configuration file
+				ncm status                                                                         			print  node summary
+				ncm account_info account=<accountID|tag>													print  account info (override regular call)
+				ncm wallet_list                                                                    			print  all wallets summary
+				ncm wallet_info wallet=<walletID|tag>	                                                	print  wallet summary (override regular call)
+				ncm wallet_weight wallet=<walletID|tag>														print  wallet weight (override regular call)
+				ncm delegators account=<accountID|tag> count=<limit> atleast=<balance> nomore=<balance>		print  delegators summary (override regular call)
+				ncm representatives count=<limit> atleast=<weight> nomore=<weight>							print  representatives and their weight (override regular call)
+				ncm representatives_online count=<limit> atleast=<weight> nomore=<weight>					print  online representatives (override regular call)
+				ncm ticker                                                                         			print  latest NANO price compared to favourite vs currencies (if ticker enabled)
 				ncm ticker amount=1
 				ncm ticker amount=1-USD
-				ncm ticker_update                                                                		update ticker.json
-				ncm 3tags_update                                                                 		update 3tags.json
-				ncm config                                                                        		print  config.json (no tags)
-				ncm tags                                                                          		print  tags
-				ncm 3tags																		  		print  3tags
-				ncm tag_add cat=<account|block|wallet> tag=<tag> value=<accountID|blockID|walletID>     add    tag
-				ncm tag_edit cat=<account|block|wallet> tag=<tag> value=<accountID|blockID|walletID>    edit   tag
-				ncm tag_remove cat=<account|block|wallet> tag=<tag>                                   	remove tag
+				ncm ticker_update                                                                			update ticker.json
+				ncm 3tags_update                                                                 			update 3tags.json
+				ncm config                                                                        			print  config.json (no tags)
+				ncm tags                                                                          			print  tags
+				ncm 3tags																		  			rint  3tags
+				ncm tag_add cat=<account|block|wallet> tag=<tag> value=<accountID|blockID|walletID>     	add    tag
+				ncm tag_edit cat=<account|block|wallet> tag=<tag> value=<accountID|blockID|walletID>    	edit   tag
+				ncm tag_remove cat=<account|block|wallet> tag=<tag>                                   		remove tag
 			
 			- Node call
 			
