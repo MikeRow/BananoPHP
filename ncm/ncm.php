@@ -56,7 +56,7 @@
 			
 			alias ncm='php PATH/php4nano/ncm/ncm.php'
 		
-		- Command examples:
+		- Commands:
 		
 			- ncm dedicated
 			
@@ -1664,9 +1664,9 @@
 					
 						if( $i >= $limit ) break;
 					
-						$i++;
-					
 					}
+				
+					$i++;
 				
 					$call_return['delegators'][$delegator]['balance'] = $balance;
 					
@@ -1726,12 +1726,10 @@
 			{}
 			else
 			{
-			
 				if( $i >= $limit ) break;
-			
-				$i++;
-			
 			}
+			
+			$i++;
 			
 			$call_return['representatives'][$representative]['weight'] = $weight;
 			
@@ -1745,6 +1743,8 @@
 			}
 			
 		}
+		
+		$call_return['count'] = $i;
 		
 		if( !is_null( $nanoconn->error ) )
 		{
@@ -1790,12 +1790,10 @@
 			{}
 			else
 			{
-			
 				if( $i >= $limit ) break;
-			
-				$i++;
-			
 			}
+			
+			$i++;
 			
 			$call_return['representatives_online'][$representative]['weight'] = $data['weight'];
 			
@@ -1809,6 +1807,8 @@
 			}
 			
 		}
+		
+		$call_return['count'] = $i;
 		
 		if( !is_null( $nanoconn->error ) )
 		{
