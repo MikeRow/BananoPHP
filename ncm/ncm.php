@@ -2,7 +2,12 @@
 
 	/*
 
-	CONFIGURATION:
+	v1.0.4
+	
+	*********************
+	*** CONFIGURATION ***
+	*********************
+	
 	
 		- Set the configuration file:
 		
@@ -12,15 +17,15 @@
 		
 		- Specifications for config.json:
 			
-			- Denomination
+			Denomination
 			
 				Accepted denominations: unano, mnano, nano, knano, Mnano, NANO, Gnano
 			
-			- Log privacy
+			Log privacy
 			
 				Disable logging for sensitive information
 							
-			- Ticker
+			Ticker
 			
 				********************************************************************************
 				*** A big THANK YOU to http://coingecko.com for its free and accessible API! ***
@@ -29,7 +34,7 @@
 				Before enabling the ticker option, crontab 'php PATH/php4nano/ncm/ncm.php ticker_update' (I suggest execution every 20 minutes)
 				Also, initialize it by executing it manually the first time
 			
-			- Tags
+			Tags
 			
 				Do not leave empty tags!
 				Only one tag for each wallet/account/block ID
@@ -37,7 +42,7 @@
 				
 				Note: tags set by you will always take precedence over those of third party
 				
-			- Third Party Tags (3tags)
+			Third Party Tags (3tags)
 			
 				********************************************************************************
 				*** A big THANK YOU to https://mynano.ninja for its free and accessible API! ***
@@ -46,11 +51,15 @@
 				Enable 3tags option and run 'php PATH/php4nano/ncm/ncm.php 3tags_update' to populate third party tags
 				You may crontab it to keep it updated
 				
-	USAGE:
+				
+	*************
+	*** USAGE ***
+	*************
 	
-		Default input/output amount denomination in NANO (Mnano)
+	
+		- Default input/output amount denomination in NANO (Mnano)
 		
-		Input array elements comma separated (you can also use tags)
+		- Input array elements comma separated (you can also use tags)
 		
 		- Create a shortcut for ncm.php adding to .bashrc:
 			
@@ -58,53 +67,151 @@
 		
 		- Commands:
 		
-			- ncm dedicated
-			
-				ncm init                                                                           			init   configuration file
-				ncm status                                                                         			print  node summary
-				ncm account_info account=<accountID|tag>													print  account info (override regular call)
-				ncm wallet_list                                                                    			print  all wallets summary
-				ncm wallet_info wallet=<walletID|tag>	                                                	print  wallet summary (override regular call)
-				ncm wallet_weight wallet=<walletID|tag>														print  wallet weight (override regular call)
-				ncm delegators account=<accountID|tag> count=<limit> atleast=<balance> nomore=<balance>		print  delegators summary (override regular call)
-				ncm representatives count=<limit> atleast=<weight> nomore=<weight>							print  representatives and their weight (override regular call)
-				ncm representatives_online count=<limit> atleast=<weight> nomore=<weight>					print  online representatives (override regular call)
-				ncm ticker                                                                         			print  latest NANO price compared to favourite vs currencies (if ticker enabled)
-				ncm ticker amount=1
-				ncm ticker amount=1-USD
-				ncm ticker_update                                                                			update ticker.json
-				ncm 3tags_update                                                                 			update 3tags.json
-				ncm config                                                                        			print  config.json (no tags)
-				ncm tags                                                                          			print  tags
-				ncm 3tags																		  			rint  3tags
-				ncm tag_add cat=<account|block|wallet> tag=<tag> value=<accountID|blockID|walletID>     	add    tag
-				ncm tag_edit cat=<account|block|wallet> tag=<tag> value=<accountID|blockID|walletID>    	edit   tag
-				ncm tag_remove cat=<account|block|wallet> tag=<tag>                                   		remove tag
-			
-			- Node call
-			
-				ncm block_count
-				ncm wallet_balances wallet=<walletID|tag>
-				ncm send wallet=<walletID|tag> source=<accountID|tag> destination=<accountID|tag> amount=1 id=uniqid (uniqid value will create a php random unique id)
-				ncm send wallet=<walletID|tag> source=<accountID|tag> destination=<accountID|tag> amount=1-USD id=uniqid (if ticker enabled)
-				ncm accounts_balances accounts=tag1,nano_1nanode8ngaakzbck8smq6ru9bethqwyehomf79sae1k7xd47dkidjqzffeg,tag2 (example of array parameter)
-				
-				Read full RPC documentation at https://docs.nano.org/commands/rpc-protocol/
-			
-			- Node call extension
-			
-				ncm wallet_wipe wallet=<walletID|tag> destination=<accountID|tag> order=<asc|desc>
-				ncm wallet_send wallet=<walletID|tag> destination=<accountID|tag> amount=1 order=<asc|desc>
-				ncm wallet_send wallet=<walletID|tag> destination=<accountID|tag> amount=1-USD order=<asc|desc> (if ticker enabled)
-				ncm wallet_weight wallet=<walletID|tag> order=<asc|desc>
-			
-			- Flags
 		
-				flags=raw_in 		skip any input elaboration (faster execution, machine-like input), input elaborations like tag,non-nano-raw amount,ticker,array are disabled
-				flags=raw_out 		output a raw encoded json (faster execution, machine-like output), output elaborations like tag,non-nano-raw amount,ticker are disabled
-				flags=no_log 		don't save log regardless of what you set up in config.json
+			ncm dedicated
+			
+			
+				init................................init configuration file
 				
-				Multiple flags must be combined in the same argument like flags=raw_in,raw_out,no_log
+				status..............................print node summary
+				
+				account_info........................print account info (override regular call)
+				
+					account=id/tag
+				
+				wallet_list.........................print all wallets summary
+				
+				wallet_info.........................print wallet summary (override regular call)
+				
+					wallet=id/tag
+					
+				wallet_weight.......................print wallet weight (override regular call)
+				
+					wallet=id/tag
+					
+				delegators..........................print delegators summary (override regular call)
+				
+					account=id/tag
+					limit=(default 0, off)
+					balance_min=(default 0)
+					balance_max=(default available supply)
+					
+					e.g. ncm delegators account=genesis limit=100 balance_min=10000 balance_max=200000
+					
+				representatives.....................print representatives and their weight (override regular call)
+				
+					limit=(default 0, off)
+					weight_min=(default 0)
+					weight_max=(default available supply)
+					
+					e.g. ncm representatives limit=100 weight_min=10000 weight_max=200000
+				
+				representatives_online..............print online representatives (override regular call)
+				
+					limit=(default 0, off)
+					weight_min=(default 0)
+					weight_max=(default available supply)
+					
+					e.g. ncm representatives_online limit=100 weight_min=10000 weight_max=200000
+					
+				ticker..............................print latest NANO price compared to favourite vs currencies (if ticker enabled)
+				
+					amount=(default 1)
+					
+					e.g. ncm ticker amount=5
+					e.g. ncm ticker amount=5-USD
+					
+				ticker_update.......................update ticker.json
+				
+				3tags_update........................update 3tags.json
+				
+				config..............................print config.json (no tags)
+				
+				tags................................print tags
+				
+				3tags...............................print 3tags
+				
+				tag_add.............................add tag
+				
+					cat=wallet/account/block
+					tag=tag
+					value=id
+					
+					e.g. ncm tag_add cat=account tag=genesis value=nano_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3
+					
+				tag_edit............................edit tag
+				
+					cat=wallet/account/block
+					tag=tag
+					value=id
+					
+					e.g. ncm tag_edit cat=account tag=genesis value=nano_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3
+				
+				tag_remove..........................remove tag
+				
+					cat=wallet/account/block
+					tag=tag
+					value=id
+					
+					e.g. ncm tag_remove cat=account tag=genesis
+
+
+			Node call
+
+			
+				Read full RPC documentation at https://docs.nano.org/commands/rpc-protocol/
+				
+					e.g. ncm account_balance account=id/tag
+					e.g. ncm accounts_balances accounts=id/tag,id/tag,id/tag
+			
+			
+			Node call extension
+			
+			
+				wallet_wipe..........................send all funds from a wallet to an account starting from higher or lower balance 
+				
+					wallet=id/tag
+					destination=id/tag
+					order=asc/desc
+					
+					e.g. ncm wallet_wipe wallet=id/tag destination=id/tag order=desc
+					
+				wallet_send..........................send amount from a wallet to an account starting from higher or lower balance 
+				
+					wallet=id/tag
+					destination=id/tag
+					amount=amount
+					order=asc/desc
+					
+					e.g. ncm wallet_send wallet=id/tag destination=id/tag amount=5 order=desc
+					e.g. ncm wallet_send wallet=id/tag destination=id/tag amount=5-USD order=desc (if ticker enabled)
+				
+				wallet_weight........................return weight of a wallet and of every its account from higher or lower balance
+				
+					wallet=id/tag
+					order=asc/desc
+					
+					e.g. ncm wallet_weight wallet=id/tag order=desc
+				
+			
+			Flags
+
+		
+				raw_in...............................skip any input elaboration (faster execution, machine-like input), input elaborations like tag,non-nano-raw amount,ticker,array are disabled
+				
+					e.g. ncm status flags=raw_in
+				
+				raw_out..............................output a raw encoded json (faster execution, machine-like output), output elaborations like tag,non-nano-raw amount,ticker are disabled
+				
+					e.g. ncm status flags=raw_out
+				
+				no_log...............................don't save log regardless of what you set up in config.json
+				
+					e.g. ncm status flags=no_log
+				
+				Multiple flags must be combined in the same argument
+				
+					e.g. ncm status flags=raw_in,raw_out,no_log
 	
 	*/
 	
@@ -1056,7 +1163,7 @@
 		
 		// Convert denomination to raw
 		
-		$check_words = ['amount','atleast','nomore'];
+		$check_words = ['amount','balance_min','balance_max','weight_min','weight_max'];
 		
 		if( in_array( $arguments_row[0], $check_words ) )
 		{
@@ -1627,13 +1734,13 @@
 			else
 			{
 				
-				// Any atleast?
+				// Any balance_min?
 				
-				$atleast = isset( $arguments['atleast'] ) ? $arguments['atleast'] : '0';
+				$balance_min = isset( $arguments['balance_min'] ) ? $arguments['balance_min'] : '0';
 				
-				// Any nomore?
+				// Any balance_max?
 				
-				$nomore = isset( $arguments['nomore'] ) ? $arguments['nomore'] : available_supply;
+				$balance_max = isset( $arguments['balance_max'] ) ? $arguments['balance_max'] : available_supply;
 				
 				// Any limit?
 			
@@ -1651,9 +1758,7 @@
 				
 				uasort( $delegators['delegators'], function( $a, $b )
 				{
-					
 					return gmp_cmp( $b, $a );
-					
 				});
 				
 				$i = 0;
@@ -1665,17 +1770,15 @@
 				foreach( $delegators['delegators'] as $delegator => $balance )
 				{
 					
-					if( gmp_cmp( $balance, $atleast ) < 0 ) continue;
+					if( gmp_cmp( $balance, $balance_min ) < 0 ) continue;
 					
-					if( gmp_cmp( $balance, $nomore ) > 0 ) continue;
+					if( gmp_cmp( $balance, $balance_max ) > 0 ) continue;
 				
 					if( $limit <= 0 )
 					{}
 					else
 					{
-					
 						if( $i >= $limit ) break;
-					
 					}
 				
 					$i++;
@@ -1732,13 +1835,13 @@
 	elseif( $command == 'representatives' )
 	{
 	
-		// Any atleast?
+		// Any weight_min?
 				
-		$atleast = isset( $arguments['atleast'] ) ? $arguments['atleast'] : '0';
+		$weight_min = isset( $arguments['weight_min'] ) ? $arguments['weight_min'] : '0';
 		
-		// Any nomore?
+		// Any weight_max?
 		
-		$nomore = isset( $arguments['nomore'] ) ? $arguments['nomore'] : available_supply;
+		$weight_max = isset( $arguments['weight_max'] ) ? $arguments['weight_max'] : available_supply;
 	
 		// Any limit?
 			
@@ -1755,9 +1858,9 @@
 		foreach( $representatives['representatives'] as $representative => $weight )
 		{
 			
-			if( gmp_cmp( $weight, $atleast ) < 0 ) continue;
+			if( gmp_cmp( $weight, $weight_min ) < 0 ) continue;
 			
-			if( gmp_cmp( $weight, $nomore ) > 0 ) continue;
+			if( gmp_cmp( $weight, $weight_max ) > 0 ) continue;
 			
 			if( $limit <= 0 )
 			{}
@@ -1807,13 +1910,13 @@
 	elseif( $command == 'representatives_online' )
 	{
 	
-		// Any atleast?
+		// Any weight_min?
 				
-		$atleast = isset( $arguments['atleast'] ) ? $arguments['atleast'] : '0';
+		$weight_min = isset( $arguments['weight_min'] ) ? $arguments['weight_min'] : '0';
 		
-		// Any nomore?
+		// Any weight_max?
 		
-		$nomore = isset( $arguments['nomore'] ) ? $arguments['nomore'] : available_supply;
+		$weight_max = isset( $arguments['weight_max'] ) ? $arguments['weight_max'] : available_supply;
 	
 		// Any limit?
 			
@@ -1823,9 +1926,7 @@
 		
 		uasort( $representatives_online['representatives'], function( $a, $b )
 		{
-			
 			return gmp_cmp( $b['weight'], $a['weight'] );
-			
 		});
 		
 		$i = 0;
@@ -1837,9 +1938,9 @@
 		foreach( $representatives_online['representatives'] as $representative => $data )
 		{
 			
-			if( gmp_cmp( $data['weight'], $atleast ) < 0 ) continue;
+			if( gmp_cmp( $data['weight'], $weight_min ) < 0 ) continue;
 			
-			if( gmp_cmp( $data['weight'], $nomore ) > 0 ) continue;
+			if( gmp_cmp( $data['weight'], $weight_max ) > 0 ) continue;
 			
 			if( $limit <= 0 )
 			{}
