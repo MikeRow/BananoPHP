@@ -85,11 +85,11 @@
 				
 					wallet=id/tag
 					
-				wallet_weight.......................print wallet weight (override regular call)
+				wallet_weight.......................print wallet weight (override regular extension call)
 				
 					wallet=id/tag
 					
-				delegators..........................print delegators summary (override regular call)
+				delegators..........................print account's delegators summary (override regular call)
 				
 					account=id/tag
 					limit=(default 0, off)
@@ -163,12 +163,13 @@
 				
 					e.g. ncm account_balance account=id/tag
 					e.g. ncm accounts_balances accounts=id/tag,id/tag,id/tag
+					e.g. ncm send wallet=id/tag source=id/tag destination=id/tag amount=5 id=uniqid (uniqid automatically generates a uniqid() string)
 			
 			
 			Node call extension
 			
 			
-				wallet_wipe..........................send all funds from a wallet to an account starting from higher or lower balance 
+				wallet_wipe.........................send all funds from a wallet to an account starting from higher or lower balance
 				
 					wallet=id/tag
 					destination=id/tag
@@ -176,7 +177,7 @@
 					
 					e.g. ncm wallet_wipe wallet=id/tag destination=id/tag order=desc
 					
-				wallet_send..........................send amount from a wallet to an account starting from higher or lower balance 
+				wallet_send.........................send amount from a wallet to an account starting from higher or lower balance
 				
 					wallet=id/tag
 					destination=id/tag
@@ -186,7 +187,7 @@
 					e.g. ncm wallet_send wallet=id/tag destination=id/tag amount=5 order=desc
 					e.g. ncm wallet_send wallet=id/tag destination=id/tag amount=5-USD order=desc (if ticker enabled)
 				
-				wallet_weight........................return weight of a wallet and of every its account from higher or lower balance
+				wallet_weight.......................return weight of a wallet and of every its account from higher or lower balance
 				
 					wallet=id/tag
 					order=asc/desc
@@ -197,15 +198,15 @@
 			Flags
 
 		
-				raw_in...............................skip any input elaboration (faster execution, machine-like input), input elaborations like tag,non-nano-raw amount,ticker,array are disabled
+				raw_in..............................skip any input elaboration (faster execution, machine-like input), input elaborations like tag,non-nano-raw amount,ticker,array are disabled
 				
 					e.g. ncm status flags=raw_in
 				
-				raw_out..............................output a raw encoded json (faster execution, machine-like output), output elaborations like tag,non-nano-raw amount,ticker are disabled
+				raw_out.............................output a raw encoded json (faster execution, machine-like output), output elaborations like tag,non-nano-raw amount,ticker are disabled
 				
 					e.g. ncm status flags=raw_out
 				
-				no_log...............................don't save log regardless of what you set up in config.json
+				no_log..............................don't save log regardless of what you set up in config.json
 				
 					e.g. ncm status flags=no_log
 				
@@ -1744,7 +1745,7 @@
 				
 				// Any limit?
 			
-				$limit = isset( $arguments['count'] ) ? (int) $arguments['count'] : 0;
+				$limit = isset( $arguments['limit'] ) ? (int) $arguments['limit'] : 0;
 			
 				$delegators_count = $nanoconn->delegators_count( ['account'=>$arguments['account']] );
 				
@@ -1770,9 +1771,15 @@
 				foreach( $delegators['delegators'] as $delegator => $balance )
 				{
 					
-					if( gmp_cmp( $balance, $balance_min ) < 0 ) continue;
+					if( isset( $arguments['balance_min'] ) )
+					{
+						if( gmp_cmp( $balance, $balance_min ) < 0 ) continue;
+					}
 					
-					if( gmp_cmp( $balance, $balance_max ) > 0 ) continue;
+					if( isset( $arguments['balance_max'] ) )
+					{
+						if( gmp_cmp( $balance, $balance_max ) > 0 ) continue;
+					}
 				
 					if( $limit <= 0 )
 					{}
@@ -1845,7 +1852,7 @@
 	
 		// Any limit?
 			
-		$limit = isset( $arguments['count'] ) ? (int) $arguments['count'] : 0;
+		$limit = isset( $arguments['limit'] ) ? (int) $arguments['limit'] : 0;
 	
 		$representatives = $nanoconn->representatives( ['sorting'=>true] );
 		
@@ -1858,9 +1865,15 @@
 		foreach( $representatives['representatives'] as $representative => $weight )
 		{
 			
-			if( gmp_cmp( $weight, $weight_min ) < 0 ) continue;
+			if( isset( $arguments['weight_min'] ) )
+			{
+				if( gmp_cmp( $weight, $weight_min ) < 0 ) continue;
+			}
 			
-			if( gmp_cmp( $weight, $weight_max ) > 0 ) continue;
+			if( isset( $arguments['weight_max'] ) )
+			{
+				if( gmp_cmp( $weight, $weight_max ) > 0 ) continue;
+			}
 			
 			if( $limit <= 0 )
 			{}
@@ -1920,7 +1933,7 @@
 	
 		// Any limit?
 			
-		$limit = isset( $arguments['count'] ) ? (int) $arguments['count'] : 0;
+		$limit = isset( $arguments['limit'] ) ? (int) $arguments['limit'] : 0;
 	
 		$representatives_online = $nanoconn->representatives_online( ['weight'=>true] );
 		
@@ -1938,9 +1951,15 @@
 		foreach( $representatives_online['representatives'] as $representative => $data )
 		{
 			
-			if( gmp_cmp( $data['weight'], $weight_min ) < 0 ) continue;
+			if( isset( $arguments['weight_min'] ) )
+			{
+				if( gmp_cmp( $data['weight'], $weight_min ) < 0 ) continue;
+			}
 			
-			if( gmp_cmp( $data['weight'], $weight_max ) > 0 ) continue;
+			if( isset( $arguments['weight_max'] ) )
+			{
+				if( gmp_cmp( $data['weight'], $weight_max ) > 0 ) continue;
+			}
 			
 			if( $limit <= 0 )
 			{}
