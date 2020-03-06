@@ -315,6 +315,26 @@
 	
 	
 	
+	// *** Node connection error ***
+	
+	
+	
+	function check_node_connection()
+	{
+		
+		global $nanoconn;
+		
+		global $call_return;
+		
+		if( !is_null( $nanoconn->error ) )
+		{
+			$call_return['error'] = no_connection;
+		}
+		
+	}
+	
+	
+	
 	// *** Custom number format ***
 	
 	
@@ -1388,6 +1408,12 @@
 		
 		$call_return['peers'] = count( $peers['peers'] );
 		
+		// Online representatives
+		
+		$online_representatives = $nanoconn->representatives_online();
+		
+		$call_return['representatives_online'] = count( $online_representatives['representatives'] );
+		
 		// Blockchain file size
 		
 		$call_return['data.ldb'] = filesize( $C['nano']['data_dir'] . '/data.ldb' );
@@ -1455,10 +1481,7 @@
 		
 		$call_return['wallets']['accounts_count'] = $wallets_accounts;
 		
-		if( !is_null( $nanoconn->error ) )
-		{
-			$call_return['error'] = no_connection;
-		}
+		check_node_connection();
 		
 	}
 	
@@ -1521,10 +1544,7 @@
 			$call_return['error'] = 'No wallets found';
 		}
 		
-		if( !is_null( $nanoconn->error ) )
-		{
-			$call_return['error'] = no_connection;
-		}
+		check_node_connection();
 		
 	}
 	
@@ -1583,10 +1603,7 @@
 			$call_return['error'] = bad_wallet;
 		}
 		
-		if( !is_null( $nanoconn->error ) )
-		{
-			$call_return['error'] = no_connection;
-		}
+		check_node_connection();
 		
 	}
 	
@@ -1641,10 +1658,7 @@
 			$call_return['error'] = bad_wallet;
 		}
 		
-		if( !is_null( $nanoconn->error ) )
-		{
-			$call_return['error'] = no_connection;
-		}
+		check_node_connection();
 		
 	}
 	
@@ -1707,10 +1721,7 @@
 			$call_return['error'] = bad_account;
 		}
 		
-		if( !is_null( $nanoconn->error ) )
-		{
-			$call_return['error'] = no_connection;
-		}
+		check_node_connection();
 	
 	}
 	
@@ -1828,10 +1839,7 @@
 			$call_return['error'] = bad_account;
 		}
 		
-		if( !is_null( $nanoconn->error ) )
-		{
-			$call_return['error'] = no_connection;
-		}
+		check_node_connection();
 	
 	}
 	
@@ -1911,10 +1919,7 @@
 		
 		$call_return['count'] = $i;
 		
-		if( !is_null( $nanoconn->error ) )
-		{
-			$call_return['error'] = no_connection;
-		}
+		check_node_connection();
 	
 	}
 	
@@ -1995,14 +2000,13 @@
 			
 		}
 		
+		// $call_return['cumulative_weight'] = $cumulative_weight;
+		
 		// $call_return['count'] = count( $representatives_online['representatives'] );
 		
 		$call_return['count'] = $i;
 		
-		if( !is_null( $nanoconn->error ) )
-		{
-			$call_return['error'] = no_connection;
-		}
+		check_node_connection();
 	
 	}
 	
@@ -2408,10 +2412,7 @@
 		
 		$call_return = $nanoconn->{ $command }( $arguments );
 		
-		if( !is_null( $nanoconn->error ) )
-		{
-			$call_return['error'] = no_connection;
-		}
+		check_node_connection();
 		
 	}
 	
