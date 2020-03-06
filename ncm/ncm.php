@@ -2,7 +2,7 @@
 
 	/*
 
-	v1.0.4
+	v1.0.5
 	
 	*********************
 	*** CONFIGURATION ***
@@ -1753,7 +1753,7 @@
 				
 				$call_return['weight'] = $account_weight['weight'];
 				
-				$call_return['count'] = $delegators_count['count'];
+				// $call_return['count'] = $delegators_count['count'];
 			
 				$delegators = $nanoconn->delegators( ['account'=>$arguments['account']] );
 				
@@ -1817,6 +1817,8 @@
 					}
 					
 				}
+				
+				$call_return['count'] = $i;
 			
 			}
 			
@@ -1905,7 +1907,9 @@
 			
 		}
 		
-		$call_return['count'] = count( $representatives['representatives'] );
+		// $call_return['count'] = count( $representatives['representatives'] );
+		
+		$call_return['count'] = $i;
 		
 		if( !is_null( $nanoconn->error ) )
 		{
@@ -1991,7 +1995,9 @@
 			
 		}
 		
-		$call_return['count'] = count( $representatives_online['representatives'] );
+		// $call_return['count'] = count( $representatives_online['representatives'] );
+		
+		$call_return['count'] = $i;
 		
 		if( !is_null( $nanoconn->error ) )
 		{
