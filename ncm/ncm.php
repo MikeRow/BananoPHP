@@ -2,7 +2,7 @@
 
 	/*
 
-	v1.0.5
+	v1.0.6
 	
 	*********************
 	*** CONFIGURATION ***
@@ -586,8 +586,7 @@
 						'amount',
 						'available',
 						'balance',
-						'cumulative_balance',
-						'cumulative_weight',
+						'balance_cumulative',
 						'online_stake_total',
 						'online_weight_minimum',
 						'peers_stake_required',
@@ -596,7 +595,9 @@
 						'quorum_delta',
 						'receive_minimum',
 						'vote_minimum',
-						'weight'
+						'weight',
+						'weight_cumulative',
+						'weight_online'
 					];
 				
 					if( in_array( $key, $check_words ) && is_numeric( $value ) )
@@ -1184,7 +1185,14 @@
 		
 		// Convert denomination to raw
 		
-		$check_words = ['amount','balance_min','balance_max','weight_min','weight_max'];
+		$check_words =
+		[
+			'amount',
+			'balance_min',
+			'balance_max',
+			'weight_min',
+			'weight_max'
+		];
 		
 		if( in_array( $arguments_row[0], $check_words ) )
 		{
@@ -1408,11 +1416,20 @@
 		
 		$call_return['peers'] = count( $peers['peers'] );
 		
-		// Online representatives
+		// Online representatives and weight
 		
-		$online_representatives = $nanoconn->representatives_online();
+		$representatives_online = $nanoconn->representatives_online( ['weight'=>true] );
 		
-		$call_return['representatives_online'] = count( $online_representatives['representatives'] );
+		$call_return['representatives_online'] = count( $representatives_online['representatives'] );
+		
+		$weight_cumulative = '0';
+		
+		foreach( $representatives_online['representatives'] as $representative => $data )
+		{			
+			$weight_cumulative = gmp_strval( gmp_add( $weight_cumulative, $data['weight'] ) );
+		}
+		
+		$call_return['weight_online'] = $weight_cumulative;
 		
 		// Blockchain file size
 		
@@ -1775,9 +1792,9 @@
 				
 				$i = 0;
 				
-				$cumulative_balance = '0';
+				$balance_cumulative = '0';
 				
-				$call_return['delegators'] = [];
+				$delegators_array = [];
 				
 				foreach( $delegators['delegators'] as $delegator => $balance )
 				{
@@ -1801,35 +1818,37 @@
 				
 					$i++;
 					
-					$cumulative_balance = gmp_strval( gmp_add( $cumulative_balance, $balance ) );
+					$balance_cumulative = gmp_strval( gmp_add( $balance_cumulative, $balance ) );
 				
-					$call_return['delegators'][$delegator]['index'] = $i;
+					$delegators_array[$delegator]['index'] = $i;
 				
-					$call_return['delegators'][$delegator]['balance'] = $balance;
+					$delegators_array[$delegator]['balance'] = $balance;
 					
-					$call_return['delegators'][$delegator]['cumulative_balance'] = $cumulative_balance;
+					$delegators_array[$delegator]['balance_cumulative'] = $balance_cumulative;
 					
 					if( gmp_cmp( $balance, '0' ) > 0 )
 					{
-						$call_return['delegators'][$delegator]['percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $balance, '10000' ), $account_weight['weight'] ) ) / 100 );
+						$delegators_array[$delegator]['percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $balance, '10000' ), $account_weight['weight'] ) ) / 100 );
 					}
 					else
 					{
-						$call_return['delegators'][$delegator]['percent'] = '0';
+						$delegators_array[$delegator]['percent'] = '0';
 					}
 					
-					if( gmp_cmp( $cumulative_balance, '0' ) > 0 )
+					if( gmp_cmp( $balance_cumulative, '0' ) > 0 )
 					{
-						$call_return['delegators'][$delegator]['cumulative_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $cumulative_balance, '10000' ), $account_weight['weight'] ) ) / 100 );
+						$delegators_array[$delegator]['percent_cumulative'] = strval( gmp_strval( gmp_div_q( gmp_mul( $balance_cumulative, '10000' ), $account_weight['weight'] ) ) / 100 );
 					}
 					else
 					{
-						$call_return['delegators'][$delegator]['cumulative_percent'] = '0';
+						$delegators_array[$delegator]['percent_cumulative'] = '0';
 					}
 					
 				}
 				
 				$call_return['count'] = $i;
+				
+				$call_return['delegators'] = $delegators_array;
 			
 			}
 			
@@ -1868,9 +1887,9 @@
 		
 		$i = 0;
 		
-		$cumulative_weight = '0';
+		$weight_cumulative = '0';
 		
-		$call_return['representatives'] = [];
+		$representatives_array = [];
 		
 		foreach( $representatives['representatives'] as $representative => $weight )
 		{
@@ -1894,30 +1913,34 @@
 			
 			$i++;
 			
-			$cumulative_weight = gmp_strval( gmp_add( $cumulative_weight, $weight ) );
+			$weight_cumulative = gmp_strval( gmp_add( $weight_cumulative, $weight ) );
 			
-			$call_return['representatives'][$representative]['index'] = $i;
+			$representatives_array[$representative]['index'] = $i;
 			
-			$call_return['representatives'][$representative]['weight'] = $weight;
+			$representatives_array[$representative]['weight'] = $weight;
 			
-			$call_return['representatives'][$representative]['cumulative_weight'] = $cumulative_weight;
+			$representatives_array[$representative]['weight_cumulative'] = $weight_cumulative;
 			
 			if( gmp_cmp( $weight, '0' ) > 0 )
 			{
-				$call_return['representatives'][$representative]['percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight, '10000' ), available_supply ) ) / 100 );
+				$representatives_array[$representative]['percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight, '10000' ), available_supply ) ) / 100 );
 			}
 			else
 			{
-				$call_return['representatives'][$representative]['percent'] = '0';
+				$representatives_array[$representative]['percent'] = '0';
 			}
 			
-			$call_return['representatives'][$representative]['cumulative_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $cumulative_weight, '10000' ), available_supply ) ) / 100 );
+			$representatives_array[$representative]['percent_cumulative'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
 			
 		}
 		
-		// $call_return['count'] = count( $representatives['representatives'] );
+		// $call_return['count'] = count( $representatives['representatives'] );	
+		
+		$call_return['weight'] = $weight_cumulative;
 		
 		$call_return['count'] = $i;
+		
+		$call_return['representatives'] = $representatives_array;
 		
 		check_node_connection();
 	
@@ -1953,9 +1976,9 @@
 		
 		$i = 0;
 		
-		$cumulative_weight = '0';
+		$weight_cumulative = '0';
 		
-		$call_return['representatives_online'] = [];
+		$representatives_array = [];
 		
 		foreach( $representatives_online['representatives'] as $representative => $data )
 		{
@@ -1979,32 +2002,36 @@
 			
 			$i++;
 			
-			$cumulative_weight = gmp_strval( gmp_add( $cumulative_weight, $data['weight'] ) );
+			$weight_cumulative = gmp_strval( gmp_add( $weight_cumulative, $data['weight'] ) );
 			
-			$call_return['representatives_online'][$representative]['index'] = $i;
+			$representatives_array[$representative]['index'] = $i;
 			
-			$call_return['representatives_online'][$representative]['weight'] = $data['weight'];
+			$representatives_array[$representative]['weight'] = $data['weight'];
 			
-			$call_return['representatives_online'][$representative]['cumulative_weight'] = $cumulative_weight;
+			$representatives_array[$representative]['weight_cumulative'] = $weight_cumulative;
 			
 			if( gmp_cmp( $data['weight'], '0' ) > 0 )
 			{
-				$call_return['representatives_online'][$representative]['percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $data['weight'], '10000' ), available_supply ) ) / 100 );
+				$representatives_array[$representative]['percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $data['weight'], '10000' ), available_supply ) ) / 100 );
 			}
 			else
 			{
-				$call_return['representatives_online'][$representative]['percent'] = '0';
+				$representatives_array[$representative]['percent'] = '0';
 			}
 			
-			$call_return['representatives_online'][$representative]['cumulative_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $cumulative_weight, '10000' ), available_supply ) ) / 100 );
+			$representatives_array[$representative]['percent_cumulative'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
 			
 		}
 		
-		// $call_return['cumulative_weight'] = $cumulative_weight;
+		// $call_return['weight_cumulative'] = $weight_cumulative;
 		
 		// $call_return['count'] = count( $representatives_online['representatives'] );
 		
+		$call_return['weight'] = $weight_cumulative;
+		
 		$call_return['count'] = $i;
+		
+		$call_return['representatives_online'] = $representatives_array;
 		
 		check_node_connection();
 	
