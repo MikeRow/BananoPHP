@@ -2456,7 +2456,7 @@
 	
 		if( $ticker_delay > 60*30 )
 		{
-			$alerts[] = 'ticker-not-updated';
+			$alerts[] = 'Ticker not updated';
 		}
 	
 	}
