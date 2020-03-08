@@ -2,7 +2,7 @@
 
 	/*
 
-	v1.0.7
+	v1.0.8
 	
 	*********************
 	*** CONFIGURATION ***
@@ -1446,6 +1446,8 @@
 		}
 		
 		$call_return['weight_online'] = $weight_cumulative;
+		
+		$call_return['weight_online_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
 		
 		// Blockchain file size
 		
