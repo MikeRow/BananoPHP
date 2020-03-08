@@ -2,7 +2,7 @@
 
 	/*
 
-	v1.0.8
+	v1.0.10
 	
 	*********************
 	*** CONFIGURATION ***
@@ -36,8 +36,7 @@
 			
 			Tags
 			
-				Do not leave empty tags!
-				Only one tag for each wallet/account/block ID
+				ONLY ONE tag for each wallet/account/block ID
 				In order to have a clean and flowing tag list, I recommend using only lower-case alphanumeric characters, dashes(-) and dottes(.)
 				
 				Note: tags set by you will always take precedence over those of third party
