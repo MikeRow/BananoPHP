@@ -38,7 +38,7 @@
 			
 				Do not leave empty tags!
 				Only one tag for each wallet/account/block ID
-				In order to have a clean and flowing tag list, I recommend using only alphanumeric characters, dashes(-) and dottes(.)
+				In order to have a clean and flowing tag list, I recommend using only lower-case alphanumeric characters, dashes(-) and dottes(.)
 				
 				Note: tags set by you will always take precedence over those of third party
 				
@@ -822,6 +822,8 @@
 	define( 'bad_wallet'     	, 'Bad wallet number' );
 	
 	define( 'bad_account'   	, 'Bad account' );
+	
+	define( 'null_tag'   		, 'Invalid tag' );
 	
 	define( 'available_supply'	, '133248061996216572282917317807824970865');
 	
@@ -2297,19 +2299,36 @@
 		else
 		{
 		
-			if( !array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
+			$arguments['tag'] = preg_replace( '/[^a-z0-9. ]+/i', '', $arguments['tag'] );
+		
+			$arguments['tag'] = str_replace( ' ', '-', $arguments['tag'] );
+			
+			// $arguments['tag'] = str_replace( '.', '-', $arguments['tag'] );
+			
+			$arguments['tag'] = strtolower( $arguments['tag'] );
+		
+			if( $arguments['tag'] == '' )
 			{
-			
-				$C['tags'][$arguments['cat']][$arguments['tag']] = $arguments['value'];
-				
-				$call_return[] = $arguments['value'];
-				
-				file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
-			
+				$call_return['error'] = null_tag;
 			}
 			else
 			{
-				$call_return['error'] = 'Tag already present';
+				
+				if( !array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
+				{
+				
+					$C['tags'][$arguments['cat']][$arguments['tag']] = $arguments['value'];
+					
+					$call_return[] = $arguments['value'];
+					
+					file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
+				
+				}
+				else
+				{
+					$call_return['error'] = 'Tag already present';
+				}
+				
 			}
 		
 		}
@@ -2358,19 +2377,36 @@
 		else
 		{
 		
-			if( array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
+			$arguments['tag'] = preg_replace( '/[^a-z0-9. ]+/i', '', $arguments['tag'] );
+		
+			$arguments['tag'] = str_replace( ' ', '-', $arguments['tag'] );
+			
+			// $arguments['tag'] = str_replace( '.', '-', $arguments['tag'] );
+			
+			$arguments['tag'] = strtolower( $arguments['tag'] );
+		
+			if( $arguments['tag'] == '' )
 			{
-			
-				$C['tags'][$arguments['cat']][$arguments['tag']] = $arguments['value'];
-				
-				$call_return[] = $arguments['value'];
-				
-				file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
-			
+				$call_return['error'] = null_tag;
 			}
 			else
 			{
-				$call_return['error'] = 'Tag not present';
+				
+				if( array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
+				{
+				
+					$C['tags'][$arguments['cat']][$arguments['tag']] = $arguments['value'];
+					
+					$call_return[] = $arguments['value'];
+					
+					file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
+				
+				}
+				else
+				{
+					$call_return['error'] = 'Tag not present';
+				}
+				
 			}
 		
 		}
@@ -2411,20 +2447,37 @@
 		
 		else
 		{
+			
+			$arguments['tag'] = preg_replace( '/[^a-z0-9. ]+/i', '', $arguments['tag'] );
 		
-			if( array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
+			$arguments['tag'] = str_replace( ' ', '-', $arguments['tag'] );
+			
+			// $arguments['tag'] = str_replace( '.', '-', $arguments['tag'] );
+			
+			$arguments['tag'] = strtolower( $arguments['tag'] );
+		
+			if( $arguments['tag'] == '' )
 			{
-			
-				unset( $C['tags'][$arguments['cat']][$arguments['tag']] );
-				
-				$call_return[] = $arguments['tag'];
-				
-				file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
-			
+				$call_return['error'] = null_tag;
 			}
 			else
 			{
-				$call_return['error'] = 'Tag not present';
+		
+				if( array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
+				{
+				
+					unset( $C['tags'][$arguments['cat']][$arguments['tag']] );
+					
+					$call_return[] = $arguments['tag'];
+					
+					file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
+				
+				}
+				else
+				{
+					$call_return['error'] = 'Tag not present';
+				}
+				
 			}
 		
 		}
