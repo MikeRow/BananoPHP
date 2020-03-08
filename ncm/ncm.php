@@ -2,7 +2,7 @@
 
 	/*
 
-	v1.0.10
+	v1.0.11
 	
 	*********************
 	*** CONFIGURATION ***
@@ -451,6 +451,25 @@
 	
 	
 	
+	// *** Tag filter ***
+	
+	
+	
+	function tag_filter( $value )
+	{
+		
+		$value = preg_replace( '/[^a-z0-9. ]+/i', '', $value );
+	
+		$value = str_replace( ' ', '-', $value );
+		
+		$value = strtolower( $value );
+		
+		return $value;
+		
+	}
+	
+	
+	
 	// *** Tag replace ***
 	
 	
@@ -825,6 +844,7 @@
 	define( 'null_tag'   		, 'Invalid tag' );
 	
 	define( 'available_supply'	, '133248061996216572282917317807824970865');
+	
 	
 	
 	// *** Create data folder if not exsist ***
@@ -2171,13 +2191,7 @@
 		
 			$tag = $data['alias'];
 		
-			$tag = preg_replace( '/[^a-z0-9. ]+/i', '', $tag );
-		
-			$tag = str_replace( ' ', '-', $tag );
-			
-			// $tag = str_replace( '.', '-', $tag );
-			
-			$tag = strtolower( $tag );
+			$tag = tag_filter( $tag );
 		
 			if( $tag == '' ) continue;
 		
@@ -2298,13 +2312,7 @@
 		else
 		{
 		
-			$arguments['tag'] = preg_replace( '/[^a-z0-9. ]+/i', '', $arguments['tag'] );
-		
-			$arguments['tag'] = str_replace( ' ', '-', $arguments['tag'] );
-			
-			// $arguments['tag'] = str_replace( '.', '-', $arguments['tag'] );
-			
-			$arguments['tag'] = strtolower( $arguments['tag'] );
+			$arguments['tag'] = tag_filter( $arguments['tag'] );
 		
 			if( $arguments['tag'] == '' )
 			{
@@ -2313,19 +2321,23 @@
 			else
 			{
 				
-				if( !array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
+				if( array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
 				{
-				
+					$call_return['error'] = 'Tag already present';
+				}
+				elseif( in_array( $arguments['value'], $C['tags'][$arguments['cat']] ) )
+				{
+					$call_return['error'] = 'Value already present';
+				}
+				else
+				{
+					
 					$C['tags'][$arguments['cat']][$arguments['tag']] = $arguments['value'];
 					
 					$call_return[] = $arguments['value'];
 					
 					file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
-				
-				}
-				else
-				{
-					$call_return['error'] = 'Tag already present';
+					
 				}
 				
 			}
@@ -2376,13 +2388,7 @@
 		else
 		{
 		
-			$arguments['tag'] = preg_replace( '/[^a-z0-9. ]+/i', '', $arguments['tag'] );
-		
-			$arguments['tag'] = str_replace( ' ', '-', $arguments['tag'] );
-			
-			// $arguments['tag'] = str_replace( '.', '-', $arguments['tag'] );
-			
-			$arguments['tag'] = strtolower( $arguments['tag'] );
+			$arguments['tag'] = tag_filter( $arguments['tag'] );
 		
 			if( $arguments['tag'] == '' )
 			{
@@ -2393,17 +2399,21 @@
 				
 				if( array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
 				{
-				
+					$call_return['error'] = 'Tag not present';
+				}
+				elseif( in_array( $arguments['value'], $C['tags'][$arguments['cat']] ) )
+				{
+					$call_return['error'] = 'Value already present';
+				}
+				else
+				{
+					
 					$C['tags'][$arguments['cat']][$arguments['tag']] = $arguments['value'];
 					
 					$call_return[] = $arguments['value'];
 					
 					file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
-				
-				}
-				else
-				{
-					$call_return['error'] = 'Tag not present';
+					
 				}
 				
 			}
@@ -2447,13 +2457,7 @@
 		else
 		{
 			
-			$arguments['tag'] = preg_replace( '/[^a-z0-9. ]+/i', '', $arguments['tag'] );
-		
-			$arguments['tag'] = str_replace( ' ', '-', $arguments['tag'] );
-			
-			// $arguments['tag'] = str_replace( '.', '-', $arguments['tag'] );
-			
-			$arguments['tag'] = strtolower( $arguments['tag'] );
+			$arguments['tag'] = tag_filter( $arguments['tag'] );
 		
 			if( $arguments['tag'] == '' )
 			{
