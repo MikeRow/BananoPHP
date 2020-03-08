@@ -2,7 +2,7 @@
 
 	/*
 
-	v1.0.6
+	v1.0.7
 	
 	*********************
 	*** CONFIGURATION ***
@@ -200,19 +200,19 @@
 		
 				raw_in..............................skip any input elaboration (faster execution, machine-like input), input elaborations like tag,non-nano-raw amount,ticker,array are disabled
 				
-					e.g. ncm status flags=raw_in
+					e.g. ncm wallet_info {"wallet":"id/tag"} flags=raw_in
 				
 				raw_out.............................output a raw encoded json (faster execution, machine-like output), output elaborations like tag,non-nano-raw amount,ticker are disabled
 				
-					e.g. ncm status flags=raw_out
+					e.g. ncm wallet_info wallet=id/tag flags=raw_out
 				
 				no_log..............................don't save log regardless of what you set up in config.json
 				
-					e.g. ncm status flags=no_log
+					e.g. ncm wallet_info wallet=id/tag flags=no_log
 				
 				Multiple flags must be combined in the same argument
 				
-					e.g. ncm status flags=raw_in,raw_out,no_log
+					e.g. ncm wallet_info {"wallet":"id/tag"} flags=raw_in,raw_out,no_log
 	
 	*/
 	
@@ -1038,209 +1038,225 @@
 		
 	}
 	
-	// Fetch arguments
 	
-	foreach( $argv as $arg )
+	
+	// *** Raw input ***
+	
+	
+	
+	if( in_array( 'raw_in', $flags ) )
 	{
 		
-		$arguments_row = [];
-		
-		$arguments_row = explode( '=', $arg, 2 );
-		
-		if( !isset( $arguments_row[1] ) )
+		if( count( $argv ) > 0 )
 		{
-			$arguments_row[1] = '';
+			
+			$arguments = json_decode( $argv[0], true );
+			
 		}
+	
+	}
+	
+	
+	
+	// *** Elaborated input ***
+	
+	
+	
+	else
+	{
+	
+		// Fetch arguments
 		
-		// Raw input
-		
-		if( in_array( 'raw_in', $flags ) )
+		foreach( $argv as $arg )
 		{
 			
-			$arguments[$arguments_row[0]] = $arguments_row[1];
+			$arguments_row = [];
 			
-			continue;
-		
-		}
-		
-		// Elaborated input
-		
-		// Elaborate accounts array
-		
-		$check_words = ['accounts'];
-		
-		if( in_array( $arguments_row[0], $check_words ) )
-		{
-		
-			$arguments_row_array = [];
+			$arguments_row = explode( '=', $arg, 2 );
 			
-			$arguments_row_raw = explode( ',', $arguments_row[1] );
+			if( !isset( $arguments_row[1] ) )
+			{
+				$arguments_row[1] = '';
+			}
+			
+			// Elaborate accounts array
+			
+			$check_words = ['accounts'];
+			
+			if( in_array( $arguments_row[0], $check_words ) )
+			{
+			
+				$arguments_row_array = [];
+				
+				$arguments_row_raw = explode( ',', $arguments_row[1] );
+				
+				// Check if an account tag is available
+				
+				foreach( $arguments_row_raw as $argument_raw )
+				{
+			
+					if( array_key_exists( $argument_raw, $C['tags']['account'] ) )
+					{
+						$argument_raw = $C['tags']['account'][$argument_raw];
+					}
+					elseif( $C['3tags']['enable'] && array_key_exists( $argument_raw, thirdtags['account'] ) )
+					{
+						$argument_raw = thirdtags['account'][$argument_raw];
+					}
+					else
+					{}
+					
+					$arguments_row_array[] = $argument_raw;
+				
+				}
+				
+				$arguments_row[1] = $arguments_row_array;
+				
+			}
+			
+			// Elaborate blocks array
+			
+			$check_words = ['hashes'];
+			
+			if( in_array( $arguments_row[0], $check_words ) )
+			{
+			
+				$arguments_row_array = [];
+				
+				$arguments_row_raw = explode( ',', $arguments_row[1] );
+				
+				// Check if a block tag is available
+				
+				foreach( $arguments_row_raw as $argument_raw )
+				{
+			
+					if( array_key_exists( $argument_raw, $C['tags']['block'] ) )
+					{
+						$argument_raw = $C['tags']['block'][$argument_raw];
+					}
+					
+					$arguments_row_array[] = $argument_raw;
+				
+				}
+				
+				$arguments_row[1] = $arguments_row_array;
+				
+			}
+			
+			// Check if a wallet tag is available
+			
+			$check_words = ['wallet'];
+			
+			if( in_array($arguments_row[0], $check_words ) )
+			{
+				
+				if( array_key_exists( $arguments_row[1], $C['tags']['wallet'] ) )
+				{
+					$arguments_row[1] = $C['tags']['wallet'][$arguments_row[1]];
+				}
+				
+			}
 			
 			// Check if an account tag is available
 			
-			foreach( $arguments_row_raw as $argument_raw )
+			$check_words = 
+			[
+				'account',
+				'destination',
+				'representative',
+				'source'
+			];
+			
+			if( in_array( $arguments_row[0], $check_words ) )
 			{
-		
-				if( array_key_exists( $argument_raw, $C['tags']['account'] ) )
+				
+				if( array_key_exists( $arguments_row[1], $C['tags']['account'] ) )
 				{
-					$argument_raw = $C['tags']['account'][$argument_raw];
+					$arguments_row[1] = $C['tags']['account'][$arguments_row[1]];
 				}
-				elseif( $C['3tags']['enable'] && array_key_exists( $argument_raw, thirdtags['account'] ) )
+				elseif( $C['3tags']['enable'] && array_key_exists( $arguments_row[1], thirdtags['account'] ) )
 				{
-					$argument_raw = thirdtags['account'][$argument_raw];
+					$arguments_row[1] = thirdtags['account'][$arguments_row[1]];
 				}
 				else
 				{}
 				
-				$arguments_row_array[] = $argument_raw;
-			
 			}
 			
-			$arguments_row[1] = $arguments_row_array;
+			// Check if an block tag is available
 			
-		}
-		
-		// Elaborate blocks array
-		
-		$check_words = ['hashes'];
-		
-		if( in_array( $arguments_row[0], $check_words ) )
-		{
-		
-			$arguments_row_array = [];
+			$check_words = ['hash'];
 			
-			$arguments_row_raw = explode( ',', $arguments_row[1] );
-			
-			// Check if a block tag is available
-			
-			foreach( $arguments_row_raw as $argument_raw )
-			{
-		
-				if( array_key_exists( $argument_raw, $C['tags']['block'] ) )
-				{
-					$argument_raw = $C['tags']['block'][$argument_raw];
-				}
-				
-				$arguments_row_array[] = $argument_raw;
-			
-			}
-			
-			$arguments_row[1] = $arguments_row_array;
-			
-		}
-		
-		// Check if a wallet tag is available
-		
-		$check_words = ['wallet'];
-		
-		if( in_array($arguments_row[0], $check_words ) )
-		{
-			
-			if( array_key_exists( $arguments_row[1], $C['tags']['wallet'] ) )
-			{
-				$arguments_row[1] = $C['tags']['wallet'][$arguments_row[1]];
-			}
-			
-		}
-		
-		// Check if an account tag is available
-		
-		$check_words = 
-		[
-			'account',
-			'destination',
-			'representative',
-			'source'
-		];
-		
-		if( in_array( $arguments_row[0], $check_words ) )
-		{
-			
-			if( array_key_exists( $arguments_row[1], $C['tags']['account'] ) )
-			{
-				$arguments_row[1] = $C['tags']['account'][$arguments_row[1]];
-			}
-			elseif( $C['3tags']['enable'] && array_key_exists( $arguments_row[1], thirdtags['account'] ) )
-			{
-				$arguments_row[1] = thirdtags['account'][$arguments_row[1]];
-			}
-			else
-			{}
-			
-		}
-		
-		// Check if an block tag is available
-		
-		$check_words = ['hash'];
-		
-		if( in_array( $arguments_row[0], $check_words ) )
-		{
-			
-			if( array_key_exists( $arguments_row[1], $C['tags']['block'] ) )
-			{
-				$arguments_row[1] = $C['tags']['block'][$arguments_row[1]];
-			}
-			
-		}
-		
-		// Convert denomination to raw
-		
-		$check_words =
-		[
-			'amount',
-			'balance_min',
-			'balance_max',
-			'weight_min',
-			'weight_max'
-		];
-		
-		if( in_array( $arguments_row[0], $check_words ) )
-		{
-			
-			if( $C['ticker']['enable'] && !is_numeric( $arguments_row[1] ) ) // Input as other currency?
-			{
-			
-				$input_currency = explode( '-', $arguments_row[1] );
-				
-				$input_currency[0] = abs( $input_currency[0] );
-				
-				if( is_numeric( $input_currency[0] ) && isset( $input_currency[1] ) && isset( vs_currencies[strtoupper( $input_currency[1] )] ) )
-				{
-					$arguments_row[1] = NanoTools::den2raw( $input_currency[0] / vs_currencies[strtoupper( $input_currency[1] )], 'NANO' );
-				}
-				else
-				{
-					$arguments_row[1] = 0;
-				}
-				
-			}
-			else // Input as a Nano denomination?
+			if( in_array( $arguments_row[0], $check_words ) )
 			{
 				
-				if( is_numeric( $arguments_row[1] ) && abs( $arguments_row[1] ) == $arguments_row[1] )
+				if( array_key_exists( $arguments_row[1], $C['tags']['block'] ) )
 				{
-					$arguments_row[1] = NanoTools::den2raw( $arguments_row[1], $C['nano']['denomination'] );
-				}
-				else
-				{
-					$arguments_row[1] = 0;
+					$arguments_row[1] = $C['tags']['block'][$arguments_row[1]];
 				}
 				
 			}
 			
+			// Convert denomination to raw
+			
+			$check_words =
+			[
+				'amount',
+				'balance_min',
+				'balance_max',
+				'weight_min',
+				'weight_max'
+			];
+			
+			if( in_array( $arguments_row[0], $check_words ) )
+			{
+				
+				if( $C['ticker']['enable'] && !is_numeric( $arguments_row[1] ) ) // Input as other currency?
+				{
+				
+					$input_currency = explode( '-', $arguments_row[1] );
+					
+					$input_currency[0] = abs( $input_currency[0] );
+					
+					if( is_numeric( $input_currency[0] ) && isset( $input_currency[1] ) && isset( vs_currencies[strtoupper( $input_currency[1] )] ) )
+					{
+						$arguments_row[1] = NanoTools::den2raw( $input_currency[0] / vs_currencies[strtoupper( $input_currency[1] )], 'NANO' );
+					}
+					else
+					{
+						$arguments_row[1] = 0;
+					}
+					
+				}
+				else // Input as a Nano denomination?
+				{
+					
+					if( is_numeric( $arguments_row[1] ) && abs( $arguments_row[1] ) == $arguments_row[1] )
+					{
+						$arguments_row[1] = NanoTools::den2raw( $arguments_row[1], $C['nano']['denomination'] );
+					}
+					else
+					{
+						$arguments_row[1] = 0;
+					}
+					
+				}
+				
+			}
+			
+			// Generate automatic unique id for send command
+			
+			if( $command == 'send' && $arguments_row[0] == 'id' && $arguments_row[1] == 'uniqid' )
+			{
+				$arguments_row[1] = uniqid();
+			}
+			
+			$arguments[$arguments_row[0]] = $arguments_row[1];
+		
 		}
-		
-		// Generate automatic unique id for send command
-		
-		if( $command == 'send' && $arguments_row[0] == 'id' && $arguments_row[1] == 'uniqid' )
-		{
-			$arguments_row[1] = uniqid();
-		}
-		
-		$arguments[$arguments_row[0]] = $arguments_row[1];
-	
-	}
 
+	}
+	
 	
 	
 	
