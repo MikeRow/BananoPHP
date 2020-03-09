@@ -2378,7 +2378,7 @@
 					
 					$C['tags'][$arguments['cat']][$arguments['tag']] = $arguments['value'];
 					
-					$call_return[] = $arguments['value'];
+					$call_return[] = tag_added;
 					
 					file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 					
@@ -2474,7 +2474,7 @@
 					
 					$C['tags'][$arguments['cat']][$arguments['tag']] = $arguments['value'];
 					
-					$call_return[] = $arguments['value'];
+					$call_return[] = tag_edited;
 					
 					file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 					
@@ -2533,7 +2533,7 @@
 				
 					unset( $C['tags'][$arguments['cat']][$arguments['tag']] );
 					
-					$call_return[] = $arguments['tag'];
+					$call_return[] = tag_removed;
 					
 					file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 				
