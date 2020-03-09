@@ -2,7 +2,7 @@
 
 	/*
 
-	v1.0.12
+	v1.0.13
 	
 	*********************
 	*** CONFIGURATION ***
@@ -843,9 +843,9 @@
 	
 	define( 'bad_account'   			, 'Bad account' );
 	
-	define( 'null_tag'   				, 'Invalid tag' );
+	define( 'invalid_tag'   			, 'Invalid tag' );
 	
-	define( 'null_tag_value'   			, 'Invalid tag value' );
+	define( 'invalid_tag_value'   		, 'Invalid tag value' );
 	
 	define( 'exists_tag'   				, 'Tag already exists' );
 	
@@ -853,7 +853,17 @@
 	
 	define( 'not_exist_tag'				, 'Tag not found' );
 	
-	define( 'null_tag_account_value'	, 'Invalid account value' );
+	define( 'invalid_tag_account_value'	, 'Invalid account value' );
+	
+	define( 'invalid_tag_wallet_value'	, 'Invalid wallet value' );
+	
+	define( 'invalid_tag_block_value'	, 'Invalid block value' );
+	
+	define( 'tag_added'					, 'Tag added' );
+	
+	define( 'tag_edited'				, 'Tag edited' );
+	
+	define( 'tag_removed'				, 'Tag removed' );
 	
 	define( 'available_supply'			, '133248061996216572282917317807824970865');
 	
@@ -2321,26 +2331,32 @@
 			$call_return['error'] = bad_call;	
 		}
 		
-		// Check if tag is already present
-		
 		else
 		{
 			
-			$key_check = explode( '_', $arguments['value'] );
+			$account_check = explode( '_', $arguments['value'] );
 		
 			$arguments['tag'] = tag_filter( $arguments['tag'] );
 		
 			if( $arguments['tag'] == '' )
 			{
-				$call_return['error'] = null_tag;
+				$call_return['error'] = invalid_tag;
 			}
 			elseif( $arguments['value'] == '' )
 			{
-				$call_return['error'] = null_tag_value;
+				$call_return['error'] = invalid_tag_value;
 			}
-			elseif( $arguments['cat'] == 'account' && ( $key_check != 'xrb' || $key_check != 'nano' ) )
+			elseif( $arguments['cat'] == 'account' && ( ( $account_check[0] != 'xrb' && $account_check[0] != 'nano' ) || !isset( $account_check[1] ) || strlen( $account_check[1] ) != 60 || !preg_match( "/^[abcdefghijkmnopqrstuwxyz13456789]*$/", $account_check[1] ) ) )
 			{
-				$call_return['error'] = null_tag_account_value;
+				$call_return['error'] = invalid_tag_account_value;
+			}
+			elseif( $arguments['cat'] == 'wallet' && ( strlen( $arguments['value'] ) != 64 || !ctype_xdigit( $arguments['value'] ) ) )
+			{
+				$call_return['error'] = invalid_tag_wallet_value;
+			}
+			elseif( $arguments['cat'] == 'block' && ( strlen( $arguments['value'] ) != 64 || !ctype_xdigit( $arguments['value'] ) ) )
+			{
+				$call_return['error'] = invalid_tag_block_value;
 			}
 			else
 			{
@@ -2411,26 +2427,32 @@
 			$call_return['error'] = bad_call;	
 		}
 		
-		// Check if tag is already present
-		
 		else
 		{
 		
-			$key_check = explode( '_', $arguments['value'] );
+			$account_check = explode( '_', $arguments['value'] );
 		
 			$arguments['tag'] = tag_filter( $arguments['tag'] );
 		
 			if( $arguments['tag'] == '' )
 			{
-				$call_return['error'] = null_tag;
+				$call_return['error'] = invalid_tag;
 			}
 			elseif( $arguments['value'] == '' )
 			{
-				$call_return['error'] = null_tag_value;
+				$call_return['error'] = invalid_tag_value;
 			}
-			elseif( $arguments['cat'] == 'account' && ( $key_check != 'xrb' || $key_check != 'nano' ) )
+			elseif( $arguments['cat'] == 'account' && ( ( $account_check[0] != 'xrb' && $account_check[0] != 'nano' ) || !isset( $account_check[1] ) || strlen( $account_check[1] ) != 60 || !preg_match( "/^[abcdefghijkmnopqrstuwxyz13456789]*$/", $account_check[1] ) ) )
 			{
-				$call_return['error'] = null_tag_account_value;
+				$call_return['error'] = invalid_tag_account_value;
+			}
+			elseif( $arguments['cat'] == 'wallet' && ( strlen( $arguments['value'] ) != 64 || !ctype_xdigit( $arguments['value'] ) ) )
+			{
+				$call_return['error'] = invalid_tag_wallet_value;
+			}
+			elseif( $arguments['cat'] == 'block' && ( strlen( $arguments['value'] ) != 64 || !ctype_xdigit( $arguments['value'] ) ) )
+			{
+				$call_return['error'] = invalid_tag_block_value;
 			}
 			else
 			{
@@ -2494,8 +2516,6 @@
 			$call_return['error'] = bad_call;	
 		}
 		
-		// Check if tag is already present
-		
 		else
 		{
 			
@@ -2503,7 +2523,7 @@
 		
 			if( $arguments['tag'] == '' )
 			{
-				$call_return['error'] = null_tag;
+				$call_return['error'] = invalid_tag;
 			}
 			else
 			{
