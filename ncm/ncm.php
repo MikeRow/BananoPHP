@@ -823,49 +823,49 @@
 	
 	
 	
-	define( 'data_dir'   				, __DIR__ . '/data' );
+	define( 'data_dir'   					, __DIR__ . '/data' );
 	
-	define( 'log_dir'    				, __DIR__ . '/log' );
+	define( 'log_dir'    					, __DIR__ . '/log' );
 	
-	define( 'config_file'				, data_dir . '/config.json' );
+	define( 'config_file'					, data_dir . '/config.json' );
 	 
-	define(	'ticker_file'	 			, data_dir . '/ticker.json' );
+	define(	'ticker_file'	 				, data_dir . '/ticker.json' );
 	
-	define( 'thirdtags_file' 			, data_dir . '/3tags.json' );
+	define( 'thirdtags_file' 				, data_dir . '/3tags.json' );
 	
-	define( 'tabulation' 				, '    ' );
+	define( 'tabulation' 					, '    ' );
 	
-	define( 'bad_call'   	 			, 'Bad call' );
+	define( 'bad_call'   	 				, 'Bad call' );
 
-	define( 'no_connection'  			, 'No node connection' );
+	define( 'no_connection'  				, 'No node connection' );
 	
-	define( 'bad_wallet'     			, 'Bad wallet number' );
+	define( 'bad_wallet'     				, 'Bad wallet number' );
 	
-	define( 'bad_account'   			, 'Bad account' );
+	define( 'bad_account'   				, 'Bad account' );
 	
-	define( 'invalid_tag'   			, 'Invalid tag' );
+	define( 'invalid_tag'   				, 'Invalid tag' );
 	
-	define( 'invalid_tag_value'			, 'Invalid tag value' );
+	define( 'invalid_tag_value'				, 'Invalid tag value' );
 	
-	define( 'exists_tag'   				, 'Tag already exists' );
+	define( 'exists_tag'   					, 'Tag already exists' );
 	
-	define( 'exists_tag_value'			, 'Tag value already exists' );
+	define( 'exists_tag_value'				, 'Tag value already exists' );
 	
-	define( 'not_exist_tag'				, 'Tag not found' );
+	define( 'not_exist_tag'					, 'Tag not found' );
 	
-	define( 'invalid_tag_account_value'	, 'Invalid account value' );
+	define( 'invalid_tag_account_value'		, 'Invalid account value' );
 	
-	define( 'invalid_tag_wallet_value'	, 'Invalid wallet value' );
+	define( 'invalid_tag_wallet_value'		, 'Invalid wallet value' );
 	
-	define( 'invalid_tag_block_value'	, 'Invalid block value' );
+	define( 'invalid_tag_block_value'		, 'Invalid block value' );
 	
-	define( 'tag_added'					, 'Tag added' );
+	define( 'tag_added'						, 'Tag added' );
 	
-	define( 'tag_edited'				, 'Tag edited' );
+	define( 'tag_edited'					, 'Tag edited' );
 	
-	define( 'tag_removed'				, 'Tag removed' );
+	define( 'tag_removed'					, 'Tag removed' );
 	
-	define( 'available_supply'			, '133248061996216572282917317807824970865');
+	define( 'available_supply'				, '133248061996216572282917317807824970865');
 	
 	
 	
