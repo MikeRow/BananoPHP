@@ -2,7 +2,7 @@
 
 	/*
 
-	v1.0.13
+	v1.0.14
 	
 	*********************
 	*** CONFIGURATION ***
@@ -845,7 +845,7 @@
 	
 	define( 'invalid_tag'   			, 'Invalid tag' );
 	
-	define( 'invalid_tag_value'   		, 'Invalid tag value' );
+	define( 'invalid_tag_value'			, 'Invalid tag value' );
 	
 	define( 'exists_tag'   				, 'Tag already exists' );
 	
