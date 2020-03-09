@@ -2,7 +2,7 @@
 
 	/*
 
-	v1.0.11
+	v1.0.12
 	
 	*********************
 	*** CONFIGURATION ***
@@ -37,7 +37,7 @@
 			Tags
 			
 				ONLY ONE tag for each wallet/account/block ID
-				In order to have a clean and flowing tag list, I recommend using only lower-case alphanumeric characters, dashes(-) and dottes(.)
+				In order to have a clean and flowing tag list, I recommend using only lowercase alphanumeric characters, dashes(-) and dottes(.)
 				
 				Note: tags set by you will always take precedence over those of third party
 				
@@ -458,9 +458,11 @@
 	function tag_filter( $value )
 	{
 		
-		$value = preg_replace( '/[^a-z0-9. ]+/i', '', $value );
+		$value = preg_replace( '/[^a-z0-9_. ]+/i', '', $value );
 	
 		$value = str_replace( ' ', '-', $value );
+		
+		$value = str_replace( '_', '-', $value );
 		
 		$value = strtolower( $value );
 		
@@ -821,29 +823,39 @@
 	
 	
 	
-	define( 'data_dir'   		, __DIR__ . '/data' );
+	define( 'data_dir'   				, __DIR__ . '/data' );
 	
-	define( 'log_dir'    		, __DIR__ . '/log' );
+	define( 'log_dir'    				, __DIR__ . '/log' );
 	
-	define( 'config_file'		, data_dir . '/config.json' );
+	define( 'config_file'				, data_dir . '/config.json' );
 	 
-	define(	'ticker_file'	 	, data_dir . '/ticker.json' );
+	define(	'ticker_file'	 			, data_dir . '/ticker.json' );
 	
-	define( 'thirdtags_file' 	, data_dir . '/3tags.json' );
+	define( 'thirdtags_file' 			, data_dir . '/3tags.json' );
 	
-	define( 'tabulation' 		, '    ' );
+	define( 'tabulation' 				, '    ' );
 	
-	define( 'bad_call'   	 	, 'Bad call' );
+	define( 'bad_call'   	 			, 'Bad call' );
 
-	define( 'no_connection'  	, 'No node connection' );
+	define( 'no_connection'  			, 'No node connection' );
 	
-	define( 'bad_wallet'     	, 'Bad wallet number' );
+	define( 'bad_wallet'     			, 'Bad wallet number' );
 	
-	define( 'bad_account'   	, 'Bad account' );
+	define( 'bad_account'   			, 'Bad account' );
 	
-	define( 'null_tag'   		, 'Invalid tag' );
+	define( 'null_tag'   				, 'Invalid tag' );
 	
-	define( 'available_supply'	, '133248061996216572282917317807824970865');
+	define( 'null_tag_value'   			, 'Invalid tag value' );
+	
+	define( 'exists_tag'   				, 'Tag already exists' );
+	
+	define( 'exists_tag_value'			, 'Tag value already exists' );
+	
+	define( 'not_exist_tag'				, 'Tag not found' );
+	
+	define( 'null_tag_account_value'	, 'Invalid account value' );
+	
+	define( 'available_supply'			, '133248061996216572282917317807824970865');
 	
 	
 	
@@ -2174,7 +2186,7 @@
 	elseif( $command == '3tags_update' )
 	{
 	
-		$thirdy_party_tags_elaborated = [];
+		$thirdy_party_tags_elaborated['account'] = [];
 	
 		$third_party_tags_json = file_get_contents( 'https://mynano.ninja/api/accounts/aliases' );
 		
@@ -2192,6 +2204,8 @@
 			$tag = $data['alias'];
 		
 			$tag = tag_filter( $tag );
+			
+			if( array_key_exists( $tag, $thirdy_party_tags_elaborated['account'] ) ) continue;
 		
 			if( $tag == '' ) continue;
 		
@@ -2311,6 +2325,8 @@
 		
 		else
 		{
+			
+			$key_check = explode( '_', $arguments['value'] );
 		
 			$arguments['tag'] = tag_filter( $arguments['tag'] );
 		
@@ -2318,16 +2334,28 @@
 			{
 				$call_return['error'] = null_tag;
 			}
+			elseif( $arguments['value'] == '' )
+			{
+				$call_return['error'] = null_tag_value;
+			}
+			elseif( $arguments['cat'] == 'account' && ( $key_check != 'xrb' || $key_check != 'nano' ) )
+			{
+				$call_return['error'] = null_tag_account_value;
+			}
 			else
 			{
 				
 				if( array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
 				{
-					$call_return['error'] = 'Tag already present';
+					$call_return['error'] = exists_tag;
 				}
-				elseif( in_array( $arguments['value'], $C['tags'][$arguments['cat']] ) )
+				elseif( 
+				in_array( $arguments['value'], $C['tags']['wallet'] ) ||
+				in_array( $arguments['value'], $C['tags']['account'] ) ||
+				in_array( $arguments['value'], $C['tags']['block'] )
+				)
 				{
-					$call_return['error'] = 'Value already present';
+					$call_return['error'] = exists_tag_value;
 				}
 				else
 				{
@@ -2388,22 +2416,36 @@
 		else
 		{
 		
+			$key_check = explode( '_', $arguments['value'] );
+		
 			$arguments['tag'] = tag_filter( $arguments['tag'] );
 		
 			if( $arguments['tag'] == '' )
 			{
 				$call_return['error'] = null_tag;
 			}
+			elseif( $arguments['value'] == '' )
+			{
+				$call_return['error'] = null_tag_value;
+			}
+			elseif( $arguments['cat'] == 'account' && ( $key_check != 'xrb' || $key_check != 'nano' ) )
+			{
+				$call_return['error'] = null_tag_account_value;
+			}
 			else
 			{
 				
 				if( array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
 				{
-					$call_return['error'] = 'Tag not present';
+					$call_return['error'] = exists_tag;
 				}
-				elseif( in_array( $arguments['value'], $C['tags'][$arguments['cat']] ) )
+				elseif( 
+				in_array( $arguments['value'], $C['tags']['wallet'] ) ||
+				in_array( $arguments['value'], $C['tags']['account'] ) ||
+				in_array( $arguments['value'], $C['tags']['block'] )
+				)
 				{
-					$call_return['error'] = 'Value already present';
+					$call_return['error'] = exists_tag_value;
 				}
 				else
 				{
@@ -2478,7 +2520,7 @@
 				}
 				else
 				{
-					$call_return['error'] = 'Tag not present';
+					$call_return['error'] = not_exist_tag;
 				}
 				
 			}
