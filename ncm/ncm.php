@@ -265,24 +265,27 @@
 	
 	define( 'available_supply'      , '133248061996216572282917317807824970865' );
 	
-	define( 'mstring'                ,
+	define( 'notice'                ,
 	[
+		'init-completed'            => 'Init completed',
+		'node-connection-failed'    => 'Node connection failed',
+		'sending-amount'            => 'Sending',
+		'sending-confirm'           => 'Do you want to proceed? Type \'confirm\' to proceed: ',
 		'bad_call'                  => 'Bad call',
 		'bad_wallet'                => 'Bad wallet number',
 		'bad_account'               => 'Bad account',
+		'bad_block'                 => 'Bad block',
 		'bad_tag'                   => 'Bad tag',
 		'bad_tag_value'             => 'Bad tag value',
-		'exists_tag'                => 'Tag already exists',
-		'exists_tag_value'          => 'Tag value already exists',
-		'not_exist_tag'             => 'Tag not found',
-		'bad_tag_account_value'     => 'Bad account value',
-		'bad_tag_wallet_value'      => 'Bad wallet value',
-		'bad_tag_block_value'       => 'Bad block value',
+		'used_tag'                  => 'Tag already used',
+		'used_tag_value'            => 'Tag value already used',
+		'tag_not_found'             => 'Tag not found',
 		'tag_added'                 => 'Tag added',
 		'tag_edited'                => 'Tag edited',
-		'tag_removed'               => 'Tag removed'
+		'tag_removed'               => 'Tag removed',
+		'ticker-not-updated'        => 'Ticker not updated'
 	]);
-	
+
 	
 	
 	// *** Create data folder if not exsist ***
@@ -486,7 +489,7 @@
 		
 		if( !is_null( $nanoconn->error ) )
 		{
-			$call_return['error'] = 'Node connection failed';
+			$call_return['error'] = notice['node-connection-failed'];
 		}
 		
 	}
@@ -952,9 +955,9 @@
 					
 				// Error format
 				
-					if( $key == 'error' && $value == 'Unable to parse JSON' ) $array[$key] = mstring['bad_call'];
+					if( $key == 'error' && $value == 'Unable to parse JSON' ) $array[$key] = notice['bad_call'];
 					
-					if( $key == 'error' && $value == 'Unable to parse Array' ) $array[$key] = mstring['bad_call'];
+					if( $key == 'error' && $value == 'Unable to parse Array' ) $array[$key] = notice['bad_call'];
 				
 				// Tag replacement
 				
@@ -1388,9 +1391,9 @@
 				
 				$confirmation_amount = custom_number( NanoTools::raw2den( $confirmation_amount, $C['nano']['denomination'] ) ) . ' ' . $C['nano']['denomination'];
 				
-				echo PHP_EOL . "*** Sending $confirmation_amount ***" . PHP_EOL;
+				echo PHP_EOL . notice['sending-amount'] . ' ' . $confirmation_amount . PHP_EOL;
 				
-				echo 'Do you want to proceed? Type \'confirm\' to proceed: ';
+				echo notice['sending-confirm'];
 				
 				$line = stream_get_line( STDIN, 10, PHP_EOL );
 				
@@ -1623,7 +1626,7 @@
 		
 			if( isset( $wallet_info['error'] ) )
 			{
-				$call_return['error'] = mstring['bad_wallet'];
+				$call_return['error'] = notice['bad_wallet'];
 			}
 			else
 			{
@@ -1659,7 +1662,7 @@
 		}
 		else
 		{
-			$call_return['error'] = mstring['bad_wallet'];
+			$call_return['error'] = notice['bad_wallet'];
 		}
 		
 		check_node_connection();
@@ -1682,7 +1685,7 @@
 		
 			if( isset( $wallet_info['error'] ) )
 			{
-				$call_return['error'] = mstring['bad_wallet'];
+				$call_return['error'] = notice['bad_wallet'];
 			}
 			else
 			{
@@ -1714,7 +1717,7 @@
 		}
 		else
 		{
-			$call_return['error'] = mstring['bad_wallet'];
+			$call_return['error'] = notice['bad_wallet'];
 		}
 		
 		check_node_connection();
@@ -1737,7 +1740,7 @@
 			
 			if( $check_account['valid'] != 1 )
 			{
-				$call_return['error'] = mstring['bad_account'];
+				$call_return['error'] = notice['bad_account'];
 			}
 			else
 			{
@@ -1777,7 +1780,7 @@
 		}
 		else
 		{
-			$call_return['error'] = mstring['bad_account'];
+			$call_return['error'] = notice['bad_account'];
 		}
 		
 		check_node_connection();
@@ -1800,7 +1803,7 @@
 			
 			if( $check_account['valid'] != 1 )
 			{
-				$call_return['error'] = mstring['bad_account'];
+				$call_return['error'] = notice['bad_account'];
 			}
 			else
 			{
@@ -1897,7 +1900,7 @@
 		}
 		else
 		{
-			$call_return['error'] = mstring['bad_account'];
+			$call_return['error'] = notice['bad_account'];
 		}
 		
 		check_node_connection();
@@ -2288,28 +2291,28 @@
 		
 		if( !isset( $arguments['cat'] ) )
 		{
-			$call_return['error'] = mstring['bad_call'];	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		// Check if cat is correct
 			
 		elseif( !array_key_exists( $arguments['cat'], $C['tags'] ) )
 		{
-			$call_return['error'] = mstring['bad_call'];	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		// Check if tag is defined
 		
 		elseif( !isset( $arguments['tag'] ) )
 		{
-			$call_return['error'] = mstring['bad_call'];	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		// Check if value is defined
 		
 		elseif( !isset( $arguments['value'] ) )
 		{
-			$call_return['error'] = mstring['bad_call'];	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		else
@@ -2321,30 +2324,26 @@
 		
 			if( $arguments['tag'] == '' )
 			{
-				$call_return['error'] = mstring['bad_tag'];
-			}
-			elseif( $arguments['value'] == '' )
-			{
-				$call_return['error'] = mstring['bad_tag_value'];
+				$call_return['error'] = notice['bad_tag'];
 			}
 			elseif( $arguments['cat'] == 'account' && ( ( $account_check[0] != 'xrb' && $account_check[0] != 'nano' ) || !isset( $account_check[1] ) || strlen( $account_check[1] ) != 60 || !preg_match( "/^[abcdefghijkmnopqrstuwxyz13456789]*$/", $account_check[1] ) ) )
 			{
-				$call_return['error'] = mstring['bad_tag_account_value'];
+				$call_return['error'] = notice['bad_account'];
 			}
 			elseif( $arguments['cat'] == 'wallet' && ( strlen( $arguments['value'] ) != 64 || !ctype_xdigit( $arguments['value'] ) ) )
 			{
-				$call_return['error'] = mstring['bad_tag_wallet_value'];
+				$call_return['error'] = notice['bad_wallet'];
 			}
 			elseif( $arguments['cat'] == 'block' && ( strlen( $arguments['value'] ) != 64 || !ctype_xdigit( $arguments['value'] ) ) )
 			{
-				$call_return['error'] = mstring['bad_tag_block_value'];
+				$call_return['error'] = notice['bad_block'];
 			}
 			else
 			{
 				
 				if( array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
 				{
-					$call_return['error'] = mstring['exists_tag'];
+					$call_return['error'] = notice['used_tag'];
 				}
 				elseif( 
 				in_array( $arguments['value'], $C['tags']['wallet'] ) ||
@@ -2352,14 +2351,14 @@
 				in_array( $arguments['value'], $C['tags']['block'] )
 				)
 				{
-					$call_return['error'] = mstring['exists_tag_value'];
+					$call_return['error'] = notice['used_tag_value'];
 				}
 				else
 				{
 					
 					$C['tags'][$arguments['cat']][$arguments['tag']] = $arguments['value'];
 					
-					$call_return[] = mstring['tag_added'];
+					$call_return[] = notice['tag_added'];
 					
 					file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 					
@@ -2384,28 +2383,28 @@
 		
 		if( !isset( $arguments['cat'] ) )
 		{
-			$call_return['error'] = mstring['bad_call'];	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		// Check if cat is correct
 			
 		elseif( !array_key_exists( $arguments['cat'], $C['tags'] ) )
 		{
-			$call_return['error'] = mstring['bad_call'];	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		// Check if tag is defined
 		
 		elseif( !isset( $arguments['tag'] ) )
 		{
-			$call_return['error'] = mstring['bad_call'];	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		// Check if value is defined
 		
 		elseif( !isset( $arguments['value'] ) )
 		{
-			$call_return['error'] = mstring['bad_call'];	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		else
@@ -2417,30 +2416,26 @@
 		
 			if( $arguments['tag'] == '' )
 			{
-				$call_return['error'] = mstring['bad_tag'];
-			}
-			elseif( $arguments['value'] == '' )
-			{
-				$call_return['error'] = mstring['bad_tag_value'];
+				$call_return['error'] = notice['bad_tag'];
 			}
 			elseif( $arguments['cat'] == 'account' && ( ( $account_check[0] != 'xrb' && $account_check[0] != 'nano' ) || !isset( $account_check[1] ) || strlen( $account_check[1] ) != 60 || !preg_match( "/^[abcdefghijkmnopqrstuwxyz13456789]*$/", $account_check[1] ) ) )
 			{
-				$call_return['error'] = mstring['bad_tag_account_value'];
+				$call_return['error'] = notice['bad_account'];
 			}
 			elseif( $arguments['cat'] == 'wallet' && ( strlen( $arguments['value'] ) != 64 || !ctype_xdigit( $arguments['value'] ) ) )
 			{
-				$call_return['error'] = mstring['bad_tag_wallet_value'];
+				$call_return['error'] = notice['bad_wallet'];
 			}
 			elseif( $arguments['cat'] == 'block' && ( strlen( $arguments['value'] ) != 64 || !ctype_xdigit( $arguments['value'] ) ) )
 			{
-				$call_return['error'] = mstring['bad_tag_block_value'];
+				$call_return['error'] = notice['bad_block'];
 			}
 			else
 			{
 				
 				if( array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
 				{
-					$call_return['error'] = mstring['exists_tag'];
+					$call_return['error'] = notice['used_tag'];
 				}
 				elseif( 
 				in_array( $arguments['value'], $C['tags']['wallet'] ) ||
@@ -2448,14 +2443,14 @@
 				in_array( $arguments['value'], $C['tags']['block'] )
 				)
 				{
-					$call_return['error'] = mstring['exists_tag_value'];
+					$call_return['error'] = notice['used_tag_value'];
 				}
 				else
 				{
 					
 					$C['tags'][$arguments['cat']][$arguments['tag']] = $arguments['value'];
 					
-					$call_return[] = mstring['tag_edited'];
+					$call_return[] = notice['tag_edited'];
 					
 					file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 					
@@ -2480,21 +2475,21 @@
 		
 		if( !isset( $arguments['cat'] ) )
 		{
-			$call_return['error'] = mstring['bad_call'];	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		// Check if cat is correct
 			
 		elseif( !array_key_exists( $arguments['cat'], $C['tags'] ) )
 		{
-			$call_return['error'] = mstring['bad_call'];	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		// Check if tag is defined
 		
 		elseif( !isset( $arguments['tag'] ) )
 		{
-			$call_return['error'] = mstring['bad_call'];	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		else
@@ -2504,7 +2499,7 @@
 		
 			if( $arguments['tag'] == '' )
 			{
-				$call_return['error'] = mstring['bad_tag'];
+				$call_return['error'] = notice['bad_tag'];
 			}
 			else
 			{
@@ -2514,14 +2509,14 @@
 				
 					unset( $C['tags'][$arguments['cat']][$arguments['tag']] );
 					
-					$call_return[] = mstring['tag_removed'];
+					$call_return[] = notice['tag_removed'];
 					
 					file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 				
 				}
 				else
 				{
-					$call_return['error'] = mstring['not_exist_tag'];
+					$call_return['error'] = notice['tag_not_found'];
 				}
 				
 			}
@@ -2539,7 +2534,7 @@
 	elseif( $command == 'init' )
 	{
 		
-		$call_return[] = 'Init completed';
+		$call_return[] = notice['init-completed'];
 		
 	}
 	
@@ -2571,7 +2566,7 @@
 	
 		if( $ticker_delay > 60*30 )
 		{
-			$alerts[] = 'Ticker not updated';
+			$alerts[] = notice['ticker-not-updated'];
 		}
 	
 	}
