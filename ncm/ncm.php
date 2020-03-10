@@ -249,23 +249,23 @@
 	
 	
 	
-	define( 'version'					, 'v1.0.15' );
+	define( 'version'				, 'v1.0.15' );
 	
-	define( 'data_dir'   				, __DIR__ . '/data' );
+	define( 'data_dir'   			, __DIR__ . '/data' );
 	
-	define( 'log_dir'    				, __DIR__ . '/log' );
+	define( 'log_dir'    			, __DIR__ . '/log' );
 	
-	define( 'config_file'				, data_dir . '/config.json' );
+	define( 'config_file'			, data_dir . '/config.json' );
 	 
-	define(	'ticker_file'	 			, data_dir . '/ticker.json' );
+	define(	'ticker_file'	 		, data_dir . '/ticker.json' );
 	
-	define( 'thirdtags_file' 			, data_dir . '/3tags.json' );
+	define( 'thirdtags_file' 		, data_dir . '/3tags.json' );
 	
-	define( 'tabulation' 				, '    ' );
+	define( 'tabulation' 			, '    ' );
 	
-	define( 'available_supply'			, '133248061996216572282917317807824970865' );
+	define( 'available_supply'		, '133248061996216572282917317807824970865' );
 	
-	define( 'notice'					,
+	define( 'notice'				,
 	[
 		'bad_call'						=> 'Bad call',
 		'no_connection'					=> 'No node connection',
