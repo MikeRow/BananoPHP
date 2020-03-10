@@ -2,8 +2,6 @@
 
 	/*
 
-	v1.0.14
-	
 	*********************
 	*** CONFIGURATION ***
 	*********************
@@ -242,6 +240,179 @@
 	
 	
 	
+	// *********************
+	// *** Configuration ***
+	// *********************
+	
+	
+	
+	
+	
+	
+	define( 'version'					, 'v1.0.15' );
+	
+	define( 'data_dir'   				, __DIR__ . '/data' );
+	
+	define( 'log_dir'    				, __DIR__ . '/log' );
+	
+	define( 'config_file'				, data_dir . '/config.json' );
+	 
+	define(	'ticker_file'	 			, data_dir . '/ticker.json' );
+	
+	define( 'thirdtags_file' 			, data_dir . '/3tags.json' );
+	
+	define( 'tabulation' 				, '    ' );
+	
+	define( 'available_supply'			, '133248061996216572282917317807824970865' );
+	
+	define( 'notice'					,
+	[
+		'bad_call'						=> 'Bad call',
+		'no_connection'					=> 'No node connection',
+		'bad_wallet'					=> 'Bad wallet number',
+		'bad_account'					=> 'Bad account',
+		'bad_tag'						=> 'Invalid tag',
+		'bad_tag_value'					=> 'Invalid tag value',
+		'exists_tag'					=> 'Tag already exists',
+		'exists_tag_value'				=> 'Tag value already exists',
+		'not_exist_tag'					=> 'Tag not found',
+		'bad_tag_account_value'			=> 'Bad account value',
+		'bad_tag_wallet_value'			=> 'Bad wallet value',
+		'bad_tag_block_value'			=> 'Bad block value',
+		'tag_added'						=> 'Tag added',
+		'tag_edited'					=> 'Tag edited',
+		'tag_removed'					=> 'Tag removed'
+	]);
+	
+	
+	
+	// *** Create data folder if not exsist ***
+	
+	
+	
+	if( !is_dir( data_dir ) )
+	{
+		mkdir( data_dir );
+	}
+	
+	
+	
+	// *** Create log folder if not exsist ***
+	
+	
+	
+	if( !is_dir( log_dir ) )
+	{
+		mkdir( log_dir );
+	}
+
+	
+	
+	// *** Config model ***
+	
+	
+	
+	$C_model_raw =
+	'{
+		"nano": {
+			"denomination": "NANO",
+			"node_file": "/home/nano/nano_node",
+			"data_dir": "/home/nano/Nano",
+			"connection": "rpc",
+			"rpc": {
+				"host": "localhost",
+				"port": "7076"
+			}
+		},
+		"log": {
+			"save": true,
+			"privacy": true
+		},
+		"timezone": "UTC",
+		"format": {
+			"timestamp": "m/d/Y H:i:s",
+			"decimal": ".",
+			"thousand": ","
+		},
+		"ticker": {
+			"enable": false,
+			"fav_vs_currencies": "BTC,USD"
+		},
+		"tag": {
+			"view" : true,
+			"separator": "|"
+		},
+		"tags": {
+			"account": {
+				"genesis": "nano_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3"
+			},
+			"block": {
+				"genesis": "991CF190094C00F0B68E2E5F75F6BEE95A2E0BD93CEAA4A6734DB9F19B728948"
+			},
+			"wallet": {}
+		},
+		"3tags": {
+			"enable": false
+		}
+	}';
+	
+	$C_model = json_decode( $C_model_raw, true );
+	
+	
+	
+	// *** Load config.json ***
+	
+	
+	
+	// If config.json is not found, initialize a model like one
+	
+	if( !file_exists( config_file ) )
+	{
+		$C = $C_model;
+	}
+	
+	// Else load config.json
+	
+	else
+	{
+		
+		$C = json_decode( file_get_contents( config_file ), true );
+	
+		// Insert standard configuration if missing elements
+		
+		$C = array_merge_new_recursive( $C, $C_model );
+		
+	}
+	
+	// Complete configuration
+	
+	date_default_timezone_set( $C['timezone'] );
+	
+	if( $C['ticker']['enable'] )
+	{
+		
+		$ticker_array = json_decode( file_get_contents( ticker_file ), true );
+		
+		define( 'vs_currencies' , $ticker_array['nano'] );
+		
+		define( 'ticker_last', $ticker_array['last_updated_at'] );
+		
+	}
+	
+	if( $C['3tags']['enable'] )
+	{
+		define( 'thirdtags', json_decode( file_get_contents( thirdtags_file ), true ) );
+	}
+	
+	// Save config.json
+	
+	file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
+	
+	
+	
+	
+	
+
 	// *****************
 	// *** Functions ***
 	// *****************
@@ -301,17 +472,6 @@
 		
 	}
 	
-
-
-	// *** Notable string ***
-	
-	
-	
-	function notable_string( string $string )
-	{
-		return PHP_EOL . '*** ' . $string . ' ***' . PHP_EOL;
-	}
-	
 	
 	
 	// *** Node connection error ***
@@ -327,7 +487,7 @@
 		
 		if( !is_null( $nanoconn->error ) )
 		{
-			$call_return['error'] = no_connection;
+			$call_return['error'] = notice['no_connection'];
 		}
 		
 	}
@@ -793,9 +953,9 @@
 					
 				// Error format
 				
-					if( $key == 'error' && $value == 'Unable to parse JSON' ) $array[$key] = bad_call;
+					if( $key == 'error' && $value == 'Unable to parse JSON' ) $array[$key] = notice['bad_call'];
 					
-					if( $key == 'error' && $value == 'Unable to parse Array' ) $array[$key] = bad_call;
+					if( $key == 'error' && $value == 'Unable to parse Array' ) $array[$key] = notice['bad_call'];
 				
 				// Tag replacement
 				
@@ -808,188 +968,6 @@
 		return $array;
 		
 	}
-	
-
-	
-	
-
-	
-	// *********************
-	// *** Configuration ***
-	// *********************
-	
-	
-	
-	
-	
-	
-	define( 'data_dir'   					, __DIR__ . '/data' );
-	
-	define( 'log_dir'    					, __DIR__ . '/log' );
-	
-	define( 'config_file'					, data_dir . '/config.json' );
-	 
-	define(	'ticker_file'	 				, data_dir . '/ticker.json' );
-	
-	define( 'thirdtags_file' 				, data_dir . '/3tags.json' );
-	
-	define( 'tabulation' 					, '    ' );
-	
-	define( 'bad_call'   	 				, 'Bad call' );
-
-	define( 'no_connection'  				, 'No node connection' );
-	
-	define( 'bad_wallet'     				, 'Bad wallet number' );
-	
-	define( 'bad_account'   				, 'Bad account' );
-	
-	define( 'invalid_tag'   				, 'Invalid tag' );
-	
-	define( 'invalid_tag_value'				, 'Invalid tag value' );
-	
-	define( 'exists_tag'   					, 'Tag already exists' );
-	
-	define( 'exists_tag_value'				, 'Tag value already exists' );
-	
-	define( 'not_exist_tag'					, 'Tag not found' );
-	
-	define( 'invalid_tag_account_value'		, 'Invalid account value' );
-	
-	define( 'invalid_tag_wallet_value'		, 'Invalid wallet value' );
-	
-	define( 'invalid_tag_block_value'		, 'Invalid block value' );
-	
-	define( 'tag_added'						, 'Tag added' );
-	
-	define( 'tag_edited'					, 'Tag edited' );
-	
-	define( 'tag_removed'					, 'Tag removed' );
-	
-	define( 'available_supply'				, '133248061996216572282917317807824970865');
-	
-	
-	
-	// *** Create data folder if not exsist ***
-	
-	
-	
-	if( !is_dir( data_dir ) )
-	{
-		mkdir( data_dir );
-	}
-	
-	
-	
-	// *** Create log folder if not exsist ***
-	
-	
-	
-	if( !is_dir( log_dir ) )
-	{
-		mkdir( log_dir );
-	}
-
-	
-	
-	// *** Config model ***
-	
-	
-	
-	$C_model_raw =
-	'{
-		"nano": {
-			"denomination": "NANO",
-			"node_file": "/home/nano/nano_node",
-			"data_dir": "/home/nano/Nano",
-			"connection": "rpc",
-			"rpc": {
-				"host": "localhost",
-				"port": "7076"
-			}
-		},
-		"log": {
-			"save": true,
-			"privacy": true
-		},
-		"timezone": "UTC",
-		"format": {
-			"timestamp": "m/d/Y H:i:s",
-			"decimal": ".",
-			"thousand": ","
-		},
-		"ticker": {
-			"enable": false,
-			"fav_vs_currencies": "BTC,USD"
-		},
-		"tag": {
-			"view" : true,
-			"separator": "|"
-		},
-		"tags": {
-			"account": {
-				"genesis": "nano_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3"
-			},
-			"block": {
-				"genesis": "991CF190094C00F0B68E2E5F75F6BEE95A2E0BD93CEAA4A6734DB9F19B728948"
-			},
-			"wallet": {}
-		},
-		"3tags": {
-			"enable": false
-		}
-	}';
-	
-	$C_model = json_decode( $C_model_raw, true );
-	
-	
-	
-	// *** Load config.json ***
-	
-	
-	
-	// If config.json is not found, initialize a model like one
-	
-	if( !file_exists( config_file ) )
-	{
-		$C = $C_model;
-	}
-	
-	// Else load config.json
-	
-	else
-	{
-		
-		$C = json_decode( file_get_contents( config_file ), true );
-	
-		// Insert standard configuration if missing elements
-		
-		$C = array_merge_new_recursive( $C, $C_model );
-		
-	}
-	
-	// Complete configuration
-	
-	date_default_timezone_set( $C['timezone'] );
-	
-	if( $C['ticker']['enable'] )
-	{
-		
-		$ticker_array = json_decode( file_get_contents( ticker_file ), true );
-		
-		define( 'vs_currencies' , $ticker_array['nano'] );
-		
-		define( 'ticker_last', $ticker_array['last_updated_at'] );
-		
-	}
-	
-	if( $C['3tags']['enable'] )
-	{
-		define( 'thirdtags', json_decode( file_get_contents( thirdtags_file ), true ) );
-	}
-	
-	// Save config.json
-	
-	file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 	
 	
 	
@@ -1411,7 +1389,7 @@
 				
 				$confirmation_amount = custom_number( NanoTools::raw2den( $confirmation_amount, $C['nano']['denomination'] ) ) . ' ' . $C['nano']['denomination'];
 				
-				echo notable_string( "Sending $confirmation_amount" ) . PHP_EOL;
+				echo "*** Sending $confirmation_amount ***" . PHP_EOL;
 				
 				echo 'Do you want to proceed? Type \'confirm\' to proceed: ';
 				
@@ -1456,6 +1434,10 @@
 	
 	if( $command == 'status' )
 	{ 
+	
+		// ncm version
+		
+		$call_return['ncm_version'] = version;
 	
 		// Node version
 		
@@ -1642,7 +1624,7 @@
 		
 			if( isset( $wallet_info['error'] ) )
 			{
-				$call_return['error'] = bad_wallet;
+				$call_return['error'] = notice['bad_wallet'];
 			}
 			else
 			{
@@ -1678,7 +1660,7 @@
 		}
 		else
 		{
-			$call_return['error'] = bad_wallet;
+			$call_return['error'] = notice['bad_wallet'];
 		}
 		
 		check_node_connection();
@@ -1701,7 +1683,7 @@
 		
 			if( isset( $wallet_info['error'] ) )
 			{
-				$call_return['error'] = bad_wallet;
+				$call_return['error'] = notice['bad_wallet'];
 			}
 			else
 			{
@@ -1733,7 +1715,7 @@
 		}
 		else
 		{
-			$call_return['error'] = bad_wallet;
+			$call_return['error'] = notice['bad_wallet'];
 		}
 		
 		check_node_connection();
@@ -1756,7 +1738,7 @@
 			
 			if( $check_account['valid'] != 1 )
 			{
-				$call_return['error'] = bad_account;
+				$call_return['error'] = notice['bad_account'];
 			}
 			else
 			{
@@ -1796,7 +1778,7 @@
 		}
 		else
 		{
-			$call_return['error'] = bad_account;
+			$call_return['error'] = notice['bad_account'];
 		}
 		
 		check_node_connection();
@@ -1819,7 +1801,7 @@
 			
 			if( $check_account['valid'] != 1 )
 			{
-				$call_return['error'] = bad_account;
+				$call_return['error'] = notice['bad_account'];
 			}
 			else
 			{
@@ -1916,7 +1898,7 @@
 		}
 		else
 		{
-			$call_return['error'] = bad_account;
+			$call_return['error'] = notice['bad_account'];
 		}
 		
 		check_node_connection();
@@ -2307,28 +2289,28 @@
 		
 		if( !isset( $arguments['cat'] ) )
 		{
-			$call_return['error'] = bad_call;	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		// Check if cat is correct
 			
 		elseif( !array_key_exists( $arguments['cat'], $C['tags'] ) )
 		{
-			$call_return['error'] = bad_call;	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		// Check if tag is defined
 		
 		elseif( !isset( $arguments['tag'] ) )
 		{
-			$call_return['error'] = bad_call;	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		// Check if value is defined
 		
 		elseif( !isset( $arguments['value'] ) )
 		{
-			$call_return['error'] = bad_call;	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		else
@@ -2340,30 +2322,30 @@
 		
 			if( $arguments['tag'] == '' )
 			{
-				$call_return['error'] = invalid_tag;
+				$call_return['error'] = notice['bad_tag'];
 			}
 			elseif( $arguments['value'] == '' )
 			{
-				$call_return['error'] = invalid_tag_value;
+				$call_return['error'] = notice['bad_tag_value'];
 			}
 			elseif( $arguments['cat'] == 'account' && ( ( $account_check[0] != 'xrb' && $account_check[0] != 'nano' ) || !isset( $account_check[1] ) || strlen( $account_check[1] ) != 60 || !preg_match( "/^[abcdefghijkmnopqrstuwxyz13456789]*$/", $account_check[1] ) ) )
 			{
-				$call_return['error'] = invalid_tag_account_value;
+				$call_return['error'] = notice['bad_tag_account_value'];
 			}
 			elseif( $arguments['cat'] == 'wallet' && ( strlen( $arguments['value'] ) != 64 || !ctype_xdigit( $arguments['value'] ) ) )
 			{
-				$call_return['error'] = invalid_tag_wallet_value;
+				$call_return['error'] = notice['bad_tag_wallet_value'];
 			}
 			elseif( $arguments['cat'] == 'block' && ( strlen( $arguments['value'] ) != 64 || !ctype_xdigit( $arguments['value'] ) ) )
 			{
-				$call_return['error'] = invalid_tag_block_value;
+				$call_return['error'] = notice['bad_tag_block_value'];
 			}
 			else
 			{
 				
 				if( array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
 				{
-					$call_return['error'] = exists_tag;
+					$call_return['error'] = notice['exists_tag'];
 				}
 				elseif( 
 				in_array( $arguments['value'], $C['tags']['wallet'] ) ||
@@ -2371,14 +2353,14 @@
 				in_array( $arguments['value'], $C['tags']['block'] )
 				)
 				{
-					$call_return['error'] = exists_tag_value;
+					$call_return['error'] = notice['exists_tag_value'];
 				}
 				else
 				{
 					
 					$C['tags'][$arguments['cat']][$arguments['tag']] = $arguments['value'];
 					
-					$call_return[] = tag_added;
+					$call_return[] = notice['tag_added'];
 					
 					file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 					
@@ -2403,28 +2385,28 @@
 		
 		if( !isset( $arguments['cat'] ) )
 		{
-			$call_return['error'] = bad_call;	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		// Check if cat is correct
 			
 		elseif( !array_key_exists( $arguments['cat'], $C['tags'] ) )
 		{
-			$call_return['error'] = bad_call;	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		// Check if tag is defined
 		
 		elseif( !isset( $arguments['tag'] ) )
 		{
-			$call_return['error'] = bad_call;	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		// Check if value is defined
 		
 		elseif( !isset( $arguments['value'] ) )
 		{
-			$call_return['error'] = bad_call;	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		else
@@ -2436,30 +2418,30 @@
 		
 			if( $arguments['tag'] == '' )
 			{
-				$call_return['error'] = invalid_tag;
+				$call_return['error'] = notice['bad_tag'];
 			}
 			elseif( $arguments['value'] == '' )
 			{
-				$call_return['error'] = invalid_tag_value;
+				$call_return['error'] = notice['bad_tag_value'];
 			}
 			elseif( $arguments['cat'] == 'account' && ( ( $account_check[0] != 'xrb' && $account_check[0] != 'nano' ) || !isset( $account_check[1] ) || strlen( $account_check[1] ) != 60 || !preg_match( "/^[abcdefghijkmnopqrstuwxyz13456789]*$/", $account_check[1] ) ) )
 			{
-				$call_return['error'] = invalid_tag_account_value;
+				$call_return['error'] = notice['bad_tag_account_value'];
 			}
 			elseif( $arguments['cat'] == 'wallet' && ( strlen( $arguments['value'] ) != 64 || !ctype_xdigit( $arguments['value'] ) ) )
 			{
-				$call_return['error'] = invalid_tag_wallet_value;
+				$call_return['error'] = notice['bad_tag_wallet_value'];
 			}
 			elseif( $arguments['cat'] == 'block' && ( strlen( $arguments['value'] ) != 64 || !ctype_xdigit( $arguments['value'] ) ) )
 			{
-				$call_return['error'] = invalid_tag_block_value;
+				$call_return['error'] = notice['bad_tag_block_value'];
 			}
 			else
 			{
 				
 				if( array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
 				{
-					$call_return['error'] = exists_tag;
+					$call_return['error'] = notice['exists_tag'];
 				}
 				elseif( 
 				in_array( $arguments['value'], $C['tags']['wallet'] ) ||
@@ -2467,14 +2449,14 @@
 				in_array( $arguments['value'], $C['tags']['block'] )
 				)
 				{
-					$call_return['error'] = exists_tag_value;
+					$call_return['error'] = notice['exists_tag_value'];
 				}
 				else
 				{
 					
 					$C['tags'][$arguments['cat']][$arguments['tag']] = $arguments['value'];
 					
-					$call_return[] = tag_edited;
+					$call_return[] = notice['tag_edited'];
 					
 					file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 					
@@ -2499,21 +2481,21 @@
 		
 		if( !isset( $arguments['cat'] ) )
 		{
-			$call_return['error'] = bad_call;	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		// Check if cat is correct
 			
 		elseif( !array_key_exists( $arguments['cat'], $C['tags'] ) )
 		{
-			$call_return['error'] = bad_call;	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		// Check if tag is defined
 		
 		elseif( !isset( $arguments['tag'] ) )
 		{
-			$call_return['error'] = bad_call;	
+			$call_return['error'] = notice['bad_call'];	
 		}
 		
 		else
@@ -2523,7 +2505,7 @@
 		
 			if( $arguments['tag'] == '' )
 			{
-				$call_return['error'] = invalid_tag;
+				$call_return['error'] = notice['bad_tag'];
 			}
 			else
 			{
@@ -2533,14 +2515,14 @@
 				
 					unset( $C['tags'][$arguments['cat']][$arguments['tag']] );
 					
-					$call_return[] = tag_removed;
+					$call_return[] = notice['tag_removed'];
 					
 					file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 				
 				}
 				else
 				{
-					$call_return['error'] = not_exist_tag;
+					$call_return['error'] = notice['not_exist_tag'];
 				}
 				
 			}
@@ -2558,9 +2540,7 @@
 	elseif( $command == 'init' )
 	{
 		
-		echo notable_string( 'Init completed' ) . PHP_EOL;
-		
-		exit;
+		$call_return[] = 'Init completed';
 		
 	}
 	
