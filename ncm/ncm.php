@@ -249,39 +249,39 @@
 	
 	
 	
-	define( 'version'				, 'v1.0.15' );
+	define( 'version'               , 'v1.0.15' );
 	
-	define( 'data_dir'   			, __DIR__ . '/data' );
+	define( 'data_dir'              , __DIR__ . '/data' );
 	
-	define( 'log_dir'    			, __DIR__ . '/log' );
+	define( 'log_dir'               , __DIR__ . '/log' );
 	
-	define( 'config_file'			, data_dir . '/config.json' );
+	define( 'config_file'           , data_dir . '/config.json' );
 	 
-	define(	'ticker_file'	 		, data_dir . '/ticker.json' );
+	define(	'ticker_file'           , data_dir . '/ticker.json' );
 	
-	define( 'thirdtags_file' 		, data_dir . '/3tags.json' );
+	define( 'thirdtags_file'        , data_dir . '/3tags.json' );
 	
-	define( 'tabulation' 			, '    ' );
+	define( 'tabulation'            , '    ' );
 	
-	define( 'available_supply'		, '133248061996216572282917317807824970865' );
+	define( 'available_supply'      , '133248061996216572282917317807824970865' );
 	
-	define( 'notice'				,
+	define( 'notice'                ,
 	[
-		'bad_call'						=> 'Bad call',
-		'no_connection'					=> 'No node connection',
-		'bad_wallet'					=> 'Bad wallet number',
-		'bad_account'					=> 'Bad account',
-		'bad_tag'						=> 'Invalid tag',
-		'bad_tag_value'					=> 'Invalid tag value',
-		'exists_tag'					=> 'Tag already exists',
-		'exists_tag_value'				=> 'Tag value already exists',
-		'not_exist_tag'					=> 'Tag not found',
-		'bad_tag_account_value'			=> 'Bad account value',
-		'bad_tag_wallet_value'			=> 'Bad wallet value',
-		'bad_tag_block_value'			=> 'Bad block value',
-		'tag_added'						=> 'Tag added',
-		'tag_edited'					=> 'Tag edited',
-		'tag_removed'					=> 'Tag removed'
+		'bad_call'                  => 'Bad call',
+		'no_connection'             => 'No node connection',
+		'bad_wallet'                => 'Bad wallet number',
+		'bad_account'               => 'Bad account',
+		'bad_tag'                   => 'Invalid tag',
+		'bad_tag_value'             => 'Invalid tag value',
+		'exists_tag'                => 'Tag already exists',
+		'exists_tag_value'          => 'Tag value already exists',
+		'not_exist_tag'             => 'Tag not found',
+		'bad_tag_account_value'     => 'Bad account value',
+		'bad_tag_wallet_value'      => 'Bad wallet value',
+		'bad_tag_block_value'       => 'Bad block value',
+		'tag_added'                 => 'Tag added',
+		'tag_edited'                => 'Tag edited',
+		'tag_removed'               => 'Tag removed'
 	]);
 	
 	
@@ -1389,7 +1389,7 @@
 				
 				$confirmation_amount = custom_number( NanoTools::raw2den( $confirmation_amount, $C['nano']['denomination'] ) ) . ' ' . $C['nano']['denomination'];
 				
-				echo "*** Sending $confirmation_amount ***" . PHP_EOL;
+				echo PHP_EOL . "*** Sending $confirmation_amount ***" . PHP_EOL;
 				
 				echo 'Do you want to proceed? Type \'confirm\' to proceed: ';
 				
