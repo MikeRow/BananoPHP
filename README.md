@@ -7,7 +7,12 @@ PHP libraries and tools for the Nano currency
 
 [lib](lib)
 
-<pre>classes for Nano</pre>
+<pre>classes for Nano
+NanoCli.php prova
+NanoRPC.php    prova
+NanoRPCExtension.php		ptova
+NanoTools.php				ptova
+</pre>
 
 [ncm](ncm)
 
