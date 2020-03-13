@@ -17,7 +17,10 @@ NanoTools.php			usefull tools for Nano
 
 [ncm](ncm)
 
-<pre>node CLI manager - exhaustively manage Nano node using bash</pre>
+<pre>node CLI manager - exhaustively manage Nano node using bash
+---
+ncm.php			ncm script
+</pre>
 
 ## A clarification about the huge integers
 
