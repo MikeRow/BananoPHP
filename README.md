@@ -8,10 +8,11 @@ PHP libraries and tools for the Nano currency
 [lib](lib)
 
 <pre>classes for Nano
-NanoCli.php prova
-NanoRPC.php    prova
-NanoRPCExtension.php		ptova
-NanoTools.php				ptova
+---
+NanoCli.php		interface for nano_node cli commands
+NanoRPC.php		interface for RPR commands
+NanoRPCExtension.php		extensione for RPC commands
+NanoTools.php			usefull tools for Nano
 </pre>
 
 [ncm](ncm)
