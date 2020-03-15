@@ -41,3 +41,7 @@ You can find denomination/raw conversion functions and other usefull stuffs in [
 * [EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
 * [coingecko.com](https://www.coingecko.com/en/api)
 * [mynano.ninja](https://mynano.ninja/api)
+
+## Support
+
+Don't support me, support Nano decentralization! If you want to delegate me your weight, here is my representative: nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m
