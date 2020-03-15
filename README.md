@@ -38,6 +38,6 @@ You can find denomination/raw conversion functions and other usefull stuffs in [
 
 ## Credits
 
-* [aceat64](https://github.com/aceat64): [EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
-* [coingecko.com](https://www.coingecko.com): [API](https://www.coingecko.com/en/api)
-* [mynano.ninja](https://mynano.ninja/): [API](https://mynano.ninja/api)
+* [EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
+* [coingecko.com](https://www.coingecko.com/en/api)
+* [mynano.ninja](https://mynano.ninja/api)
