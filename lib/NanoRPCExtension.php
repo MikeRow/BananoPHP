@@ -131,9 +131,7 @@
 			
 				uasort( $wallet_balances['balances'], function( $a, $b )
 				{
-					
 					return gmp_cmp( $a['balance'], $b['balance'] );
-					
 				});
 			
 			}
@@ -142,9 +140,7 @@
 
 				uasort( $wallet_balances['balances'], function( $a, $b )
 				{
-					
 					return gmp_cmp( $b['balance'], $a['balance'] );
-					
 				});
 
 			}
@@ -293,9 +289,7 @@
 			
 				uasort( $wallet_balances['balances'], function( $a, $b )
 				{
-					
 					return gmp_cmp( $a['balance'], $b['balance'] );
-					
 				});
 			
 			}
@@ -304,9 +298,7 @@
 
 				uasort( $wallet_balances['balances'], function( $a, $b )
 				{
-					
 					return gmp_cmp( $b['balance'], $a['balance'] );
-					
 				});
 
 			}
@@ -465,9 +457,7 @@
 			
 				uasort( $return['weights'], function( $a, $b )
 				{
-					
 					return gmp_cmp( $a, $b );
-					
 				});
 			
 			}
@@ -476,9 +466,7 @@
 
 				uasort( $return['weights'], function( $a, $b )
 				{
-					
 					return gmp_cmp( $b, $a );
-					
 				});
 
 			}

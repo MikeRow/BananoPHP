@@ -213,7 +213,7 @@
 					
 					Read full RPC documentation at https://docs.nano.org/commands/command-line-interface/
 				
-				call.................................direct call to defined node connection (bypasses any ncm override)
+				call................................direct call to defined node connection (bypasses any ncm override)
 				
 					e.g. ncm account_key account=id/tag flags=call
 					
@@ -495,11 +495,11 @@
 	function check_node_connection()
 	{
 		
-		global $nanoconn;
+		global $nanocall;
 		
 		global $call_return;
 		
-		if( !is_null( $nanoconn->error ) )
+		if( !is_null( $nanocall->error ) )
 		{
 			$call_return['error'] = notice['node-connection-failed'];
 		}
@@ -1029,7 +1029,7 @@
 	
 	if( $C['nano']['connection'] == 'rpc' )
 	{
-		$nanoconn = new NanoRPCExtension( $C['nano']['rpc']['host'], $C['nano']['rpc']['port'] );
+		$nanocall = new NanoRPCExtension( $C['nano']['rpc']['host'], $C['nano']['rpc']['port'] );
 		
 	}
 	
@@ -1049,7 +1049,14 @@
 	
 	$arguments = [];
 	
-	$flags = [];
+	$flags =
+	[
+		'raw_in' => false,
+		'raw_out' => false,
+		'no_log' => false,
+		'cli' => false,
+		'call' => false
+	];
 	
 	$alerts = [];
 	
@@ -1063,7 +1070,17 @@
 		if( $arguments_row[0] == 'flags' )
 		{
 			
-			$flags = explode( ',', $arguments_row[1] );
+			$input_flags = explode( ',', $arguments_row[1] );
+			
+			foreach( $input_flags as $input_flag )
+			{
+				
+				if( array_key_exists( $input_flag, $flags ) )
+				{
+					$flags[$input_flag] = true;
+				}
+				
+			}
 			
 			unset( $argv[$index] );
 			
@@ -1073,13 +1090,17 @@
 		
 	}
 	
+	if( $flags['cli'] && $flags['call'] )
+	{
+		$flags['cli'] = false;
+	}
 	
 	
 	// *** Raw input ***
 	
 	
 	
-	if( in_array( 'raw_in', $flags ) )
+	if( $flags['raw_in'] )
 	{
 		
 		if( count( $argv ) > 0 )
@@ -1306,7 +1327,7 @@
 	
 	
 	
-	if( !in_array( 'raw_in', $flags ) )
+	if( !$flags['raw_in'] )
 	{
 
 		$check_words = ['send','wallet_wipe','wallet_send'];
@@ -1341,7 +1362,7 @@
 				if( isset( $arguments['wallet'] ) && isset( $arguments['destination'] ) && isset( $arguments['amount'] ) )
 				{
 					
-					$wallet_info = $nanoconn->wallet_info( ['wallet'=>$arguments['wallet']] );
+					$wallet_info = $nanocall->wallet_info( ['wallet'=>$arguments['wallet']] );
 					
 					if( !isset( $wallet_info['error'] ) )
 					{
@@ -1369,7 +1390,7 @@
 				if( isset( $arguments['wallet'] ) && isset( $arguments['destination'] ) )
 				{
 					
-					$wallet_info = $nanoconn->wallet_info( ['wallet'=>$arguments['wallet']] );
+					$wallet_info = $nanocall->wallet_info( ['wallet'=>$arguments['wallet']] );
 					
 					if( !isset( $wallet_info['error'] ) )
 					{
@@ -1442,14 +1463,14 @@
 	
 	
 	
-	// *** Node call ***
+	// *** Call ***
 	
 	
 	
-	if(  in_array( 'call', $flags )  )
+	if( $flags['call'] )
 	{
 		
-		$call_return = $nanoconn->{ $command }( $arguments );
+		$call_return = $nanocall->{ $command }( $arguments );
 		
 		check_node_connection();
 		
@@ -1457,16 +1478,16 @@
 	
 	
 	
-	// *** CLI call ***
+	// *** CLI ***
 	
 	
 	
-	elseif(  in_array( 'cli', $flags )  )
+	elseif( $flags['cli'] )
 	{
 		
 		$call_return = $nanocli->{ $command }( $arguments );
 		
-		check_node_connection();
+		if( $call_return == null ) $call_return = ['error'=>notice['bad_call']];
 		
 	}
 	
@@ -1485,25 +1506,25 @@
 	
 		// Node version
 		
-		$version = $nanoconn->version();
+		$version = $nanocall->version();
 		
 		$call_return['version'] = $version['node_vendor'];
 		
 		// Uptime
 		
-		$uptime = $nanoconn->uptime();
+		$uptime = $nanocall->uptime();
 		
 		$call_return['uptime'] = $uptime['seconds'];
 		
 		// Online peers
 		
-		$peers = $nanoconn->peers();
+		$peers = $nanocall->peers();
 		
 		$call_return['peers'] = count( $peers['peers'] );
 		
 		// Online representatives and weight
 		
-		$representatives_online = $nanoconn->representatives_online( ['weight'=>true] );
+		$representatives_online = $nanocall->representatives_online( ['weight'=>true] );
 		
 		$call_return['representatives_online'] = count( $representatives_online['representatives'] );
 		
@@ -1524,7 +1545,7 @@
 		
 		// Block count
 		
-		$block_count = $nanoconn->block_count();
+		$block_count = $nanocall->block_count();
 		
 		$call_return['blocks']['count'] = $block_count["count"];
 		
@@ -1551,9 +1572,9 @@
 		foreach( $C['tags']['wallet'] as $tag => $id )
 		{
 		
-			$wallet_info = $nanoconn->wallet_info( ['wallet'=>$id] );
+			$wallet_info = $nanocall->wallet_info( ['wallet'=>$id] );
 			
-			$wallet_weight = $nanoconn->wallet_weight( ['wallet'=>$id] );
+			$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$id] );
 			
 			$wallets_accounts += $wallet_info['accounts_count'];
 			
@@ -1573,7 +1594,7 @@
 		
 		$wallets_weight = gmp_strval( $wallets_weight );
 		
-		$wallet_weight = $nanoconn->wallet_weight( ['wallet'=>$id] );
+		$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$id] );
 		
 		$call_return['wallets']['balance'] = $wallets_balance;
 		
@@ -1620,11 +1641,11 @@
 			foreach( $wallet_ID as $id )
 			{
 			
-				$wallet_info = $nanoconn->wallet_info( ['wallet' => $id] );
+				$wallet_info = $nanocall->wallet_info( ['wallet' => $id] );
 				
-				$wallet_weight = $nanoconn->wallet_weight( ['wallet' => $id] );
+				$wallet_weight = $nanocall->wallet_weight( ['wallet' => $id] );
 				
-				$wallet_locked = $nanoconn->wallet_locked( ['wallet' => $id] );
+				$wallet_locked = $nanocall->wallet_locked( ['wallet' => $id] );
 				
 				$call_return[$id]['balance'] = $wallet_info['balance'];
 				
@@ -1636,7 +1657,7 @@
 				
 				$call_return[$id]['locked'] = $wallet_locked['locked'];
 				
-				// $wallet_balances = $nanoconn->wallet_balances( ['wallet'=>$id] );
+				// $wallet_balances = $nanocall->wallet_balances( ['wallet'=>$id] );
 				
 				// $call_return[$id]['balances'] = $wallet_balances['balances'];
 			
@@ -1664,7 +1685,7 @@
 		if( isset( $arguments['wallet'] ) )
 		{
 		
-			$wallet_info = $nanoconn->wallet_info( ['wallet' => $arguments['wallet']] );
+			$wallet_info = $nanocall->wallet_info( ['wallet' => $arguments['wallet']] );
 		
 			if( isset( $wallet_info['error'] ) )
 			{
@@ -1673,9 +1694,9 @@
 			else
 			{
 				
-				$wallet_locked = $nanoconn->wallet_locked( ['wallet' => $arguments['wallet']] );
+				$wallet_locked = $nanocall->wallet_locked( ['wallet' => $arguments['wallet']] );
 				
-				$wallet_weight = $nanoconn->wallet_weight( ['wallet'=>$arguments['wallet']] );
+				$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$arguments['wallet']] );
 				
 				$call_return[$arguments['wallet']]['balance'] = $wallet_info['balance'];
 				
@@ -1695,7 +1716,7 @@
 				
 				$call_return[$arguments['wallet']]['locked'] = $wallet_locked['locked'];
 				
-				// $wallet_balances = $nanoconn->wallet_balances( ['wallet'=>$arguments['wallet']] );
+				// $wallet_balances = $nanocall->wallet_balances( ['wallet'=>$arguments['wallet']] );
 				
 				// $call_return[$arguments['wallet']]['balances'] = $wallet_balances['balances'];
 				
@@ -1723,7 +1744,7 @@
 		if( isset( $arguments['wallet'] ) )
 		{
 		
-			$wallet_info = $nanoconn->wallet_info( ['wallet' => $arguments['wallet']] );
+			$wallet_info = $nanocall->wallet_info( ['wallet' => $arguments['wallet']] );
 		
 			if( isset( $wallet_info['error'] ) )
 			{
@@ -1732,7 +1753,7 @@
 			else
 			{
 				
-				$wallet_weight = $nanoconn->wallet_weight( ['wallet'=>$arguments['wallet'],'order'=>'desc'] );
+				$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$arguments['wallet'],'order'=>'desc'] );
 				
 				$call_return['weight'] = $wallet_weight['weight'];
 				
@@ -1778,7 +1799,7 @@
 		if( isset( $arguments['account'] ) )
 		{
 		
-			$check_account = $nanoconn->validate_account_number( ['account'=>$arguments['account']] );
+			$check_account = $nanocall->validate_account_number( ['account'=>$arguments['account']] );
 			
 			if( $check_account['valid'] != 1 )
 			{
@@ -1787,7 +1808,7 @@
 			else
 			{
 			
-				$account_info = $nanoconn->account_info( ['account'=>$arguments['account'],'pending'=>true,'weight'=>true,'representative'=>true] );
+				$account_info = $nanocall->account_info( ['account'=>$arguments['account'],'pending'=>true,'weight'=>true,'representative'=>true] );
 				
 				$account_info['weight_percent'] = gmp_strval( gmp_div_q( gmp_mul( $account_info['weight'], '100' ), available_supply ) );
 				
@@ -1841,7 +1862,7 @@
 		if( isset( $arguments['account'] ) )
 		{
 		
-			$check_account = $nanoconn->validate_account_number( ['account'=>$arguments['account']] );
+			$check_account = $nanocall->validate_account_number( ['account'=>$arguments['account']] );
 			
 			if( $check_account['valid'] != 1 )
 			{
@@ -1862,15 +1883,15 @@
 			
 				$limit = isset( $arguments['limit'] ) ? (int) $arguments['limit'] : 0;
 			
-				$delegators_count = $nanoconn->delegators_count( ['account'=>$arguments['account']] );
+				$delegators_count = $nanocall->delegators_count( ['account'=>$arguments['account']] );
 				
-				$account_weight = $nanoconn->account_weight( ['account'=>$arguments['account']] );
+				$account_weight = $nanocall->account_weight( ['account'=>$arguments['account']] );
 				
 				$call_return['weight'] = $account_weight['weight'];
 				
 				// $call_return['count'] = $delegators_count['count'];
 			
-				$delegators = $nanoconn->delegators( ['account'=>$arguments['account']] );
+				$delegators = $nanocall->delegators( ['account'=>$arguments['account']] );
 				
 				uasort( $delegators['delegators'], function( $a, $b )
 				{
@@ -1970,7 +1991,7 @@
 			
 		$limit = isset( $arguments['limit'] ) ? (int) $arguments['limit'] : 0;
 	
-		$representatives = $nanoconn->representatives( ['sorting'=>true] );
+		$representatives = $nanocall->representatives( ['sorting'=>true] );
 		
 		$i = 0;
 		
@@ -2054,7 +2075,7 @@
 			
 		$limit = isset( $arguments['limit'] ) ? (int) $arguments['limit'] : 0;
 	
-		$representatives_online = $nanoconn->representatives_online( ['weight'=>true] );
+		$representatives_online = $nanocall->representatives_online( ['weight'=>true] );
 		
 		uasort( $representatives_online['representatives'], function( $a, $b )
 		{
@@ -2589,7 +2610,7 @@
 	else
 	{
 		
-		$call_return = $nanoconn->{ $command }( $arguments );
+		$call_return = $nanocall->{ $command }( $arguments );
 		
 		check_node_connection();
 		
@@ -2627,7 +2648,7 @@
 	
 	
 	
-	if( in_array( 'raw_out', $flags ) )
+	if( $flags['raw_out'] )
 	{
 		
 		if( count( $alerts ) > 0 ) $call_return['alert'] = $alerts;
@@ -2664,7 +2685,7 @@
 	
 	
 	
-	if( !in_array( 'no_log', $flags ) )
+	if( !$flags['no_log'] )
 	{
 	
 		$check_words = 
