@@ -44,7 +44,7 @@ You can find denomination/raw conversion functions and other usefull stuffs in [
 
 ## Support
 
-Don't support me, support Nano decentralization! If you want to delegate me your weight, here is my representative:
+Don't support me, support Nano decentralization! If you wish to delegate me your weight, here is my representative:
 <pre>
 nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m
 </pre>
