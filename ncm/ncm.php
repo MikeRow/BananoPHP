@@ -206,6 +206,18 @@
 				no_log..............................don't save log regardless of what you set up in config.json
 				
 					e.g. ncm wallet_info wallet=id/tag flags=no_log
+					
+				cli.................................direct call to CLI interface (bypasses any ncm override)
+				
+					e.g. ncm account_key account=id/tag flags=cli
+					
+					Read full RPC documentation at https://docs.nano.org/commands/command-line-interface/
+				
+				call.................................direct call to defined node connection (bypasses any ncm override)
+				
+					e.g. ncm account_key account=id/tag flags=call
+					
+					Read full RPC documentation at https://docs.nano.org/commands/rpc-protocol/
 				
 				Multiple flags must be combined in the same argument
 				
@@ -249,7 +261,7 @@
 	
 	
 	
-	define( 'version'               , 'v1.0' );
+	define( 'version'               , 'v1.1' );
 	
 	define( 'data_dir'              , __DIR__ . '/data' );
 	
@@ -1430,11 +1442,41 @@
 	
 	
 	
+	// *** Node call ***
+	
+	
+	
+	if(  in_array( 'call', $flags )  )
+	{
+		
+		$call_return = $nanoconn->{ $command }( $arguments );
+		
+		check_node_connection();
+		
+	}
+	
+	
+	
+	// *** CLI call ***
+	
+	
+	
+	elseif(  in_array( 'cli', $flags )  )
+	{
+		
+		$call_return = $nanocli->{ $command }( $arguments );
+		
+		check_node_connection();
+		
+	}
+	
+	
+	
 	// *** Print node and summary info ***
 	
 	
 	
-	if( $command == 'status' )
+	elseif( $command == 'status' )
 	{ 
 	
 		// ncm version
@@ -2540,7 +2582,7 @@
 	
 	
 	
-	// *** Call node ***
+	// *** Default node call ***
 	
 	
 	
