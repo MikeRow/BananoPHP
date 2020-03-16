@@ -24,11 +24,9 @@ ncm.php				ncm script
 
 ## Using a script to control a node remotely via SSH and ncm
 
-Since ncm is a cli tool, you may also use it to remotely control a node via a SSH connection.
+Use a script to start a SSH connection to the server hosting your Nano node and ncm, then control it sending bash commands.
 
-Use a script for your favourite programming language to start a SSH connection to the server hosting you Nano node, then control it sending bash commands.
-
-Suggested flags are json_in,json_out,raw_in,raw_out,no_confirm (more informations in [ncm.php](ncm/ncm.php) header).
+Suggested flags for such usage are json_in,json_out,raw_in,raw_out,no_confirm (more informations in [ncm.php](ncm/ncm.php) header).
 
 ## A clarification about the huge integers
 
