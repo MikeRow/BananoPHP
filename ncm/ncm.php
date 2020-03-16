@@ -195,33 +195,45 @@
 			Flags
 
 		
-				raw_in..............................skip any input elaboration (faster execution, machine-like input), input elaborations like tag,non-nano-raw amount,ticker,array are disabled
+				raw_in..............................skip any input elaboration: tags, non-nano-raw amounts, ticker, arrays are disabled
 				
-					e.g. ncm wallet_info {"wallet":"id/tag"} flags=raw_in
+					e.g. ncm wallet_info wallet=id flags=raw_in
 				
-				raw_out.............................output a raw encoded json (faster execution, machine-like output), output elaborations like tag,non-nano-raw amount,ticker are disabled
+				raw_out.............................skip any output elaboration: tags, non-nano-raw amounts, ticker are disabled
 				
 					e.g. ncm wallet_info wallet=id/tag flags=raw_out
-				
-				no_log..............................don't save log regardless of what you set up in config.json
-				
-					e.g. ncm wallet_info wallet=id/tag flags=no_log
 					
-				cli.................................direct call to CLI interface (bypasses any ncm override)
+				json_in.............................input arguments are taken as json
 				
-					e.g. ncm account_key account=id/tag flags=cli
+					e.g. ncm wallet_info {"wallet":"id/tag"} flags=json_in
+				
+				json_out............................output is provided as json
+				
+					e.g. ncm wallet_info wallet=id/tag flags=json_out
 					
-					Read full RPC documentation at https://docs.nano.org/commands/command-line-interface/
-				
-				call................................direct call to defined node connection (bypasses any ncm override)
+				call................................direct call to defined node connection (bypasses any ncm call override)
 				
 					e.g. ncm account_key account=id/tag flags=call
 					
 					Read full RPC documentation at https://docs.nano.org/commands/rpc-protocol/
+					
+				cli.................................direct call to CLI interface (bypasses any ncm call override)
+				
+					e.g. ncm account_key account=id/tag flags=cli
+					
+					Read full RPC documentation at https://docs.nano.org/commands/command-line-interface/
+					
+				no_send_confirm.....................doesn't ask for confirmation if sending an amount
+				
+					e.g. ncm send wallet=id/tag source=id/tag destination=id/tag amount=5 id=uniqid flags=no_send_confirm
+					
+				no_log..............................doesn't save log regardless of what you set up in config.json
+				
+					e.g. ncm wallet_info wallet=id/tag flags=no_log
 				
 				Multiple flags must be combined in the same argument
 				
-					e.g. ncm wallet_info {"wallet":"id/tag"} flags=raw_in,raw_out,no_log
+					e.g. ncm wallet_info {"wallet":"id/tag"} flags=raw_in,raw_out,json_in,json_out,call,no_send_confirm,no_log
 	
 	*/
 	
@@ -707,7 +719,7 @@
 	
 	
 	
-	function pretty_array( array $array )
+	function eleborate_output( array $array )
 	{
 		
 		global $C;
@@ -755,7 +767,7 @@
 				
 				$key = tag_replace( $key );
 				
-				$array[$key] = pretty_array( $value );
+				$array[$key] = eleborate_output( $value );
 				
 			}
 			
@@ -764,7 +776,7 @@
 			elseif( !is_array( $value ) && $key == 'contents' )
 			{
 			
-				$array[$key] = pretty_array( json_decode( $value, true ) );
+				$array[$key] = eleborate_output( json_decode( $value, true ) );
 			
 			}
 			
@@ -1051,11 +1063,14 @@
 	
 	$flags =
 	[
-		'raw_in' => false,
-		'raw_out' => false,
-		'no_log' => false,
-		'cli' => false,
-		'call' => false
+		'raw_in'          => false,
+		'raw_out'         => false,
+		'json_in'         => false,
+		'json_out'        => false,
+		'call'            => false,
+		'cli'             => false,
+		'no_send_confirm' => false,
+		'no_log'          => false
 	];
 	
 	$alerts = [];
@@ -1090,23 +1105,24 @@
 		
 	}
 	
-	if( $flags['cli'] && $flags['call'] )
+	if( $flags['call'] && $flags['cli'] )
 	{
 		$flags['cli'] = false;
 	}
+	
 	
 	
 	// *** Raw input ***
 	
 	
 	
-	if( $flags['raw_in'] )
+	if( $flags['json_in'] )
 	{
 		
 		if( count( $argv ) > 0 )
 		{
 			
-			$arguments = json_decode( $argv[0], true );
+			$argv = json_decode( $argv[0], true );
 			
 		}
 	
@@ -1118,7 +1134,7 @@
 	
 	
 	
-	else
+	if( !$flags['raw_in'] )
 	{
 	
 		// Fetch arguments
@@ -1312,6 +1328,10 @@
 		}
 
 	}
+	else
+	{
+		$arguments = $argv;
+	}
 	
 	
 	
@@ -1327,7 +1347,7 @@
 	
 	
 	
-	if( !$flags['raw_in'] )
+	if( !$flags['no_send_confirm'] )
 	{
 
 		$check_words = ['send','wallet_wipe','wallet_send'];
@@ -1463,31 +1483,31 @@
 	
 	
 	
-	// *** Call ***
-	
-	
-	
-	if( $flags['call'] )
-	{
-		
-		$call_return = $nanocall->{ $command }( $arguments );
-		
-		check_node_connection();
-		
-	}
-	
-	
-	
 	// *** CLI ***
 	
 	
 	
-	elseif( $flags['cli'] )
+	if( $flags['cli'] )
 	{
 		
 		$call_return = $nanocli->{ $command }( $arguments );
 		
 		if( $call_return == null ) $call_return = ['error'=>notice['bad_call']];
+		
+	}
+	
+	
+	
+	// *** Call ***
+	
+	
+	
+	elseif( $flags['call'] )
+	{
+		
+		$call_return = $nanocall->{ $command }( $arguments );
+		
+		check_node_connection();
 		
 	}
 	
@@ -2639,31 +2659,30 @@
 	
 	
 	
-	// **********************
-	// *** Console output ***
-	// **********************
+	// **************
+	// *** Output ***
+	// **************
 	
 	
 	
 	
 	
 	
-	if( $flags['raw_out'] )
+	if( !$flags['raw_out'] )
 	{
-		
-		if( count( $alerts ) > 0 ) $call_return['alert'] = $alerts;
-		
+		$call_return = eleborate_output( $call_return );
+	}
+	
+	if( count( $alerts ) > 0 ) $call_return['alert'] = $alerts;
+	
+	if( $flags['json_out'] )
+	{
 		echo json_encode( $call_return );
-		
 	}
 	else
 	{
-	
-		$call_return = pretty_array( $call_return );
 			
 		echo PHP_EOL;
-			
-		if( count( $alerts ) > 0 ) $call_return['alert'] = $alerts;
 			
 		echo pretty_print_r( $call_return );
 
