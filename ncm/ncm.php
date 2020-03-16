@@ -195,11 +195,11 @@
 			Flags
 
 		
-				raw_in..............................skip any input elaboration: tags, non-nano-raw amounts, ticker, arrays are disabled
+				raw_in..............................skip any input elaboration: tags, non-nano-raw amounts
 				
 					e.g. ncm wallet_info wallet=id flags=raw_in
 				
-				raw_out.............................skip any output elaboration: tags, non-nano-raw amounts, ticker are disabled
+				raw_out.............................skip any output elaboration: tags, non-nano-raw amounts, reading improvements
 				
 					e.g. ncm wallet_info wallet=id/tag flags=raw_out
 					
@@ -215,17 +215,13 @@
 				
 					e.g. ncm account_key account=id/tag flags=call
 					
-					Read full RPC documentation at https://docs.nano.org/commands/rpc-protocol/
-					
 				cli.................................direct call to CLI interface (bypasses any ncm call override)
 				
 					e.g. ncm account_key account=id/tag flags=cli
 					
-					Read full RPC documentation at https://docs.nano.org/commands/command-line-interface/
-					
-				no_send_confirm.....................doesn't ask for confirmation if sending an amount
+				no_confirm..........................doesn't ask for confirmations: sending amounts
 				
-					e.g. ncm send wallet=id/tag source=id/tag destination=id/tag amount=5 id=uniqid flags=no_send_confirm
+					e.g. ncm send wallet=id/tag source=id/tag destination=id/tag amount=5 id=uniqid flags=no_confirm
 					
 				no_log..............................doesn't save log regardless of what you set up in config.json
 				
@@ -233,7 +229,7 @@
 				
 				Multiple flags must be combined in the same argument
 				
-					e.g. ncm wallet_info {"wallet":"id/tag"} flags=raw_in,raw_out,json_in,json_out,call,no_send_confirm,no_log
+					e.g. ncm wallet_info {"wallet":"id/tag"} flags=raw_in,raw_out,json_in,json_out,call,no_confirm,no_log
 	
 	*/
 	
@@ -658,11 +654,80 @@
 	
 	
 	
-	// *** Tag replace ***
+	// *** Tag to value ***
 	
 	
 	
-	function tag_replace( $value )
+	function tag2value( $key, $value )
+	{
+	
+		global $C;
+	
+		// Check if a wallet tag is available
+		
+		$check_words = ['wallet'];
+		
+		if( in_array( $key, $check_words ) )
+		{
+			
+			if( array_key_exists( $value, $C['tags']['wallet'] ) )
+			{
+				return $C['tags']['wallet'][$value];
+			}
+			
+		}
+		
+		// Check if an account tag is available
+		
+		$check_words = 
+		[
+			'account',
+			'destination',
+			'representative',
+			'source'
+		];
+		
+		if( in_array( $key, $check_words ) )
+		{
+			
+			if( array_key_exists( $value, $C['tags']['account'] ) )
+			{
+				return $C['tags']['account'][$value];
+			}
+			elseif( $C['3tags']['enable'] && array_key_exists( $value, thirdtags['account'] ) )
+			{
+				return thirdtags['account'][$value];
+			}
+			else
+			{}
+			
+		}
+		
+		// Check if an block tag is available
+		
+		$check_words = ['hash'];
+		
+		if( in_array( $key, $check_words ) )
+		{
+			
+			if( array_key_exists( $value, $C['tags']['block'] ) )
+			{
+				return $C['tags']['block'][$value];
+			}
+			
+		}
+		
+		return $value;
+		
+	}
+	
+	
+	
+	// *** Value to tag ***
+	
+	
+	
+	function value2tag( $value )
 	{
 		
 		global $C;
@@ -765,7 +830,7 @@
 				
 				unset( $array[$key] );
 				
-				$key = tag_replace( $key );
+				$key = value2tag( $key );
 				
 				$array[$key] = eleborate_output( $value );
 				
@@ -985,7 +1050,7 @@
 				
 				// Tag replacement
 				
-					$array[$key] = tag_replace( $array[$key] );
+					$array[$key] = value2tag( $array[$key] );
 				
 			}
 			
@@ -1069,13 +1134,17 @@
 		'json_out'        => false,
 		'call'            => false,
 		'cli'             => false,
-		'no_send_confirm' => false,
+		'no_confirm'      => false,
 		'no_log'          => false
 	];
 	
 	$alerts = [];
 	
+	
+	
 	// Search for flags
+	
+	
 	
 	foreach( $argv as $index => $arg )
 	{
@@ -1112,7 +1181,7 @@
 	
 	
 	
-	// *** Raw input ***
+	// *** Json/Default input ***
 	
 	
 	
@@ -1122,26 +1191,21 @@
 		if( count( $argv ) > 0 )
 		{
 			
-			$argv = json_decode( $argv[0], true );
+			$arguments = json_decode( $argv[0], true );
 			
+		}
+		else
+		{
+			$arguments = [];
 		}
 	
 	}
-	
-	
-	
-	// *** Elaborated input ***
-	
-	
-	
-	if( !$flags['raw_in'] )
+	else
 	{
-	
-		// Fetch arguments
 		
 		foreach( $argv as $arg )
 		{
-			
+		
 			$arguments_row = [];
 			
 			$arguments_row = explode( '=', $arg, 2 );
@@ -1150,40 +1214,14 @@
 			{
 				$arguments_row[1] = '';
 			}
-			
+		
 			// Elaborate accounts array
-			
+
 			$check_words = ['accounts'];
 			
 			if( in_array( $arguments_row[0], $check_words ) )
 			{
-			
-				$arguments_row_array = [];
-				
-				$arguments_row_raw = explode( ',', $arguments_row[1] );
-				
-				// Check if an account tag is available
-				
-				foreach( $arguments_row_raw as $argument_raw )
-				{
-			
-					if( array_key_exists( $argument_raw, $C['tags']['account'] ) )
-					{
-						$argument_raw = $C['tags']['account'][$argument_raw];
-					}
-					elseif( $C['3tags']['enable'] && array_key_exists( $argument_raw, thirdtags['account'] ) )
-					{
-						$argument_raw = thirdtags['account'][$argument_raw];
-					}
-					else
-					{}
-					
-					$arguments_row_array[] = $argument_raw;
-				
-				}
-				
-				$arguments_row[1] = $arguments_row_array;
-				
+				$arguments_row[1] = explode( ',', $arguments_row[1] );
 			}
 			
 			// Elaborate blocks array
@@ -1192,82 +1230,58 @@
 			
 			if( in_array( $arguments_row[0], $check_words ) )
 			{
-			
-				$arguments_row_array = [];
-				
-				$arguments_row_raw = explode( ',', $arguments_row[1] );
-				
-				// Check if a block tag is available
-				
-				foreach( $arguments_row_raw as $argument_raw )
-				{
-			
-					if( array_key_exists( $argument_raw, $C['tags']['block'] ) )
-					{
-						$argument_raw = $C['tags']['block'][$argument_raw];
-					}
-					
-					$arguments_row_array[] = $argument_raw;
-				
-				}
-				
-				$arguments_row[1] = $arguments_row_array;
-				
+				$arguments_row[1] = explode( ',', $arguments_row[1] );
 			}
 			
-			// Check if a wallet tag is available
+			$arguments[$arguments_row[0]] = $arguments_row[1];
 			
-			$check_words = ['wallet'];
+		}
+		
+	}
+	
+	
+	
+	// *** Default/Raw input ***
+	
+	
+	
+	if( !$flags['raw_in'] )
+	{
+	
+		foreach( $arguments as $arguments0 => $arguments1 )
+		{
 			
-			if( in_array($arguments_row[0], $check_words ) )
+			// Check for tags in account array
+
+			$check_words = ['accounts'];
+			
+			if( in_array( $arguments0, $check_words ) )
 			{
-				
-				if( array_key_exists( $arguments_row[1], $C['tags']['wallet'] ) )
+			
+				foreach( $arguments1 as $key => $value )
 				{
-					$arguments_row[1] = $C['tags']['wallet'][$arguments_row[1]];
+					$arguments[$arguments0][$key] = tag2value( 'account', $value );
 				}
 				
 			}
 			
-			// Check if an account tag is available
+			// Check for tags in block array
 			
-			$check_words = 
-			[
-				'account',
-				'destination',
-				'representative',
-				'source'
-			];
+			$check_words = ['hashes'];
 			
-			if( in_array( $arguments_row[0], $check_words ) )
+			if( in_array( $arguments0, $check_words ) )
 			{
-				
-				if( array_key_exists( $arguments_row[1], $C['tags']['account'] ) )
-				{
-					$arguments_row[1] = $C['tags']['account'][$arguments_row[1]];
-				}
-				elseif( $C['3tags']['enable'] && array_key_exists( $arguments_row[1], thirdtags['account'] ) )
-				{
-					$arguments_row[1] = thirdtags['account'][$arguments_row[1]];
-				}
-				else
-				{}
-				
-			}
 			
-			// Check if an block tag is available
-			
-			$check_words = ['hash'];
-			
-			if( in_array( $arguments_row[0], $check_words ) )
-			{
-				
-				if( array_key_exists( $arguments_row[1], $C['tags']['block'] ) )
+				foreach( $arguments1 as $key => $value )
 				{
-					$arguments_row[1] = $C['tags']['block'][$arguments_row[1]];
+					$arguments[$arguments0][$key] = tag2value( 'block', $value );
 				}
 				
 			}
+			
+			// Check for tags
+			
+			$arguments[$arguments0] = tag2value( $arguments0, $arguments1 );
 			
 			// Convert denomination to raw
 			
@@ -1280,36 +1294,36 @@
 				'weight_max'
 			];
 			
-			if( in_array( $arguments_row[0], $check_words ) )
+			if( in_array( $arguments0, $check_words ) )
 			{
 				
-				if( $C['ticker']['enable'] && !is_numeric( $arguments_row[1] ) ) // Input as other currency?
+				if( $C['ticker']['enable'] && !is_numeric( $arguments1 ) ) // Input as other currency?
 				{
 				
-					$input_currency = explode( '-', $arguments_row[1] );
+					$input_currency = explode( '-', $arguments1 );
 					
 					$input_currency[0] = abs( $input_currency[0] );
 					
 					if( is_numeric( $input_currency[0] ) && isset( $input_currency[1] ) && isset( vs_currencies[strtoupper( $input_currency[1] )] ) )
 					{
-						$arguments_row[1] = NanoTools::den2raw( $input_currency[0] / vs_currencies[strtoupper( $input_currency[1] )], 'NANO' );
+						$arguments[$arguments0] = NanoTools::den2raw( $input_currency[0] / vs_currencies[strtoupper( $input_currency[1] )], 'NANO' );
 					}
 					else
 					{
-						$arguments_row[1] = 0;
+						$arguments[$arguments0] = 0;
 					}
 					
 				}
 				else // Input as a Nano denomination?
 				{
 					
-					if( is_numeric( $arguments_row[1] ) && abs( $arguments_row[1] ) == $arguments_row[1] )
+					if( is_numeric( $arguments1 ) && abs( $arguments1 ) == $arguments1 )
 					{
-						$arguments_row[1] = NanoTools::den2raw( $arguments_row[1], $C['nano']['denomination'] );
+						$arguments[$arguments0] = NanoTools::den2raw( $arguments1, $C['nano']['denomination'] );
 					}
 					else
 					{
-						$arguments_row[1] = 0;
+						$arguments[$arguments0] = 0;
 					}
 					
 				}
@@ -1318,19 +1332,13 @@
 			
 			// Generate automatic unique id for send command
 			
-			if( $command == 'send' && $arguments_row[0] == 'id' && $arguments_row[1] == 'uniqid' )
+			if( $command == 'send' && $arguments0 == 'id' && $arguments1 == 'uniqid' )
 			{
-				$arguments_row[1] = uniqid();
+				$arguments[$arguments0] = uniqid();
 			}
-			
-			$arguments[$arguments_row[0]] = $arguments_row[1];
 		
 		}
 
-	}
-	else
-	{
-		$arguments = $argv;
 	}
 	
 	
@@ -1347,7 +1355,7 @@
 	
 	
 	
-	if( !$flags['no_send_confirm'] )
+	if( !$flags['no_confirm'] )
 	{
 
 		$check_words = ['send','wallet_wipe','wallet_send'];
