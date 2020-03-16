@@ -24,19 +24,19 @@ ncm.php				ncm script
 
 ## Using a script to control a node remotely via SSH and ncm
 
-Since ncm is a cli tool, you may also use it to remotely control a node via a SSH connection
+Since ncm is a cli tool, you may also use it to remotely control a node via a SSH connection.
 
-Use a script for your favourite programming language to start a SSH connection to the server hosting you Nano node. Then control it sending bash commands.
+Use a script for your favourite programming language to start a SSH connection to the server hosting you Nano node, then control it sending bash commands.
 
-Suggested flags are json_in,json_out,raw_in,raw_out,no_confirm (more informations in [ncm.php](ncm/ncm.php) header)
+Suggested flags are json_in,json_out,raw_in,raw_out,no_confirm (more informations in [ncm.php](ncm/ncm.php) header).
 
 ## A clarification about the huge integers
 
-Nano uses huge integers to represent even a tiny amount (1 nano is 10^24 raw), but PHP supports much lower integers
+Nano uses huge integers to represent even a tiny amount (1 nano is 10^24 raw), but PHP supports much lower integers.
 
-If you need to perform arithmetic operations directly with the raw amounts, I suggest the [GMP library](https://www.php.net/manual/en/book.gmp.php)
+If you need to perform arithmetic operations directly with the raw amounts, I suggest the [GMP library](https://www.php.net/manual/en/book.gmp.php).
 
-You can find denomination/raw conversion functions and other usefull stuffs in [lib/NanoTools.php](lib/NanoTools.php)
+You can find denomination/raw conversion functions and other usefull stuffs in [lib/NanoTools.php](lib/NanoTools.php).
 
 ## To do
 
