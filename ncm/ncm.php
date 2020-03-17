@@ -56,7 +56,7 @@
 	
 		- Default input/output amount denomination in NANO (Mnano)
 		
-		- Input array elements comma separated (you can also use tags)
+		- Input array elements comma separated (you may also use tags)
 		
 		- Create a shortcut for ncm.php adding to .bashrc:
 			
@@ -215,11 +215,15 @@
 				
 					e.g. ncm account_key account=id/tag flags=call
 					
+					Read full RPC documentation at https://docs.nano.org/commands/rpc-protocol/
+					
 				cli.................................direct call to CLI interface (bypasses any ncm call override)
 				
 					e.g. ncm account_key account=id/tag flags=cli
 					
-				no_confirm..........................doesn't ask for confirmations: sending amounts
+					Read full RPC documentation at https://docs.nano.org/commands/command-line-interface/
+					
+				no_confirm..........................doesn't ask for confirmations: sending amounts, etc.
 				
 					e.g. ncm send wallet=id/tag source=id/tag destination=id/tag amount=5 id=uniqid flags=no_confirm
 					
@@ -1190,13 +1194,7 @@
 		
 		if( count( $argv ) > 0 )
 		{
-			
 			$arguments = json_decode( $argv[0], true );
-			
-		}
-		else
-		{
-			$arguments = [];
 		}
 	
 	}
@@ -1248,19 +1246,19 @@
 	if( !$flags['raw_in'] )
 	{
 	
-		foreach( $arguments as $arguments0 => $arguments1 )
+		foreach( $arguments as $argument0 => $argument1 )
 		{
 			
 			// Check for tags in account array
 
 			$check_words = ['accounts'];
 			
-			if( in_array( $arguments0, $check_words ) )
+			if( in_array( $argument0, $check_words ) )
 			{
 			
-				foreach( $arguments1 as $key => $value )
+				foreach( $argument1 as $key => $value )
 				{
-					$arguments[$arguments0][$key] = tag2value( 'account', $value );
+					$arguments[$argument0][$key] = tag2value( 'account', $value );
 				}
 				
 			}
@@ -1269,19 +1267,19 @@
 			
 			$check_words = ['hashes'];
 			
-			if( in_array( $arguments0, $check_words ) )
+			if( in_array( $argument0, $check_words ) )
 			{
 			
-				foreach( $arguments1 as $key => $value )
+				foreach( $argument1 as $key => $value )
 				{
-					$arguments[$arguments0][$key] = tag2value( 'block', $value );
+					$arguments[$argument0][$key] = tag2value( 'block', $value );
 				}
 				
 			}
 			
 			// Check for tags
 			
-			$arguments[$arguments0] = tag2value( $arguments0, $arguments1 );
+			$arguments[$argument0] = tag2value( $argument0, $argument1 );
 			
 			// Convert denomination to raw
 			
@@ -1294,36 +1292,36 @@
 				'weight_max'
 			];
 			
-			if( in_array( $arguments0, $check_words ) )
+			if( in_array( $argument0, $check_words ) )
 			{
 				
-				if( $C['ticker']['enable'] && !is_numeric( $arguments1 ) ) // Input as other currency?
+				if( $C['ticker']['enable'] && !is_numeric( $argument1 ) ) // Input as other currency?
 				{
 				
-					$input_currency = explode( '-', $arguments1 );
+					$input_currency = explode( '-', $argument1 );
 					
 					$input_currency[0] = abs( $input_currency[0] );
 					
 					if( is_numeric( $input_currency[0] ) && isset( $input_currency[1] ) && isset( vs_currencies[strtoupper( $input_currency[1] )] ) )
 					{
-						$arguments[$arguments0] = NanoTools::den2raw( $input_currency[0] / vs_currencies[strtoupper( $input_currency[1] )], 'NANO' );
+						$arguments[$argument0] = NanoTools::den2raw( $input_currency[0] / vs_currencies[strtoupper( $input_currency[1] )], 'NANO' );
 					}
 					else
 					{
-						$arguments[$arguments0] = 0;
+						$arguments[$argument0] = 0;
 					}
 					
 				}
 				else // Input as a Nano denomination?
 				{
 					
-					if( is_numeric( $arguments1 ) && abs( $arguments1 ) == $arguments1 )
+					if( is_numeric( $argument1 ) && abs( $argument1 ) == $argument1 )
 					{
-						$arguments[$arguments0] = NanoTools::den2raw( $arguments1, $C['nano']['denomination'] );
+						$arguments[$argument0] = NanoTools::den2raw( $argument1, $C['nano']['denomination'] );
 					}
 					else
 					{
-						$arguments[$arguments0] = 0;
+						$arguments[$argument0] = 0;
 					}
 					
 				}
@@ -1332,9 +1330,9 @@
 			
 			// Generate automatic unique id for send command
 			
-			if( $command == 'send' && $arguments0 == 'id' && $arguments1 == 'uniqid' )
+			if( $command == 'send' && $argument0 == 'id' && $argument1 == 'uniqid' )
 			{
-				$arguments[$arguments0] = uniqid();
+				$arguments[$argument0] = uniqid();
 			}
 		
 		}
