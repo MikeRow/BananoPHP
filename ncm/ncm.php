@@ -1267,7 +1267,7 @@
 			
 			$check_words = ['hashes'];
 			
-			elseif( in_array( $argument0, $check_words ) )
+			if( in_array( $argument0, $check_words ) )
 			{
 			
 				foreach( $argument1 as $key => $value )
@@ -1288,7 +1288,7 @@
 				'weight_max'
 			];
 			
-			elseif( in_array( $argument0, $check_words ) )
+			if( in_array( $argument0, $check_words ) )
 			{
 				
 				if( $C['ticker']['enable'] && !is_numeric( $argument1 ) ) // Input as other currency?
@@ -1326,10 +1326,7 @@
 			
 			// Check for tags
 			
-			else
-			{
-				$arguments[$argument0] = tag2value( $argument0, $argument1 );
-			}
+			$arguments[$argument0] = tag2value( $argument0, $argument1 );
 			
 			// Generate automatic unique id for send command
 			
