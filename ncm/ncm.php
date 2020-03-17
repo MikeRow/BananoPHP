@@ -784,7 +784,7 @@
 	
 	
 	
-	// *** Pretty array ***
+	// *** Elaborate output ***
 	
 	
 	
@@ -2072,6 +2072,8 @@
 		
 		$call_return['weight'] = $weight_cumulative;
 		
+		$call_return['weight_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
+		
 		$call_return['count'] = $i;
 		
 		$call_return['representatives'] = $representatives_array;
@@ -2162,6 +2164,8 @@
 		// $call_return['count'] = count( $representatives_online['representatives'] );
 		
 		$call_return['weight'] = $weight_cumulative;
+		
+		$call_return['weight_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
 		
 		$call_return['count'] = $i;
 		
@@ -2742,7 +2746,7 @@
 				$newline = PHP_EOL;
 			}
 			
-			file_put_contents( $log_file, $newline . date( 'm/d/Y H:i:s', time() ) . ' ' . $command . ':' . json_encode( $argv ) . ' ' . json_encode( $call_return ), FILE_APPEND );
+			file_put_contents( $log_file, $newline . date( 'm/d/Y H:i:s', time() ) . ' ' . $command . ':' . json_encode( $arguments ) . ' ' . json_encode( $call_return ), FILE_APPEND );
 		
 		}
 	
