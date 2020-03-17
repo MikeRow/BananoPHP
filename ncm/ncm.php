@@ -1267,7 +1267,7 @@
 			
 			$check_words = ['hashes'];
 			
-			if( in_array( $argument0, $check_words ) )
+			elseif( in_array( $argument0, $check_words ) )
 			{
 			
 				foreach( $argument1 as $key => $value )
@@ -1276,10 +1276,6 @@
 				}
 				
 			}
-			
-			// Check for tags
-			
-			$arguments[$argument0] = tag2value( $argument0, $argument1 );
 			
 			// Convert denomination to raw
 			
@@ -1292,7 +1288,7 @@
 				'weight_max'
 			];
 			
-			if( in_array( $argument0, $check_words ) )
+			elseif( in_array( $argument0, $check_words ) )
 			{
 				
 				if( $C['ticker']['enable'] && !is_numeric( $argument1 ) ) // Input as other currency?
@@ -1326,6 +1322,13 @@
 					
 				}
 				
+			}
+			
+			// Check for tags
+			
+			else
+			{
+				$arguments[$argument0] = tag2value( $argument0, $argument1 );
 			}
 			
 			// Generate automatic unique id for send command
