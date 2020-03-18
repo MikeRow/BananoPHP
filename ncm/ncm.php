@@ -89,31 +89,34 @@
 				delegators..........................print account's delegators summary (override regular call)
 				
 					account=id/tag
-					limit=(default 0, off)
-					balance_min=(default 0)
-					balance_max=(default available supply)
+					limit=int (default 0, off)
+					balance_min=float (default 0)
+					balance_max=float (default available supply)
+					order=asc/desc (default desc)
 					
 					e.g. ncm delegators account=genesis limit=100 balance_min=10000 balance_max=200000
 					
 				representatives.....................print representatives and their weight (override regular call)
 				
-					limit=(default 0, off)
-					weight_min=(default 0)
-					weight_max=(default available supply)
+					limit=int (default 0, off)
+					weight_min=float (default 0)
+					weight_max=float (default available supply)
+					order=asc/desc (default desc)
 					
 					e.g. ncm representatives limit=100 weight_min=10000 weight_max=200000
 				
 				representatives_online..............print online representatives (override regular call)
 				
-					limit=(default 0, off)
-					weight_min=(default 0)
-					weight_max=(default available supply)
+					limit=int (default 0, off)
+					weight_min=float (default 0)
+					weight_max=float (default available supply)
+					order=asc/desc (default desc)
 					
 					e.g. ncm representatives_online limit=100 weight_min=10000 weight_max=200000
 					
 				ticker..............................print latest NANO price compared to favourite vs currencies (if ticker enabled)
 				
-					amount=(default 1)
+					amount=float (default 1)
 					
 					e.g. ncm ticker amount=5
 					e.g. ncm ticker amount=5-USD
@@ -170,7 +173,7 @@
 				
 					wallet=id/tag
 					destination=id/tag
-					order=asc/desc
+					order=asc/desc (default list)
 					
 					e.g. ncm wallet_wipe wallet=id/tag destination=id/tag order=desc
 					
@@ -179,7 +182,7 @@
 					wallet=id/tag
 					destination=id/tag
 					amount=amount
-					order=asc/desc
+					order=asc/desc (default list)
 					
 					e.g. ncm wallet_send wallet=id/tag destination=id/tag amount=5 order=desc
 					e.g. ncm wallet_send wallet=id/tag destination=id/tag amount=5-USD order=desc (if ticker enabled)
@@ -187,7 +190,7 @@
 				wallet_weight.......................return weight of a wallet and of every its account from higher or lower balance
 				
 					wallet=id/tag
-					order=asc/desc
+					order=asc/desc (default list)
 					
 					e.g. ncm wallet_weight wallet=id/tag order=desc
 				
@@ -292,7 +295,7 @@
 	define( 'notice'                ,
 	[
 		'init-completed'            => 'Init completed',
-		'node-connection-failed'    => 'Node connection failed',
+		'node-connection-failed'    => 'Connection to node failed',
 		'sending-amount'            => 'Sending',
 		'sending-confirm'           => 'Do you want to proceed? Type \'confirm\' to proceed: ',
 		'bad_call'                  => 'Bad call',
@@ -1908,6 +1911,13 @@
 				// Any limit?
 			
 				$limit = isset( $arguments['limit'] ) ? (int) $arguments['limit'] : 0;
+				
+				// Any ok?
+			
+				$order = isset( $arguments['order'] ) ? $arguments['order'] : 'desc';
+				
+				
+				
 			
 				$delegators_count = $nanocall->delegators_count( ['account'=>$arguments['account']] );
 				
@@ -1916,13 +1926,27 @@
 				$call_return['weight'] = $account_weight['weight'];
 				
 				// $call_return['count'] = $delegators_count['count'];
-			
+
 				$delegators = $nanocall->delegators( ['account'=>$arguments['account']] );
 				
-				uasort( $delegators['delegators'], function( $a, $b )
+				if( $order == 'asc' )
 				{
-					return gmp_cmp( $b, $a );
-				});
+				
+					uasort( $delegators['delegators'], function( $a, $b )
+					{
+						return gmp_cmp( $a, $b );
+					});
+				
+				}
+				else
+				{
+					
+					uasort( $delegators['delegators'], function( $a, $b )
+					{
+						return gmp_cmp( $b, $a );
+					});
+					
+				}
 				
 				$i = 0;
 				
@@ -2016,8 +2040,26 @@
 		// Any limit?
 			
 		$limit = isset( $arguments['limit'] ) ? (int) $arguments['limit'] : 0;
+		
+		// Any ok?
+			
+		$order = isset( $arguments['order'] ) ? $arguments['order'] : 'desc';
+		
+		
 	
 		$representatives = $nanocall->representatives( ['sorting'=>true] );
+		
+		if( $order == 'asc' )
+		{
+		
+			uasort( $representatives['representatives'], function( $a, $b )
+			{
+				return gmp_cmp( $a, $b );
+			});
+		
+		}
+		else
+		{}
 		
 		$i = 0;
 		
@@ -2102,13 +2144,33 @@
 		// Any limit?
 			
 		$limit = isset( $arguments['limit'] ) ? (int) $arguments['limit'] : 0;
+		
+		// Any ok?
+			
+		$order = isset( $arguments['order'] ) ? $arguments['order'] : 'desc';
+		
+		
 	
 		$representatives_online = $nanocall->representatives_online( ['weight'=>true] );
 		
-		uasort( $representatives_online['representatives'], function( $a, $b )
+		if( $order == 'asc' )
 		{
-			return gmp_cmp( $b['weight'], $a['weight'] );
-		});
+		
+			uasort( $representatives_online['representatives'], function( $a, $b )
+			{
+				return gmp_cmp( $a['weight'], $b['weight'] );
+			});
+		
+		}
+		else
+		{
+			
+			uasort( $representatives_online['representatives'], function( $a, $b )
+			{
+				return gmp_cmp( $b['weight'], $a['weight'] );
+			});
+			
+		}
 		
 		$i = 0;
 		
