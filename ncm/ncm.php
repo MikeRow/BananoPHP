@@ -90,6 +90,7 @@
 				
 					account=id/tag
 					limit=int (default 0, off)
+					percent_limit=float (default 100,off)
 					balance_min=float (default 0)
 					balance_max=float (default available supply)
 					sort=asc/desc (default desc)
@@ -99,6 +100,7 @@
 				representatives.....................print representatives and their weight (override regular call)
 				
 					limit=int (default 0, off)
+					percent_limit=float (default 100,off)
 					weight_min=float (default 0)
 					weight_max=float (default available supply)
 					sort=asc/desc (default desc)
@@ -108,6 +110,7 @@
 				representatives_online..............print online representatives (override regular call)
 				
 					limit=int (default 0, off)
+					percent_limit=float (default 100,off)
 					weight_min=float (default 0)
 					weight_max=float (default available supply)
 					sort=asc/desc (default desc)
@@ -1011,7 +1014,7 @@
 					
 					$check_words = 
 					[
-						'data.ldb'
+						'blockchain'
 					];
 					
 					if( in_array( $key, $check_words ) && is_numeric( $value ) )
@@ -1021,7 +1024,7 @@
 					
 					$check_words = 
 					[
-						'average_size'
+						'size_average'
 					];
 				
 					if( in_array( $key, $check_words ) && is_numeric( $value ) )
@@ -1546,7 +1549,7 @@
 		
 		// Blockchain file size
 		
-		$call_return['data.ldb'] = filesize( $C['nano']['data_dir'] . '/data.ldb' );
+		$call_return['blockchain'] = filesize( $C['nano']['data_dir'] . '/data.ldb' );
 		
 		// Block count
 		
@@ -1560,7 +1563,7 @@
 		
 		// Bytes per block
 		
-		$call_return['blocks']['average_size'] = round( filesize( $C['nano']['data_dir'] . '/data.ldb' ) / $block_count["count"] );
+		$call_return['blocks']['size_average'] = round( filesize( $C['nano']['data_dir'] . '/data.ldb' ) / $block_count["count"] );
 		
 		// Summary wallets info
 		
@@ -1874,6 +1877,10 @@
 				
 				$balance_max = isset( $arguments['balance_max'] ) ? $arguments['balance_max'] : available_supply;
 				
+				// Any percent_limit?
+				
+				$percent_limit = isset( $arguments['percent_limit'] ) ? $arguments['percent_limit'] : 100;
+				
 				// Any limit?
 			
 				$limit = isset( $arguments['limit'] ) ? (int) $arguments['limit'] : 0;
@@ -1967,6 +1974,11 @@
 						$delegators_array[$delegator]['percent_cumulative'] = '0';
 					}
 					
+					if( isset( $arguments['percent_limit'] ) )
+					{
+						if( $delegators_array[$delegator]['percent_cumulative'] >= $percent_limit ) break;
+					}
+					
 				}
 				
 				$call_return['count'] = $i;
@@ -1999,6 +2011,10 @@
 		// Any weight_max?
 		
 		$weight_max = isset( $arguments['weight_max'] ) ? $arguments['weight_max'] : available_supply;
+		
+		// Any percent_limit?
+		
+		$percent_limit = isset( $arguments['percent_limit'] ) ? $arguments['percent_limit'] : 100;
 	
 		// Any limit?
 			
@@ -2071,6 +2087,11 @@
 			
 			$representatives_array[$representative]['percent_cumulative'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
 			
+			if( isset( $arguments['percent_limit'] ) )
+			{
+				if( $representatives_array[$representative]['percent_cumulative'] >= $percent_limit ) break;
+			}
+			
 		}
 		
 		// $call_return['count'] = count( $representatives['representatives'] );	
@@ -2101,6 +2122,10 @@
 		// Any weight_max?
 		
 		$weight_max = isset( $arguments['weight_max'] ) ? $arguments['weight_max'] : available_supply;
+		
+		// Any percent_limit?
+		
+		$percent_limit = isset( $arguments['percent_limit'] ) ? $arguments['percent_limit'] : 100;
 	
 		// Any limit?
 			
@@ -2179,6 +2204,11 @@
 			}
 			
 			$representatives_array[$representative]['percent_cumulative'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
+			
+			if( isset( $arguments['percent_limit'] ) )
+			{
+				if( $representatives_array[$representative]['percent_cumulative'] >= $percent_limit ) break;
+			}
 			
 		}
 		
