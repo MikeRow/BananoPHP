@@ -503,26 +503,6 @@
 	
 	
 	
-	// *** Node connection error ***
-	
-	
-	
-	function check_node_connection()
-	{
-		
-		global $nanocall;
-		
-		global $call_return;
-		
-		if( !is_null( $nanocall->error ) )
-		{
-			$call_return['error'] = notice['node-connection-failed'];
-		}
-		
-	}
-	
-	
-	
 	// *** Custom number format ***
 	
 	
@@ -1513,11 +1493,7 @@
 	
 	elseif( $flags['call'] )
 	{
-		
 		$call_return = $nanocall->{ $command }( $arguments );
-		
-		check_node_connection();
-		
 	}
 	
 	
@@ -1635,8 +1611,6 @@
 		
 		$call_return['wallets']['accounts_count'] = $wallets_accounts;
 		
-		check_node_connection();
-		
 	}
 	
 	
@@ -1698,8 +1672,6 @@
 			$call_return['error'] = 'No wallets found';
 		}
 		
-		check_node_connection();
-		
 	}
 	
 	
@@ -1757,8 +1729,6 @@
 			$call_return['error'] = notice['bad_wallet'];
 		}
 		
-		check_node_connection();
-		
 	}
 	
 	
@@ -1811,8 +1781,6 @@
 		{
 			$call_return['error'] = notice['bad_wallet'];
 		}
-		
-		check_node_connection();
 		
 	}
 	
@@ -1874,8 +1842,6 @@
 		{
 			$call_return['error'] = notice['bad_account'];
 		}
-		
-		check_node_connection();
 	
 	}
 	
@@ -2014,8 +1980,6 @@
 		{
 			$call_return['error'] = notice['bad_account'];
 		}
-		
-		check_node_connection();
 	
 	}
 	
@@ -2118,8 +2082,6 @@
 		$call_return['count'] = $i;
 		
 		$call_return['representatives'] = $representatives_array;
-		
-		check_node_connection();
 	
 	}
 	
@@ -2231,8 +2193,6 @@
 		$call_return['count'] = $i;
 		
 		$call_return['representatives_online'] = $representatives_array;
-		
-		check_node_connection();
 	
 	}
 	
@@ -2687,9 +2647,7 @@
 	
 	elseif( $command == 'init' )
 	{
-		
 		$call_return[] = notice['init-completed'];
-		
 	}
 	
 	
@@ -2700,11 +2658,30 @@
 	
 	else
 	{
-		
 		$call_return = $nanocall->{ $command }( $arguments );
-		
-		check_node_connection();
-		
+	}
+	
+	
+	
+	
+	
+	
+	// **********************************
+	// *** Post execution elaboration ***
+	// **********************************
+	
+	
+	
+	
+	
+	
+	// *** Node connection error ***
+	
+	
+	
+	if( !is_null( $nanocall->error ) )
+	{
+		$call_return['error'] = notice['node-connection-failed'];
 	}
 	
 	
