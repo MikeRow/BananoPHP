@@ -35,7 +35,7 @@
 			Tags
 			
 				ONLY ONE tag for each wallet/account/block
-				In order to have a clean and flowing tag list, I recommend using only lowercase alphanumeric characters, dashes(-) and dottes(.)
+				In sort to have a clean and flowing tag list, I recommend using only lowercase alphanumeric characters, dashes(-) and dottes(.)
 				
 				Note: tags set by you will always take precedence over those of third party
 				
@@ -92,7 +92,7 @@
 					limit=int (default 0, off)
 					balance_min=float (default 0)
 					balance_max=float (default available supply)
-					order=asc/desc (default desc)
+					sort=asc/desc (default desc)
 					
 					e.g. ncm delegators account=genesis limit=100 balance_min=10000 balance_max=200000
 					
@@ -101,7 +101,7 @@
 					limit=int (default 0, off)
 					weight_min=float (default 0)
 					weight_max=float (default available supply)
-					order=asc/desc (default desc)
+					sort=asc/desc (default desc)
 					
 					e.g. ncm representatives limit=100 weight_min=10000 weight_max=200000
 				
@@ -110,7 +110,7 @@
 					limit=int (default 0, off)
 					weight_min=float (default 0)
 					weight_max=float (default available supply)
-					order=asc/desc (default desc)
+					sort=asc/desc (default desc)
 					
 					e.g. ncm representatives_online limit=100 weight_min=10000 weight_max=200000
 					
@@ -173,26 +173,26 @@
 				
 					wallet=id/tag
 					destination=id/tag
-					order=asc/desc (default list)
+					sort=asc/desc (default list)
 					
-					e.g. ncm wallet_wipe wallet=id/tag destination=id/tag order=desc
+					e.g. ncm wallet_wipe wallet=id/tag destination=id/tag sort=desc
 					
 				wallet_send.........................send amount from a wallet to an account starting from higher or lower balance
 				
 					wallet=id/tag
 					destination=id/tag
 					amount=amount
-					order=asc/desc (default list)
+					sort=asc/desc (default list)
 					
-					e.g. ncm wallet_send wallet=id/tag destination=id/tag amount=5 order=desc
-					e.g. ncm wallet_send wallet=id/tag destination=id/tag amount=5-USD order=desc (if ticker enabled)
+					e.g. ncm wallet_send wallet=id/tag destination=id/tag amount=5 sort=desc
+					e.g. ncm wallet_send wallet=id/tag destination=id/tag amount=5-USD sort=desc (if ticker enabled)
 				
 				wallet_weight.......................return weight of a wallet and of every its account from higher or lower balance
 				
 					wallet=id/tag
-					order=asc/desc (default list)
+					sort=asc/desc (default list)
 					
-					e.g. ncm wallet_weight wallet=id/tag order=desc
+					e.g. ncm wallet_weight wallet=id/tag sort=desc
 				
 			
 			Flags
@@ -369,7 +369,7 @@
 		},
 		"tag": {
 			"view" : true,
-			"separator": "|"
+			"separator": "||"
 		},
 		"tags": {
 			"account": {
@@ -1782,7 +1782,7 @@
 			else
 			{
 				
-				$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$arguments['wallet'],'order'=>'desc'] );
+				$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$arguments['wallet'],'sort'=>'desc'] );
 				
 				$call_return['weight'] = $wallet_weight['weight'];
 				
@@ -1912,13 +1912,12 @@
 			
 				$limit = isset( $arguments['limit'] ) ? (int) $arguments['limit'] : 0;
 				
-				// Any ok?
+				// Any sort?
 			
-				$order = isset( $arguments['order'] ) ? $arguments['order'] : 'desc';
+				$sort = isset( $arguments['sort'] ) ? $arguments['sort'] : 'desc';
 				
+				//
 				
-				
-			
 				$delegators_count = $nanocall->delegators_count( ['account'=>$arguments['account']] );
 				
 				$account_weight = $nanocall->account_weight( ['account'=>$arguments['account']] );
@@ -1929,7 +1928,7 @@
 
 				$delegators = $nanocall->delegators( ['account'=>$arguments['account']] );
 				
-				if( $order == 'asc' )
+				if( $sort == 'asc' )
 				{
 				
 					uasort( $delegators['delegators'], function( $a, $b )
@@ -2041,15 +2040,15 @@
 			
 		$limit = isset( $arguments['limit'] ) ? (int) $arguments['limit'] : 0;
 		
-		// Any ok?
+		// Any sort?
 			
-		$order = isset( $arguments['order'] ) ? $arguments['order'] : 'desc';
+		$sort = isset( $arguments['sort'] ) ? $arguments['sort'] : 'desc';
 		
+		//
 		
-	
 		$representatives = $nanocall->representatives( ['sorting'=>true] );
 		
-		if( $order == 'asc' )
+		if( $sort == 'asc' )
 		{
 		
 			uasort( $representatives['representatives'], function( $a, $b )
@@ -2145,15 +2144,15 @@
 			
 		$limit = isset( $arguments['limit'] ) ? (int) $arguments['limit'] : 0;
 		
-		// Any ok?
+		// Any sort?
 			
-		$order = isset( $arguments['order'] ) ? $arguments['order'] : 'desc';
+		$sort = isset( $arguments['sort'] ) ? $arguments['sort'] : 'desc';
 		
-		
+		//
 	
 		$representatives_online = $nanocall->representatives_online( ['weight'=>true] );
 		
-		if( $order == 'asc' )
+		if( $sort == 'asc' )
 		{
 		
 			uasort( $representatives_online['representatives'], function( $a, $b )

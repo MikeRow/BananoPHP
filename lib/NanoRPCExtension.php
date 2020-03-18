@@ -22,7 +22,7 @@
 		[
 			'wallet' => '7BDC980DCCFD23254DBDE7BB3DF8D9FF19B585D238B0D60B4067E3C016CAF9FE',
 			'destination' => 'nano_1abcp8j755owefwsxcbww56jqmimsojy1xxduz7m3idze677hkrnjs98da55',
-			'order' => 'asc'
+			'sort' => 'asc'
 		];
 		
 		$response = $nanorpc->wallet_wipe( $args );
@@ -55,7 +55,7 @@
 	
 	
 		// ************************************************************************
-		// *** Send all funds from ['wallet'] to ['destination'] with ['order'] ***
+		// *** Send all funds from ['wallet'] to ['destination'] with ['sort'] ***
 		// ************************************************************************
 		
 		
@@ -102,9 +102,9 @@
 				return ['error'=>'Bad destination'];
 			}
 
-			// Order ok?
+			// sort ok?
 			
-			$order = isset( $args['order'] ) ? $args['order'] : 'list';
+			$sort = isset( $args['sort'] ) ? $args['sort'] : 'list';
 			
 			
 			
@@ -126,7 +126,7 @@
 			
 			// Sort balances
 			
-			if( $order == 'asc' )
+			if( $sort == 'asc' )
 			{
 			
 				uasort( $wallet_balances['balances'], function( $a, $b )
@@ -135,7 +135,7 @@
 				});
 			
 			}
-			elseif( $order == 'desc' )
+			elseif( $sort == 'desc' )
 			{
 
 				uasort( $wallet_balances['balances'], function( $a, $b )
@@ -196,7 +196,7 @@
 		
 		
 		// *****************************************************************************
-		// *** Send raw ['amount'] from ['wallet'] to ['destination'] with ['order'] ***
+		// *** Send raw ['amount'] from ['wallet'] to ['destination'] with ['sort'] ***
 		// *****************************************************************************
 		
 		
@@ -256,9 +256,9 @@
 			
 			}
 			
-			// Order ok?
+			// sort ok?
 			
-			$order = isset( $args['order'] ) ? $args['order'] : 'list';
+			$sort = isset( $args['sort'] ) ? $args['sort'] : 'list';
 			
 			
 			
@@ -284,7 +284,7 @@
 				
 			// Sort balances
 			
-			if( $order == 'asc' )
+			if( $sort == 'asc' )
 			{
 			
 				uasort( $wallet_balances['balances'], function( $a, $b )
@@ -293,7 +293,7 @@
 				});
 			
 			}
-			elseif( $order == 'desc' )
+			elseif( $sort == 'desc' )
 			{
 
 				uasort( $wallet_balances['balances'], function( $a, $b )
@@ -383,7 +383,7 @@
 		
 		
 		// *******************************************************************************
-		// *** Return raw weight of ['wallet'] and of every its account with ['order'] ***
+		// *** Return raw weight of ['wallet'] and of every its account with ['sort'] ***
 		// *******************************************************************************
 		
 		
@@ -412,9 +412,9 @@
 				return ['error'=>'Bad wallet number'];
 			}
 			
-			// Order ok?
+			// sort ok?
 			
-			$order = isset( $args['order'] ) ? $args['order'] : 'list';
+			$sort = isset( $args['sort'] ) ? $args['sort'] : 'list';
 			
 			
 			
@@ -452,7 +452,7 @@
 			
 			// Sort weights
 			
-			if( $order == 'asc' )
+			if( $sort == 'asc' )
 			{
 			
 				uasort( $return['weights'], function( $a, $b )
@@ -461,7 +461,7 @@
 				});
 			
 			}
-			elseif( $order == 'desc' )
+			elseif( $sort == 'desc' )
 			{
 
 				uasort( $return['weights'], function( $a, $b )
