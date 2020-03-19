@@ -24,9 +24,9 @@ ncm.php				ncm script
 
 ## Using a script to control a node remotely via SSH and ncm
 
-Use a script to start a SSH connection with the server hosting your Nano node and ncm, then control it sending bash commands.
+Use a script to start a SSH connection with the server hosting your Nano node and ncm.
 
-If you wish to control your node remotely with PHP, I suggest you to use [pcpseclib](https://github.com/phpseclib/phpseclib).
+If you wish to control your node remotely using PHP, I suggest you to use [phpseclib](https://github.com/phpseclib/phpseclib).
 
 Suggested flags for such usage are json_in,json_out,raw_in,raw_out,no_confirm (more informations in [ncm.php](ncm/ncm.php) header).
 
