@@ -210,7 +210,7 @@
 					
 				json_in.............................input arguments are taken as json
 				
-					e.g. ncm wallet_info {"wallet":"id/tag"} flags=json_in
+					e.g. ncm wallet_info '{"wallet":"id/tag"}' flags=json_in
 				
 				json_out............................output is provided as json
 				
@@ -238,7 +238,7 @@
 				
 				Multiple flags must be combined in the same argument
 				
-					e.g. ncm wallet_info {"wallet":"id/tag"} flags=raw_in,raw_out,json_in,json_out,call,no_confirm,no_log
+					e.g. ncm wallet_info '{"wallet":"id/tag"}' flags=raw_in,raw_out,json_in,json_out,call,no_confirm,no_log
 	
 	*/
 	
@@ -2738,11 +2738,19 @@
 	
 	if( $flags['json_out'] )
 	{
+		
+		echo PHP_EOL;
+		
 		echo json_encode( $call_return );
+		
+		echo PHP_EOL;
+		
+		echo PHP_EOL;
+		
 	}
 	else
 	{
-			
+		
 		echo PHP_EOL;
 			
 		echo pretty_print_r( $call_return );

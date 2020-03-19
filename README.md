@@ -20,6 +20,7 @@ NanoTools.php			usefull tools for Nano
 <pre>node CLI manager - exhaustively manage Nano node using bash
 ---
 ncm.php				ncm script
+examples			example scripts
 </pre>
 
 ## Using a script to control a node remotely via SSH and ncm
@@ -28,7 +29,7 @@ Use a script to start a SSH connection to the server hosting your Nano node and 
 
 If you wish to control your node remotely using PHP, I suggest you to use [phpseclib](https://github.com/phpseclib/phpseclib).
 
-Suggested flags for such usage are json_in,json_out,raw_in,raw_out,no_confirm (more informations in [ncm.php](ncm/ncm.php) header).
+Example script for such usage: [ncm-remote.php](ncm/examples/ncm-remote.php).
 
 ## A clarification about the huge integers
 
