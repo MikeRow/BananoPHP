@@ -48,7 +48,7 @@
 	
 	$privkeyfile_path = 'path_to_priv_key_file';
 	
-	$default_bash = 'default_bash'; // e.g. nano@raspberry:~$;
+	$default_bash = 'default_bash'; // e.g. nano@raspberry:~$
 	
 	
 	
