@@ -27,9 +27,7 @@ examples			example scripts
 
 Use a script to start a SSH connection to the server hosting your Nano node and ncm.
 
-If you wish to control your node remotely using PHP, I suggest you to use [phpseclib](https://github.com/phpseclib/phpseclib).
-
-Example script for such usage: [ncm-remote.php](ncm/examples/ncm-remote.php).
+If you wish to control your node remotely using PHP, I suggest you to use [phpseclib](https://github.com/phpseclib/phpseclib) (e.g. [ncm-remote.php](ncm/examples/ncm-remote.php)).
 
 ## A clarification about the huge integers
 
