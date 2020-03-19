@@ -103,7 +103,6 @@
 					percent_limit=float (default 100,off)
 					weight_min=float (default 0)
 					weight_max=float (default available supply)
-					sort=asc/desc (default desc)
 					
 					e.g. ncm representatives limit=100 weight_min=10000 weight_max=200000
 				
@@ -2020,25 +2019,9 @@
 			
 		$limit = isset( $arguments['limit'] ) ? (int) $arguments['limit'] : 0;
 		
-		// Any sort?
-			
-		$sort = isset( $arguments['sort'] ) ? $arguments['sort'] : 'desc';
-		
 		//
 		
 		$representatives = $nanocall->representatives( ['sorting'=>true] );
-		
-		if( $sort == 'asc' )
-		{
-		
-			uasort( $representatives['representatives'], function( $a, $b )
-			{
-				return gmp_cmp( $a, $b );
-			});
-		
-		}
-		else
-		{}
 		
 		$i = 0;
 		

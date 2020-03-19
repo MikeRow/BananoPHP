@@ -71,6 +71,8 @@
 		
 		public $status;
 		
+		public $node_error;
+		
 		public $error;
 		
 		public $response_raw;
