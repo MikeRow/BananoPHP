@@ -93,7 +93,7 @@
 	
 	//echo $return;
 	
-	$return = explode( "\n", $return );
+	$return = explode( "\n", $return, 2 );
 	
 	print_r( json_decode( $return[1], true ) );
 	
