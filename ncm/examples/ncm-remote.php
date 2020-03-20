@@ -42,11 +42,13 @@
 	
 	
 	
-	$target = 'host';
+	$target = 'target_host';
 	
 	$username = 'nano';
 	
-	$privkeyfile_path = 'path_to_priv_key_file';
+	$privkeyfile_path = 'path_to_private_key_file';
+	
+	$ncm_path = 'ncm';
 	
 	$default_bash = 'default_bash'; // e.g. nano@raspberry:~$
 	
@@ -81,7 +83,7 @@
 		'account' => $account_genesis
 	];
 
-	$command = "ncm account_info '" . json_encode( $arguments ) . "' flags=raw_in,raw_out,json_in,json_out,no_confirm";
+	$command = $ncm_path . " account_info '" . json_encode( $arguments ) . "' flags=raw_in,raw_out,json_in,json_out,no_confirm";
 	
 	$ssh->read( $default_bash );
 	
@@ -89,9 +91,11 @@
 	
 	$return = $ssh->read( $default_bash );
 	
-	$return = explode( PHP_EOL, $return );
+	//echo $return;
 	
-	print_r( json_decode( $return[2], true ) );
+	$return = explode( "\n", $return );
+	
+	print_r( json_decode( $return[1], true ) );
 	
 	
 	

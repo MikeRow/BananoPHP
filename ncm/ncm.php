@@ -2472,11 +2472,7 @@
 				{
 					$call_return['error'] = notice['used_tag'];
 				}
-				elseif( 
-				in_array( $arguments['value'], $C['tags']['wallet'] ) ||
-				in_array( $arguments['value'], $C['tags']['account'] ) ||
-				in_array( $arguments['value'], $C['tags']['block'] )
-				)
+				elseif( in_array( $arguments['value'], $C['tags']['wallet'] ) || in_array( $arguments['value'], $C['tags']['account'] ) || in_array( $arguments['value'], $C['tags']['block'] ) )
 				{
 					$call_return['error'] = notice['used_tag_value'];
 				}
@@ -2564,11 +2560,7 @@
 				{
 					$call_return['error'] = notice['used_tag'];
 				}
-				elseif( 
-				in_array( $arguments['value'], $C['tags']['wallet'] ) ||
-				in_array( $arguments['value'], $C['tags']['account'] ) ||
-				in_array( $arguments['value'], $C['tags']['block'] )
-				)
+				elseif( in_array( $arguments['value'], $C['tags']['wallet'] ) || in_array( $arguments['value'], $C['tags']['account'] ) || in_array( $arguments['value'], $C['tags']['block'] ) )
 				{
 					$call_return['error'] = notice['used_tag_value'];
 				}
@@ -2739,13 +2731,9 @@
 	if( $flags['json_out'] )
 	{
 		
-		echo PHP_EOL;
-		
 		echo json_encode( $call_return );
 		
-		echo PHP_EOL;
-		
-		echo PHP_EOL;
+		echo "\n";
 		
 	}
 	else
