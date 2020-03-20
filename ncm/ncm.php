@@ -74,28 +74,28 @@
 				
 				account_info........................print account info (override regular call)
 				
-					account=id/tag
+					account=account_id/tag
 				
 				wallet_list.........................print all wallets summary
 				
 				wallet_info.........................print wallet summary (override regular call)
 				
-					wallet=id/tag
+					wallet=wallet_id/tag
 					
 				wallet_weight.......................print wallet weight (override regular extension call)
 				
-					wallet=id/tag
+					wallet=wallet_id/tag
 					
 				delegators..........................print account's delegators summary (override regular call)
 				
-					account=id/tag
+					account=account_id/tag
 					limit=int (default 0, off)
 					percent_limit=float (default 100,off)
 					balance_min=float (default 0)
 					balance_max=float (default available supply)
 					sort=asc/desc (default desc)
 					
-					e.g. ncm delegators account=genesis limit=100 balance_min=10000 balance_max=200000
+					e.g. ncm delegators account=account_id/tag limit=100 balance_min=10000 balance_max=200000
 					
 				representatives.....................print representatives and their weight (override regular call)
 				
@@ -120,8 +120,8 @@
 				
 					amount=float (default 1)
 					
-					e.g. ncm ticker amount=5
-					e.g. ncm ticker amount=5-USD
+					e.g. ncm ticker amount=5 (no ticker specification means in set Nano denomination)
+					e.g. ncm ticker amount=5.5-USD
 					
 				ticker_update.......................update ticker.json
 				
@@ -137,25 +137,25 @@
 				
 					cat=wallet/account/block
 					tag=tag
-					value=id
+					value=wallet_id/account_id/block_id
 					
-					e.g. ncm tag_add cat=account tag=genesis value=nano_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3
+					e.g. ncm tag_add cat=account tag=test value=account_id
 					
 				tag_edit............................edit tag
 				
 					cat=wallet/account/block
 					tag=tag
-					value=id
+					value=wallet_id/account_id/block_id
 					
-					e.g. ncm tag_edit cat=account tag=genesis value=nano_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3
+					e.g. ncm tag_edit cat=account tag=test value=account_id
 				
 				tag_remove..........................remove tag
 				
 					cat=wallet/account/block
 					tag=tag
-					value=id
+					value=wallet_id/account_id/block_id
 					
-					e.g. ncm tag_remove cat=account tag=genesis
+					e.g. ncm tag_remove cat=account tag=test
 
 
 			Node call
@@ -163,8 +163,8 @@
 			
 				Read full RPC documentation at https://docs.nano.org/commands/rpc-protocol/
 				
-					e.g. ncm account_balance account=id/tag
-					e.g. ncm accounts_balances accounts=id/tag,id/tag,id/tag
+					e.g. ncm account_balance account=account_id/tag
+					e.g. ncm accounts_balances accounts=account_id/tag,account_id/tag,account_id/tag
 					e.g. ncm send wallet=id/tag source=id/tag destination=id/tag amount=5 id=uniqid (uniqid automatically generates a uniqid() string)
 			
 			
@@ -173,28 +173,28 @@
 			
 				wallet_wipe.........................send all funds from a wallet to an account starting from higher or lower balance
 				
-					wallet=id/tag
-					destination=id/tag
+					wallet=wallet_id/tag
+					destination=account_id/tag
 					sort=asc/desc (default list)
 					
-					e.g. ncm wallet_wipe wallet=id/tag destination=id/tag sort=desc
+					e.g. ncm wallet_wipe wallet=wallet_id/tag destination=account_id/tag sort=desc
 					
 				wallet_send.........................send amount from a wallet to an account starting from higher or lower balance
 				
-					wallet=id/tag
-					destination=id/tag
-					amount=amount
+					wallet=wallet_id/tag
+					destination=account_id/tag
+					amount=float
 					sort=asc/desc (default list)
 					
-					e.g. ncm wallet_send wallet=id/tag destination=id/tag amount=5 sort=desc
-					e.g. ncm wallet_send wallet=id/tag destination=id/tag amount=5-USD sort=desc (if ticker enabled)
+					e.g. ncm wallet_send wallet=wallet_id/tag destination=account_id/tag amount=5 sort=desc
+					e.g. ncm wallet_send wallet=wallet_id/tag destination=account_id/tag amount=5-USD sort=desc (if ticker enabled)
 				
 				wallet_weight.......................return weight of a wallet and of every its account from higher or lower balance
 				
-					wallet=id/tag
+					wallet=wallet_id/tag
 					sort=asc/desc (default list)
 					
-					e.g. ncm wallet_weight wallet=id/tag sort=desc
+					e.g. ncm wallet_weight wallet=wallet_id/tag sort=desc
 				
 			
 			Flags
@@ -202,43 +202,43 @@
 		
 				raw_in..............................skip any input elaboration: tags, non-nano-raw amounts
 				
-					e.g. ncm wallet_info wallet=id flags=raw_in
+					e.g. ncm wallet_info wallet=wallet_id flags=raw_in
 				
 				raw_out.............................skip any output elaboration: tags, non-nano-raw amounts, reading improvements
 				
-					e.g. ncm wallet_info wallet=id/tag flags=raw_out
+					e.g. ncm wallet_info wallet=wallet_id/tag flags=raw_out
 					
 				json_in.............................input arguments are taken as json
 				
-					e.g. ncm wallet_info '{"wallet":"id/tag"}' flags=json_in
+					e.g. ncm wallet_info '{"wallet":"wallet_id/tag"}' flags=json_in
 				
 				json_out............................output is provided as json
 				
-					e.g. ncm wallet_info wallet=id/tag flags=json_out
+					e.g. ncm wallet_info wallet=wallet_id/tag flags=json_out
 					
 				call................................direct call to defined node connection (bypasses any ncm call override)
 				
-					e.g. ncm account_key account=id/tag flags=call
+					e.g. ncm account_key account=account_id/tag flags=call
 					
 					Read full RPC documentation at https://docs.nano.org/commands/rpc-protocol/
 					
 				cli.................................direct call to CLI interface (bypasses any ncm call override)
 				
-					e.g. ncm account_key account=id/tag flags=cli
+					e.g. ncm account_key account=account_id/tag flags=cli
 					
 					Read full RPC documentation at https://docs.nano.org/commands/command-line-interface/
 					
 				no_confirm..........................doesn't ask for confirmations: sending amounts, etc.
 				
-					e.g. ncm send wallet=id/tag source=id/tag destination=id/tag amount=5 id=uniqid flags=no_confirm
+					e.g. ncm send wallet=wallet_id/tag source=account_id/tag destination=account_id/tag amount=5 id=uniqid flags=no_confirm
 					
 				no_log..............................doesn't save log regardless of what you set up in config.json
 				
-					e.g. ncm wallet_info wallet=id/tag flags=no_log
+					e.g. ncm wallet_info wallet=wallet_id/tag flags=no_log
 				
 				Multiple flags must be combined in the same argument
 				
-					e.g. ncm wallet_info '{"wallet":"id/tag"}' flags=raw_in,raw_out,json_in,json_out,call,no_confirm,no_log
+					e.g. ncm wallet_info '{"wallet":"wallet_id/tag"}' flags=raw_in,raw_out,json_in,json_out,call,no_confirm,no_log
 	
 	*/
 	

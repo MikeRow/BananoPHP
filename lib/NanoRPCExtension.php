@@ -32,7 +32,7 @@
 			destination=id
 			sort=asc/desc (default list)
 			
-			e.g. $nanorpc->wallet_wipe(['wallet'=>'id','destination'=>'id','sort'=>'desc']);
+			e.g. $nanorpc->wallet_wipe(['wallet'=>'wallet_id','destination'=>'account_id','sort'=>'desc']); // Returns an array
 	
 		wallet_send................................send raw amount from wallet to destination account
 		
@@ -42,7 +42,7 @@
 			amount=amount
 			sort=asc/desc (default list)
 			
-			e.g. $nanorpc->wallet_send(['wallet'=>'id','destination'=>'id','amount'=>'5000000000000000000000000','sort'=>'desc']);
+			e.g. $nanorpc->wallet_send(['wallet'=>'wallet_id','destination'=>'account_id','amount'=>'5000000000000000000000000','sort'=>'desc']); // Returns an array
 			
 		wallet_weight..............................return raw weight of wallet and of every its account
 		
@@ -50,7 +50,7 @@
 			wallet=id
 			sort=asc/desc (default list)
 
-			e.g. $nanorpc->wallet_weight(['wallet'=>'id','sort'=>'desc']);
+			e.g. $nanorpc->wallet_weight(['wallet'=>'wallet_id','sort'=>'desc']); // Returns an array
 			
 		This is an extension class, native RPC are still available
 	

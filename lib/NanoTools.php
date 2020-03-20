@@ -19,19 +19,17 @@
 
 		den2raw....................................convert denomination amount to raw amount
 			
-			e.g. echo NanoTools::den2raw( 5, 'NANO' ); // Output '5000000000000000000000000000000'
+			e.g. echo NanoTools::den2raw( 5, 'NANO' ); // Returns '5000000000000000000000000000000'
 			
 		raw2den....................................convert raw amount to denomination amount
 		
-			e.g. echo NanoTools::raw2den( '5000000000000000000000000000000', 'NANO' ); // Output 5
+			e.g. echo NanoTools::raw2den( '5000000000000000000000000000000', 'NANO' ); // Returns 5
 			
 		account_validate...........................validate nano account
 		
-			e.g. echo NanoTools::account_validate( 'id' ); // Output true id valid
+			e.g. echo NanoTools::account_validate( 'account_id' ); // Returns true if valid
 			
 			*** Requires PHP BLAKE2 Extension installed and enabled https://github.com/strawbrary/php-blake2 ***
-	
-		Read full CLI documentation at https://docs.nano.org/commands/command-line-interface/
 
 	*/
 	

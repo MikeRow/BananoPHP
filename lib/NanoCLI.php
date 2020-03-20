@@ -20,7 +20,7 @@
 	*** USAGE ***
 	*************
 			
-		e.g. $nanocli->account_key(['account'=>'id']);
+		e.g. $nanocli->account_key(['account'=>'account_id']); // Returns an array
 	
 		Read full CLI documentation at https://docs.nano.org/commands/command-line-interface/
 

@@ -20,28 +20,24 @@
 	
 			$nanorpc->setSSL('/full/path/to/mycertificate.cert');
 			
+		The response is stored in array
+			
 	
 	*************
 	*** USAGE ***
 	*************
 			
-		e.g. $nanorpc->account_balance(['account'=>'id']);
+		e.g. $nanorpc->account_balance(['account'=>'account_id']); // Returns an array
 	
 		Read full RPC documentation at https://docs.nano.org/commands/rpc-protocol/
 	
-		The full response (not usually needed) is stored in $this->response while the raw JSON is stored in $this->response_raw
+		The return response (not usually needed) is stored in $this->response while the raw JSON is stored in $this->response_raw
 
 		When node fails for any reason, it will return FALSE and put the error message in $this->node_error
 		
-			echo $nanorpc->node_error;
-		
 		When a call fails for any reason, it will return FALSE and put the error message in $this->error
 		
-			echo $nanorpc->error;
-
 		The HTTP status code can be found in $this->status and will either be a valid HTTP status code or will be 0 if cURL was unable to connect
-		
-			echo $nanorpc->status;
 
 	*/
 	
