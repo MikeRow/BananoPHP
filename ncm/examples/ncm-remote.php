@@ -48,9 +48,14 @@
 	
 	$privkeyfile_path = 'path_to_private_key_file';
 	
-	$ncm_path = 'ncm';
+	function ncmCall( $command, $arguments, $flags )
+	{
 	
-	$default_bash = 'default_bash'; // e.g. nano@raspberry:~$
+		global $ssh;
+	
+		return json_decode( $ssh->exec( "php /home/nano/php4nano/ncm/ncm.php " . $command . " '" . json_encode( $arguments ) . "' flags=" . $flags ), true );
+	
+	}
 	
 	
 	
@@ -73,29 +78,20 @@
 
 	// Execution
 	
+	$flags = 'raw_in,raw_out,json_in,json_out,no_confirm';
 	
-	
-	
-	$account_genesis = 'nano_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3';
-
 	$arguments =
 	[
-		'account' => $account_genesis
+		'account' => 'nano_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3'
 	];
-
-	$command = $ncm_path . " account_info '" . json_encode( $arguments ) . "' flags=raw_in,raw_out,json_in,json_out,no_confirm";
 	
-	$ssh->read( $default_bash );
+	$return = ncmCall( 'account_info', $arguments, $flags );
 	
-	$ssh->write( $command . "\n" );
+	print_r( $return );
 	
-	$return = $ssh->read( $default_bash );
+	$return = ncmCall( 'status', [], $flags );
 	
-	//echo $return;
-	
-	$return = explode( "\n", $return, 2 );
-	
-	print_r( json_decode( $return[1], true ) );
+	print_r( $return );
 	
 	
 	
