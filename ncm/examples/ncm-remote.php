@@ -53,7 +53,11 @@
 	
 		global $ssh;
 	
-		return json_decode( $ssh->exec( "php /home/nano/php4nano/ncm/ncm.php " . $command . " '" . json_encode( $arguments ) . "' flags=" . $flags ), true );
+		$output = '';
+	
+		$ssh->exec( "php /home/nano/php4nano/ncm/ncm.php " . $command . " '" . json_encode( $arguments ) . "' flags=" . $flags . PHP_EOL, function( $return ){ $output .= $return; } );
+		
+		return json_decode( $output, true );
 	
 	}
 	
