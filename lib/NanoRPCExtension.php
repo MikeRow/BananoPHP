@@ -2,43 +2,57 @@
 
 	/*
 
-	USAGE:
+	*********************
+	*** CONFIGURATION ***
+	*********************
+	
+	
+		Include NanoRPC.php
+			
+			require_once 'PATH/php4nano/lib/NanoRPC.php';
+			
+		Include NanoRPCExtension.php
+			
+			require_once 'PATH/php4nano/lib/NanoRPCExtension.php';
+		
+		Initialize Nano connection/object
+		
+			$nanorpc = new NanoRPCExtension( 'localhost', '7076' );
+			
+	
+	*************
+	*** USAGE ***
+	*************
+	
+	
+		wallet_wipe................................send all funds from wallet to destination account
+		
+			Array:
+			wallet=id
+			destination=id
+			sort=asc/desc (default list)
+			
+			e.g. $nanorpc->wallet_wipe(['wallet'=>'id','destination'=>'id','sort'=>'desc']);
+	
+		wallet_send................................send raw amount from wallet to destination account
+		
+			Array:
+			wallet=id
+			destination=id
+			amount=amount
+			sort=asc/desc (default list)
+			
+			e.g. $nanorpc->wallet_send(['wallet'=>'id','destination'=>'id','amount'=>'5000000000000000000000000','sort'=>'desc']);
+			
+		wallet_weight..............................return raw weight of wallet and of every its account
+		
+			Array:
+			wallet=id
+			sort=asc/desc (default list)
 
-	Include NanoRPC.php
-		
-		require_once 'PATH/php4nano/lib/NanoRPC.php';
-		
-	Include NanoRPCExtension.php
-		
-		require_once 'PATH/php4nano/lib/NanoRPCExtension.php';
-	
-	Initialize Nano connection/object
-	
-		$nanorpc = new NanoRPCExtension();
-		
-	Example of call:
-
-		$args =
-		[
-			'wallet' => '7BDC980DCCFD23254DBDE7BB3DF8D9FF19B585D238B0D60B4067E3C016CAF9FE',
-			'destination' => 'nano_1abcp8j755owefwsxcbww56jqmimsojy1xxduz7m3idze677hkrnjs98da55',
-			'sort' => 'asc'
-		];
-		
-		$response = $nanorpc->wallet_wipe( $args );
-		
-		print_r( $response );
-		
-	This is an extension class, native RPC are still available:
-	
-		$args =
-		[
-			'account' => 'nano_1abcp8j755owefwsxcbww56jqmimsojy1xxduz7m3idze677hkrnjs98da55'
-		];
-		
-		$response = $nanorpc->account_balance( $args );
-		
-		echo $response['balance'];
+			e.g. $nanorpc->wallet_weight(['wallet'=>'id','sort'=>'desc']);
+			
+		This is an extension class, native RPC are still available
 	
 	*/
 	
@@ -51,15 +65,7 @@
 	
 	
 	
-	
-	
-	
-		// ************************************************************************
-		// *** Send all funds from ['wallet'] to ['destination'] with ['sort'] ***
-		// ************************************************************************
-		
-		
-		
+		// *** Wallet wipe ***
 		
 		
 		
@@ -102,16 +108,12 @@
 				return ['error'=>'Bad destination'];
 			}
 
-			// sort ok?
+			// Any sort?
 			
 			$sort = isset( $args['sort'] ) ? $args['sort'] : 'list';
 			
+			//
 			
-			
-			// *** Execution ***
-		
-		
-		
 			$return = ['balances' => []];
 			
 			// Get wallet balances
@@ -193,14 +195,7 @@
 		
 		
 		
-		
-		
-		// *****************************************************************************
-		// *** Send raw ['amount'] from ['wallet'] to ['destination'] with ['sort'] ***
-		// *****************************************************************************
-		
-		
-		
+		// *** Wallet send ***
 		
 		
 		
@@ -256,16 +251,12 @@
 			
 			}
 			
-			// sort ok?
+			// Any sort?
 			
 			$sort = isset( $args['sort'] ) ? $args['sort'] : 'list';
 			
+			//
 			
-			
-			// *** Execution ***
-		
-		
-		
 			$return = ['balances' => []];
 			
 			$selected_accounts = [];
@@ -379,15 +370,7 @@
 		
 		
 		
-		
-		
-		
-		// *******************************************************************************
-		// *** Return raw weight of ['wallet'] and of every its account with ['sort'] ***
-		// *******************************************************************************
-		
-		
-		
+		// *** Wallet weight ***
 		
 		
 		
@@ -412,16 +395,12 @@
 				return ['error'=>'Bad wallet number'];
 			}
 			
-			// sort ok?
+			// Any sort?
 			
 			$sort = isset( $args['sort'] ) ? $args['sort'] : 'list';
 			
+			//
 			
-			
-			// *** Execution ***
-		
-		
-		
 			$return = ['weight' => '', 'weights' => []];
 			
 			$wallet_weight = '0';

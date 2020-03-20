@@ -2,28 +2,27 @@
 
 	/*
 
-	Read full CLI documentation at https://docs.nano.org/commands/command-line-interface/
+	*********************
+	*** CONFIGURATION ***
+	*********************
 	
-	USAGE:
-
-	Include NanoCLI.php
-		
-		require_once 'PATH/php4nano/lib/NanoCLI.php';
-
-	Initialize Nano connection/object
 	
-		$nanocli = new NanoCLI('PATH_TO_NANO_NODE');
+		Include NanoCLI.php
+			
+			require_once 'PATH/php4nano/lib/NanoCLI.php';
 
-	Example of call:
-
-		$args =
-		[
-			'account' => 'nano_1abcp8j755owefwsxcbww56jqmimsojy1xxduz7m3idze677hkrnjs98da55'
-		];
+		Initialize Nano connection/object
 		
-		$response = $nanocli->account_key( $args );
-		
-		print_r( $response );
+			$nanocli = new NanoCLI('PATH_TO_NANO_NODE');
+			
+	
+	*************
+	*** USAGE ***
+	*************
+			
+		e.g. $nanocli->account_key(['account'=>'id']);
+	
+		Read full CLI documentation at https://docs.nano.org/commands/command-line-interface/
 
 	*/
 	

@@ -1,52 +1,47 @@
 <?php
 
 	/*
-
-	Read full RPC documentation at https://docs.nano.org/commands/rpc-protocol/
 	
-	USAGE:
-
-	Include NanoRPC.php
+	*********************
+	*** CONFIGURATION ***
+	*********************
+	
+	
+		Include NanoRPC.php
+			
+			require_once 'PATH/php4nano/lib/NanoRPC.php';
 		
-		require_once 'PATH/php4nano/lib/NanoRPC.php';
-
-	Initialize Nano connection/object
-	
-		$nanorpc = new NanoRPC();
-
-	Optionally, you can specify host and port.
-	
-		$nanorpc = new NanoRPC( 'localhost', '7076' );
-
-	If you wish to setup a SSL connection you can set an optional CA certificate or leave blank
-	This will set the protocol to HTTPS and some CURL flags
-	
-		$nanorpc->setSSL('/full/path/to/mycertificate.cert');
-
-	Example of call:
-
-		$args =
-		[
-			'account' => 'nano_1abcp8j755owefwsxcbww56jqmimsojy1xxduz7m3idze677hkrnjs98da55'
-		];
+		Initialize Nano connection/object
 		
-		$response = $nanorpc->account_balance( $args );
+			$nanorpc = new NanoRPC( 'localhost', '7076' );
+			
+		If you wish to setup a SSL connection you can set an optional CA certificate or leave blank
+		This will set the protocol to HTTPS and some CURL flags
+	
+			$nanorpc->setSSL('/full/path/to/mycertificate.cert');
+			
+	
+	*************
+	*** USAGE ***
+	*************
+			
+		e.g. $nanorpc->account_balance(['account'=>'id']);
+	
+		Read full RPC documentation at https://docs.nano.org/commands/rpc-protocol/
+	
+		The full response (not usually needed) is stored in $this->response while the raw JSON is stored in $this->response_raw
+
+		When node fails for any reason, it will return FALSE and put the error message in $this->node_error
 		
-		echo $response['balance'];
+			echo $nanorpc->node_error;
+		
+		When a call fails for any reason, it will return FALSE and put the error message in $this->error
+		
+			echo $nanorpc->error;
 
-	The full response (not usually needed) is stored in $this->response while the raw JSON is stored in $this->response_raw
-
-	When node fails for any reason, it will return FALSE and put the error message in $this->node_error
-	
-		echo $nanorpc->node_error;
-	
-	When a call fails for any reason, it will return FALSE and put the error message in $this->error
-	
-		echo $nanorpc->error;
-
-	The HTTP status code can be found in $this->status and will either be a valid HTTP status code or will be 0 if cURL was unable to connect
-	
-		echo $nanorpc->status;
+		The HTTP status code can be found in $this->status and will either be a valid HTTP status code or will be 0 if cURL was unable to connect
+		
+			echo $nanorpc->status;
 
 	*/
 	
