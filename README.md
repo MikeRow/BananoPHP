@@ -23,7 +23,7 @@ ncm.php				ncm script
 examples			example scripts
 </pre>
 
-## Using a script to control a node remotely via SSH and ncm
+## Using a script to securely control a node remotely via SSH and ncm
 
 Use a script to start a SSH connection to the server hosting your Nano node and ncm
 
