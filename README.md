@@ -44,6 +44,7 @@ You can find denomination/raw conversion functions and other usefull stuffs in [
 * Add RPC2.0 support
 * Add WebSocket lib class
 * Add IPC lib class
+* Add WebSocket support for ncm
 * Add IPC support for ncm
 
 ## Credits
