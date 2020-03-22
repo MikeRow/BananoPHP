@@ -49,7 +49,7 @@ You can find denomination/raw conversion functions and other usefull stuffs in [
 
 ## Discarded
 
-* HTTP Callback, WebSocket are better
+* HTTP Callback support
 
 ## Welcome third-party implementations
 
