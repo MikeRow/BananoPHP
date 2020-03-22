@@ -47,6 +47,17 @@ You can find denomination/raw conversion functions and other usefull stuffs in [
 * Add WebSocket support for ncm
 * Add IPC support for ncm
 
+## Discarded
+
+* HTTP Callback, WebSocket are better
+
+## Welcome third-party implementations
+
+* HTML/JavaScript Nano node manager using ncm
+<pre>A kind of node visual manager
+One or more HTML/JavaScript pages that connect via SSH to a server hosting a Nano node and ncm
+</pre>
+
 ## Credits
 
 * [EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
