@@ -54,9 +54,7 @@ You can find denomination/raw conversion functions and other usefull stuffs in [
 ## Welcome third-party implementations
 
 * HTML/JavaScript ncm visual manager
-<pre>A kind of node visual manager
-One or more HTML/JavaScript pages that connect via SSH to a server hosting a Nano node and ncm
-</pre>
+<pre>HTML/JavaScript visual manager that connects via SSH to a server hosting a Nano node and ncm</pre>
 
 ## Credits
 
