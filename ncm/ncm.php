@@ -37,15 +37,15 @@
 				ONLY ONE tag for each wallet/account/block
 				In sort to have a clean and flowing tag list, I recommend using only lowercase alphanumeric characters, dashes(-) and dottes(.)
 				
-				Note: tags set by you will always take precedence over those of third party
+				Note: tags set by you will always take precedence over those of third-party
 				
-			Third Party Tags (3tags)
+			Third-party tags (3tags)
 			
 				********************************************************************************
 				*** A big THANK YOU to https://mynano.ninja for its free and accessible API! ***
 				********************************************************************************
 				
-				Enable 3tags option and run 'php PATH/php4nano/ncm/ncm.php 3tags_update' to populate third party tags
+				Enable 3tags option and run 'php PATH/php4nano/ncm/ncm.php 3tags_update' to populate third-party tags
 				You may crontab it to keep it updated
 				
 				
@@ -239,6 +239,18 @@
 				Multiple flags must be combined in the same argument
 				
 					e.g. ncm wallet_info '{"wallet":"wallet_id/tag"}' flags=raw_in,raw_out,json_in,json_out,call,no_confirm,no_log
+					
+					
+			Caller Identification
+			
+			
+				For some debug reason you may track the executioner by specifying a custom caller identification, actually it appears only in logs
+				If not specified, it is set do 'default' value
+				
+				Note: I recommend using only lowercase alphanumeric characters and dashes(-)
+				
+				e.g. ncm wallet_info wallet=wallet_id/tag callerID=remote1
+				e.g. ncm wallet_info wallet=wallet_id/tag callerID=linux-server
 	
 	*/
 	
@@ -357,7 +369,9 @@
 		},
 		"log": {
 			"save": true,
-			"privacy": true
+			"privacy": true,
+			"clean": true,
+			"clean_days": "7"
 		},
 		"timezone": "UTC",
 		"format": {
@@ -1127,11 +1141,13 @@
 		'no_log'          => false
 	];
 	
+	$callerID = 'default';
+	
 	$alerts = [];
 	
 	
 	
-	// Search for flags
+	// Search for flags and callerID
 	
 	
 	
@@ -1156,8 +1172,18 @@
 			}
 			
 			unset( $argv[$index] );
+		
+		}
+		
+		if( $arguments_row[0] == 'callerID' )
+		{
 			
-			break;
+			if( strlen( $arguments_row[1] ) > 0 )
+			{
+				$callerID = $arguments_row[1];
+			}
+			
+			unset( $argv[$index] );
 		
 		}
 		
@@ -2300,7 +2326,7 @@
 	
 	
 	
-	// *** Update Third Party Tags ***
+	// *** Update third-party tags ***
 	
 	
 	
@@ -2752,12 +2778,46 @@
 	
 	
 	
-	// ****************
-	// *** Save log ***
-	// ****************
+	// ************
+	// *** Logs ***
+	// ************
 	
 	
 	
+	
+	
+	
+	// *** Clean logs? ***
+	
+	
+	
+	if( $C['log']['clean'] )
+	{
+		
+		$logs = array_diff( scandir( log_dir ), array( '.', '..' ) );
+		
+		foreach( $logs as $log )
+		{
+		
+			$log = explode( '.', $log );
+			
+			if( isset( $log[1] ) && $log[1] == 'txt' )
+			{
+				
+				if( strtotime( $log[0] ) < ( time() - ( $C['log']['clean_days'] * 24 * 60 * 60 ) ) )
+				{
+					unlink( log_dir . '/' . $log[0] . '.' . $log[1] );
+				}
+				
+			}
+		
+		}
+		
+	}
+	
+	
+	
+	// *** Save log? ***
 	
 	
 	
@@ -2781,6 +2841,26 @@
 		
 		if( $C['log']['save'] && ( !in_array( $command, $check_words ) || !$C['log']['privacy'] ) )
 		{
+			
+			// Generate flags string
+		
+			$log_flags = [];
+			
+			foreach( $flags as $name => $value )
+			{
+				
+				if( $value )
+				{
+					$log_flags[] = $name;
+				}
+			
+			}
+			
+			$log_flags = implode( ',', $log_flags );
+			
+			if( $log_flags == '' ) $log_flags = 'noflags';
+		
+			// Save log
 		
 			$log_file = log_dir . '/' . date( 'Y-m-d' ) . '.txt';
 		
@@ -2793,7 +2873,7 @@
 				$newline = PHP_EOL;
 			}
 			
-			file_put_contents( $log_file, $newline . date( 'm/d/Y H:i:s', time() ) . ' ' . $command . ':' . json_encode( $arguments ) . ' ' . json_encode( $call_return ), FILE_APPEND );
+			file_put_contents( $log_file, $newline . date( 'm/d/Y H:i:s', time() ) . ' ' . $callerID . ' ' . $command . ' ' . json_encode( $arguments ) . ' ' . $log_flags . ' ' . json_encode( $call_return ), FILE_APPEND );
 		
 		}
 	
