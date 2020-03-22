@@ -48,12 +48,12 @@
 	
 	$privkeyfile_path = 'path_to_private_key_file';
 	
-	function ncmCall( $command, $arguments, $flags )
+	function ncmCall( $command, $arguments, $flags, $callerID )
 	{
 		
 		global $ssh;
 	
-		$output = $ssh->exec( "php /home/nano/php4nano/ncm/ncm.php " . $command . " '" . json_encode( $arguments ) . "' flags=" . $flags . PHP_EOL );
+		$output = $ssh->exec( "php /home/nano/php4nano/ncm/ncm.php " . $command . " '" . json_encode( $arguments ) . "' flags=" . $flags . " callerID=" . $callerID . PHP_EOL );
 		
 		return json_decode( $output, true );
 		
@@ -82,16 +82,18 @@
 	
 	$flags = 'raw_in,raw_out,json_in,json_out,no_confirm';
 	
+	$callerID = 'remote-script';
+	
 	$arguments =
 	[
 		'account' => 'nano_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3'
 	];
 	
-	$return = ncmCall( 'account_info', $arguments, $flags );
+	$return = ncmCall( 'account_info', $arguments, $flags, $callerID );
 	
 	print_r( $return );
 	
-	$return = ncmCall( 'status', [], $flags );
+	$return = ncmCall( 'status', [], $flags, $callerID );
 	
 	print_r( $return );
 	
