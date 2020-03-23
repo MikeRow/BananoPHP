@@ -13,42 +13,89 @@
 			
 		- Edit data/config.json with you own parameters
 		
-		- Specifications for config.json:
+		- Details for config.json:
 			
-			Denomination
 			
-				Accepted denominations: unano, mnano, nano, knano, Mnano, NANO, Gnano
+			nano
 			
-			Log privacy
 			
-				Disable logging for sensitive information
-							
-			Ticker
+				denomination........................accepted denominations: unano, mnano, nano, knano, Mnano, NANO, Gnano
+				
+				node_file...........................absolute path to nano_node
+				
+				data_dir............................absolute path to Nano folder
+				
+				connection..........................type of connection used to call nano_node
+				
+				rpc.................................parameter used for HTTP/RPC connection
 			
-				********************************************************************************
+			
+			log
+			
+			
+				save................................enable/disable log saving
+			
+				privacy.............................enable/disable logging for sensitive information
+				
+				expiration..........................days for which a daily log is kept (0 for no limit)
+				
+				
+			timezone................................timezone for displaying dates, supported: https://www.php.net/manual/en/timezones.php
+			
+			
+			format
+			
+			
+				timestamp...........................timestamp format for displaying dates, supported: https://www.php.net/manual/en/function.date.php
+				
+				decimal.............................character used to divide the decimal part of a number
+				
+				thousand............................character used to divide every thousand part of a number
+				
+				
+			ticker
+			
+			
 				*** A big THANK YOU to http://coingecko.com for its free and accessible API! ***
-				********************************************************************************
 			
 				Before enabling the ticker option, crontab 'php PATH/php4nano/ncm/ncm.php ticker_update' (I suggest execution every 20 minutes)
 				Also, initialize it by executing it manually the first time
 			
-			Tags
+				enable..............................enable/disable ticker option
+				
+				fav_vs_currencies...................favourite versus currencies
+				
+				
+			tag
+			
+			
+				enable..............................enable/disable displaying tags
+				
+				separator...........................character/s used for displaying a tag and its value
+				
+				
+			tags
+			
+			
+				list of custom tags divided in 3 different categories: wallet, account, block
 			
 				ONLY ONE tag for each wallet/account/block
 				In sort to have a clean and flowing tag list, I recommend using only lowercase alphanumeric characters, dashes(-) and dottes(.)
 				
 				Note: tags set by you will always take precedence over those of third-party
-				
-			Third-party tags (3tags)
 			
-				********************************************************************************
+			
+			3tags
+			
+			
 				*** A big THANK YOU to https://mynano.ninja for its free and accessible API! ***
-				********************************************************************************
 				
 				Enable 3tags option and run 'php PATH/php4nano/ncm/ncm.php 3tags_update' to populate third-party tags
 				You may crontab it to keep it updated
-				
-				
+			
+				enable...............................enable/disable third-party tags
+
+	
 	*************
 	*** USAGE ***
 	*************
@@ -197,7 +244,7 @@
 					e.g. ncm wallet_weight wallet=wallet_id/tag sort=desc
 				
 			
-			Flags
+			Flags (flags)
 
 		
 				raw_in..............................skip any input elaboration: tags, non-nano-raw amounts
@@ -241,7 +288,7 @@
 					e.g. ncm wallet_info '{"wallet":"wallet_id/tag"}' flags=raw_in,raw_out,json_in,json_out,call,no_confirm,no_log
 					
 					
-			Caller Identification
+			Caller Identification (callerID)
 			
 			
 				For some debug reason you may track the executioner by specifying a custom caller identification, actually it appears only in logs
@@ -308,10 +355,10 @@
 	
 	define( 'notice'                ,
 	[
-		'init-completed'            => 'Init completed',
-		'node-connection-failed'    => 'Connection to node failed',
-		'sending-amount'            => 'Sending',
-		'sending-confirm'           => 'Do you want to proceed? Type \'confirm\' to proceed: ',
+		'init_completed'            => 'Init completed',
+		'node_connection_failed'    => 'Connection to node failed',
+		'sendind_amount'            => 'Sending',
+		'sendind_confirm'           => 'Do you want to proceed? Type \'confirm\' to proceed: ',
 		'bad_call'                  => 'Bad call',
 		'bad_wallet'                => 'Bad wallet number',
 		'bad_account'               => 'Bad account',
@@ -324,7 +371,12 @@
 		'tag_added'                 => 'Tag added',
 		'tag_edited'                => 'Tag edited',
 		'tag_removed'               => 'Tag removed',
-		'ticker-not-updated'        => 'Ticker not updated'
+		'ticker_not_updated'        => 'Ticker not updated',
+		'ticker_updated'            => 'Ticker updated',
+		'3tags_updated'             => '3tags updated',
+		'ticker_update_error_api1'  => 'ticker_update API #1',
+		'ticker_update_error_api2'  => 'ticker_update API #2',
+		'3tags_update_error_api1'   => '3tags_update API #1'
 	]);
 
 	
@@ -370,8 +422,7 @@
 		"log": {
 			"save": true,
 			"privacy": true,
-			"clean": true,
-			"clean_days": "7"
+			"expiration": "7"
 		},
 		"timezone": "UTC",
 		"format": {
@@ -1461,9 +1512,9 @@
 				
 				$confirmation_amount = custom_number( NanoTools::raw2den( $confirmation_amount, $C['nano']['denomination'] ) ) . ' ' . $C['nano']['denomination'];
 				
-				echo PHP_EOL . notice['sending-amount'] . ' ' . $confirmation_amount . PHP_EOL;
+				echo PHP_EOL . notice['sendind_amount'] . ' ' . $confirmation_amount . PHP_EOL;
 				
-				echo notice['sending-confirm'];
+				echo notice['sendind_confirm'];
 				
 				$line = stream_get_line( STDIN, 10, PHP_EOL );
 				
@@ -2270,57 +2321,63 @@
 
 		if( !$vs_currency_json )
 		{
-			// echo 'ticker_update API #1 Error'; 
-			exit;
+			$call_return['error'] = notice['ticker_update_error_api1'];
 		}
-		
-		$vs_currencies_array = json_decode( $vs_currency_json, true );
-		
-		// Get latest exchange rates vs currencies
-		
-		$vs_currencies_string = implode( ',', $vs_currencies_array );
-		
-		$nano_vs_currency_json = file_get_contents( 'https://api.coingecko.com/api/v3/simple/price?ids=nano&vs_currencies=' . $vs_currencies_string . '&include_last_updated_at=true' );
-		
-		if( !$nano_vs_currency_json )
-		{
-			// echo 'ticker_update API #2 Error'; 
-			exit;
-		}
-		
-		$nano_vs_currencies_array = json_decode( $nano_vs_currency_json, true );
-		
-		// All tickers to uppercase
-		
-		foreach( $nano_vs_currencies_array['nano'] as $currency => $rate )
+		else
 		{
 			
-			if( $currency == 'last_updated_at' )
+			$vs_currencies_array = json_decode( $vs_currency_json, true );
+			
+			// Get latest exchange rates vs currencies
+			
+			$vs_currencies_string = implode( ',', $vs_currencies_array );
+			
+			$nano_vs_currency_json = file_get_contents( 'https://api.coingecko.com/api/v3/simple/price?ids=nano&vs_currencies=' . $vs_currencies_string . '&include_last_updated_at=true' );
+			
+			if( !$nano_vs_currency_json )
+			{
+				$call_return['error'] = notice['ticker_update_error_api2'];
+			}
+			else
 			{
 				
-				$last_updated_at = $rate;
+				$nano_vs_currencies_array = json_decode( $nano_vs_currency_json, true );
 				
-				unset( $nano_vs_currencies_array['nano'][$currency] );
+				// All tickers to uppercase
 				
-				continue;
-			
+				foreach( $nano_vs_currencies_array['nano'] as $currency => $rate )
+				{
+					
+					if( $currency == 'last_updated_at' )
+					{
+						
+						$last_updated_at = $rate;
+						
+						unset( $nano_vs_currencies_array['nano'][$currency] );
+						
+						continue;
+					
+					}
+					
+					$nano_vs_currencies_array['nano'][strtoupper( $currency )] = $rate;
+					
+					unset( $nano_vs_currencies_array['nano'][$currency] );
+						
+				}
+				
+				$nano_vs_currencies_array['nano']['NANO'] = 1;
+				
+				$nano_vs_currencies_array['last_updated_at'] = $last_updated_at;
+				
+				// Save ticker.json
+				
+				file_put_contents( ticker_file, json_encode( $nano_vs_currencies_array, JSON_PRETTY_PRINT ) );
+				
+				$call_return[] = notice['ticker_updated'];
+				
 			}
 			
-			$nano_vs_currencies_array['nano'][strtoupper( $currency )] = $rate;
-			
-			unset( $nano_vs_currencies_array['nano'][$currency] );
-				
 		}
-		
-		$nano_vs_currencies_array['nano']['NANO'] = 1;
-		
-		$nano_vs_currencies_array['last_updated_at'] = $last_updated_at;
-		
-		// Save ticker.json
-		
-		file_put_contents( ticker_file, json_encode( $nano_vs_currencies_array, JSON_PRETTY_PRINT ) );
-		
-		exit;
 	
 	}
 	
@@ -2341,32 +2398,35 @@
 		
 		if( !$third_party_tags_json )
 		{
-			// echo '3tags_update API #1 Error'; 
-			exit;
+			$call_return['error'] = notice['3tags_update_error_api1']; 
 		}
-		
-		foreach( $third_party_tags_array as $index => $data )
+		else
 		{
 		
-			$tag = $data['alias'];
-		
-			$tag = tag_filter( $tag );
+			foreach( $third_party_tags_array as $index => $data )
+			{
 			
-			if( array_key_exists( $tag, $thirdy_party_tags_elaborated['account'] ) ) continue;
-		
-			if( $tag == '' ) continue;
-		
-			$thirdy_party_tags_elaborated['account'][$tag] = $data['account'];
-		
+				$tag = $data['alias'];
+			
+				$tag = tag_filter( $tag );
+				
+				if( array_key_exists( $tag, $thirdy_party_tags_elaborated['account'] ) ) continue;
+			
+				if( $tag == '' ) continue;
+			
+				$thirdy_party_tags_elaborated['account'][$tag] = $data['account'];
+			
+			}
+			
+			ksort( $thirdy_party_tags_elaborated['account'] );
+			
+			// Save 3tags.json
+			
+			file_put_contents( thirdtags_file, json_encode( $thirdy_party_tags_elaborated, JSON_PRETTY_PRINT ) );
+			
+			$call_return[] = notice['3tags_updated'];
+			
 		}
-		
-		ksort( $thirdy_party_tags_elaborated['account'] );
-		
-		// Save 3tags.json
-		
-		file_put_contents( thirdtags_file, json_encode( $thirdy_party_tags_elaborated, JSON_PRETTY_PRINT ) );
-		
-		exit;
 	
 	}
 	
@@ -2678,7 +2738,7 @@
 	
 	elseif( $command == 'init' )
 	{
-		$call_return[] = notice['init-completed'];
+		$call_return[] = notice['init_completed'];
 	}
 	
 	
@@ -2712,7 +2772,7 @@
 	
 	if( !is_null( $nanocall->error ) )
 	{
-		$call_return['error'] = notice['node-connection-failed'];
+		$call_return['error'] = notice['node_connection_failed'];
 	}
 	
 	
@@ -2728,7 +2788,7 @@
 	
 		if( $ticker_delay > 60*30 )
 		{
-			$alerts[] = notice['ticker-not-updated'];
+			$alerts[] = notice['ticker_not_updated'];
 		}
 	
 	}
@@ -2791,7 +2851,7 @@
 	
 	
 	
-	if( $C['log']['clean'] )
+	if( $C['log']['expiration'] > 0 )
 	{
 		
 		$logs = array_diff( scandir( log_dir ), array( '.', '..' ) );
@@ -2804,7 +2864,7 @@
 			if( isset( $log[1] ) && $log[1] == 'txt' )
 			{
 				
-				if( strtotime( $log[0] ) < ( time() - ( $C['log']['clean_days'] * 24 * 60 * 60 ) ) )
+				if( strtotime( $log[0] ) < ( time() - ( $C['log']['expiration'] * 24 * 60 * 60 ) ) )
 				{
 					unlink( log_dir . '/' . $log[0] . '.' . $log[1] );
 				}
