@@ -42,14 +42,8 @@ Example script: [ncm-remote.php](ncm/examples/ncm-remote.php)
 ## To do
 
 * Add RPC2.0 support
-* Add WebSocket lib class
 * Add IPC lib class
-* Add WebSocket support for ncm
 * Add IPC support for ncm
-
-## Discarded
-
-* HTTP Callback support
 
 ## Welcome third-party implementations
 
