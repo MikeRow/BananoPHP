@@ -2938,16 +2938,5 @@
 		}
 	
 	}
-	
-	/*
-	
-		In every loss in every lie
-		In every truth that you deny
-		And each regret and each goodbye
-		Was a mistake too great to hide
-		And your voice was all I heard
-		That I get what I deserve
-	
-	*/
-	
+		
 ?>
