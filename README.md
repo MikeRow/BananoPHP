@@ -25,9 +25,8 @@ examples			example scripts
 
 ## A clarification about the huge integers
 
-Nano uses huge integers to represent even a tiny amount (1 nano is 10^24 raw), but PHP supports much lower integers
-
-If you need to perform arithmetic operations directly with the raw amounts, I suggest the [GMP library](https://www.php.net/manual/en/book.gmp.php)
+Nano uses huge integers to represent even a tiny amount (1 nano is 10^24 raw), but PHP supports much lower integers<br/>
+If you need to perform arithmetic operations directly with the raw amounts, I suggest [GMP](https://www.php.net/manual/en/book.gmp.php) extension
 
 You can find denomination/raw conversion functions and other usefull stuffs in [lib/NanoTools.php](lib/NanoTools.php)
 
@@ -35,9 +34,8 @@ You can find denomination/raw conversion functions and other usefull stuffs in [
 
 Use a script to start a SSH connection to the server hosting your Nano node and ncm
 
-If you wish to control your node remotely using PHP, I suggest you to use [phpseclib](https://github.com/phpseclib/phpseclib)
-
-Example script: [ncm-remote.php](ncm/examples/ncm-remote.php)
+If you wish to control your node remotely using PHP, I suggest the [phpseclib](https://github.com/phpseclib/phpseclib) repository<br/>
+Try [ncm-remote.php](ncm/examples/ncm-remote.php) example script
 
 ## To do
 
@@ -54,7 +52,7 @@ Out of date, WebSocket are better
 * WebSocket
 
 Since their usage is pretty custom in each situation, I've decided to don't develop any class or ncm implementation<br/>
-If you are looking for an easy way to implement a WebSocket client for PHP try this library [Textalk/websocket-php](https://github.com/Textalk/websocket-php)
+If you are looking for an easy way to implement a WebSocket client for PHP I suggest [Textalk/websocket-php](https://github.com/Textalk/websocket-php) repository
 
 ## Welcome third-party implementations
 
