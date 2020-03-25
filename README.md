@@ -57,7 +57,8 @@ If you are looking for an easy way to implement a WebSocket client for PHP I sug
 ## Welcome third-party implementations
 
 * HTML/JavaScript ncm visual manager
-<pre>HTML/JavaScript visual manager that connects via SSH to a server hosting a Nano node and ncm</pre>
+
+HTML/JavaScript visual manager that connects via SSH to a server hosting a Nano node and ncm
 
 ## Credits
 
