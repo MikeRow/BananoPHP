@@ -454,6 +454,8 @@
 	
 	$C_model = json_decode( $C_model_raw, true );
 	
+	$C2 = [];
+	
 	
 	
 	// *** Load config.json ***
@@ -489,15 +491,15 @@
 		
 		$ticker_array = json_decode( file_get_contents( ticker_file ), true );
 		
-		define( 'vs_currencies' , $ticker_array['nano'] );
+		$C2['vs_currencies'] = $ticker_array['nano'];
 		
-		define( 'ticker_last', $ticker_array['last_updated_at'] );
+		$C2['ticker_last'] = $ticker_array['last_updated_at'];
 		
 	}
 	
 	if( $C['3tags']['enable'] )
 	{
-		define( 'thirdtags', json_decode( file_get_contents( thirdtags_file ), true ) );
+		$C2['thirdtags'] = json_decode( file_get_contents( thirdtags_file ), true );
 	}
 	
 	// Save config.json
@@ -578,6 +580,8 @@
 	{
 		
 		global $C;
+		
+		global $C2;
 		
 		// $number = sprintf( "%s", $number );
 		
@@ -716,6 +720,8 @@
 	{
 	
 		global $C;
+		
+		global $C2;
 	
 		// Check if a wallet tag is available
 		
@@ -748,9 +754,9 @@
 			{
 				return $C['tags']['account'][$value];
 			}
-			elseif( $C['3tags']['enable'] && array_key_exists( $value, thirdtags['account'] ) )
+			elseif( $C['3tags']['enable'] && array_key_exists( $value, $C2['thirdtags']['account'] ) )
 			{
-				return thirdtags['account'][$value];
+				return $C2['thirdtags']['account'][$value];
 			}
 			else
 			{}
@@ -786,6 +792,8 @@
 		
 		global $C;
 		
+		global $C2;
+		
 		if( !$C['tag']['view'] ) return $value;
 		
 		if( is_array( $value ) ) return $value;
@@ -807,13 +815,13 @@
 			{
 				return array_search( 'nano_' . $key_check[1], $C['tags']['account'] ) . $C['tag']['separator'] . $value;
 			}
-			elseif( $C['3tags']['enable'] && array_search( 'xrb_' . $key_check[1], thirdtags['account'] ) )
+			elseif( $C['3tags']['enable'] && array_search( 'xrb_' . $key_check[1], $C2['thirdtags']['account'] ) )
 			{
-				return array_search( 'xrb_' . $key_check[1], thirdtags['account'] ) . $C['tag']['separator'] . $value;
+				return array_search( 'xrb_' . $key_check[1], $C2['thirdtags']['account'] ) . $C['tag']['separator'] . $value;
 			}
-			elseif( $C['3tags']['enable'] && array_search( 'nano_' . $key_check[1], thirdtags['account'] ) )
+			elseif( $C['3tags']['enable'] && array_search( 'nano_' . $key_check[1], $C2['thirdtags']['account'] ) )
 			{
-				return array_search( 'nano_' . $key_check[1], thirdtags['account'] ) . $C['tag']['separator'] . $value;
+				return array_search( 'nano_' . $key_check[1], $C2['thirdtags']['account'] ) . $C['tag']['separator'] . $value;
 			}
 			else
 			{
@@ -842,6 +850,8 @@
 	{
 		
 		global $C;
+		
+		global $C2;
 		
 		global $command;
 		
@@ -944,9 +954,9 @@
 							foreach( $fav_vs_currencies as $fav_vs_currency )
 							{
 							
-								if( isset( vs_currencies[strtoupper( $fav_vs_currency )] ) )
+								if( isset( $C2['vs_currencies'][strtoupper( $fav_vs_currency )] ) )
 								{
-									$array[$key][] = custom_number( number_format( NanoTools::raw2den( $value, 'NANO' ) * vs_currencies[strtoupper( $fav_vs_currency )], 8, '.', '' ) ) . ' ' . strtoupper( $fav_vs_currency );
+									$array[$key][] = custom_number( number_format( NanoTools::raw2den( $value, 'NANO' ) * $C2['vs_currencies'][strtoupper( $fav_vs_currency )], 8, '.', '' ) ) . ' ' . strtoupper( $fav_vs_currency );
 								}
 								
 							}
@@ -1360,9 +1370,9 @@
 					
 					$input_currency[0] = abs( $input_currency[0] );
 					
-					if( is_numeric( $input_currency[0] ) && isset( $input_currency[1] ) && isset( vs_currencies[strtoupper( $input_currency[1] )] ) )
+					if( is_numeric( $input_currency[0] ) && isset( $input_currency[1] ) && isset( $C2['vs_currencies'][strtoupper( $input_currency[1] )] ) )
 					{
-						$arguments[$argument0] = NanoTools::den2raw( $input_currency[0] / vs_currencies[strtoupper( $input_currency[1] )], 'NANO' );
+						$arguments[$argument0] = NanoTools::den2raw( $input_currency[0] / $C2['vs_currencies'][strtoupper( $input_currency[1] )], 'NANO' );
 					}
 					else
 					{
@@ -2373,6 +2383,8 @@
 				
 				file_put_contents( ticker_file, json_encode( $nano_vs_currencies_array, JSON_PRETTY_PRINT ) );
 				
+				$C2['ticker_last'] = time();
+				
 				$call_return[] = notice['ticker_updated'];
 				
 			}
@@ -2422,7 +2434,7 @@
 			
 			// Save 3tags.json
 			
-			file_put_contents( thirdtags_file, json_encode( $thirdy_party_tags_elaborated, JSON_PRETTY_PRINT ) );
+			file_put_contents( $C_thirdtags_file, json_encode( $thirdy_party_tags_elaborated, JSON_PRETTY_PRINT ) );
 			
 			$call_return[] = notice['3tags_updated'];
 			
@@ -2482,7 +2494,7 @@
 		
 		if( !$C['3tags']['enable'] ) exit;
 		
-		$thirdtags_array = json_decode( file_get_contents( thirdtags_file ), true );
+		$thirdtags_array = json_decode( file_get_contents( $C_thirdtags_file ), true );
 
 		foreach( $thirdtags_array['account'] as $tag => $id )
 		{
@@ -2784,7 +2796,7 @@
 	if( $C['ticker']['enable'] )
 	{
 	
-		$ticker_delay = time() - ticker_last;
+		$ticker_delay = time() - $C2['ticker_last'];
 	
 		if( $ticker_delay > 60*30 )
 		{
