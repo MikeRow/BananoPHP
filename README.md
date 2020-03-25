@@ -9,10 +9,10 @@ PHP libraries and tools for the Nano currency
 
 <pre>classes for Nano
 ---
-NanoCli.php			interface for nano_node cli commands
+NanoCli.php			interface for nano_node CLI commands
 NanoRPC.php			interface for RPC commands
 NanoRPCExtension.php		extension commands for NanoRPC.php
-NanoTools.php			usefull tools for Nano
+NanoTools.php			usefull node-independent tools for Nano
 </pre>
 
 [ncm](ncm)
