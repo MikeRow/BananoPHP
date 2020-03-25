@@ -53,10 +53,9 @@ Out of date, WebSocket are better
 
 * WebSocket
 
-<sub><sup>Since their usage is pretty custom in each situation, I've decided to don't develop any class or ncm implementation
+Since their usage is pretty custom in each situation, I've decided to don't develop any class or ncm implementation
 
 If you are looking for an easy way to implement a WebSocket client for PHP try this library [Textalk/websocket-php](https://github.com/Textalk/websocket-php)
-</sup></sub>
 
 ## Welcome third-party implementations
 
