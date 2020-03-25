@@ -29,7 +29,7 @@
 		
 			e.g. echo NanoTools::account_validate( 'account_id' ); // Returns true if valid
 			
-			*** Requires PHP BLAKE2 Extension installed and enabled https://github.com/strawbrary/php-blake2 ***
+			*** Requires php-blake2 extension (https://github.com/strawbrary/php-blake2) installed and enabled ***
 
 	*/
 	
@@ -167,10 +167,12 @@
 			if( is_string( $account ) )
 			{
 				
-				if( ( ( strpos( $account, 'xrb_1' ) === 0 ) || ( strpos( $account, 'xrb_3' ) === 0 ) || ( strpos( $account, 'nano_1' ) === 0 ) || ( strpos( $account, 'nano_3' ) === 0 ) ) && ( strlen( $account ) == 64 ) )
+				if( ( ( strpos( $account, 'xrb_1' ) === 0 ) || ( strpos( $account, 'xrb_3' ) === 0 ) || ( strpos( $account, 'nano_1' ) === 0 ) || ( strpos( $account, 'nano_3' ) === 0 ) ) && ( strlen( $account ) == 64 || strlen( $account ) == 65 ) )
 				{
 		
-					$account = substr( "$account", 4 );
+					$account = explode( '_', $account );
+					
+					$account = $account[1];
 					
 					$char_validation = preg_match( "/^[13456789abcdefghijkmnopqrstuwxyz]+$/", $account );
 					
