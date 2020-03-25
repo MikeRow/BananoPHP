@@ -61,9 +61,9 @@ If you are looking for an easy way to implement a WebSocket client for PHP try t
 
 ## Credits
 
-* [EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
-* [coingecko.com](https://www.coingecko.com/en/api)
-* [mynano.ninja](https://mynano.ninja/api)
+* [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
+* [coingecko.com/API](https://www.coingecko.com/en/api)
+* [mynano.ninja/API](https://mynano.ninja/api)
 
 ## Support
 
