@@ -34,7 +34,7 @@ You can find denomination/raw conversion functions and other usefull stuffs in [
 
 Use a script to start a SSH connection to the server hosting your Nano node and ncm
 
-If you wish to control your node remotely using PHP, I suggest the [phpseclib](https://github.com/phpseclib/phpseclib) repository<br/>
+If you wish to control your node remotely using PHP, I suggest [phpseclib](https://github.com/phpseclib/phpseclib) repository<br/>
 Try [ncm-remote.php](ncm/examples/ncm-remote.php) example script
 
 ## To do
