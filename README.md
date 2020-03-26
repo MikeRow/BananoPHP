@@ -39,7 +39,6 @@ Try [ncm-remote.php](ncm/examples/ncm-remote.php) example script
 
 ## To do
 
-* Add RPC2.0 support
 * Add IPC lib class
 * Add IPC support for ncm
 
@@ -47,7 +46,7 @@ Try [ncm-remote.php](ncm/examples/ncm-remote.php) example script
 
 * HTTP Callback
 
-Out of date, WebSocket are better
+Out of date, WebSocket is better solution
 
 * WebSocket
 
