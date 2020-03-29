@@ -65,6 +65,8 @@ HTML/JavaScript visual manager that connects via SSH to a server hosting a Nano 
 * [coingecko.com/API](https://www.coingecko.com/en/api)
 * [mynano.ninja/API](https://mynano.ninja/api)
 
+Special thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the prompt support given to me over the months
+
 ## Support
 
 Don't support me, support Nano decentralization! If you wish to delegate me your weight, here is my representative:
