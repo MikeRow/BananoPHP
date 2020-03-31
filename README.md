@@ -19,8 +19,8 @@ NanoTools.php			usefull node-independent tools for Nano
 
 <pre>node CLI manager - exhaustively manage Nano node using bash
 ---
-ncm.php				ncm script
 examples			example scripts
+ncm.php				ncm script
 </pre>
 
 ## A clarification about the huge integers
@@ -39,8 +39,9 @@ Try [ncm-remote.php](ncm/examples/ncm-remote.php) example script
 
 ## To do
 
-* Add IPC lib class
-* Add IPC support for ncm
+* Add check for network sync (ncm)
+* Add RPC 2.0 support (lib,ncm)
+* Add IPC support (lib,ncm)
 
 ## Discarded
 
