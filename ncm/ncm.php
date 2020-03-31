@@ -374,6 +374,8 @@
 		'ticker_not_updated'        => 'Ticker not updated',
 		'ticker_updated'            => 'Ticker updated',
 		'3tags_updated'             => '3tags updated',
+		'ticker_not_enabled'        => 'Ticker not enabled',
+		'3tags_not_enabled'         => '3tags not enabled',
 		'ticker_update_error_api1'  => 'ticker_update API #1',
 		'ticker_update_error_api2'  => 'ticker_update API #2',
 		'3tags_update_error_api1'   => '3tags_update API #1'
@@ -2305,15 +2307,22 @@
 	elseif( $command == 'ticker' )
 	{
 		
-		if( !$C['ticker']['enable'] ) exit;
-		
-		if( isset( $arguments['amount'] ) )
+		if( $C['ticker']['enable'] )
 		{
-			$call_return['amount'] = $arguments['amount'];
+		
+			if( isset( $arguments['amount'] ) )
+			{
+				$call_return['amount'] = $arguments['amount'];
+			}
+			else
+			{
+				$call_return['amount'] = NanoTools::raw2['NANO'];
+			}
+		
 		}
 		else
 		{
-			$call_return['amount'] = NanoTools::raw2['NANO'];
+			$call_return['error'] = notice['ticker_not_enabled'];
 		}
 		
 	}
@@ -2492,13 +2501,20 @@
 	elseif( $command == '3tags' ) 
 	{
 		
-		if( !$C['3tags']['enable'] ) exit;
-		
-		$thirdtags_array = json_decode( file_get_contents( $C_thirdtags_file ), true );
-
-		foreach( $thirdtags_array['account'] as $tag => $id )
+		if( $C['3tags']['enable'] )
 		{
-			$call_return['account'][] = $id;
+		
+			$thirdtags_array = json_decode( file_get_contents( $C_thirdtags_file ), true );
+
+			foreach( $thirdtags_array['account'] as $tag => $id )
+			{
+				$call_return['account'][] = $id;
+			}
+			
+		}
+		else
+		{
+			$call_return['error'] = notice['3tags_not_enabled'];
 		}
 		
 	}

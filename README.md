@@ -46,11 +46,11 @@ Try [ncm-remote.php](ncm/examples/ncm-remote.php) example script
 
 * HTTP Callback
 
-Out of date, WebSocket is better solution
+WebSocket is a better solution
 
 * WebSocket
 
-Since their usage is pretty custom in each situation, I've decided to don't develop any class or ncm implementation<br/>
+Since usage is pretty custom in each situation, I've decided to don't develop any class or ncm implementation<br/>
 If you are looking for an easy way to implement a WebSocket client for PHP I suggest [Textalk/websocket-php](https://github.com/Textalk/websocket-php) repository
 
 ## Welcome third-party implementations
