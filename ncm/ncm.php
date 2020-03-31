@@ -1563,11 +1563,24 @@
 	
 	
 	
+	// *** Check node connection ***
+	
+	
+	
+	$check_node_connection = $nanocall->version();
+	
+	if( !isset( $check_node_connection['rpc_version'] ) )
+	{
+		$call_return['error'] = notice['node_connection_failed'];
+	}
+	
+	
+	
 	// *** CLI ***
 	
 	
 	
-	if( $flags['cli'] )
+	elseif( $flags['cli'] )
 	{
 		
 		$call_return = $nanocli->{ $command }( $arguments );
@@ -2788,23 +2801,12 @@
 	// **********************************
 	// *** Post execution elaboration ***
 	// **********************************
+
+
+
+
 	
-	
-	
-	
-	
-	
-	// *** Node connection error ***
-	
-	
-	
-	if( !is_null( $nanocall->error ) )
-	{
-		$call_return['error'] = notice['node_connection_failed'];
-	}
-	
-	
-	
+
 	// *** Check if ticker is updated ***
 	
 	
