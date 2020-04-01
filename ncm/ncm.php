@@ -2,7 +2,7 @@
 
 	/*
 
-	THANK YOU to https://mynano.ninja and http://coingecko.com for their free and accessible API!
+	A BIG THANK YOU to https://mynano.ninja and http://coingecko.com for their free and accessible API!
 
 	*********************
 	*** CONFIGURATION ***
