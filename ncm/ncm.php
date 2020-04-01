@@ -2,6 +2,8 @@
 
 	/*
 
+	THANK YOU to https://mynano.ninja and http://coingecko.com for their free and accessible API!
+
 	*********************
 	*** CONFIGURATION ***
 	*********************
@@ -55,8 +57,7 @@
 				
 			ticker
 			
-			
-				*** A big THANK YOU to http://coingecko.com for its free and accessible API! ***
+				*** Tickers and prices are obtained exclusively from CoinGecko ***
 			
 				Before enabling the ticker option, crontab 'php PATH/php4nano/ncm/ncm.php ticker_update' (I suggest execution every 20 minutes)
 				Also, initialize it by executing it manually the first time
@@ -87,8 +88,7 @@
 			
 			3tags
 			
-			
-				*** A big THANK YOU to https://mynano.ninja for its free and accessible API! ***
+				*** Third-pary tags are obtained exclusively from MyNanoNinja ***
 				
 				Enable 3tags option and run 'php PATH/php4nano/ncm/ncm.php 3tags_update' to populate third-party tags
 				You may crontab it to keep it updated
@@ -118,6 +118,11 @@
 				init................................init configuration file
 				
 				status..............................print node summary
+				
+					sync=bool (default false, off) *** Third-pary sync info are obtained exclusively from MyNanoNinja ***
+					
+					e.g. ncm status
+					e.g. ncm status sync=true (print third-party sync info)
 				
 				account_info........................print account info (override regular call)
 				
@@ -357,6 +362,8 @@
 	[
 		'init_completed'            => 'Init completed',
 		'node_connection_failed'    => 'Connection to node failed',
+		'nano_node_failed'          => 'nano_node not found',
+		'nano_dir_failed'           => 'Nano directory not found',
 		'sendind_amount'            => 'Sending',
 		'sendind_confirm'           => 'Do you want to proceed? Type \'confirm\' to proceed: ',
 		'bad_call'                  => 'Bad call',
@@ -376,9 +383,10 @@
 		'3tags_updated'             => '3tags updated',
 		'ticker_not_enabled'        => 'Ticker not enabled',
 		'3tags_not_enabled'         => '3tags not enabled',
-		'ticker_update_error_api1'  => 'ticker_update API #1',
-		'ticker_update_error_api2'  => 'ticker_update API #2',
-		'3tags_update_error_api1'   => '3tags_update API #1'
+		'status_error_api1'         => 'status failed API #1',
+		'ticker_update_error_api1'  => 'ticker_update failed API #1',
+		'ticker_update_error_api2'  => 'ticker_update failed API #2',
+		'3tags_update_error_api1'   => '3tags_update failed API #1'
 	]);
 
 	
@@ -455,6 +463,8 @@
 	}';
 	
 	$C_model = json_decode( $C_model_raw, true );
+	
+	$call_return = [];
 	
 	$C2 = [];
 	
@@ -1035,6 +1045,7 @@
 						'count',
 						'deterministic_count',
 						'deterministic_index',
+						'difference',
 						'frontier_request_limit',
 						'height',
 						'idle',
@@ -1056,6 +1067,7 @@
 						'pulls',
 						'pulling',
 						'receive',
+						'reference',
 						'restored_count',
 						'send',
 						'signature_checker_threads',
@@ -1175,6 +1187,8 @@
 		$nanocall = new NanoRPCExtension( $C['nano']['rpc']['host'], $C['nano']['rpc']['port'] );
 		
 	}
+	
+	$check_node_connection = $nanocall->version();
 	
 	
 	
@@ -1550,16 +1564,23 @@
 	
 	
 	
-	// **********************
-	// *** Switch command ***
-	// **********************
+	// **********************************
+	// *** Pre-execution elaboration ***
+	// **********************************
 	
 	
 	
 	
 	
 	
-	$call_return = [];
+	// *** Initialization ***
+	
+	
+	
+	if( $command == 'init' )
+	{
+		$call_return[] = notice['init_completed'];
+	}
 	
 	
 	
@@ -1567,12 +1588,44 @@
 	
 	
 	
-	$check_node_connection = $nanocall->version();
-	
-	if( !isset( $check_node_connection['rpc_version'] ) )
+	elseif( !isset( $check_node_connection['rpc_version'] ) )
 	{
 		$call_return['error'] = notice['node_connection_failed'];
 	}
+	
+	
+	
+	// *** Check nano_node path ***
+	
+	
+	
+	elseif( !file_exists( $C['nano']['node_file'] ) )
+	{
+		$call_return['error'] = notice['nano_node_failed'];
+	}
+	
+	
+	
+	// ***  Check Nano directory ***
+	
+	
+	
+	elseif( !file_exists( $C['nano']['data_dir'] ) )
+	{
+		$call_return['error'] = notice['nano_dir_failed'];
+	}
+	
+	
+	
+	
+	
+	
+	// **********************
+	// *** Switch command ***
+	// **********************
+	
+	
+	
 	
 	
 	
@@ -1608,6 +1661,12 @@
 	
 	elseif( $command == 'status' )
 	{ 
+	
+		// Any sync?
+			
+		$sync = isset( $arguments['sync'] ) ? (bool) $arguments['sync'] : false;
+	
+		//
 	
 		// ncm version
 		
@@ -1656,11 +1715,39 @@
 		
 		$block_count = $nanocall->block_count();
 		
-		$call_return['blocks']['count'] = $block_count["count"];
+		$call_return['blocks']['count'] = $block_count['count'];
 		
-		$call_return['blocks']['unchecked'] = $block_count["unchecked"];
+		$call_return['blocks']['unchecked'] = $block_count['unchecked'];
 		
-		$call_return['blocks']['cemented'] = $block_count["cemented"];
+		$call_return['blocks']['cemented'] = $block_count['cemented'];
+		
+		
+		
+		if( $sync )
+		{
+		
+			$sync_blocks_json = file_get_contents( 'https://mynano.ninja/api/blockcount' );
+			
+			$sync_blocks_array = json_decode( $sync_blocks_json, true );
+			
+			if( !$sync_blocks_json )
+			{
+				$call_return['blocks']['sync'] = notice['status_error_api1']; 
+			}
+			else
+			{
+				
+				$call_return['blocks']['sync']['reference'] = $sync_blocks_array['count'];
+				
+				$call_return['blocks']['sync']['difference'] = gmp_strval( gmp_sub( $sync_blocks_array['count'], $block_count['count'] ) );
+
+				$call_return['blocks']['sync']['percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $block_count['count'], '10000' ), $sync_blocks_array['count'] ) ) / 100 );
+					
+			}
+			
+		}
+		
+		
 		
 		// Bytes per block
 		
@@ -2773,17 +2860,6 @@
 	
 	
 	
-	// *** Initialize config.json ***
-	
-	
-	
-	elseif( $command == 'init' )
-	{
-		$call_return[] = notice['init_completed'];
-	}
-	
-	
-	
 	// *** Default node call ***
 	
 	
@@ -2799,7 +2875,7 @@
 	
 	
 	// **********************************
-	// *** Post execution elaboration ***
+	// *** Post-execution elaboration ***
 	// **********************************
 
 

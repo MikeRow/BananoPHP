@@ -39,7 +39,6 @@ Try [ncm-remote.php](ncm/examples/ncm-remote.php) example script
 
 ## To do
 
-* Add check for network sync (ncm)
 * Add RPC 2.0 support (lib,ncm)
 * Add IPC support (lib,ncm)
 

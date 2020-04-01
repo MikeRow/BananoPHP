@@ -25,6 +25,10 @@
 		
 			e.g. echo NanoTools::raw2den( '5000000000000000000000000000000', 'NANO' ); // Returns 5
 			
+		den2den....................................convert amount from a denomination to other
+		
+			e.g. echo NanoTools:den2den( '5', 'NANO', 'knano' ); // Returns 5000
+			
 		account_validate...........................validate nano account
 		
 			e.g. echo NanoTools::account_validate( 'account_id' ); // Returns true if valid
@@ -144,6 +148,21 @@
 		
 			return $amount;
 		
+		}
+		
+		
+		
+		// *** Denomination to denomination 
+		
+		
+		
+		public static function den2den( string $amount, string $denomination_from, string $denomination_to )
+		{
+				
+			$raw = self::den2raw( $amount, $denomination_from );
+			
+			return self::raw2den( $raw, $denomination_to );
+				
 		}
 		
 		
