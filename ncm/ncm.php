@@ -7,7 +7,7 @@
 	*********************
 	
 	
-		- Set data/config.json:
+		- Initialize data/config.json:
 		
 			php PATH/php4nano/ncm/ncm.php init
 			
@@ -20,7 +20,7 @@
 					
 			nano
 			
-				denomination........................accepted denominations: unano, mnano, nano, knano, Mnano, NANO, Gnano
+				denomination........................default Nano input/output denomination, accepted: unano, mnano, nano, knano, Mnano, NANO, Gnano
 				
 				node_file...........................absolute path to nano_node
 				
@@ -87,17 +87,16 @@
 	*************
 	*** USAGE ***
 	*************
-	
-	
-		- Default input/output amount denomination in NANO (Mnano)
 		
 		
-		- Input array elements comma separated (you may also use tags)
-		
-		
-		- Create a shortcut for ncm.php adding to .bashrc:
+		- Create a shortcut for ncm.php in .bashrc:
 			
 			alias ncm='php PATH/php4nano/ncm/ncm.php'
+			
+			
+		- Array input is given by comma separating its elements
+		
+			e.g. ncm accounts_balances accounts=account1_id/tag,account2_id/tag,account3_id/tag
 			
 		
 		- Commands:
@@ -106,7 +105,7 @@
 			ncm dedicated
 			
 			
-				init................................init data/config.json
+				init................................initialize data/config.json
 				
 				status..............................print node summary
 				
@@ -288,11 +287,11 @@
 				e.g. ncm wallet_info '{"wallet":"wallet_id/tag"}' flags=raw_in,raw_out,json_in,json_out,call,no_confirm,no_log
 					
 					
-		- Caller Identification:
+		- Caller identification:
 		
 		
-			For some debug reason you may track the executioner by specifying a custom caller identification, actually it appears only in logs
-			If not specified, it is set do 'default' value
+			For some debug reasons you may track the executioner by specifying a custom caller identification, actually it appears only in logs
+			If not specified, it's set to 'default' value
 			
 			Note: I recommend using only lowercase alphanumeric characters and dashes(-)
 			
