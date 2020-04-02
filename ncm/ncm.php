@@ -7,7 +7,7 @@
 	*********************
 	
 	
-		- Set the configuration file:
+		- Set data/config.json:
 		
 			php PATH/php4nano/ncm/ncm.php init
 			
@@ -106,7 +106,7 @@
 			ncm dedicated
 			
 			
-				init................................init configuration file
+				init................................init data/config.json
 				
 				status..............................print node summary
 				
@@ -166,15 +166,15 @@
 					e.g. ncm ticker amount=5 (no ticker specification means in set Nano denomination)
 					e.g. ncm ticker amount=5.5-USD
 					
-				ticker_update.......................update ticker.json
+				ticker_update.......................update data/ticker.json
 				
-				3tags_update........................update 3tags.json
+				3tags_update........................update data/3tags.json
 				
-				config..............................print config.json (no tags)
+				config..............................print data/config.json (no tags)
 				
 				tags................................print tags
 				
-				3tags...............................print 3tags
+				3tags...............................print 3tags (if 3tags enabled)
 				
 				tag_add.............................add tag
 				
@@ -2428,22 +2428,22 @@
 			case 'ticker':
 			{
 				
-				if( $C['ticker']['enable'] )
+				if( !$C['ticker']['enable'] )
 				{
+					
+					$call_return['error'] = notice['ticker_not_enabled'];
+					
+					break;
 				
-					if( isset( $arguments['amount'] ) )
-					{
-						$call_return['amount'] = $arguments['amount'];
-					}
-					else
-					{
-						$call_return['amount'] = NanoTools::raw2['NANO'];
-					}
+				}
 				
+				if( isset( $arguments['amount'] ) )
+				{
+					$call_return['amount'] = $arguments['amount'];
 				}
 				else
 				{
-					$call_return['error'] = notice['ticker_not_enabled'];
+					$call_return['amount'] = NanoTools::raw2['NANO'];
 				}
 				
 				break;
@@ -2535,7 +2535,7 @@
 			
 			case '3tags_update':
 			{
-			
+				
 				$thirdy_party_tags_elaborated['account'] = [];
 			
 				$third_party_tags_json = file_get_contents( 'https://mynano.ninja/api/accounts/aliases' );
@@ -2632,20 +2632,20 @@
 			case '3tags':
 			{
 				
-				if( $C['3tags']['enable'] )
+				if( !$C['3tags']['enable'] )
 				{
 				
-					$thirdtags_array = json_decode( file_get_contents( thirdtags_file ), true );
-
-					foreach( $thirdtags_array['account'] as $tag => $id )
-					{
-						$call_return['account'][] = $id;
-					}
+					$call_return['error'] = notice['3tags_not_enabled'];
+				
+					break;
 					
 				}
-				else
+
+				$thirdtags_array = json_decode( file_get_contents( thirdtags_file ), true );
+
+				foreach( $thirdtags_array['account'] as $tag => $id )
 				{
-					$call_return['error'] = notice['3tags_not_enabled'];
+					$call_return['account'][] = $id;
 				}
 				
 				break;
