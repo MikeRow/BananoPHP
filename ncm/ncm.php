@@ -447,6 +447,9 @@
 			"view" : true,
 			"separator": "||"
 		},
+		"3tags": {
+			"enable": false
+		},
 		"tags": {
 			"account": {
 				"genesis": "nano_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3"
@@ -455,9 +458,6 @@
 				"genesis": "991CF190094C00F0B68E2E5F75F6BEE95A2E0BD93CEAA4A6734DB9F19B728948"
 			},
 			"wallet": {}
-		},
-		"3tags": {
-			"enable": false
 		}
 	}';
 	
