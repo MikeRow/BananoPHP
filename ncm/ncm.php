@@ -251,60 +251,60 @@
 					e.g. ncm wallet_weight wallet=wallet_id/tag sort=desc
 				
 			
-			Flags (flags)
+		- Flags:
 
+	
+			raw_in..............................skip any input elaboration: tags, non-nano-raw amounts
+			
+				e.g. ncm wallet_info wallet=wallet_id flags=raw_in
+			
+			raw_out.............................skip any output elaboration: tags, non-nano-raw amounts, reading improvements
+			
+				e.g. ncm wallet_info wallet=wallet_id/tag flags=raw_out
+				
+			json_in.............................input arguments are taken as json
+			
+				e.g. ncm wallet_info '{"wallet":"wallet_id/tag"}' flags=json_in
+			
+			json_out............................output is provided as json
+			
+				e.g. ncm wallet_info wallet=wallet_id/tag flags=json_out
+				
+			call................................direct call to defined node connection (bypasses any ncm call override)
+			
+				e.g. ncm account_key account=account_id/tag flags=call
+				
+				Read full RPC documentation at https://docs.nano.org/commands/rpc-protocol/
+				
+			cli.................................direct call to CLI interface (bypasses any ncm call override)
+			
+				e.g. ncm account_key account=account_id/tag flags=cli
+				
+				Read full RPC documentation at https://docs.nano.org/commands/command-line-interface/
+				
+			no_confirm..........................doesn't ask for confirmations: sending amounts, etc.
+			
+				e.g. ncm send wallet=wallet_id/tag source=account_id/tag destination=account_id/tag amount=5 id=uniqid flags=no_confirm
+				
+			no_log..............................doesn't save log regardless of what you set up in config.json
+			
+				e.g. ncm wallet_info wallet=wallet_id/tag flags=no_log
+			
+			Multiple flags must be combined in the same argument
+			
+				e.g. ncm wallet_info '{"wallet":"wallet_id/tag"}' flags=raw_in,raw_out,json_in,json_out,call,no_confirm,no_log
+					
+					
+		- Caller Identification:
 		
-				raw_in..............................skip any input elaboration: tags, non-nano-raw amounts
-				
-					e.g. ncm wallet_info wallet=wallet_id flags=raw_in
-				
-				raw_out.............................skip any output elaboration: tags, non-nano-raw amounts, reading improvements
-				
-					e.g. ncm wallet_info wallet=wallet_id/tag flags=raw_out
-					
-				json_in.............................input arguments are taken as json
-				
-					e.g. ncm wallet_info '{"wallet":"wallet_id/tag"}' flags=json_in
-				
-				json_out............................output is provided as json
-				
-					e.g. ncm wallet_info wallet=wallet_id/tag flags=json_out
-					
-				call................................direct call to defined node connection (bypasses any ncm call override)
-				
-					e.g. ncm account_key account=account_id/tag flags=call
-					
-					Read full RPC documentation at https://docs.nano.org/commands/rpc-protocol/
-					
-				cli.................................direct call to CLI interface (bypasses any ncm call override)
-				
-					e.g. ncm account_key account=account_id/tag flags=cli
-					
-					Read full RPC documentation at https://docs.nano.org/commands/command-line-interface/
-					
-				no_confirm..........................doesn't ask for confirmations: sending amounts, etc.
-				
-					e.g. ncm send wallet=wallet_id/tag source=account_id/tag destination=account_id/tag amount=5 id=uniqid flags=no_confirm
-					
-				no_log..............................doesn't save log regardless of what you set up in config.json
-				
-					e.g. ncm wallet_info wallet=wallet_id/tag flags=no_log
-				
-				Multiple flags must be combined in the same argument
-				
-					e.g. ncm wallet_info '{"wallet":"wallet_id/tag"}' flags=raw_in,raw_out,json_in,json_out,call,no_confirm,no_log
-					
-					
-			Caller Identification (callerID)
+		
+			For some debug reason you may track the executioner by specifying a custom caller identification, actually it appears only in logs
+			If not specified, it is set do 'default' value
 			
+			Note: I recommend using only lowercase alphanumeric characters and dashes(-)
 			
-				For some debug reason you may track the executioner by specifying a custom caller identification, actually it appears only in logs
-				If not specified, it is set do 'default' value
-				
-				Note: I recommend using only lowercase alphanumeric characters and dashes(-)
-				
-				e.g. ncm wallet_info wallet=wallet_id/tag callerID=remote1
-				e.g. ncm wallet_info wallet=wallet_id/tag callerID=linux-server
+			e.g. ncm wallet_info wallet=wallet_id/tag callerID=remote1
+			e.g. ncm wallet_info wallet=wallet_id/tag callerID=linux-server
 	
 	*/
 	
