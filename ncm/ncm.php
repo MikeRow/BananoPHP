@@ -11,13 +11,14 @@
 		
 			php PATH/php4nano/ncm/ncm.php init
 			
+			
 		- Edit data/config.json with you own parameters
 		
+		
 		- Details for config.json:
-			
-			
+		
+					
 			nano
-			
 			
 				denomination........................accepted denominations: unano, mnano, nano, knano, Mnano, NANO, Gnano
 				
@@ -29,9 +30,7 @@
 				
 				rpc.................................parameter used for HTTP/RPC connection
 			
-			
 			log
-			
 			
 				save................................enable/disable log saving
 			
@@ -39,19 +38,15 @@
 				
 				expiration..........................days for which a daily log is kept (0 for no limit)
 				
-				
 			timezone................................timezone for displaying dates, supported: https://www.php.net/manual/en/timezones.php
 			
-			
 			format
-			
 			
 				timestamp...........................timestamp format for displaying dates, supported: https://www.php.net/manual/en/function.date.php
 				
 				decimal.............................character used to divide the decimal part of a number
 				
 				thousand............................character used to divide every thousand part of a number
-				
 				
 			ticker
 			
@@ -64,17 +59,13 @@
 				
 				fav_vs_currencies...................favourite versus currencies
 				
-				
 			tag
-			
 			
 				enable..............................enable/disable displaying tags
 				
 				separator...........................character/s used for displaying a tag and its value
 				
-				
 			tags
-			
 			
 				list of custom tags divided in 3 different categories: wallet, account, block
 			
@@ -82,7 +73,6 @@
 				In sort to have a clean and flowing tag list, I recommend using only lowercase alphanumeric characters, dashes(-) and dottes(.)
 				
 				Note: tags set by you will always take precedence over those of third-party
-			
 			
 			3tags
 			
@@ -101,11 +91,14 @@
 	
 		- Default input/output amount denomination in NANO (Mnano)
 		
+		
 		- Input array elements comma separated (you may also use tags)
+		
 		
 		- Create a shortcut for ncm.php adding to .bashrc:
 			
 			alias ncm='php PATH/php4nano/ncm/ncm.php'
+			
 		
 		- Commands:
 		
