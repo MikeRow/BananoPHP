@@ -110,7 +110,7 @@
 				
 				status..............................print node summary
 				
-					sync=bool (default false, off) *** Third-pary sync info are obtained exclusively from MyNanoNinja ***
+					sync=bool (default false, off) *** Third-party sync info are obtained exclusively from MyNanoNinja ***
 					
 					e.g. ncm status
 					e.g. ncm status sync=true (print third-party sync info)
