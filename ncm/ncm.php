@@ -2,8 +2,6 @@
 
 	/*
 
-	A BIG THANK YOU to https://mynano.ninja and http://coingecko.com for their free and accessible API!
-
 	*********************
 	*** CONFIGURATION ***
 	*********************
@@ -394,7 +392,8 @@
 		'ticker_update_error_api1'  => 'ticker_update failed API #1',
 		'ticker_update_error_api2'  => 'ticker_update failed API #2',
 		'3tags_update_error_api1'   => '3tags_update failed API #1',
-		'updates_error_api1'        => 'updates failed API #1'
+		'updates_error_api1'        => 'updates failed API #1',
+		'updates_error_api2'        => 'updates failed API #2'
 	]);
 
 	
@@ -1625,20 +1624,7 @@
 	
 	
 	
-	
-	
-	
-	// **********************
-	// *** Switch command ***
-	// **********************
-	
-	
-	
-	
-	
-	
 	// *** CLI ***
-	
 	
 	
 	elseif( $flags['cli'] )
@@ -1663,813 +1649,853 @@
 	
 	
 	
-	// *** Print node and summary info ***
 	
 	
 	
-	elseif( $command == 'status' )
-	{ 
+	// **********************
+	// *** Switch command ***
+	// **********************
 	
-		// Any sync?
-			
-		$sync = isset( $arguments['sync'] ) ? (bool) $arguments['sync'] : false;
 	
-		//
 	
-		// ncm version
-		
-		$call_return['ncm_version'] = version;
 	
-		// Node version
-		
-		$version = $nanocall->version();
-		
-		$call_return['version'] = $version['node_vendor'];
-		
-		// Uptime
-		
-		$uptime = $nanocall->uptime();
-		
-		$call_return['uptime'] = $uptime['seconds'];
-		
-		// Online peers
-		
-		$peers = $nanocall->peers();
-		
-		$call_return['peers'] = count( $peers['peers'] );
-		
-		// Online representatives and weight
-		
-		$representatives_online = $nanocall->representatives_online( ['weight'=>true] );
-		
-		$call_return['representatives_online'] = count( $representatives_online['representatives'] );
-		
-		$weight_cumulative = '0';
-		
-		foreach( $representatives_online['representatives'] as $representative => $data )
-		{			
-			$weight_cumulative = gmp_strval( gmp_add( $weight_cumulative, $data['weight'] ) );
-		}
-		
-		$call_return['weight_online'] = $weight_cumulative;
-		
-		$call_return['weight_online_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
-		
-		// Blockchain file size
-		
-		$call_return['blockchain'] = filesize( $C['nano']['data_dir'] . '/data.ldb' );
-		
-		// Block count
-		
-		$block_count = $nanocall->block_count();
-		
-		$call_return['blocks']['count'] = $block_count['count'];
-		
-		$call_return['blocks']['unchecked'] = $block_count['unchecked'];
-		
-		$call_return['blocks']['cemented'] = $block_count['cemented'];
+	
+	
+	else
+	{
 		
 		
-		
-		if( $sync )
+	
+		switch( $command )
 		{
 		
-			$sync_blocks_json = file_get_contents( 'https://mynano.ninja/api/blockcount' );
 			
-			$sync_blocks_array = json_decode( $sync_blocks_json, true );
 			
-			if( !$sync_blocks_json )
-			{
-				$call_return['blocks']['sync'] = notice['status_error_api1']; 
-			}
-			else
-			{
-				
-				$call_return['blocks']['sync']['reference'] = $sync_blocks_array['count'];
-				
-				$call_return['blocks']['sync']['difference'] = gmp_strval( gmp_sub( $sync_blocks_array['count'], $block_count['count'] ) );
-
-				$call_return['blocks']['sync']['percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $block_count['count'], '10000' ), $sync_blocks_array['count'] ) ) / 100 );
+			// *** Print node and summary info ***
+			
+			
+			
+			case 'status':
+			{ 
+			
+				// Any sync?
 					
-			}
+				$sync = isset( $arguments['sync'] ) ? (bool) $arguments['sync'] : false;
 			
-		}
-		
-		
-		
-		// Bytes per block
-		
-		$call_return['blocks']['size_average'] = round( filesize( $C['nano']['data_dir'] . '/data.ldb' ) / $block_count["count"] );
-		
-		// Summary wallets info
-		
-		$wallets_count = '0';
-		
-		$wallets_accounts = '0';
-		
-		$wallets_balance = '0';
-		
-		$wallets_pending = '0';
-		
-		$wallets_weight = '0';
-		
-		foreach( $C['tags']['wallet'] as $tag => $id )
-		{
-		
-			$wallet_info = $nanocall->wallet_info( ['wallet'=>$id] );
+				//
 			
-			$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$id] );
-			
-			$wallets_accounts += $wallet_info['accounts_count'];
-			
-			$wallets_count++;
-			
-			$wallets_balance = gmp_add( $wallets_balance, $wallet_info['balance'] );
-			
-			$wallets_pending = gmp_add( $wallets_pending, $wallet_info['pending'] );
-		
-			$wallets_weight = gmp_add( $wallets_weight, $wallet_weight['weight'] );
-		
-		}
-		
-		$wallets_balance = gmp_strval( $wallets_balance );
-		
-		$wallets_pending = gmp_strval( $wallets_pending );
-		
-		$wallets_weight = gmp_strval( $wallets_weight );
-		
-		$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$id] );
-		
-		$call_return['wallets']['balance'] = $wallets_balance;
-		
-		$call_return['wallets']['pending'] = $wallets_pending;
-		
-		$call_return['wallets']['weight'] = $wallets_weight;
-		
-		$call_return['wallets']['count'] = $wallets_count;
-		
-		$call_return['wallets']['accounts_count'] = $wallets_accounts;
-		
-	}
-	
-	
-	
-	// *** Print wallet list ***
-	
-	
-	
-	elseif( $command == 'wallet_list' )
-	{ 
-			
-		$wallet_list = $nanocli->wallet_list();
-		
-		$wallet_ID = [];
-		
-		if( is_array( $wallet_list ) && count( $wallet_list ) > 0 )
-		{
-		
-			foreach( $wallet_list as $row )
-			{
-
-				$columns = explode( ': ', $row );
+				// ncm version
 				
-				if( $columns[0] == 'Wallet ID' )
-				{
-					$wallet_ID[] = $columns[1];
+				$call_return['ncm_version'] = version;
+			
+				// Node version
+				
+				$version = $nanocall->version();
+				
+				$call_return['version'] = $version['node_vendor'];
+				
+				// Uptime
+				
+				$uptime = $nanocall->uptime();
+				
+				$call_return['uptime'] = $uptime['seconds'];
+				
+				// Online peers
+				
+				$peers = $nanocall->peers();
+				
+				$call_return['peers'] = count( $peers['peers'] );
+				
+				// Online representatives and weight
+				
+				$representatives_online = $nanocall->representatives_online( ['weight'=>true] );
+				
+				$call_return['representatives_online'] = count( $representatives_online['representatives'] );
+				
+				$weight_cumulative = '0';
+				
+				foreach( $representatives_online['representatives'] as $representative => $data )
+				{			
+					$weight_cumulative = gmp_strval( gmp_add( $weight_cumulative, $data['weight'] ) );
 				}
+				
+				$call_return['weight_online'] = $weight_cumulative;
+				
+				$call_return['weight_online_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
+				
+				// Blockchain file size
+				
+				$call_return['blockchain'] = filesize( $C['nano']['data_dir'] . '/data.ldb' );
+				
+				// Block count
+				
+				$block_count = $nanocall->block_count();
+				
+				$call_return['blocks']['count'] = $block_count['count'];
+				
+				$call_return['blocks']['unchecked'] = $block_count['unchecked'];
+				
+				$call_return['blocks']['cemented'] = $block_count['cemented'];
+				
+				$call_return['blocks']['size_average'] = round( filesize( $C['nano']['data_dir'] . '/data.ldb' ) / $block_count["count"] );
+				
+				// Block sync info
 			
-			}
-			
-			foreach( $wallet_ID as $id )
-			{
-			
-				$wallet_info = $nanocall->wallet_info( ['wallet' => $id] );
-				
-				$wallet_weight = $nanocall->wallet_weight( ['wallet' => $id] );
-				
-				$wallet_locked = $nanocall->wallet_locked( ['wallet' => $id] );
-				
-				$call_return[$id]['balance'] = $wallet_info['balance'];
-				
-				$call_return[$id]['pending'] = $wallet_info['pending'];
-				
-				$call_return[$id]['weight'] = $wallet_weight['weight'];
-				
-				$call_return[$id]['accounts_count'] = $wallet_info['accounts_count'];
-				
-				$call_return[$id]['locked'] = $wallet_locked['locked'];
-				
-				// $wallet_balances = $nanocall->wallet_balances( ['wallet'=>$id] );
-				
-				// $call_return[$id]['balances'] = $wallet_balances['balances'];
-			
-			}
-		
-		}
-		else
-		{
-			$call_return['error'] = 'No wallets found';
-		}
-		
-	}
-	
-	
-	
-	// *** Prints wallet info ***
-	
-	
-	
-	elseif( $command == 'wallet_info' )
-	{
-		
-		if( isset( $arguments['wallet'] ) )
-		{
-		
-			$wallet_info = $nanocall->wallet_info( ['wallet' => $arguments['wallet']] );
-		
-			if( isset( $wallet_info['error'] ) )
-			{
-				$call_return['error'] = notice['bad_wallet'];
-			}
-			else
-			{
-				
-				$wallet_locked = $nanocall->wallet_locked( ['wallet' => $arguments['wallet']] );
-				
-				$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$arguments['wallet']] );
-				
-				$call_return[$arguments['wallet']]['balance'] = $wallet_info['balance'];
-				
-				$call_return[$arguments['wallet']]['pending'] = $wallet_info['pending'];
-				
-				$call_return[$arguments['wallet']]['weight'] = $wallet_weight['weight'];
-				
-				// $call_return[$arguments['wallet']]['weight_percent'] = gmp_strval( gmp_div_q( gmp_mul( $wallet_weight['weight'], '100' ), available_supply ) );
-				
-				$call_return[$arguments['wallet']]['accounts_count'] = $wallet_info['accounts_count'];
-				
-				$call_return[$arguments['wallet']]['adhoc_count'] = $wallet_info['adhoc_count'];
-				
-				$call_return[$arguments['wallet']]['deterministic_count'] = $wallet_info['deterministic_count'];
-				
-				$call_return[$arguments['wallet']]['deterministic_index'] = $wallet_info['deterministic_index'];
-				
-				$call_return[$arguments['wallet']]['locked'] = $wallet_locked['locked'];
-				
-				// $wallet_balances = $nanocall->wallet_balances( ['wallet'=>$arguments['wallet']] );
-				
-				// $call_return[$arguments['wallet']]['balances'] = $wallet_balances['balances'];
-				
-			}
-		
-		}
-		else
-		{
-			$call_return['error'] = notice['bad_wallet'];
-		}
-		
-	}
-	
-	
-	
-	// *** Wallet weight ***
-	
-	
-	
-	elseif( $command == 'wallet_weight' )
-	{
-
-		if( isset( $arguments['wallet'] ) )
-		{
-		
-			$wallet_info = $nanocall->wallet_info( ['wallet' => $arguments['wallet']] );
-		
-			if( isset( $wallet_info['error'] ) )
-			{
-				$call_return['error'] = notice['bad_wallet'];
-			}
-			else
-			{
-				
-				$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$arguments['wallet'],'sort'=>'desc'] );
-				
-				$call_return['weight'] = $wallet_weight['weight'];
-				
-				$call_return['percent'] = gmp_strval( gmp_div_q( gmp_mul( $wallet_weight['weight'], '100' ), available_supply ) );
-				
-				foreach( $wallet_weight['weights'] as $account => $weight )
+				if( $sync )
 				{
 				
-					$call_return['weights'][$account]['weight'] = $weight;
+					$sync_blocks_json = file_get_contents( 'https://mynano.ninja/api/blockcount' );
 					
-					if( gmp_cmp( $weight, '0' ) > 0 )
+					$sync_blocks_array = json_decode( $sync_blocks_json, true );
+					
+					if( !$sync_blocks_json || !is_array( $sync_blocks_array ) || !isset( $sync_blocks_array['count'] ) )
 					{
-						$call_return['weights'][$account]['wallet_percent'] = gmp_strval( gmp_div_q( gmp_mul( $weight, '100' ), $wallet_weight['weight'] ) );
+						$call_return['blocks']['sync'] = notice['status_error_api1']; 
 					}
 					else
 					{
-						$call_return['weights'][$account]['wallet_percent'] = '0';
+						
+						$call_return['blocks']['sync']['reference'] = $sync_blocks_array['count'];
+						
+						$call_return['blocks']['sync']['difference'] = gmp_strval( gmp_sub( $sync_blocks_array['count'], $block_count['count'] ) );
+
+						$call_return['blocks']['sync']['percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $block_count['count'], '10000' ), $sync_blocks_array['count'] ) ) / 100 );
+							
 					}
 					
 				}
 				
-			}
-			
-		}
-		else
-		{
-			$call_return['error'] = notice['bad_wallet'];
-		}
-		
-	}
-	
-	
-	
-	// *** Account info ***
-	
-	
-	
-	elseif( $command == 'account_info' )
-	{
-	
-		if( isset( $arguments['account'] ) )
-		{
-		
-			$check_account = $nanocall->validate_account_number( ['account'=>$arguments['account']] );
-			
-			if( $check_account['valid'] != 1 )
-			{
-				$call_return['error'] = notice['bad_account'];
-			}
-			else
-			{
-			
-				$account_info = $nanocall->account_info( ['account'=>$arguments['account'],'pending'=>true,'weight'=>true,'representative'=>true] );
+				// Summary wallets info
 				
-				$account_info['weight_percent'] = gmp_strval( gmp_div_q( gmp_mul( $account_info['weight'], '100' ), available_supply ) );
+				$wallets_count = '0';
 				
-				$call_return[$arguments['account']]['frontier'] = $account_info['frontier'];
+				$wallets_accounts = '0';
 				
-				$call_return[$arguments['account']]['open_block'] = $account_info['open_block'];
+				$wallets_balance = '0';
 				
-				$call_return[$arguments['account']]['representative'] = $account_info['representative'];
+				$wallets_pending = '0';
 				
-				$call_return[$arguments['account']]['representative_block'] = $account_info['representative_block'];
+				$wallets_weight = '0';
 				
-				$call_return[$arguments['account']]['balance'] = $account_info['balance'];
-				
-				$call_return[$arguments['account']]['pending'] = $account_info['pending'];
-				
-				$call_return[$arguments['account']]['weight'] = $account_info['weight'];
-				
-				$call_return[$arguments['account']]['weight_percent'] = $account_info['weight_percent'];
-				
-				$call_return[$arguments['account']]['modified_timestamp'] = $account_info['modified_timestamp'];
-				
-				$call_return[$arguments['account']]['block_count'] = $account_info['block_count'];
-				
-				$call_return[$arguments['account']]['confirmation_height'] = $account_info['confirmation_height'];
-				
-				// $call_return[$arguments['account']]['confirmation_height_frontier'] = $account_info['confirmation_height_frontier'];
-				
-				$call_return[$arguments['account']]['account_version'] = $account_info['account_version'];
-			
-			}
-			
-		}
-		else
-		{
-			$call_return['error'] = notice['bad_account'];
-		}
-	
-	}
-	
-	
-	
-	// *** Delegators ***
-	
-	
-	
-	elseif( $command == 'delegators' )
-	{
-	
-		if( isset( $arguments['account'] ) )
-		{
-		
-			$check_account = $nanocall->validate_account_number( ['account'=>$arguments['account']] );
-			
-			if( $check_account['valid'] != 1 )
-			{
-				$call_return['error'] = notice['bad_account'];
-			}
-			else
-			{
-				
-				// Any balance_min?
-				
-				$balance_min = isset( $arguments['balance_min'] ) ? $arguments['balance_min'] : '0';
-				
-				// Any balance_max?
-				
-				$balance_max = isset( $arguments['balance_max'] ) ? $arguments['balance_max'] : available_supply;
-				
-				// Any percent_limit?
-				
-				$percent_limit = isset( $arguments['percent_limit'] ) ? $arguments['percent_limit'] : 100;
-				
-				// Any limit?
-			
-				$limit = isset( $arguments['limit'] ) ? (int) $arguments['limit'] : 0;
-				
-				// Any sort?
-			
-				$sort = isset( $arguments['sort'] ) ? $arguments['sort'] : 'desc';
-				
-				//
-				
-				$delegators_count = $nanocall->delegators_count( ['account'=>$arguments['account']] );
-				
-				$account_weight = $nanocall->account_weight( ['account'=>$arguments['account']] );
-				
-				$call_return['weight'] = $account_weight['weight'];
-				
-				// $call_return['count'] = $delegators_count['count'];
-
-				$delegators = $nanocall->delegators( ['account'=>$arguments['account']] );
-				
-				if( $sort == 'asc' )
+				foreach( $C['tags']['wallet'] as $tag => $id )
 				{
 				
-					uasort( $delegators['delegators'], function( $a, $b )
+					$wallet_info = $nanocall->wallet_info( ['wallet'=>$id] );
+					
+					$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$id] );
+					
+					$wallets_accounts += $wallet_info['accounts_count'];
+					
+					$wallets_count++;
+					
+					$wallets_balance = gmp_add( $wallets_balance, $wallet_info['balance'] );
+					
+					$wallets_pending = gmp_add( $wallets_pending, $wallet_info['pending'] );
+				
+					$wallets_weight = gmp_add( $wallets_weight, $wallet_weight['weight'] );
+				
+				}
+				
+				$wallets_balance = gmp_strval( $wallets_balance );
+				
+				$wallets_pending = gmp_strval( $wallets_pending );
+				
+				$wallets_weight = gmp_strval( $wallets_weight );
+				
+				$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$id] );
+				
+				$call_return['wallets']['balance'] = $wallets_balance;
+				
+				$call_return['wallets']['pending'] = $wallets_pending;
+				
+				$call_return['wallets']['weight'] = $wallets_weight;
+				
+				$call_return['wallets']['count'] = $wallets_count;
+				
+				$call_return['wallets']['accounts_count'] = $wallets_accounts;
+				
+				break;
+				
+			}
+			
+			
+			
+			// *** Print wallet list ***
+			
+			
+			
+			case 'wallet_list':
+			{ 
+					
+				$wallet_list = $nanocli->wallet_list();
+				
+				$wallet_ID = [];
+				
+				if( is_array( $wallet_list ) && count( $wallet_list ) > 0 )
+				{
+				
+					foreach( $wallet_list as $row )
 					{
-						return gmp_cmp( $a, $b );
-					});
+
+						$columns = explode( ': ', $row );
+						
+						if( $columns[0] == 'Wallet ID' )
+						{
+							$wallet_ID[] = $columns[1];
+						}
+					
+					}
+					
+					foreach( $wallet_ID as $id )
+					{
+					
+						$wallet_info = $nanocall->wallet_info( ['wallet' => $id] );
+						
+						$wallet_weight = $nanocall->wallet_weight( ['wallet' => $id] );
+						
+						$wallet_locked = $nanocall->wallet_locked( ['wallet' => $id] );
+						
+						$call_return[$id]['balance'] = $wallet_info['balance'];
+						
+						$call_return[$id]['pending'] = $wallet_info['pending'];
+						
+						$call_return[$id]['weight'] = $wallet_weight['weight'];
+						
+						$call_return[$id]['accounts_count'] = $wallet_info['accounts_count'];
+						
+						$call_return[$id]['locked'] = $wallet_locked['locked'];
+						
+						// $wallet_balances = $nanocall->wallet_balances( ['wallet'=>$id] );
+						
+						// $call_return[$id]['balances'] = $wallet_balances['balances'];
+					
+					}
 				
 				}
 				else
 				{
-					
-					uasort( $delegators['delegators'], function( $a, $b )
+					$call_return['error'] = 'No wallets found';
+				}
+				
+				break;
+				
+			}
+			
+			
+			
+			// *** Prints wallet info ***
+			
+			
+			
+			case 'wallet_info':
+			{
+				
+				if( isset( $arguments['wallet'] ) )
+				{
+				
+					$wallet_info = $nanocall->wallet_info( ['wallet' => $arguments['wallet']] );
+				
+					if( isset( $wallet_info['error'] ) )
 					{
-						return gmp_cmp( $b, $a );
-					});
+						$call_return['error'] = notice['bad_wallet'];
+					}
+					else
+					{
+						
+						$wallet_locked = $nanocall->wallet_locked( ['wallet' => $arguments['wallet']] );
+						
+						$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$arguments['wallet']] );
+						
+						$call_return[$arguments['wallet']]['balance'] = $wallet_info['balance'];
+						
+						$call_return[$arguments['wallet']]['pending'] = $wallet_info['pending'];
+						
+						$call_return[$arguments['wallet']]['weight'] = $wallet_weight['weight'];
+						
+						// $call_return[$arguments['wallet']]['weight_percent'] = gmp_strval( gmp_div_q( gmp_mul( $wallet_weight['weight'], '100' ), available_supply ) );
+						
+						$call_return[$arguments['wallet']]['accounts_count'] = $wallet_info['accounts_count'];
+						
+						$call_return[$arguments['wallet']]['adhoc_count'] = $wallet_info['adhoc_count'];
+						
+						$call_return[$arguments['wallet']]['deterministic_count'] = $wallet_info['deterministic_count'];
+						
+						$call_return[$arguments['wallet']]['deterministic_index'] = $wallet_info['deterministic_index'];
+						
+						$call_return[$arguments['wallet']]['locked'] = $wallet_locked['locked'];
+						
+						// $wallet_balances = $nanocall->wallet_balances( ['wallet'=>$arguments['wallet']] );
+						
+						// $call_return[$arguments['wallet']]['balances'] = $wallet_balances['balances'];
+						
+					}
+				
+				}
+				else
+				{
+					$call_return['error'] = notice['bad_wallet'];
+				}
+				
+				break;
+				
+			}
+			
+			
+			
+			// *** Wallet weight ***
+			
+			
+			
+			case 'wallet_weight':
+			{
+
+				if( isset( $arguments['wallet'] ) )
+				{
+				
+					$wallet_info = $nanocall->wallet_info( ['wallet' => $arguments['wallet']] );
+				
+					if( isset( $wallet_info['error'] ) )
+					{
+						$call_return['error'] = notice['bad_wallet'];
+					}
+					else
+					{
+						
+						$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$arguments['wallet'],'sort'=>'desc'] );
+						
+						$call_return['weight'] = $wallet_weight['weight'];
+						
+						$call_return['percent'] = gmp_strval( gmp_div_q( gmp_mul( $wallet_weight['weight'], '100' ), available_supply ) );
+						
+						foreach( $wallet_weight['weights'] as $account => $weight )
+						{
+						
+							$call_return['weights'][$account]['weight'] = $weight;
+							
+							if( gmp_cmp( $weight, '0' ) > 0 )
+							{
+								$call_return['weights'][$account]['wallet_percent'] = gmp_strval( gmp_div_q( gmp_mul( $weight, '100' ), $wallet_weight['weight'] ) );
+							}
+							else
+							{
+								$call_return['weights'][$account]['wallet_percent'] = '0';
+							}
+							
+						}
+						
+					}
 					
 				}
+				else
+				{
+					$call_return['error'] = notice['bad_wallet'];
+				}
+				
+				break;
+				
+			}
+			
+			
+			
+			// *** Account info ***
+			
+			
+			
+			case 'account_info':
+			{
+			
+				if( isset( $arguments['account'] ) )
+				{
+				
+					$check_account = $nanocall->validate_account_number( ['account'=>$arguments['account']] );
+					
+					if( $check_account['valid'] != 1 )
+					{
+						$call_return['error'] = notice['bad_account'];
+					}
+					else
+					{
+					
+						$account_info = $nanocall->account_info( ['account'=>$arguments['account'],'pending'=>true,'weight'=>true,'representative'=>true] );
+						
+						$account_info['weight_percent'] = gmp_strval( gmp_div_q( gmp_mul( $account_info['weight'], '100' ), available_supply ) );
+						
+						$call_return[$arguments['account']]['frontier'] = $account_info['frontier'];
+						
+						$call_return[$arguments['account']]['open_block'] = $account_info['open_block'];
+						
+						$call_return[$arguments['account']]['representative'] = $account_info['representative'];
+						
+						$call_return[$arguments['account']]['representative_block'] = $account_info['representative_block'];
+						
+						$call_return[$arguments['account']]['balance'] = $account_info['balance'];
+						
+						$call_return[$arguments['account']]['pending'] = $account_info['pending'];
+						
+						$call_return[$arguments['account']]['weight'] = $account_info['weight'];
+						
+						$call_return[$arguments['account']]['weight_percent'] = $account_info['weight_percent'];
+						
+						$call_return[$arguments['account']]['modified_timestamp'] = $account_info['modified_timestamp'];
+						
+						$call_return[$arguments['account']]['block_count'] = $account_info['block_count'];
+						
+						$call_return[$arguments['account']]['confirmation_height'] = $account_info['confirmation_height'];
+						
+						// $call_return[$arguments['account']]['confirmation_height_frontier'] = $account_info['confirmation_height_frontier'];
+						
+						$call_return[$arguments['account']]['account_version'] = $account_info['account_version'];
+					
+					}
+					
+				}
+				else
+				{
+					$call_return['error'] = notice['bad_account'];
+				}
+				
+				break;
+			
+			}
+			
+			
+			
+			// *** Delegators ***
+			
+			
+			
+			case 'delegators':
+			{
+			
+				if( isset( $arguments['account'] ) )
+				{
+				
+					$check_account = $nanocall->validate_account_number( ['account'=>$arguments['account']] );
+					
+					if( $check_account['valid'] != 1 )
+					{
+						$call_return['error'] = notice['bad_account'];
+					}
+					else
+					{
+						
+						// Any balance_min?
+						
+						$balance_min = isset( $arguments['balance_min'] ) ? $arguments['balance_min'] : '0';
+						
+						// Any balance_max?
+						
+						$balance_max = isset( $arguments['balance_max'] ) ? $arguments['balance_max'] : available_supply;
+						
+						// Any percent_limit?
+						
+						$percent_limit = isset( $arguments['percent_limit'] ) ? $arguments['percent_limit'] : 100;
+						
+						// Any limit?
+					
+						$limit = isset( $arguments['limit'] ) ? (int) $arguments['limit'] : 0;
+						
+						// Any sort?
+					
+						$sort = isset( $arguments['sort'] ) ? $arguments['sort'] : 'desc';
+						
+						//
+						
+						$delegators_count = $nanocall->delegators_count( ['account'=>$arguments['account']] );
+						
+						$account_weight = $nanocall->account_weight( ['account'=>$arguments['account']] );
+						
+						$call_return['weight'] = $account_weight['weight'];
+						
+						// $call_return['count'] = $delegators_count['count'];
+
+						$delegators = $nanocall->delegators( ['account'=>$arguments['account']] );
+						
+						if( $sort == 'asc' )
+						{
+						
+							uasort( $delegators['delegators'], function( $a, $b )
+							{
+								return gmp_cmp( $a, $b );
+							});
+						
+						}
+						else
+						{
+							
+							uasort( $delegators['delegators'], function( $a, $b )
+							{
+								return gmp_cmp( $b, $a );
+							});
+							
+						}
+						
+						$i = 0;
+						
+						$balance_cumulative = '0';
+						
+						$delegators_array = [];
+						
+						foreach( $delegators['delegators'] as $delegator => $balance )
+						{
+							
+							if( isset( $arguments['balance_min'] ) )
+							{
+								if( gmp_cmp( $balance, $balance_min ) < 0 ) continue;
+							}
+							
+							if( isset( $arguments['balance_max'] ) )
+							{
+								if( gmp_cmp( $balance, $balance_max ) > 0 ) continue;
+							}
+						
+							if( $limit <= 0 )
+							{}
+							else
+							{
+								if( $i >= $limit ) break;
+							}
+						
+							$i++;
+							
+							$balance_cumulative = gmp_strval( gmp_add( $balance_cumulative, $balance ) );
+						
+							$delegators_array[$delegator]['index'] = $i;
+						
+							$delegators_array[$delegator]['balance'] = $balance;
+							
+							$delegators_array[$delegator]['balance_cumulative'] = $balance_cumulative;
+							
+							if( gmp_cmp( $balance, '0' ) > 0 )
+							{
+								$delegators_array[$delegator]['percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $balance, '10000' ), $account_weight['weight'] ) ) / 100 );
+							}
+							else
+							{
+								$delegators_array[$delegator]['percent'] = '0';
+							}
+							
+							if( gmp_cmp( $balance_cumulative, '0' ) > 0 )
+							{
+								$delegators_array[$delegator]['percent_cumulative'] = strval( gmp_strval( gmp_div_q( gmp_mul( $balance_cumulative, '10000' ), $account_weight['weight'] ) ) / 100 );
+							}
+							else
+							{
+								$delegators_array[$delegator]['percent_cumulative'] = '0';
+							}
+							
+							if( isset( $arguments['percent_limit'] ) )
+							{
+								if( $delegators_array[$delegator]['percent_cumulative'] >= $percent_limit ) break;
+							}
+							
+						}
+						
+						$call_return['count'] = $i;
+						
+						$call_return['delegators'] = $delegators_array;
+					
+					}
+					
+				}
+				else
+				{
+					$call_return['error'] = notice['bad_account'];
+				}
+				
+				break;
+			
+			}
+			
+			
+			
+			// *** Representatives ***
+			
+			
+			
+			case 'representatives':
+			{
+			
+				// Any weight_min?
+						
+				$weight_min = isset( $arguments['weight_min'] ) ? $arguments['weight_min'] : '0';
+				
+				// Any weight_max?
+				
+				$weight_max = isset( $arguments['weight_max'] ) ? $arguments['weight_max'] : available_supply;
+				
+				// Any percent_limit?
+				
+				$percent_limit = isset( $arguments['percent_limit'] ) ? $arguments['percent_limit'] : 100;
+			
+				// Any limit?
+					
+				$limit = isset( $arguments['limit'] ) ? (int) $arguments['limit'] : 0;
+				
+				//
+				
+				$representatives = $nanocall->representatives( ['sorting'=>true] );
 				
 				$i = 0;
 				
-				$balance_cumulative = '0';
+				$weight_cumulative = '0';
 				
-				$delegators_array = [];
+				$representatives_array = [];
 				
-				foreach( $delegators['delegators'] as $delegator => $balance )
+				foreach( $representatives['representatives'] as $representative => $weight )
 				{
 					
-					if( isset( $arguments['balance_min'] ) )
+					if( isset( $arguments['weight_min'] ) )
 					{
-						if( gmp_cmp( $balance, $balance_min ) < 0 ) continue;
+						if( gmp_cmp( $weight, $weight_min ) < 0 ) continue;
 					}
 					
-					if( isset( $arguments['balance_max'] ) )
+					if( isset( $arguments['weight_max'] ) )
 					{
-						if( gmp_cmp( $balance, $balance_max ) > 0 ) continue;
+						if( gmp_cmp( $weight, $weight_max ) > 0 ) continue;
 					}
-				
+					
 					if( $limit <= 0 )
 					{}
 					else
 					{
 						if( $i >= $limit ) break;
 					}
-				
+					
 					$i++;
 					
-					$balance_cumulative = gmp_strval( gmp_add( $balance_cumulative, $balance ) );
-				
-					$delegators_array[$delegator]['index'] = $i;
-				
-					$delegators_array[$delegator]['balance'] = $balance;
+					$weight_cumulative = gmp_strval( gmp_add( $weight_cumulative, $weight ) );
 					
-					$delegators_array[$delegator]['balance_cumulative'] = $balance_cumulative;
+					$representatives_array[$representative]['index'] = $i;
 					
-					if( gmp_cmp( $balance, '0' ) > 0 )
+					$representatives_array[$representative]['weight'] = $weight;
+					
+					$representatives_array[$representative]['weight_cumulative'] = $weight_cumulative;
+					
+					if( gmp_cmp( $weight, '0' ) > 0 )
 					{
-						$delegators_array[$delegator]['percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $balance, '10000' ), $account_weight['weight'] ) ) / 100 );
+						$representatives_array[$representative]['percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight, '10000' ), available_supply ) ) / 100 );
 					}
 					else
 					{
-						$delegators_array[$delegator]['percent'] = '0';
+						$representatives_array[$representative]['percent'] = '0';
 					}
 					
-					if( gmp_cmp( $balance_cumulative, '0' ) > 0 )
-					{
-						$delegators_array[$delegator]['percent_cumulative'] = strval( gmp_strval( gmp_div_q( gmp_mul( $balance_cumulative, '10000' ), $account_weight['weight'] ) ) / 100 );
-					}
-					else
-					{
-						$delegators_array[$delegator]['percent_cumulative'] = '0';
-					}
+					$representatives_array[$representative]['percent_cumulative'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
 					
 					if( isset( $arguments['percent_limit'] ) )
 					{
-						if( $delegators_array[$delegator]['percent_cumulative'] >= $percent_limit ) break;
+						if( $representatives_array[$representative]['percent_cumulative'] >= $percent_limit ) break;
 					}
 					
 				}
 				
+				// $call_return['count'] = count( $representatives['representatives'] );	
+				
+				$call_return['weight'] = $weight_cumulative;
+				
+				$call_return['weight_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
+				
 				$call_return['count'] = $i;
 				
-				$call_return['delegators'] = $delegators_array;
-			
-			}
-			
-		}
-		else
-		{
-			$call_return['error'] = notice['bad_account'];
-		}
-	
-	}
-	
-	
-	
-	// *** Representatives ***
-	
-	
-	
-	elseif( $command == 'representatives' )
-	{
-	
-		// Any weight_min?
+				$call_return['representatives'] = $representatives_array;
 				
-		$weight_min = isset( $arguments['weight_min'] ) ? $arguments['weight_min'] : '0';
-		
-		// Any weight_max?
-		
-		$weight_max = isset( $arguments['weight_max'] ) ? $arguments['weight_max'] : available_supply;
-		
-		// Any percent_limit?
-		
-		$percent_limit = isset( $arguments['percent_limit'] ) ? $arguments['percent_limit'] : 100;
-	
-		// Any limit?
+				break;
 			
-		$limit = isset( $arguments['limit'] ) ? (int) $arguments['limit'] : 0;
-		
-		//
-		
-		$representatives = $nanocall->representatives( ['sorting'=>true] );
-		
-		$i = 0;
-		
-		$weight_cumulative = '0';
-		
-		$representatives_array = [];
-		
-		foreach( $representatives['representatives'] as $representative => $weight )
-		{
-			
-			if( isset( $arguments['weight_min'] ) )
-			{
-				if( gmp_cmp( $weight, $weight_min ) < 0 ) continue;
 			}
 			
-			if( isset( $arguments['weight_max'] ) )
+			
+			
+			// *** Representatives online ***
+			
+			
+			
+			case 'representatives_online':
 			{
-				if( gmp_cmp( $weight, $weight_max ) > 0 ) continue;
-			}
 			
-			if( $limit <= 0 )
-			{}
-			else
-			{
-				if( $i >= $limit ) break;
-			}
-			
-			$i++;
-			
-			$weight_cumulative = gmp_strval( gmp_add( $weight_cumulative, $weight ) );
-			
-			$representatives_array[$representative]['index'] = $i;
-			
-			$representatives_array[$representative]['weight'] = $weight;
-			
-			$representatives_array[$representative]['weight_cumulative'] = $weight_cumulative;
-			
-			if( gmp_cmp( $weight, '0' ) > 0 )
-			{
-				$representatives_array[$representative]['percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight, '10000' ), available_supply ) ) / 100 );
-			}
-			else
-			{
-				$representatives_array[$representative]['percent'] = '0';
-			}
-			
-			$representatives_array[$representative]['percent_cumulative'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
-			
-			if( isset( $arguments['percent_limit'] ) )
-			{
-				if( $representatives_array[$representative]['percent_cumulative'] >= $percent_limit ) break;
-			}
-			
-		}
-		
-		// $call_return['count'] = count( $representatives['representatives'] );	
-		
-		$call_return['weight'] = $weight_cumulative;
-		
-		$call_return['weight_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
-		
-		$call_return['count'] = $i;
-		
-		$call_return['representatives'] = $representatives_array;
-	
-	}
-	
-	
-	
-	// *** Representatives online ***
-	
-	
-	
-	elseif( $command == 'representatives_online' )
-	{
-	
-		// Any weight_min?
+				// Any weight_min?
+						
+				$weight_min = isset( $arguments['weight_min'] ) ? $arguments['weight_min'] : '0';
 				
-		$weight_min = isset( $arguments['weight_min'] ) ? $arguments['weight_min'] : '0';
-		
-		// Any weight_max?
-		
-		$weight_max = isset( $arguments['weight_max'] ) ? $arguments['weight_max'] : available_supply;
-		
-		// Any percent_limit?
-		
-		$percent_limit = isset( $arguments['percent_limit'] ) ? $arguments['percent_limit'] : 100;
-	
-		// Any limit?
+				// Any weight_max?
+				
+				$weight_max = isset( $arguments['weight_max'] ) ? $arguments['weight_max'] : available_supply;
+				
+				// Any percent_limit?
+				
+				$percent_limit = isset( $arguments['percent_limit'] ) ? $arguments['percent_limit'] : 100;
 			
-		$limit = isset( $arguments['limit'] ) ? (int) $arguments['limit'] : 0;
-		
-		// Any sort?
+				// Any limit?
+					
+				$limit = isset( $arguments['limit'] ) ? (int) $arguments['limit'] : 0;
+				
+				// Any sort?
+					
+				$sort = isset( $arguments['sort'] ) ? $arguments['sort'] : 'desc';
+				
+				//
 			
-		$sort = isset( $arguments['sort'] ) ? $arguments['sort'] : 'desc';
-		
-		//
-	
-		$representatives_online = $nanocall->representatives_online( ['weight'=>true] );
-		
-		if( $sort == 'asc' )
-		{
-		
-			uasort( $representatives_online['representatives'], function( $a, $b )
-			{
-				return gmp_cmp( $a['weight'], $b['weight'] );
-			});
-		
-		}
-		else
-		{
+				$representatives_online = $nanocall->representatives_online( ['weight'=>true] );
+				
+				if( $sort == 'asc' )
+				{
+				
+					uasort( $representatives_online['representatives'], function( $a, $b )
+					{
+						return gmp_cmp( $a['weight'], $b['weight'] );
+					});
+				
+				}
+				else
+				{
+					
+					uasort( $representatives_online['representatives'], function( $a, $b )
+					{
+						return gmp_cmp( $b['weight'], $a['weight'] );
+					});
+					
+				}
+				
+				$i = 0;
+				
+				$weight_cumulative = '0';
+				
+				$representatives_array = [];
+				
+				foreach( $representatives_online['representatives'] as $representative => $data )
+				{
+					
+					if( isset( $arguments['weight_min'] ) )
+					{
+						if( gmp_cmp( $data['weight'], $weight_min ) < 0 ) continue;
+					}
+					
+					if( isset( $arguments['weight_max'] ) )
+					{
+						if( gmp_cmp( $data['weight'], $weight_max ) > 0 ) continue;
+					}
+					
+					if( $limit <= 0 )
+					{}
+					else
+					{
+						if( $i >= $limit ) break;
+					}
+					
+					$i++;
+					
+					$weight_cumulative = gmp_strval( gmp_add( $weight_cumulative, $data['weight'] ) );
+					
+					$representatives_array[$representative]['index'] = $i;
+					
+					$representatives_array[$representative]['weight'] = $data['weight'];
+					
+					$representatives_array[$representative]['weight_cumulative'] = $weight_cumulative;
+					
+					if( gmp_cmp( $data['weight'], '0' ) > 0 )
+					{
+						$representatives_array[$representative]['percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $data['weight'], '10000' ), available_supply ) ) / 100 );
+					}
+					else
+					{
+						$representatives_array[$representative]['percent'] = '0';
+					}
+					
+					$representatives_array[$representative]['percent_cumulative'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
+					
+					if( isset( $arguments['percent_limit'] ) )
+					{
+						if( $representatives_array[$representative]['percent_cumulative'] >= $percent_limit ) break;
+					}
+					
+				}
+				
+				// $call_return['weight_cumulative'] = $weight_cumulative;
+				
+				// $call_return['count'] = count( $representatives_online['representatives'] );
+				
+				$call_return['weight'] = $weight_cumulative;
+				
+				$call_return['weight_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
+				
+				$call_return['count'] = $i;
+				
+				$call_return['representatives_online'] = $representatives_array;
+				
+				break;
 			
-			uasort( $representatives_online['representatives'], function( $a, $b )
-			{
-				return gmp_cmp( $b['weight'], $a['weight'] );
-			});
-			
-		}
-		
-		$i = 0;
-		
-		$weight_cumulative = '0';
-		
-		$representatives_array = [];
-		
-		foreach( $representatives_online['representatives'] as $representative => $data )
-		{
-			
-			if( isset( $arguments['weight_min'] ) )
-			{
-				if( gmp_cmp( $data['weight'], $weight_min ) < 0 ) continue;
 			}
 			
-			if( isset( $arguments['weight_max'] ) )
+			
+			
+			// *** Print ticker vs favourite currencies ***
+			
+			
+			
+			case 'ticker':
 			{
-				if( gmp_cmp( $data['weight'], $weight_max ) > 0 ) continue;
+				
+				if( $C['ticker']['enable'] )
+				{
+				
+					if( isset( $arguments['amount'] ) )
+					{
+						$call_return['amount'] = $arguments['amount'];
+					}
+					else
+					{
+						$call_return['amount'] = NanoTools::raw2['NANO'];
+					}
+				
+				}
+				else
+				{
+					$call_return['error'] = notice['ticker_not_enabled'];
+				}
+				
+				break;
+				
 			}
 			
-			if( $limit <= 0 )
-			{}
-			else
+			
+			
+			// *** Update ticker ***
+			
+			
+			
+			case 'ticker_update':
 			{
-				if( $i >= $limit ) break;
-			}
-			
-			$i++;
-			
-			$weight_cumulative = gmp_strval( gmp_add( $weight_cumulative, $data['weight'] ) );
-			
-			$representatives_array[$representative]['index'] = $i;
-			
-			$representatives_array[$representative]['weight'] = $data['weight'];
-			
-			$representatives_array[$representative]['weight_cumulative'] = $weight_cumulative;
-			
-			if( gmp_cmp( $data['weight'], '0' ) > 0 )
-			{
-				$representatives_array[$representative]['percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $data['weight'], '10000' ), available_supply ) ) / 100 );
-			}
-			else
-			{
-				$representatives_array[$representative]['percent'] = '0';
-			}
-			
-			$representatives_array[$representative]['percent_cumulative'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
-			
-			if( isset( $arguments['percent_limit'] ) )
-			{
-				if( $representatives_array[$representative]['percent_cumulative'] >= $percent_limit ) break;
-			}
-			
-		}
-		
-		// $call_return['weight_cumulative'] = $weight_cumulative;
-		
-		// $call_return['count'] = count( $representatives_online['representatives'] );
-		
-		$call_return['weight'] = $weight_cumulative;
-		
-		$call_return['weight_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
-		
-		$call_return['count'] = $i;
-		
-		$call_return['representatives_online'] = $representatives_array;
-	
-	}
-	
-	
-	
-	// *** Print ticker vs favourite currencies ***
-	
-	
-	
-	elseif( $command == 'ticker' )
-	{
-		
-		if( $C['ticker']['enable'] )
-		{
-		
-			if( isset( $arguments['amount'] ) )
-			{
-				$call_return['amount'] = $arguments['amount'];
-			}
-			else
-			{
-				$call_return['amount'] = NanoTools::raw2['NANO'];
-			}
-		
-		}
-		else
-		{
-			$call_return['error'] = notice['ticker_not_enabled'];
-		}
-		
-	}
-	
-	
-	
-	// *** Update ticker ***
-	
-	
-	
-	elseif( $command == 'ticker_update' )
-	{
 
-		$vs_currency_json = file_get_contents( 'https://api.coingecko.com/api/v3/simple/supported_vs_currencies' );
+				$vs_currency_json = file_get_contents( 'https://api.coingecko.com/api/v3/simple/supported_vs_currencies' );
+				
+				$vs_currencies_array = json_decode( $vs_currency_json, true );
 
-		if( !$vs_currency_json )
-		{
-			$call_return['error'] = notice['ticker_update_error_api1'];
-		}
-		else
-		{
-			
-			$vs_currencies_array = json_decode( $vs_currency_json, true );
-			
-			// Get latest exchange rates vs currencies
-			
-			$vs_currencies_string = implode( ',', $vs_currencies_array );
-			
-			$nano_vs_currency_json = file_get_contents( 'https://api.coingecko.com/api/v3/simple/price?ids=nano&vs_currencies=' . $vs_currencies_string . '&include_last_updated_at=true' );
-			
-			if( !$nano_vs_currency_json )
-			{
-				$call_return['error'] = notice['ticker_update_error_api2'];
-			}
-			else
-			{
+				if( !$vs_currency_json || !is_array( $vs_currencies_array ) || !isset( $vs_currencies_array[0] ) )
+				{
+					
+					$call_return['error'] = notice['ticker_update_error_api1'];
+					
+					break;
+					
+				}
+					
+				// Get latest exchange rates vs currencies
+				
+				$vs_currencies_string = implode( ',', $vs_currencies_array );
+				
+				$nano_vs_currency_json = file_get_contents( 'https://api.coingecko.com/api/v3/simple/price?ids=nano&vs_currencies=' . $vs_currencies_string . '&include_last_updated_at=true' );
 				
 				$nano_vs_currencies_array = json_decode( $nano_vs_currency_json, true );
 				
+				if( !$nano_vs_currency_json || !is_array( $nano_vs_currencies_array ) || !isset( $nano_vs_currencies_array['nano'] ) )
+				{
+					
+					$call_return['error'] = notice['ticker_update_error_api2'];
+					
+					break;
+					
+				}
+
 				// All tickers to uppercase
 				
 				foreach( $nano_vs_currencies_array['nano'] as $currency => $rate )
@@ -2504,440 +2530,475 @@
 				
 				$call_return[] = notice['ticker_updated'];
 				
+				break;
+			
 			}
 			
-		}
-	
-	}
-	
-	
-	
-	// *** Update third-party tags ***
-	
-	
-	
-	elseif( $command == '3tags_update' )
-	{
-	
-		$thirdy_party_tags_elaborated['account'] = [];
-	
-		$third_party_tags_json = file_get_contents( 'https://mynano.ninja/api/accounts/aliases' );
-		
-		$third_party_tags_array = json_decode( $third_party_tags_json, true );
-		
-		if( !$third_party_tags_json )
-		{
-			$call_return['error'] = notice['3tags_update_error_api1']; 
-		}
-		else
-		{
-		
-			foreach( $third_party_tags_array as $index => $data )
+			
+			
+			// *** Update third-party tags ***
+			
+			
+			
+			case '3tags_update':
 			{
 			
-				$tag = $data['alias'];
+				$thirdy_party_tags_elaborated['account'] = [];
 			
-				$tag = tag_filter( $tag );
+				$third_party_tags_json = file_get_contents( 'https://mynano.ninja/api/accounts/aliases' );
 				
-				if( array_key_exists( $tag, $thirdy_party_tags_elaborated['account'] ) ) continue;
-			
-				if( $tag == '' ) continue;
-			
-				$thirdy_party_tags_elaborated['account'][$tag] = $data['account'];
-			
-			}
-			
-			ksort( $thirdy_party_tags_elaborated['account'] );
-			
-			// Save 3tags.json
-			
-			file_put_contents( $C_thirdtags_file, json_encode( $thirdy_party_tags_elaborated, JSON_PRETTY_PRINT ) );
-			
-			$call_return[] = notice['3tags_updated'];
-			
-		}
-	
-	}
-	
-	
-	
-	// *** Print config.json (except tags) ***
-	
-	
-	
-	elseif( $command == 'config' )
-	{
-		
-		$call_return = $C;
-		
-		unset( $call_return['tags'] );
-		
-	}
-	
-	
-	
-	// *** Print tags ***
-	
-	
-	
-	elseif( $command == 'tags' ) 
-	{
-		
-		foreach( $C['tags']['wallet'] as $tag => $id )
-		{
-			$call_return['wallet'][] = $id;
-		}
-		
-		foreach( $C['tags']['account'] as $tag => $id )
-		{
-			$call_return['account'][] = $id;
-		}
-		
-		foreach( $C['tags']['block'] as $tag => $id )
-		{
-			$call_return['block'][] = $id;
-		}
-		
-	}
-	
-	
-	
-	// *** Print 3tags ***
-	
-	
-	
-	elseif( $command == '3tags' ) 
-	{
-		
-		if( $C['3tags']['enable'] )
-		{
-		
-			$thirdtags_array = json_decode( file_get_contents( $C_thirdtags_file ), true );
-
-			foreach( $thirdtags_array['account'] as $tag => $id )
-			{
-				$call_return['account'][] = $id;
-			}
-			
-		}
-		else
-		{
-			$call_return['error'] = notice['3tags_not_enabled'];
-		}
-		
-	}
-	
-	
-	
-	// *** Add new tag ***
-	
-	
-	
-	elseif( $command == 'tag_add' )
-	{
-		
-		// Check if cat is defined
-		
-		if( !isset( $arguments['cat'] ) )
-		{
-			$call_return['error'] = notice['bad_call'];	
-		}
-		
-		// Check if cat is correct
-			
-		elseif( !array_key_exists( $arguments['cat'], $C['tags'] ) )
-		{
-			$call_return['error'] = notice['bad_call'];	
-		}
-		
-		// Check if tag is defined
-		
-		elseif( !isset( $arguments['tag'] ) )
-		{
-			$call_return['error'] = notice['bad_call'];	
-		}
-		
-		// Check if value is defined
-		
-		elseif( !isset( $arguments['value'] ) )
-		{
-			$call_return['error'] = notice['bad_call'];	
-		}
-		
-		else
-		{
-			
-			$account_check = explode( '_', $arguments['value'] );
-		
-			$arguments['tag'] = tag_filter( $arguments['tag'] );
-		
-			if( $arguments['tag'] == '' )
-			{
-				$call_return['error'] = notice['bad_tag'];
-			}
-			elseif( $arguments['cat'] == 'account' && ( ( $account_check[0] != 'xrb' && $account_check[0] != 'nano' ) || !isset( $account_check[1] ) || strlen( $account_check[1] ) != 60 || !preg_match( "/^[abcdefghijkmnopqrstuwxyz13456789]*$/", $account_check[1] ) ) )
-			{
-				$call_return['error'] = notice['bad_account'];
-			}
-			elseif( $arguments['cat'] == 'wallet' && ( strlen( $arguments['value'] ) != 64 || !ctype_xdigit( $arguments['value'] ) ) )
-			{
-				$call_return['error'] = notice['bad_wallet'];
-			}
-			elseif( $arguments['cat'] == 'block' && ( strlen( $arguments['value'] ) != 64 || !ctype_xdigit( $arguments['value'] ) ) )
-			{
-				$call_return['error'] = notice['bad_block'];
-			}
-			else
-			{
+				$third_party_tags_array = json_decode( $third_party_tags_json, true );
 				
-				if( array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
+				if( !$third_party_tags_json || !is_array( $third_party_tags_array ) || !isset( $third_party_tags_array[0]['alias'] ) )
 				{
-					$call_return['error'] = notice['used_tag'];
+					
+					$call_return['error'] = notice['3tags_update_error_api1']; 
+					
+					break;
+					
 				}
-				elseif( in_array( $arguments['value'], $C['tags']['wallet'] ) || in_array( $arguments['value'], $C['tags']['account'] ) || in_array( $arguments['value'], $C['tags']['block'] ) )
+				
+				foreach( $third_party_tags_array as $index => $data )
 				{
-					$call_return['error'] = notice['used_tag_value'];
+				
+					$tag = $data['alias'];
+				
+					$tag = tag_filter( $tag );
+					
+					if( array_key_exists( $tag, $thirdy_party_tags_elaborated['account'] ) ) continue;
+				
+					if( $tag == '' ) continue;
+				
+					$thirdy_party_tags_elaborated['account'][$tag] = $data['account'];
+				
+				}
+				
+				ksort( $thirdy_party_tags_elaborated['account'] );
+				
+				// Save 3tags.json
+				
+				file_put_contents( thirdtags_file, json_encode( $thirdy_party_tags_elaborated, JSON_PRETTY_PRINT ) );
+				
+				$call_return[] = notice['3tags_updated'];
+				
+				break;
+			
+			}
+			
+			
+			
+			// *** Print config.json (except tags) ***
+			
+			
+			
+			case 'config':
+			{
+				
+				$call_return = $C;
+				
+				unset( $call_return['tags'] );
+				
+				break;
+				
+			}
+			
+			
+			
+			// *** Print tags ***
+			
+			
+			
+			case 'tags':
+			{
+				
+				foreach( $C['tags']['wallet'] as $tag => $id )
+				{
+					$call_return['wallet'][] = $id;
+				}
+				
+				foreach( $C['tags']['account'] as $tag => $id )
+				{
+					$call_return['account'][] = $id;
+				}
+				
+				foreach( $C['tags']['block'] as $tag => $id )
+				{
+					$call_return['block'][] = $id;
+				}
+				
+				break;
+				
+			}
+			
+			
+			
+			// *** Print 3tags ***
+			
+			
+			
+			case '3tags':
+			{
+				
+				if( $C['3tags']['enable'] )
+				{
+				
+					$thirdtags_array = json_decode( file_get_contents( thirdtags_file ), true );
+
+					foreach( $thirdtags_array['account'] as $tag => $id )
+					{
+						$call_return['account'][] = $id;
+					}
+					
 				}
 				else
 				{
-					
-					$C['tags'][$arguments['cat']][$arguments['tag']] = $arguments['value'];
-					
-					$call_return[] = notice['tag_added'];
-					
-					file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
-					
+					$call_return['error'] = notice['3tags_not_enabled'];
 				}
 				
+				break;
+				
 			}
-		
-		}
-	
-	}
-	
-	
-	
-	// *** Edit tag ***
-	
-	
-	
-	elseif( $command == 'tag_edit' )
-	{
-		
-		// Check if cat is defined
-		
-		if( !isset( $arguments['cat'] ) )
-		{
-			$call_return['error'] = notice['bad_call'];	
-		}
-		
-		// Check if cat is correct
 			
-		elseif( !array_key_exists( $arguments['cat'], $C['tags'] ) )
-		{
-			$call_return['error'] = notice['bad_call'];	
-		}
-		
-		// Check if tag is defined
-		
-		elseif( !isset( $arguments['tag'] ) )
-		{
-			$call_return['error'] = notice['bad_call'];	
-		}
-		
-		// Check if value is defined
-		
-		elseif( !isset( $arguments['value'] ) )
-		{
-			$call_return['error'] = notice['bad_call'];	
-		}
-		
-		else
-		{
-		
-			$account_check = explode( '_', $arguments['value'] );
-		
-			$arguments['tag'] = tag_filter( $arguments['tag'] );
-		
-			if( $arguments['tag'] == '' )
-			{
-				$call_return['error'] = notice['bad_tag'];
-			}
-			elseif( $arguments['cat'] == 'account' && ( ( $account_check[0] != 'xrb' && $account_check[0] != 'nano' ) || !isset( $account_check[1] ) || strlen( $account_check[1] ) != 60 || !preg_match( "/^[abcdefghijkmnopqrstuwxyz13456789]*$/", $account_check[1] ) ) )
-			{
-				$call_return['error'] = notice['bad_account'];
-			}
-			elseif( $arguments['cat'] == 'wallet' && ( strlen( $arguments['value'] ) != 64 || !ctype_xdigit( $arguments['value'] ) ) )
-			{
-				$call_return['error'] = notice['bad_wallet'];
-			}
-			elseif( $arguments['cat'] == 'block' && ( strlen( $arguments['value'] ) != 64 || !ctype_xdigit( $arguments['value'] ) ) )
-			{
-				$call_return['error'] = notice['bad_block'];
-			}
-			else
+			
+			
+			// *** Add new tag ***
+			
+			
+			
+			case 'tag_add':
 			{
 				
-				if( array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
+				// Check if cat is defined
+				
+				if( !isset( $arguments['cat'] ) )
 				{
-					$call_return['error'] = notice['used_tag'];
+					$call_return['error'] = notice['bad_call'];	
 				}
-				elseif( in_array( $arguments['value'], $C['tags']['wallet'] ) || in_array( $arguments['value'], $C['tags']['account'] ) || in_array( $arguments['value'], $C['tags']['block'] ) )
+				
+				// Check if cat is correct
+					
+				elseif( !array_key_exists( $arguments['cat'], $C['tags'] ) )
 				{
-					$call_return['error'] = notice['used_tag_value'];
+					$call_return['error'] = notice['bad_call'];	
 				}
+				
+				// Check if tag is defined
+				
+				elseif( !isset( $arguments['tag'] ) )
+				{
+					$call_return['error'] = notice['bad_call'];	
+				}
+				
+				// Check if value is defined
+				
+				elseif( !isset( $arguments['value'] ) )
+				{
+					$call_return['error'] = notice['bad_call'];	
+				}
+				
 				else
 				{
 					
-					$C['tags'][$arguments['cat']][$arguments['tag']] = $arguments['value'];
+					$account_check = explode( '_', $arguments['value'] );
+				
+					$arguments['tag'] = tag_filter( $arguments['tag'] );
+				
+					if( $arguments['tag'] == '' )
+					{
+						$call_return['error'] = notice['bad_tag'];
+					}
+					elseif( $arguments['cat'] == 'account' && ( ( $account_check[0] != 'xrb' && $account_check[0] != 'nano' ) || !isset( $account_check[1] ) || strlen( $account_check[1] ) != 60 || !preg_match( "/^[abcdefghijkmnopqrstuwxyz13456789]*$/", $account_check[1] ) ) )
+					{
+						$call_return['error'] = notice['bad_account'];
+					}
+					elseif( $arguments['cat'] == 'wallet' && ( strlen( $arguments['value'] ) != 64 || !ctype_xdigit( $arguments['value'] ) ) )
+					{
+						$call_return['error'] = notice['bad_wallet'];
+					}
+					elseif( $arguments['cat'] == 'block' && ( strlen( $arguments['value'] ) != 64 || !ctype_xdigit( $arguments['value'] ) ) )
+					{
+						$call_return['error'] = notice['bad_block'];
+					}
+					else
+					{
+						
+						if( array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
+						{
+							$call_return['error'] = notice['used_tag'];
+						}
+						elseif( in_array( $arguments['value'], $C['tags']['wallet'] ) || in_array( $arguments['value'], $C['tags']['account'] ) || in_array( $arguments['value'], $C['tags']['block'] ) )
+						{
+							$call_return['error'] = notice['used_tag_value'];
+						}
+						else
+						{
+							
+							$C['tags'][$arguments['cat']][$arguments['tag']] = $arguments['value'];
+							
+							$call_return[] = notice['tag_added'];
+							
+							file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
+							
+						}
+						
+					}
+				
+				}
+				
+				break;
+			
+			}
+			
+			
+			
+			// *** Edit tag ***
+			
+			
+			
+			case 'tag_edit':
+			{
+				
+				// Check if cat is defined
+				
+				if( !isset( $arguments['cat'] ) )
+				{
+					$call_return['error'] = notice['bad_call'];	
+				}
+				
+				// Check if cat is correct
 					
-					$call_return[] = notice['tag_edited'];
+				elseif( !array_key_exists( $arguments['cat'], $C['tags'] ) )
+				{
+					$call_return['error'] = notice['bad_call'];	
+				}
+				
+				// Check if tag is defined
+				
+				elseif( !isset( $arguments['tag'] ) )
+				{
+					$call_return['error'] = notice['bad_call'];	
+				}
+				
+				// Check if value is defined
+				
+				elseif( !isset( $arguments['value'] ) )
+				{
+					$call_return['error'] = notice['bad_call'];	
+				}
+				
+				else
+				{
+				
+					$account_check = explode( '_', $arguments['value'] );
+				
+					$arguments['tag'] = tag_filter( $arguments['tag'] );
+				
+					if( $arguments['tag'] == '' )
+					{
+						$call_return['error'] = notice['bad_tag'];
+					}
+					elseif( $arguments['cat'] == 'account' && ( ( $account_check[0] != 'xrb' && $account_check[0] != 'nano' ) || !isset( $account_check[1] ) || strlen( $account_check[1] ) != 60 || !preg_match( "/^[abcdefghijkmnopqrstuwxyz13456789]*$/", $account_check[1] ) ) )
+					{
+						$call_return['error'] = notice['bad_account'];
+					}
+					elseif( $arguments['cat'] == 'wallet' && ( strlen( $arguments['value'] ) != 64 || !ctype_xdigit( $arguments['value'] ) ) )
+					{
+						$call_return['error'] = notice['bad_wallet'];
+					}
+					elseif( $arguments['cat'] == 'block' && ( strlen( $arguments['value'] ) != 64 || !ctype_xdigit( $arguments['value'] ) ) )
+					{
+						$call_return['error'] = notice['bad_block'];
+					}
+					else
+					{
+						
+						if( array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
+						{
+							$call_return['error'] = notice['used_tag'];
+						}
+						elseif( in_array( $arguments['value'], $C['tags']['wallet'] ) || in_array( $arguments['value'], $C['tags']['account'] ) || in_array( $arguments['value'], $C['tags']['block'] ) )
+						{
+							$call_return['error'] = notice['used_tag_value'];
+						}
+						else
+						{
+							
+							$C['tags'][$arguments['cat']][$arguments['tag']] = $arguments['value'];
+							
+							$call_return[] = notice['tag_edited'];
+							
+							file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
+							
+						}
+						
+					}
+				
+				}
+				
+				break;
+			
+			}
+			
+			
+			
+			// *** Remove tag ***
+			
+			
+			
+			case 'tag_remove':
+			{
+				
+				// Check if cat is defined
+				
+				if( !isset( $arguments['cat'] ) )
+				{
+					$call_return['error'] = notice['bad_call'];	
+				}
+				
+				// Check if cat is correct
 					
-					file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
+				elseif( !array_key_exists( $arguments['cat'], $C['tags'] ) )
+				{
+					$call_return['error'] = notice['bad_call'];	
+				}
+				
+				// Check if tag is defined
+				
+				elseif( !isset( $arguments['tag'] ) )
+				{
+					$call_return['error'] = notice['bad_call'];	
+				}
+				
+				else
+				{
+					
+					$arguments['tag'] = tag_filter( $arguments['tag'] );
+				
+					if( $arguments['tag'] == '' )
+					{
+						$call_return['error'] = notice['bad_tag'];
+					}
+					else
+					{
+				
+						if( array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
+						{
+						
+							unset( $C['tags'][$arguments['cat']][$arguments['tag']] );
+							
+							$call_return[] = notice['tag_removed'];
+							
+							file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
+						
+						}
+						else
+						{
+							$call_return['error'] = notice['tag_not_found'];
+						}
+						
+					}
+				
+				}
+				
+				break;
+			
+			}
+			
+			
+			
+			// *** Updates ***
+			
+			
+			
+			case 'updates':
+			{
+
+				$options =
+				[
+					'http' =>
+					[
+						'method' => "GET",
+						'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:74.0) Gecko/20100101 Firefox/74.0\r\n"
+					]
+				];
+
+				$context = stream_context_create($options);
+				
+				$php4nano_json = file_get_contents( 'https://api.github.com/repos/mikerow/php4nano/releases/latest', false, $context );
+				
+				$php4nano_array = json_decode( $php4nano_json, true );
+				
+				$nano_node_json = file_get_contents( 'https://api.github.com/repos/nanocurrency/nano-node/releases/latest', false, $context );
+				
+				$nano_node_array = json_decode( $nano_node_json, true );
+				
+				if( !$php4nano_json || !is_array( $php4nano_array ) || !isset( $php4nano_array['tag_name'] ) )
+				{
+					
+					$call_return['error'] = notice['updates_error_api1'];
+					
+					break;
 					
 				}
 				
-			}
-		
-		}
-	
-	}
-	
-	
-	
-	// *** Remove tag ***
-	
-	
-	
-	elseif( $command == 'tag_remove' )
-	{
-		
-		// Check if cat is defined
-		
-		if( !isset( $arguments['cat'] ) )
-		{
-			$call_return['error'] = notice['bad_call'];	
-		}
-		
-		// Check if cat is correct
-			
-		elseif( !array_key_exists( $arguments['cat'], $C['tags'] ) )
-		{
-			$call_return['error'] = notice['bad_call'];	
-		}
-		
-		// Check if tag is defined
-		
-		elseif( !isset( $arguments['tag'] ) )
-		{
-			$call_return['error'] = notice['bad_call'];	
-		}
-		
-		else
-		{
-			
-			$arguments['tag'] = tag_filter( $arguments['tag'] );
-		
-			if( $arguments['tag'] == '' )
-			{
-				$call_return['error'] = notice['bad_tag'];
-			}
-			else
-			{
-		
-				if( array_key_exists( $arguments['tag'], $C['tags'][$arguments['cat']] ) )
+				if( !$nano_node_json || !is_array( $nano_node_array ) || !isset( $nano_node_array['tag_name'] ) )
 				{
-				
-					unset( $C['tags'][$arguments['cat']][$arguments['tag']] );
 					
-					$call_return[] = notice['tag_removed'];
+					$call_return['error'] = notice['updates_error_api2'];
 					
-					file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
+					break;
+					
+				}
 				
+				// ncm version
+				
+				if( version_compare( str_replace( 'v', '', version ), str_replace( 'v', '', $php4nano_array['tag_name'] )  ) >= 0 )
+				{
+					$call_return['ncm'] = notice['updated'];
 				}
 				else
 				{
-					$call_return['error'] = notice['tag_not_found'];
+					$call_return['ncm'] = notice['new_version_available'] . ' (' . $php4nano_array['tag_name'] . ')';
 				}
+				
+				// nano_node version
+				
+				$version = $nanocall->version();
+				
+				if( version_compare( str_replace( 'Nano V', '', $version['node_vendor'] ), str_replace( 'V', '', $nano_node_array['tag_name'] )  ) >= 0 )
+				{
+					$call_return['node'] = notice['updated'];
+				}
+				else
+				{
+					$call_return['node'] = notice['new_version_available'] . ' (' . $nano_node_array['tag_name'] . ')';
+				}
+				
+				break;
+				
+			}
+			
+			
+			
+			// *** Default node call ***
+			
+			
+			
+			default:
+			{
+				
+				$call_return = $nanocall->{ $command }( $arguments );
+				
+				break;
 				
 			}
 		
+		
+		
 		}
 	
-	}
 	
 	
-	
-	// *** Updates ***
-	
-	
-	
-	elseif( $command == 'updates' )
-	{
-
-		$options =
-		[
-			'http' =>
-			[
-				'method' => "GET",
-				'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:74.0) Gecko/20100101 Firefox/74.0\r\n"
-			]
-		];
-
-		$context = stream_context_create($options);
-		
-		$php4nano_json = file_get_contents( 'https://api.github.com/repos/mikerow/php4nano/releases/latest', false, $context );
-		
-		$php4nano_array = json_decode( $php4nano_json, true );
-		
-		$nano_node_json = file_get_contents( 'https://api.github.com/repos/nanocurrency/nano-node/releases/latest', false, $context );
-		
-		$nano_node_array = json_decode( $nano_node_json, true );
-		
-		if( !$php4nano_json || !$nano_node_json )
-		{
-			$call_return['error'] = notice['updates_error_api1']; 
-		}
-		else
-		{
-			
-			// ncm version
-			
-			if( version_compare( str_replace( 'v', '', version ), str_replace( 'v', '', $php4nano_array['tag_name'] )  ) >= 0 )
-			{
-				$call_return['ncm'] = notice['updated'];
-			}
-			else
-			{
-				$call_return['ncm'] = notice['new_version_available'] . ' (' . $php4nano_array['tag_name'] . ')';
-			}
-			
-			// nano_node version
-			
-			$version = $nanocall->version();
-			
-			if( version_compare( str_replace( 'Nano V', '', $version['node_vendor'] ), str_replace( 'V', '', $nano_node_array['tag_name'] )  ) >= 0 )
-			{
-				$call_return['node'] = notice['updated'];
-			}
-			else
-			{
-				$call_return['node'] = notice['new_version_available'] . ' (' . $nano_node_array['tag_name'] . ')';
-			}
-			
-		}
-		
-	}
-	
-	
-	
-	// *** Default node call ***
-	
-	
-	
-	else
-	{
-		$call_return = $nanocall->{ $command }( $arguments );
 	}
 	
 	
