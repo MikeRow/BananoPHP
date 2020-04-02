@@ -27,7 +27,7 @@
 			
 		den2den....................................convert amount from a denomination to other
 		
-			e.g. echo NanoTools:den2den( '5', 'NANO', 'knano' ); // Returns 5000
+			e.g. echo NanoTools::den2den( '5', 'NANO', 'knano' ); // Returns 5000
 			
 		account_validate...........................validate nano account
 		
