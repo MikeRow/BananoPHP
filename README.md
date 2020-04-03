@@ -39,7 +39,12 @@ Try [ncm-remote.php](ncm/examples/ncm-remote.php) example script
 
 ## To do
 
+v1.2
+
 * Add RPC 2.0 support (lib,ncm)
+
+v2.0
+
 * Add IPC support (lib,ncm)
 
 ## Discarded

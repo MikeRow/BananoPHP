@@ -398,7 +398,7 @@
 		'updates_error_api2'        => 'updates failed API #2'
 	]);
 	
-	$C = []; // config.json
+	$C = []; // Configuration
 	
 	$C2 = []; // Secondary configuration, derived from $C
 	
