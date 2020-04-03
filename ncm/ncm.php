@@ -7,12 +7,12 @@
 	*********************
 	
 	
-		- Initialize data/config.json:
+		- Initialize config.json:
 		
 			php PATH/php4nano/ncm/ncm.php init
 			
 			
-		- Edit data/config.json with you own parameters
+		- Edit php4nano/ncm/data/config.json with you own parameters
 		
 		
 		- Details for config.json:
@@ -50,7 +50,7 @@
 				
 			ticker
 			
-				*** Tickers and prices are obtained exclusively from CoinGecko ***
+				*** Tickers and prices are taken from coingecko.com ***
 			
 				Before enabling the ticker option, crontab 'php PATH/php4nano/ncm/ncm.php ticker_update' (I suggest execution every 20 minutes)
 				Also, initialize it by executing it manually the first time
@@ -76,7 +76,7 @@
 			
 			3tags
 			
-				*** Third-pary tags are obtained exclusively from MyNanoNinja ***
+				*** Third-party tags are taken from mynano.ninja ***
 				
 				Enable 3tags option and run 'php PATH/php4nano/ncm/ncm.php 3tags_update' to populate third-party tags
 				You may crontab it to keep it updated
@@ -105,11 +105,13 @@
 			ncm dedicated
 			
 			
-				init................................initialize data/config.json
+				init................................initialize config.json
 				
 				status..............................print node summary
 				
-					sync=bool (default false, off) *** Third-party sync info are obtained exclusively from MyNanoNinja ***
+					*** Third-party sync info are taken from mynano.ninja ***
+				
+					sync=bool (default false, off)
 					
 					e.g. ncm status
 					e.g. ncm status sync=true (print third-party sync info)
@@ -465,7 +467,7 @@
 	
 	$call_return = [];
 	
-	$C2 = [];
+	$C2 = []; 
 	
 	
 	
@@ -1578,7 +1580,7 @@
 	
 	if( $command == 'init' )
 	{
-		$call_return[] = notice['init_completed'];
+		$call_return['success'] = notice['init_completed'];
 	}
 	
 	
@@ -1742,7 +1744,7 @@
 					
 					if( !$sync_blocks_json || !is_array( $sync_blocks_array ) || !isset( $sync_blocks_array['count'] ) )
 					{
-						$call_return['blocks']['sync'] = notice['status_error_api1']; 
+						$call_return['blocks']['sync']['error'] = notice['status_error_api1']; 
 					}
 					else
 					{
@@ -2520,7 +2522,7 @@
 				
 				$C2['ticker_last'] = time();
 				
-				$call_return[] = notice['ticker_updated'];
+				$call_return['success'] = notice['ticker_updated'];
 				
 				break;
 			
@@ -2571,7 +2573,7 @@
 				
 				file_put_contents( thirdtags_file, json_encode( $thirdy_party_tags_elaborated, JSON_PRETTY_PRINT ) );
 				
-				$call_return[] = notice['3tags_updated'];
+				$call_return['success'] = notice['3tags_updated'];
 				
 				break;
 			
@@ -2727,7 +2729,7 @@
 							
 							$C['tags'][$arguments['cat']][$arguments['tag']] = $arguments['value'];
 							
-							$call_return[] = notice['tag_added'];
+							$call_return['success'] = notice['tag_added'];
 							
 							file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 							
@@ -2817,7 +2819,7 @@
 							
 							$C['tags'][$arguments['cat']][$arguments['tag']] = $arguments['value'];
 							
-							$call_return[] = notice['tag_edited'];
+							$call_return['success'] = notice['tag_edited'];
 							
 							file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 							
@@ -2878,7 +2880,7 @@
 						
 							unset( $C['tags'][$arguments['cat']][$arguments['tag']] );
 							
-							$call_return[] = notice['tag_removed'];
+							$call_return['success'] = notice['tag_removed'];
 							
 							file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 						
