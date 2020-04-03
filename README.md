@@ -43,7 +43,7 @@ v1.2
 
 * Add RPC 2.0 support (lib,ncm)
 
-v2.0
+v1.3
 
 * Add IPC support (lib,ncm)
 
