@@ -343,7 +343,7 @@
 	
 	
 	
-	define( 'version'               , 'v1.1.1' );
+	define( 'version'               , 'v1.2' );
 	
 	define( 'data_dir'              , __DIR__ . '/data' );
 	
