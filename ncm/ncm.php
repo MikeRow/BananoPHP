@@ -50,10 +50,10 @@
 				
 			ticker
 			
-				*** Tickers and prices are taken from coingecko.com ***
+				Tickers and prices are taken from coingecko.com
 			
-				Before enabling the ticker option, crontab 'php PATH/php4nano/ncm/ncm.php ticker_update' (I suggest execution every 20 minutes)
-				Also, initialize it by executing it manually the first time
+				*** Before enabling the ticker option, crontab 'php PATH/php4nano/ncm/ncm.php ticker_update' (I suggest execution every 20 minutes) ***
+				*** Also, initialize it by executing it manually the first time ***
 			
 				enable..............................enable/disable ticker option
 				
@@ -69,10 +69,10 @@
 				
 			3tags
 			
-				*** Third-party tags are taken from mynano.ninja ***
+				Third-party tags are taken from mynano.ninja
 				
-				Enable 3tags option and run 'php PATH/php4nano/ncm/ncm.php 3tags_update' to populate third-party tags
-				You may crontab it to keep it updated
+				*** Enable 3tags option and run 'php PATH/php4nano/ncm/ncm.php 3tags_update' to populate third-party tags ***
+				*** You may crontab it to keep it updated ***
 			
 				enable...............................enable/disable third-party tags
 			
@@ -172,7 +172,7 @@
 				
 				tag_add.............................add tag
 				
-					ONLY ONE tag for each wallet/account/block
+					*** ONLY ONE tag for each wallet/account/block ***
 					In sort to have a clean and flowing tag list, I recommend using only lowercase alphanumeric characters, dashes(-) and dottes(.)
 					
 					You may also add/edit/remove tags manually by editing php4nano/ncm/data/tags.json
@@ -185,7 +185,7 @@
 					
 				tag_edit............................edit tag
 				
-					ONLY ONE tag for each wallet/account/block
+					*** ONLY ONE tag for each wallet/account/block ***
 					In sort to have a clean and flowing tag list, I recommend using only lowercase alphanumeric characters, dashes(-) and dottes(.)
 				
 					You may also add/edit/remove tags manually by editing php4nano/ncm/data/tags.json
