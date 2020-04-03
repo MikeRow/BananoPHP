@@ -7,7 +7,7 @@
 	*********************
 	
 	
-		- Initialize config.json:
+		- Initialization:
 		
 			php PATH/php4nano/ncm/ncm.php init
 			
@@ -98,7 +98,7 @@
 			ncm dedicated
 			
 			
-				init................................initialize config.json
+				init................................initialization
 				
 				status..............................print node summary
 				
