@@ -175,7 +175,7 @@
 					*** ONLY ONE tag for each wallet/account/block ***
 					In sort to have a clean and flowing tag list, I recommend using only lowercase alphanumeric characters, dashes(-) and dottes(.)
 					
-					You may also add/edit/remove tags manually by editing php4nano/ncm/data/tags.json
+					You may also add tags by editing php4nano/ncm/data/tags.json
 				
 					cat=wallet/account/block
 					tag=tag
@@ -188,7 +188,7 @@
 					*** ONLY ONE tag for each wallet/account/block ***
 					In sort to have a clean and flowing tag list, I recommend using only lowercase alphanumeric characters, dashes(-) and dottes(.)
 				
-					You may also add/edit/remove tags manually by editing php4nano/ncm/data/tags.json
+					You may also edit tags by editing php4nano/ncm/data/tags.json
 					
 					cat=wallet/account/block
 					tag=tag
@@ -198,7 +198,7 @@
 				
 				tag_remove..........................remove tag
 				
-					You may also add/edit/remove tags manually by editing php4nano/ncm/data/tags.json
+					You may also remove tags by editing php4nano/ncm/data/tags.json
 					
 					cat=wallet/account/block
 					tag=tag
@@ -415,29 +415,6 @@
 		mkdir( data_dir );
 	}
 	
-	// *** Create tags.json if not exist ***
-	
-	if( !file_exists( tags_file ) )
-	{
-		
-		$tags_model =
-		[
-			'account' =>
-			[
-				'genesis' => 'nano_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3'
-			],
-			'block' =>
-			[
-				'genesis' => '991CF190094C00F0B68E2E5F75F6BEE95A2E0BD93CEAA4A6734DB9F19B728948'
-			],
-			'wallet' =>
-			[]
-		];
-		
-		file_put_contents( tags_file, json_encode( $tags_model, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
-		
-	}
-	
 	
 	
 	// *** Create log folder if not exsist ***
@@ -451,7 +428,7 @@
 
 	
 	
-	// *** Config model ***
+	// *** config.json model ***
 	
 	
 	
@@ -500,6 +477,26 @@
 	
 	
 	
+	// *** tags.json model ***
+	
+	
+	
+	$tags_model =
+	[
+		'account' =>
+		[
+			'genesis' => 'nano_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3'
+		],
+		'block' =>
+		[
+			'genesis' => '991CF190094C00F0B68E2E5F75F6BEE95A2E0BD93CEAA4A6734DB9F19B728948'
+		],
+		'wallet' =>
+		[]
+	];
+	
+	
+	
 	// *** Load config.json ***
 	
 	
@@ -510,25 +507,54 @@
 	{
 		$C = $C_model;
 	}
-	
-	// Else load config.json
-	
 	else
 	{
 		
 		$C = json_decode( file_get_contents( config_file ), true );
 	
-		// Insert standard configuration if missing elements
+		// Check
 		
 		$C = array_merge_new_recursive( $C, $C_model );
 		
 	}
 	
-	// Complete configuration
+	
+	
+	// *** Load tags.json ***
+	
+	
+	
+	// If tags.json is not found, initialize a model like one
+	
+	if( !file_exists( tags_file ) )
+	{
+		$C2['tags'] = $tags_model;
+	}
+	else
+	{
+		
+		$C2['tags'] = json_decode( file_get_contents( tags_file ), true );
+		
+		// Check
+		
+		foreach( $tags_model as $section => $data )
+		{
+			if( !array_key_exists( $section, $C2['tags'] ) )
+			{
+				$C2['tags'][$section] = [];
+			}
+			
+		}
+	
+	}
+	
+	
+	
+	// Set timezone
 	
 	date_default_timezone_set( $C['timezone'] );
 	
-	$C2['tags'] = json_decode( file_get_contents( tags_file ), true );
+	// Get ticker
 	
 	if( $C['ticker']['enable'] )
 	{
@@ -541,19 +567,27 @@
 		
 	}
 	
+	// Get 3tags
+	
 	if( $C['3tags']['enable'] )
 	{
 		$C2['3tags'] = json_decode( file_get_contents( thirdtags_file ), true );
 	}
 	
+	
+	
 	// Save config.json
 	
 	file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 	
+	// Save tags.json
+	
+	file_put_contents( tags_file, json_encode( $C2['tags'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 	
 	
 	
 	
+
 
 	// *****************
 	// *** Functions ***
