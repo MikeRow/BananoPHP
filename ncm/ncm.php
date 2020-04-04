@@ -12,6 +12,11 @@
 			php PATH/php4nano/ncm/ncm.php init
 			
 			
+		- Create a shortcut for ncm.php in .bashrc:
+			
+			alias ncm='php PATH/php4nano/ncm/ncm.php'
+			
+
 		- Edit php4nano/ncm/data/config.json with you own parameters
 		
 		
@@ -80,11 +85,6 @@
 	*************
 	*** USAGE ***
 	*************
-		
-		
-		- Create a shortcut for ncm.php in .bashrc:
-			
-			alias ncm='php PATH/php4nano/ncm/ncm.php'
 			
 			
 		- Array input is given by comma separating its elements
