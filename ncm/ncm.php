@@ -127,7 +127,7 @@
 				
 					account=account_id/tag
 					limit=int (default 0, off)
-					percent_limit=float (default 100,off)
+					percent_limit=float (default 100, off)
 					balance_min=float (default 0)
 					balance_max=float (default available supply)
 					sort=asc/desc (default desc)
@@ -137,7 +137,7 @@
 				representatives.....................print representatives and their weight (override regular call)
 				
 					limit=int (default 0, off)
-					percent_limit=float (default 100,off)
+					percent_limit=float (default 100, off)
 					weight_min=float (default 0)
 					weight_max=float (default available supply)
 					
@@ -146,7 +146,7 @@
 				representatives_online..............print online representatives (override regular call)
 				
 					limit=int (default 0, off)
-					percent_limit=float (default 100,off)
+					percent_limit=float (default 100, off)
 					weight_min=float (default 0)
 					weight_max=float (default available supply)
 					sort=asc/desc (default desc)
