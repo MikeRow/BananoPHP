@@ -1,33 +1,5 @@
 <?php
 
-	/*
-
-	*********************
-	*** CONFIGURATION ***
-	*********************
-	
-	
-		Include NanoCLI.php
-			
-			require_once 'PATH/php4nano/lib/NanoCLI.php';
-
-		Initialize Nano connection/object
-		
-			$nanocli = new NanoCLI('PATH_TO_NANO_NODE');
-			
-	
-	*************
-	*** USAGE ***
-	*************
-			
-		e.g. $nanocli->account_key(['account'=>'account_id']); // Returns an array
-	
-		Read full CLI documentation at https://docs.nano.org/commands/command-line-interface/
-
-	*/
-	
-	
-	
 	class NanoCLI
 	{
 		

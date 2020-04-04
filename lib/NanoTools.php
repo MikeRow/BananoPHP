@@ -1,44 +1,5 @@
 <?php
 
-	/*
-
-	*********************
-	*** CONFIGURATION ***
-	*********************
-	
-	
-		Include NanoTools.php
-			
-			require_once 'PATH/php4nano/lib/NanoTools.php';
-			
-	
-	*************
-	*** USAGE ***
-	*************
-
-
-		den2raw....................................convert denomination amount to raw amount
-			
-			e.g. echo NanoTools::den2raw( 5, 'NANO' ); // Returns '5000000000000000000000000000000'
-			
-		raw2den....................................convert raw amount to denomination amount
-		
-			e.g. echo NanoTools::raw2den( '5000000000000000000000000000000', 'NANO' ); // Returns 5
-			
-		den2den....................................convert amount from a denomination to other
-		
-			e.g. echo NanoTools::den2den( '5', 'NANO', 'knano' ); // Returns 5000
-			
-		account_validate...........................validate nano account
-		
-			e.g. echo NanoTools::account_validate( 'account_id' ); // Returns true if valid
-			
-			*** Requires php-blake2 extension (https://github.com/strawbrary/php-blake2) installed and enabled ***
-
-	*/
-	
-	
-	
 	class NanoTools
 	{
 
