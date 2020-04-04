@@ -398,11 +398,11 @@
 		'updates_error_api2'        => 'updates failed API #2'
 	]);
 	
-	$C = []; // Configuration
+	$C = []; // Primary configuration
 	
-	$C2 = []; // Secondary configuration, derived from $C
+	$C2 = []; // Secondary configuration
 	
-	$call_return = []; // Output array
+	$call_return = []; // Output
 
 	
 	
@@ -501,8 +501,6 @@
 	
 	
 	
-	// If config.json is not found, initialize a model like one
-	
 	if( !file_exists( config_file ) )
 	{
 		$C = $C_model;
@@ -523,8 +521,6 @@
 	// *** Load tags.json ***
 	
 	
-	
-	// If tags.json is not found, initialize a model like one
 	
 	if( !file_exists( tags_file ) )
 	{
@@ -550,11 +546,17 @@
 	
 	
 	
-	// Set timezone
+	// *** Set timezone ***
+	
+	
 	
 	date_default_timezone_set( $C['timezone'] );
 	
-	// Get ticker
+	
+	
+	// *** Get ticker ***
+	
+	
 	
 	if( $C['ticker']['enable'] )
 	{
@@ -567,7 +569,11 @@
 		
 	}
 	
-	// Get 3tags
+	
+	
+	// *** Get 3tags ***
+	
+	
 	
 	if( $C['3tags']['enable'] )
 	{
@@ -576,11 +582,11 @@
 	
 	
 	
-	// Save config.json
+	// *** Save config.json, tags.json ***
+	
+	
 	
 	file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
-	
-	// Save tags.json
 	
 	file_put_contents( tags_file, json_encode( $C2['tags'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 	
@@ -3039,9 +3045,9 @@
 	
 	
 	
-	// **************
-	// *** Output ***
-	// **************
+	// ********************
+	// *** Build output ***
+	// ********************
 	
 	
 	
