@@ -1,6 +1,8 @@
 # php4nano
 PHP libraries and tools for the Nano currency
 
+<br/>
+
 ## Repository contents
 
 [lib](lib)
@@ -21,9 +23,13 @@ examples			example scripts
 ncm.php				ncm script
 </pre>
 
+<br/>
+
 ## Documentation
 
 Read documentation in the [Wiki](https://github.com/mikerow/php4nano/wiki)
+
+<br/>
 
 ## A clarification about the huge integers
 
@@ -32,12 +38,16 @@ If you need to perform arithmetic operations directly with the raw amounts, I su
 
 You can find denomination/raw conversion functions and other usefull stuffs in [lib/NanoTools.php](lib/NanoTools.php)
 
+<br/>
+
 ## Using a script to securely control a node via SSH and ncm
 
 Use a script to start a SSH connection to the server hosting your Nano node and ncm
 
 If you wish to control your node remotely using PHP, I suggest [phpseclib](https://github.com/phpseclib/phpseclib) repository<br/>
 Try [ncm-remote.php](ncm/examples/ncm-remote.php) example script
+
+<br/>
 
 ## To do
 
@@ -48,6 +58,8 @@ v1.2
 v1.3
 
 * Add IPC support (lib,ncm)
+
+<br/>
 
 ## Discarded
 
@@ -60,11 +72,15 @@ WebSocket is a better solution
 Since usage is pretty custom in each situation, I've decided to don't develop any class or ncm implementation<br/>
 If you are looking for an easy way to implement a WebSocket client for PHP I suggest [Textalk/websocket-php](https://github.com/Textalk/websocket-php) repository
 
+<br/>
+
 ## Welcome third-party implementations
 
 * HTML/JavaScript ncm visual manager
 
 HTML/JavaScript visual manager that connects via SSH to a server hosting a Nano node and ncm
+
+<br/>
 
 ## Credits
 
@@ -73,6 +89,8 @@ HTML/JavaScript visual manager that connects via SSH to a server hosting a Nano 
 * [mynano.ninja/API](https://mynano.ninja/api)
 
 Special thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the prompt support given to me over the months
+
+<br/>
 
 ## Support
 
