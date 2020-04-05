@@ -36,12 +36,7 @@ ncm.php				ncm script
 
 ## To do
 
-v1.2
-
 * Add RPC 2.0 support (lib,ncm)
-
-v1.3
-
 * Add IPC support (lib,ncm)
 
 <br/>
