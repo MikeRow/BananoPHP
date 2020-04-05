@@ -25,7 +25,6 @@ NanoCli.php			interface for nano_node CLI commands
 NanoRPC.php			interface for RPC commands
 NanoRPCExtension.php		extension commands for NanoRPC.php
 NanoTools.php			usefull node-independent tools for Nano
-</pre>
 
 ncm			node CLI manager - exhaustively manage Nano node using bash
 ---
