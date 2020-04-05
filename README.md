@@ -23,7 +23,7 @@ ncm.php				ncm script
 
 ## Documentation
 
-Read documentation in the [wiki](https://github.com/mikerow/php4nano/wiki)
+Read documentation in the [Wiki](https://github.com/mikerow/php4nano/wiki)
 
 ## A clarification about the huge integers
 
