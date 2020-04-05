@@ -1,8 +1,6 @@
 # php4nano
 PHP libraries and tools for the Nano currency
 
-*Read usage and examples in files header*
-
 ## Repository contents
 
 [lib](lib)
@@ -22,6 +20,10 @@ NanoTools.php			usefull node-independent tools for Nano
 examples			example scripts
 ncm.php				ncm script
 </pre>
+
+## Documentation
+
+Read documentation in the [wiki](https://github.com/mikerow/php4nano/wiki)
 
 ## A clarification about the huge integers
 
