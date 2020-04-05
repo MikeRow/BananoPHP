@@ -921,16 +921,27 @@
 	if( $C['nano']['connection'] == 'rpc' )
 	{
 		$nanocall = new NanoRPCExtension( $C['nano']['rpc']['host'], $C['nano']['rpc']['port'] );
-		
+
 	}
 	
-	$check_node_connection = $nanocall->version();
+	// Node call check
+	
+	$check_words = ['rpc'];
+			
+	if( in_array( $C['nano']['connection'], $check_words ) )
+	{
+		$check_node_connection = $nanocall->version();
+	}
+	else
+	{
+		$check_node_connection = false;
+	}
+
 	
 	
 	
 	
-	
-	
+
 	// *****************
 	// *** Get input ***
 	// *****************
@@ -984,7 +995,7 @@
 	
 	
 	
-	// Search for flags and callerID
+	// *** Search for flags and callerID ***
 	
 	
 	
@@ -1348,7 +1359,7 @@
 	
 	
 	
-	elseif( !isset( $check_node_connection['rpc_version'] ) )
+	elseif( !is_array( $check_node_connection ) || !isset( $check_node_connection['rpc_version'] ) )
 	{
 		$call_return['error'] = notice['node_connection_failed'];
 	}
