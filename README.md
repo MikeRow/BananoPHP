@@ -34,15 +34,6 @@ ncm.php				ncm script
 
 <br/>
 
-## A clarification about the huge integers
-
-Nano uses huge integers to represent even a tiny amount (1 nano is 10^24 raw), but PHP supports much lower integers<br/>
-If you need to perform arithmetic operations directly with the raw amounts, I suggest [GMP](https://www.php.net/manual/en/book.gmp.php) extension
-
-You can find denomination/raw conversion functions and other usefull stuffs in [lib/NanoTools.php](lib/NanoTools.php)
-
-<br/>
-
 ## To do
 
 v1.2
