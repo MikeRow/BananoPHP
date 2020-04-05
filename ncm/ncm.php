@@ -903,30 +903,6 @@
 	
 	
 	
-	// *****************
-	// *** Get input ***
-	// *****************
-	
-	
-	
-	
-	
-	
-	if( count( $argv ) < 2 ) exit;
-	
-	$command = $argv[1];
-	
-	unset( $argv[0] );
-	
-	unset( $argv[1] );
-	
-	$argv = array_values( $argv );
-	
-	
-	
-	
-	
-	
 	// ************************
 	// *** Node connections ***
 	// ************************
@@ -949,6 +925,30 @@
 	}
 	
 	$check_node_connection = $nanocall->version();
+	
+	
+	
+	
+	
+	
+	// *****************
+	// *** Get input ***
+	// *****************
+	
+	
+	
+	
+	
+	
+	if( count( $argv ) < 2 ) exit;
+	
+	$command = $argv[1];
+	
+	unset( $argv[0] );
+	
+	unset( $argv[1] );
+	
+	$argv = array_values( $argv );
 	
 	
 	
