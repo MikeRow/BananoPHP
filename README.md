@@ -16,17 +16,17 @@ Read documentation in the [Wiki](https://github.com/mikerow/php4nano/wiki)
 ## Repository contents
 
 <pre>
-examples                    useful example scripts
+[examples]                  useful example scripts
 ---------------------------------------------------------------------------------------
 
-lib                         classes for Nano
+[lib]                       classes for Nano
 ---------------------------------------------------------------------------------------
 NanoCli.php                 interface for nano_node CLI commands
 NanoRPC.php                 interface for RPC commands
 NanoRPCExtension.php        extension commands for NanoRPC.php
 NanoTools.php               usefull node-independent tools for Nano
 
-ncm                         node CLI manager - exhaustively manage Nano node using bash
+[ncm]                       node CLI manager - exhaustively manage Nano node using bash
 ---------------------------------------------------------------------------------------
 ncm.php                     ncm script
 </pre>
