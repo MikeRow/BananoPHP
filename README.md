@@ -29,7 +29,6 @@ NanoTools.php			usefull node-independent tools for Nano
 
 <pre>node CLI manager - exhaustively manage Nano node using bash
 ---
-examples			example scripts
 ncm.php				ncm script
 </pre>
 
