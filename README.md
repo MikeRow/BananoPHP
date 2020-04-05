@@ -1,4 +1,6 @@
-<img width="720" alt="php4nano logo" src="https://raw.githubusercontent.com/mikerow/php4nano/master/logo.png">
+<p align="center">
+	<img width="540" alt="php4nano logo" src="https://raw.githubusercontent.com/mikerow/php4nano/master/logo.png">
+</p>
 
 # php4nano
 PHP libraries and tools for the Nano currency
