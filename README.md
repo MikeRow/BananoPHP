@@ -18,7 +18,7 @@ Read documentation in the [Wiki](https://github.com/mikerow/php4nano/wiki)
 <pre>
 [examples]                  useful example scripts
 ---------------------------------------------------------------------------------------
-nano-raws.php               examples of mathematical operations with raw amounts
+nano-raws.php               example of mathematical operations with raw amounts
 ncm-remote.php              example of managing a node via SSH using a script and ncm
 
 [lib]                       classes for Nano
