@@ -17,7 +17,7 @@
 		
 		
 		
-		function __construct( string $path_to_app = './nano_node' )
+		function __construct( string $path_to_app = '/home/nano/nano_node' )
 		{
 			
 			$this->path_to_app = escapeshellarg( $path_to_app );
