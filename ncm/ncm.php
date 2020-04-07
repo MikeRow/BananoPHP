@@ -467,7 +467,7 @@
 	
 	
 	
-	function tag_filter( $value )
+	function tag_filter( string $value )
 	{
 		
 		$value = preg_replace( '/[^a-z0-9_. ]+/i', '', $value );
@@ -488,7 +488,7 @@
 	
 	
 	
-	function tag2value( $key, $value )
+	function tag2value( string $key, string $value )
 	{
 	
 		global $C;
@@ -559,7 +559,7 @@
 	
 	
 	
-	function value2tag( $value )
+	function value2tag( string $value )
 	{
 		
 		global $C;

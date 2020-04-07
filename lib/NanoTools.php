@@ -141,7 +141,7 @@
 
 		}
 		
-		public static function account_validate( $account )
+		public static function account_validate( string $account )
 		{
 			
 			if( is_string( $account ) )
