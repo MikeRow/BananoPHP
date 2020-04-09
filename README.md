@@ -37,8 +37,9 @@ ncm.php                     ncm script
 
 ## To do
 
-* Add RPC 2.0 support (lib,ncm)
-* Add IPC support (lib,ncm)
+* Multiple node watcher (additional application for ncm)
+* RPC 2.0 support (lib,ncm)
+* IPC support (lib,ncm)
 
 <br/>
 
@@ -55,7 +56,7 @@ If you are looking for an easy way to implement a WebSocket client for PHP I sug
 
 <br/>
 
-## Welcome third-party implementations
+## Welcomed third-party implementations
 
 * HTML/JavaScript ncm visual manager
 
