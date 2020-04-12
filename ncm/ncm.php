@@ -31,7 +31,7 @@
 	
 	
 	
-	define( 'version'               , 'v1.2' );
+	define( 'version'               , 'v1.1.2' );
 	
 	define( 'data_dir'              , __DIR__ . '/data' );
 	
@@ -559,7 +559,7 @@
 	
 	
 	
-	function value2tag( string $value )
+	function value2tag( $value )
 	{
 		
 		global $C;
@@ -688,207 +688,207 @@
 				
 				// Amount format
 				
-					$check_words = 
-					[
-						'amount',
-						'available',
-						'balance',
-						'balance_cumulative',
-						'online_stake_total',
-						'online_weight_minimum',
-						'peers_stake_required',
-						'peers_stake_total',
-						'pending',
-						'quorum_delta',
-						'receive_minimum',
-						'vote_minimum',
-						'weight',
-						'weight_cumulative',
-						'weight_online'
-					];
+				$check_words = 
+				[
+					'amount',
+					'available',
+					'balance',
+					'balance_cumulative',
+					'online_stake_total',
+					'online_weight_minimum',
+					'peers_stake_required',
+					'peers_stake_total',
+					'pending',
+					'quorum_delta',
+					'receive_minimum',
+					'vote_minimum',
+					'weight',
+					'weight_cumulative',
+					'weight_online'
+				];
+			
+				if( in_array( $key, $check_words ) && is_numeric( $value ) )
+				{
 				
-					if( in_array( $key, $check_words ) && is_numeric( $value ) )
-					{
+					$array[$key] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ) ) . ' ' . $C['nano']['denomination'];
 					
-						$array[$key] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ) ) . ' ' . $C['nano']['denomination'];
+					// If ticker is enabled shows amounts in favourite vs currencies
+					
+					if( $C['ticker']['enable'] )
+					{
 						
-						// If ticker is enabled shows amounts in favourite vs currencies
+						$array[$key] = [];
 						
-						if( $C['ticker']['enable'] )
+						$array[$key][] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ) ) . ' ' . $C['nano']['denomination'];
+					
+						$fav_vs_currencies = explode( ',', $C['ticker']['fav_vs_currencies'] );
+					
+						foreach( $fav_vs_currencies as $fav_vs_currency )
 						{
-							
-							$array[$key] = [];
-							
-							$array[$key][] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ) ) . ' ' . $C['nano']['denomination'];
 						
-							$fav_vs_currencies = explode( ',', $C['ticker']['fav_vs_currencies'] );
-						
-							foreach( $fav_vs_currencies as $fav_vs_currency )
+							if( isset( $C2['vs_currencies'][strtoupper( $fav_vs_currency )] ) )
 							{
-							
-								if( isset( $C2['vs_currencies'][strtoupper( $fav_vs_currency )] ) )
-								{
-									$array[$key][] = custom_number( number_format( NanoTools::raw2den( $value, 'NANO' ) * $C2['vs_currencies'][strtoupper( $fav_vs_currency )], 8, '.', '' ) ) . ' ' . strtoupper( $fav_vs_currency );
-								}
-								
+								$array[$key][] = custom_number( number_format( NanoTools::raw2den( $value, 'NANO' ) * $C2['vs_currencies'][strtoupper( $fav_vs_currency )], 8, '.', '' ) ) . ' ' . strtoupper( $fav_vs_currency );
 							}
 							
 						}
 						
 					}
+					
+				}
 				
 				// Date format
 				
-					$check_words = 
-					[
-						'local_timestamp',
-						'modified_timestamp',
-						'time',
-						'timestamp'
-					];
-				
-					if( in_array( $key, $check_words ) && is_numeric( $value ) )
-					{
-						$array[$key] = date( $C['format']['timestamp'], $value );
-					}
+				$check_words = 
+				[
+					'local_timestamp',
+					'modified_timestamp',
+					'time',
+					'timestamp'
+				];
+			
+				if( in_array( $key, $check_words ) && is_numeric( $value ) )
+				{
+					$array[$key] = date( $C['format']['timestamp'], $value );
+				}
 
 				// Duration format
 				
-					$check_words = 
-					[
-						'seconds',
-						'stat_duration_seconds'
-					];
+				$check_words = 
+				[
+					'seconds',
+					'stat_duration_seconds'
+				];
+			
+				if( in_array( $key, $check_words ) && is_numeric( $value ) )
+				{
+					$array[$key] = custom_number( $value, 0 ) . ' s';
+				}
 				
-					if( in_array( $key, $check_words ) && is_numeric( $value ) )
-					{
-						$array[$key] = custom_number( $value, 0 ) . ' s';
-					}
-					
-					if( $key == 'duration' && is_numeric( $value ) ) $array[$key] = custom_number( $value, 0 ) . ' ms';
-					
-					if( $key == 'uptime'   && is_numeric( $value ) ) $array[$key] = custom_number( $value / 3600, 2 ) . ' h';
-					
-					// Duration exceptions
-					
-					$check_words = 
-					[
-						'bootstrap_status'
-					];
-					
-					if( in_array( $command, $check_words ) )
-					{
-						$array['duration'] = custom_number( $value, 0 ) . ' s';
-					}
+				if( $key == 'duration' && is_numeric( $value ) ) $array[$key] = custom_number( $value, 0 ) . ' ms';
+				
+				if( $key == 'uptime'   && is_numeric( $value ) ) $array[$key] = custom_number( $value / 3600, 2 ) . ' h';
+				
+				// Duration exceptions
+				
+				$check_words = 
+				[
+					'bootstrap_status'
+				];
+				
+				if( in_array( $command, $check_words ) )
+				{
+					$array['duration'] = custom_number( $value, 0 ) . ' s';
+				}
 				
 				// Default numeric format
 				
-					$check_words = 
-					[
-						'accounts',
-						'accounts_count',
-						'adhoc_count',
-						'aps',
-						'average',
-						'blocks',
-						'block_count',
-						'block_processor_batch_max_time',
-						'bootstrap_connections',
-						'bootstrap_connections_max',
-						'bootstrap_fraction_numerator',
-						'cemented',
-						'chain_request_limit',
-						'change',
-						'clients',
-						'confirmation_height',
-						'connections',
-						'count',
-						'deterministic_count',
-						'deterministic_index',
-						'difference',
-						'frontier_request_limit',
-						'height',
-						'idle',
-						'io_threads',
-						'io_timeout',
-						'lazy_state_unknown',
-						'lazy_balances',
-						'lazy_pulls',
-						'lazy_stopped',
-						'lazy_keys',
-						'lmdb_max_dbs',
-						'max_json_depth',
-						'network_threads',
-						'number',
-						'online_weight_quorum',
-						'open',
-						'password_fanout',
-						'peers',
-						'pulls',
-						'pulling',
-						'receive',
-						'reference',
-						'restored_count',
-						'send',
-						'signature_checker_threads',
-						'size',
-						'state',
-						'target_connections',
-						'threads',
-						'total_blocks',
-						'work_threads',
-						'unchecked',
-						'unchecked_cutoff_time'
-					];
-				
-					if( in_array( $key, $check_words ) && is_numeric( $value ) )
-					{
-						$array[$key] = custom_number( $value, 0 );
-					}
+				$check_words = 
+				[
+					'accounts',
+					'accounts_count',
+					'adhoc_count',
+					'aps',
+					'average',
+					'blocks',
+					'block_count',
+					'block_processor_batch_max_time',
+					'bootstrap_connections',
+					'bootstrap_connections_max',
+					'bootstrap_fraction_numerator',
+					'cemented',
+					'chain_request_limit',
+					'change',
+					'clients',
+					'confirmation_height',
+					'connections',
+					'count',
+					'deterministic_count',
+					'deterministic_index',
+					'difference',
+					'frontier_request_limit',
+					'height',
+					'idle',
+					'io_threads',
+					'io_timeout',
+					'lazy_state_unknown',
+					'lazy_balances',
+					'lazy_pulls',
+					'lazy_stopped',
+					'lazy_keys',
+					'lmdb_max_dbs',
+					'max_json_depth',
+					'network_threads',
+					'number',
+					'online_weight_quorum',
+					'open',
+					'password_fanout',
+					'peers',
+					'pulls',
+					'pulling',
+					'receive',
+					'reference',
+					'restored_count',
+					'send',
+					'signature_checker_threads',
+					'size',
+					'state',
+					'target_connections',
+					'threads',
+					'total_blocks',
+					'work_threads',
+					'unchecked',
+					'unchecked_cutoff_time'
+				];
+			
+				if( in_array( $key, $check_words ) && is_numeric( $value ) )
+				{
+					$array[$key] = custom_number( $value, 0 );
+				}
 				
 				// Size format
 				
-					$check_words = 
-					[
-						'max_size',
-						'rotation_size',
-						'size'
-					];
+				$check_words = 
+				[
+					'max_size',
+					'rotation_size',
+					'size'
+				];
+			
+				if( in_array( $key, $check_words ) && is_numeric( $value ) )
+				{
+					$array[$key] = custom_number( $value/1000000, 0 ) . ' MiB';
+				}
 				
-					if( in_array( $key, $check_words ) && is_numeric( $value ) )
-					{
-						$array[$key] = custom_number( $value/1000000, 0 ) . ' MiB';
-					}
-					
-					$check_words = 
-					[
-						'blockchain'
-					];
-					
-					if( in_array( $key, $check_words ) && is_numeric( $value ) )
-					{
-						$array[$key] = custom_number( $value/1000000, 0 ) . ' MB';
-					}
-					
-					$check_words = 
-					[
-						'size_average'
-					];
+				$check_words = 
+				[
+					'blockchain'
+				];
 				
-					if( in_array( $key, $check_words ) && is_numeric( $value ) )
-					{
-						$array[$key] = custom_number( $value, 0 ) . ' B';
-					}
+				if( in_array( $key, $check_words ) && is_numeric( $value ) )
+				{
+					$array[$key] = custom_number( $value/1000000, 0 ) . ' MB';
+				}
+				
+				$check_words = 
+				[
+					'size_average'
+				];
+			
+				if( in_array( $key, $check_words ) && is_numeric( $value ) )
+				{
+					$array[$key] = custom_number( $value, 0 ) . ' B';
+				}
 					
 				// Error format
 				
-					if( $key == 'error' && $value == 'Unable to parse JSON' ) $array[$key] = notice['bad_call'];
-					
-					if( $key == 'error' && $value == 'Unable to parse Array' ) $array[$key] = notice['bad_call'];
+				if( $key == 'error' && $value == 'Unable to parse JSON' ) $array[$key] = notice['bad_call'];
+				
+				if( $key == 'error' && $value == 'Unable to parse Array' ) $array[$key] = notice['bad_call'];
 				
 				// Tag replacement
 				
-					$array[$key] = value2tag( $array[$key] );
+				$array[$key] = value2tag( $array[$key] );
 				
 			}
 			
@@ -1456,7 +1456,7 @@
 				
 				$version = $nanocall->version();
 				
-				$call_return['version'] = $version['node_vendor'];
+				$call_return['node_version'] = $version['node_vendor'];
 				
 				// Uptime
 				
@@ -2633,6 +2633,8 @@
 			case 'updates':
 			{
 
+				$node_updates = isset( $arguments['node'] ) ? (bool) $arguments['node'] : false;
+	
 				$options =
 				[
 					'http' =>
@@ -2675,15 +2677,20 @@
 				
 				// nano_node version
 				
-				$version = $nanocall->version();
+				if( $node_updates )
+				{
 				
-				if( version_compare( str_replace( 'Nano V', '', $version['node_vendor'] ), str_replace( 'V', '', $nano_node_array['tag_name'] )  ) >= 0 )
-				{
-					$call_return['node'] = notice['updated'];
-				}
-				else
-				{
-					$call_return['node'] = notice['new_version_available'] . ' (' . $nano_node_array['tag_name'] . ')';
+					$version = $nanocall->version();
+					
+					if( version_compare( str_replace( 'Nano V', '', $version['node_vendor'] ), str_replace( 'V', '', $nano_node_array['tag_name'] )  ) >= 0 )
+					{
+						$call_return['node'] = notice['updated'];
+					}
+					else
+					{
+						$call_return['node'] = notice['new_version_available'] . ' (' . $nano_node_array['tag_name'] . ')';
+					}
+				
 				}
 				
 				break;

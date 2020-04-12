@@ -37,7 +37,7 @@ ncm.php                     ncm script
 
 ## To do
 
-* Multiple node watcher (additional application for ncm)
+* massive node CLI manager (mncm) (additional application for ncm)
 * RPC 2.0 support (lib,ncm)
 * IPC support (lib,ncm)
 
