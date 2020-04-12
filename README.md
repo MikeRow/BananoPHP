@@ -56,7 +56,7 @@ If you are looking for an easy way to implement a WebSocket client for PHP I sug
 
 <br/>
 
-## Welcomed third-party implementations
+## Welcome third-party implementations
 
 * HTML/JavaScript ncm visual manager
 
