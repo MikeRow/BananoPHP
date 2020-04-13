@@ -33,6 +33,7 @@ NanoTools.php               usefull node-independent tools for Nano
 ncm.php                     ncm script
 </pre>
 
+updates.php                 check for php4nano updates
 <br/>
 
 ## To do

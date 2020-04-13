@@ -31,8 +31,6 @@
 	
 	
 	
-	define( 'version'               , 'v1.1.2' );
-	
 	define( 'data_dir'              , __DIR__ . '/data' );
 	
 	define( 'log_dir'               , __DIR__ . '/log' );
@@ -79,11 +77,10 @@
 		'not_updated'               => 'Not updated',
 		'new_version_available'     => 'New version available!',
 		'status_error_api1'         => 'status failed API #1',
+		'status_error_api2'         => 'status failed API #2',
 		'ticker_update_error_api1'  => 'ticker_update failed API #1',
 		'ticker_update_error_api2'  => 'ticker_update failed API #2',
-		'3tags_update_error_api1'   => '3tags_update failed API #1',
-		'updates_error_api1'        => 'updates failed API #1',
-		'updates_error_api2'        => 'updates failed API #2'
+		'3tags_update_error_api1'   => '3tags_update failed API #1'
 	]);
 	
 	$C = []; // Primary configuration
@@ -1448,15 +1445,51 @@
 			
 				//
 			
-				// ncm version
-				
-				$call_return['ncm_version'] = version;
-			
 				// Node version
 				
 				$version = $nanocall->version();
 				
-				$call_return['node_version'] = $version['node_vendor'];
+				$call_return['version']['node'] = $version['node_vendor'];
+				
+				// Node version sync info
+				
+				if( $sync )
+				{
+					
+					$options =
+					[
+						'http' =>
+						[
+							'method' => "GET",
+							'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:74.0) Gecko/20100101 Firefox/74.0\r\n"
+						]
+					];
+
+					$context = stream_context_create($options);
+
+					$nano_node_json = file_get_contents( 'https://api.github.com/repos/nanocurrency/nano-node/releases/latest', false, $context );
+					
+					$nano_node_array = json_decode( $nano_node_json, true );
+					
+					if( !$nano_node_json || !is_array( $nano_node_array ) || !isset( $nano_node_array['tag_name'] ) )
+					{
+						$call_return['version']['sync']['error'] = notice['status_error_api1'];
+					}
+					else
+					{
+						
+						if( version_compare( str_replace( 'Nano V', '', $version['node_vendor'] ), str_replace( 'V', '', $nano_node_array['tag_name'] )  ) >= 0 )
+						{
+							$call_return['version']['sync'] = notice['updated'];
+						}
+						else
+						{
+							$call_return['version']['sync'] = notice['new_version_available'] . ' (' . $nano_node_array['tag_name'] . ')';
+						}
+				
+					}
+				
+				}
 				
 				// Uptime
 				
@@ -1468,13 +1501,13 @@
 				
 				$peers = $nanocall->peers();
 				
-				$call_return['peers'] = count( $peers['peers'] );
+				$call_return['network']['peers'] = count( $peers['peers'] );
 				
 				// Online representatives and weight
 				
 				$representatives_online = $nanocall->representatives_online( ['weight'=>true] );
 				
-				$call_return['representatives_online'] = count( $representatives_online['representatives'] );
+				$call_return['network']['representatives_online'] = count( $representatives_online['representatives'] );
 				
 				$weight_cumulative = '0';
 				
@@ -1483,9 +1516,9 @@
 					$weight_cumulative = gmp_strval( gmp_add( $weight_cumulative, $data['weight'] ) );
 				}
 				
-				$call_return['weight_online'] = $weight_cumulative;
+				$call_return['network']['weight_online'] = $weight_cumulative;
 				
-				$call_return['weight_online_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
+				$call_return['network']['weight_online_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
 				
 				// Blockchain file size
 				
@@ -1503,7 +1536,7 @@
 				
 				$call_return['blocks']['size_average'] = round( filesize( $C['nano']['data_dir'] . '/data.ldb' ) / $block_count["count"] );
 				
-				// Block sync info
+				// Blocks sync info
 			
 				if( $sync )
 				{
@@ -1514,7 +1547,7 @@
 					
 					if( !$sync_blocks_json || !is_array( $sync_blocks_array ) || !isset( $sync_blocks_array['count'] ) )
 					{
-						$call_return['blocks']['sync']['error'] = notice['status_error_api1']; 
+						$call_return['blocks']['sync']['error'] = notice['status_error_api2']; 
 					}
 					else
 					{
@@ -2622,79 +2655,6 @@
 					
 				break;
 			
-			}
-			
-			
-			
-			// *** Updates ***
-			
-			
-			
-			case 'updates':
-			{
-
-				$node_updates = isset( $arguments['node'] ) ? (bool) $arguments['node'] : false;
-	
-				$options =
-				[
-					'http' =>
-					[
-						'method' => "GET",
-						'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:74.0) Gecko/20100101 Firefox/74.0\r\n"
-					]
-				];
-
-				$context = stream_context_create($options);
-				
-				$php4nano_json = file_get_contents( 'https://api.github.com/repos/mikerow/php4nano/releases/latest', false, $context );
-				
-				$php4nano_array = json_decode( $php4nano_json, true );
-				
-				$nano_node_json = file_get_contents( 'https://api.github.com/repos/nanocurrency/nano-node/releases/latest', false, $context );
-				
-				$nano_node_array = json_decode( $nano_node_json, true );
-				
-				if( !$php4nano_json || !is_array( $php4nano_array ) || !isset( $php4nano_array['tag_name'] ) )
-				{
-					$call_return['error'] = notice['updates_error_api1']; break;
-				}
-				
-				if( !$nano_node_json || !is_array( $nano_node_array ) || !isset( $nano_node_array['tag_name'] ) )
-				{
-					$call_return['error'] = notice['updates_error_api2']; break;
-				}
-				
-				// ncm version
-				
-				if( version_compare( str_replace( 'v', '', version ), str_replace( 'v', '', $php4nano_array['tag_name'] )  ) >= 0 )
-				{
-					$call_return['ncm'] = notice['updated'];
-				}
-				else
-				{
-					$call_return['ncm'] = notice['new_version_available'] . ' (' . $php4nano_array['tag_name'] . ')';
-				}
-				
-				// nano_node version
-				
-				if( $node_updates )
-				{
-				
-					$version = $nanocall->version();
-					
-					if( version_compare( str_replace( 'Nano V', '', $version['node_vendor'] ), str_replace( 'V', '', $nano_node_array['tag_name'] )  ) >= 0 )
-					{
-						$call_return['node'] = notice['updated'];
-					}
-					else
-					{
-						$call_return['node'] = notice['new_version_available'] . ' (' . $nano_node_array['tag_name'] . ')';
-					}
-				
-				}
-				
-				break;
-				
 			}
 			
 			

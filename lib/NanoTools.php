@@ -22,7 +22,7 @@
 	
 	
 	
-		public static function den2raw( string $amount, string $denomination )
+		public static function den2raw( $amount, string $denomination )
 		{
 			
 			$raw2denomination = self::raw2[$denomination];
@@ -62,7 +62,7 @@
 		
 		
 		
-		public static function raw2den( string $amount, string $denomination )
+		public static function raw2den( $amount, string $denomination )
 		{
 			
 			$raw2denomination = self::raw2[$denomination];
@@ -117,7 +117,7 @@
 		
 		
 		
-		public static function den2den( string $amount, string $denomination_from, string $denomination_to )
+		public static function den2den( $amount, string $denomination_from, string $denomination_to )
 		{
 				
 			$raw = self::den2raw( $amount, $denomination_from );
