@@ -33,7 +33,12 @@ NanoTools.php               usefull node-independent tools for Nano
 ncm.php                     ncm script
 
 
+LICENSE.md                  license file
+logo.png                    png format of repository logo
+logo.svg                    svg format of repository logo
+README.md                   (this file)
 updates.php                 check for php4nano updates
+VERSION.txt                 current repository version
 </pre>
 
 <br/>
