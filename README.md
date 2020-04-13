@@ -31,9 +31,11 @@ NanoTools.php               usefull node-independent tools for Nano
 [ncm]                       node CLI manager - exhaustively manage Nano node using bash
 ---------------------------------------------------------------------------------------
 ncm.php                     ncm script
-</pre>
+
 
 updates.php                 check for php4nano updates
+</pre>
+
 <br/>
 
 ## To do
