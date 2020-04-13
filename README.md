@@ -34,11 +34,11 @@ ncm.php                     ncm script
 
 
 LICENSE.md                  license file
+README.md                   (this file)
+VERSION.txt                 current repository version
 logo.png                    png format of repository logo
 logo.svg                    svg format of repository logo
-README.md                   (this file)
 updates.php                 check for php4nano updates
-VERSION.txt                 current repository version
 </pre>
 
 <br/>
