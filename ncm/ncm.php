@@ -2384,17 +2384,6 @@
 			
 			
 			
-			// *** Print config.json ***
-			
-			
-			
-			case 'config':
-			{
-				$call_return = $C; break;
-			}
-			
-			
-			
 			// *** Print tags ***
 			
 			

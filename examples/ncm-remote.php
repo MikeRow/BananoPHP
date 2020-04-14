@@ -4,34 +4,18 @@
 	
 		Manage a node via SSH using a script and ncm
 	
-		Download phpseclib repository at https://github.com/phpseclib/phpseclib
+		Install phpseclib: composer require phpseclib/phpseclib:~2.0
 
 	*/
 
-	include( 'phpseclib/Net/SSH2.php' );
+	include 'autoload.php';
+
+	$loader = new \Composer\Autoload\ClassLoader();
 	
-	include( 'phpseclib/Crypt/Base.php' );
+	$loader->addPsr4('phpseclib\\', __DIR__ . '/path/to/phpseclib2.0');
 	
-	include( 'phpseclib/Crypt/DES.php' );
-	
-	include( 'phpseclib/Crypt/RSA.php' );
-	
-	include( 'phpseclib/Crypt/Hash.php' );
-	
-	include( 'phpseclib/Crypt/Random.php' );
-	
-	include( 'phpseclib/Crypt/RC4.php' );
-	
-	include( 'phpseclib/Crypt/Rijndael.php' );
-	
-	include( 'phpseclib/Crypt/Twofish.php' );
-	
-	include( 'phpseclib/Crypt/Blowfish.php' );
-	
-	include( 'phpseclib/Crypt/TripleDES.php' );
-	
-	include( 'phpseclib/Math/BigInteger.php' );
-	
+	$loader->register();
+
 	use phpseclib\Crypt\RSA;
 	
 	use phpseclib\Net\SSH2;
