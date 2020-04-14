@@ -1130,7 +1130,7 @@
 				
 			}
 			
-			// Convert denomination to raw
+			// Convert amount to raw
 			
 			$check_words =
 			[
@@ -1144,33 +1144,59 @@
 			if( in_array( $argument0, $check_words ) )
 			{
 				
-				if( $C['ticker']['enable'] && !is_numeric( $argument1 ) ) // Input as other currency?
+				if( !is_numeric( $argument1 ) )
 				{
 				
 					$input_currency = explode( '-', $argument1 );
 					
-					$input_currency[0] = abs( $input_currency[0] );
+					$input_currency[0] = str_replace( '-', '', $input_currency[0] );
 					
-					if( is_numeric( $input_currency[0] ) && isset( $input_currency[1] ) && isset( $C2['vs_currencies'][strtoupper( $input_currency[1] )] ) )
+					// raw input
+					
+					if( is_numeric( $input_currency[0] ) && isset( $input_currency[1] ) && $input_currency[1] == 'raw' )
+					{
+						$arguments[$argument0] = $input_currency[0];
+					}
+					
+					// denomination input
+					
+					elseif( is_numeric( $input_currency[0] ) && isset( $input_currency[1] ) && isset( NanoTools::raw2[$input_currency[1]] ) )
+					{
+						$arguments[$argument0] = NanoTools::den2raw( $input_currency[0], $input_currency[1] );
+					}
+					
+					// ticker input
+					
+					elseif( is_numeric( $input_currency[0] ) && isset( $input_currency[1] ) && $C['ticker']['enable'] && isset( $C2['vs_currencies'][strtoupper( $input_currency[1] )] ) )
 					{
 						$arguments[$argument0] = NanoTools::den2raw( $input_currency[0] / $C2['vs_currencies'][strtoupper( $input_currency[1] )], 'NANO' );
 					}
+					
+					// unknown input
+					
 					else
 					{
-						$arguments[$argument0] = 0;
+						$arguments[$argument0] = '0';
 					}
 					
 				}
-				else // Input as a Nano denomination?
+				else
 				{
 					
-					if( is_numeric( $argument1 ) && abs( $argument1 ) == $argument1 )
+					$argument1 = str_replace( '-', '', $argument1 );
+					
+					// default denomination input
+					
+					if( is_numeric( $argument1 ) )
 					{
 						$arguments[$argument0] = NanoTools::den2raw( $argument1, $C['nano']['denomination'] );
 					}
+					
+					// unknown input
+					
 					else
 					{
-						$arguments[$argument0] = 0;
+						$arguments[$argument0] = '0';
 					}
 					
 				}
@@ -1179,7 +1205,10 @@
 			
 			// Check for tags
 			
-			$arguments[$argument0] = tag2value( $argument0, $argument1 );
+			else
+			{
+				$arguments[$argument0] = tag2value( $argument0, $argument1 );
+			}
 			
 			// Generate automatic unique id for send command
 			

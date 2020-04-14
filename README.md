@@ -33,12 +33,12 @@ Read documentation in the [Wiki](https://github.com/mikerow/php4nano/wiki)
     ncm.php                 ncm script
 
 
-LICENSE.md                  repository license
+LICENSE.md                  license
 README.md                   (this file)
-VERSION.txt                 current repository version
-logo.png                    png format of repository logo
-logo.svg                    svg format of repository logo
-updates.php                 check for php4nano updates
+VERSION.txt                 current version
+logo.png                    png logo format
+logo.svg                    svg logo format
+updates.php                 check for repository updates
 </pre>
 
 <br/>
