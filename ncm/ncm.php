@@ -73,11 +73,8 @@
 		'3tags_updated'             => '3tags updated',
 		'ticker_not_enabled'        => 'Ticker not enabled',
 		'3tags_not_enabled'         => '3tags not enabled',
-		'updated'                   => 'Updated',
-		'not_updated'               => 'Not updated',
-		'new_version_available'     => 'New version available!',
-		'status_error_api1'         => 'status failed API #1',
-		'status_error_api2'         => 'status failed API #2',
+		'block_count_error_api1'    => 'block_count failed API #1',
+		'version_error_api1'        => 'version failed API #1',
 		'ticker_update_error_api1'  => 'ticker_update failed API #1',
 		'ticker_update_error_api2'  => 'ticker_update failed API #2',
 		'3tags_update_error_api1'   => '3tags_update failed API #1'
@@ -1432,70 +1429,24 @@
 		
 			
 			
-			// *** Print node and summary info ***
+			// *** Print node summary info ***
 			
 			
 			
 			case 'status':
 			{ 
 			
-				// Any sync?
-					
-				$sync = isset( $arguments['sync'] ) ? (bool) $arguments['sync'] : false;
-			
-				//
-			
 				// Node version
 				
 				$version = $nanocall->version();
 				
-				$call_return['version']['node'] = $version['node_vendor'];
-				
-				// Node version sync info
-				
-				if( $sync )
-				{
-					
-					$options =
-					[
-						'http' =>
-						[
-							'method' => "GET",
-							'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:74.0) Gecko/20100101 Firefox/74.0\r\n"
-						]
-					];
-
-					$context = stream_context_create($options);
-
-					$nano_node_json = file_get_contents( 'https://api.github.com/repos/nanocurrency/nano-node/releases/latest', false, $context );
-					
-					$nano_node_array = json_decode( $nano_node_json, true );
-					
-					if( !$nano_node_json || !is_array( $nano_node_array ) || !isset( $nano_node_array['tag_name'] ) )
-					{
-						$call_return['version']['sync']['error'] = notice['status_error_api1'];
-					}
-					else
-					{
-						
-						if( version_compare( str_replace( 'Nano V', '', $version['node_vendor'] ), str_replace( 'V', '', $nano_node_array['tag_name'] )  ) >= 0 )
-						{
-							$call_return['version']['sync'] = notice['updated'];
-						}
-						else
-						{
-							$call_return['version']['sync'] = notice['new_version_available'] . ' (' . $nano_node_array['tag_name'] . ')';
-						}
-				
-					}
-				
-				}
+				$call_return['node']['version'] = $version['node_vendor'];
 				
 				// Uptime
 				
 				$uptime = $nanocall->uptime();
 				
-				$call_return['uptime'] = $uptime['seconds'];
+				$call_return['node']['uptime'] = $uptime['seconds'];
 				
 				// Online peers
 				
@@ -1522,7 +1473,7 @@
 				
 				// Blockchain file size
 				
-				$call_return['blockchain'] = filesize( $C['nano']['data_dir'] . '/data.ldb' );
+				$call_return['node']['blockchain'] = filesize( $C['nano']['data_dir'] . '/data.ldb' );
 				
 				// Block count
 				
@@ -1535,32 +1486,6 @@
 				$call_return['blocks']['cemented'] = $block_count['cemented'];
 				
 				$call_return['blocks']['size_average'] = round( filesize( $C['nano']['data_dir'] . '/data.ldb' ) / $block_count["count"] );
-				
-				// Blocks sync info
-			
-				if( $sync )
-				{
-				
-					$sync_blocks_json = file_get_contents( 'https://mynano.ninja/api/blockcount' );
-					
-					$sync_blocks_array = json_decode( $sync_blocks_json, true );
-					
-					if( !$sync_blocks_json || !is_array( $sync_blocks_array ) || !isset( $sync_blocks_array['count'] ) )
-					{
-						$call_return['blocks']['sync']['error'] = notice['status_error_api2']; 
-					}
-					else
-					{
-						
-						$call_return['blocks']['sync']['reference'] = $sync_blocks_array['count'];
-						
-						$call_return['blocks']['sync']['difference'] = gmp_strval( gmp_sub( $sync_blocks_array['count'], $block_count['count'] ) );
-
-						$call_return['blocks']['sync']['percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $block_count['count'], '10000' ), $sync_blocks_array['count'] ) ) / 100 );
-							
-					}
-					
-				}
 				
 				// Summary wallets info
 				
@@ -1699,7 +1624,7 @@
 			
 			
 			
-			// *** Prints wallet info ***
+			// *** Print wallet info ***
 			
 			
 			
@@ -1750,7 +1675,7 @@
 			
 			
 			
-			// *** Wallet weight ***
+			// *** Print wallet weight ***
 			
 			
 			
@@ -1797,7 +1722,7 @@
 			
 			
 			
-			// *** Account info ***
+			// *** Print account info ***
 			
 			
 			
@@ -1852,7 +1777,7 @@
 			
 			
 			
-			// *** Delegators ***
+			// *** Print account delegators ***
 			
 			
 			
@@ -1993,7 +1918,7 @@
 			
 			
 			
-			// *** Representatives ***
+			// *** Print representatives ***
 			
 			
 			
@@ -2090,7 +2015,7 @@
 			
 			
 			
-			// *** Representatives online ***
+			// *** Print representatives online ***
 			
 			
 			
@@ -2208,6 +2133,110 @@
 				
 				break;
 			
+			}
+			
+			
+			
+			// *** Print block count ***
+			
+			
+			
+			case 'block_count':
+			{
+			
+				// Any sync?
+					
+				$sync = isset( $arguments['sync'] ) ? (bool) $arguments['sync'] : false;
+			
+				//
+				
+				$block_count = $nanocall->block_count();
+				
+				$call_return = $block_count;
+			
+				// Blocks sync info
+			
+				if( $sync )
+				{
+				
+					$sync_blocks_json = file_get_contents( 'https://mynano.ninja/api/blockcount' );
+					
+					$sync_blocks_array = json_decode( $sync_blocks_json, true );
+					
+					if( !$sync_blocks_json || !is_array( $sync_blocks_array ) || !isset( $sync_blocks_array['count'] ) )
+					{
+						$call_return['sync']['error'] = notice['block_count_error_api1']; break;
+					}
+						
+					$call_return['sync']['reference'] = $sync_blocks_array['count'];
+					
+					$call_return['sync']['difference'] = gmp_strval( gmp_sub( $sync_blocks_array['count'], $block_count['count'] ) );
+
+					$call_return['sync']['percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $block_count['count'], '10000' ), $sync_blocks_array['count'] ) ) / 100 );
+					
+				}
+				
+				break;
+			
+			}
+			
+			
+			
+			// *** Print version ***
+			
+			
+			
+			case 'version':
+			{
+				
+				// Any updates?
+					
+				$updates = isset( $arguments['updates'] ) ? (bool) $arguments['updates'] : false;
+			
+				//
+				
+				$version = $nanocall->version();
+				
+				$call_return = $version;
+				
+				// Node version sync info
+				
+				if( $updates )
+				{
+					
+					$options =
+					[
+						'http' =>
+						[
+							'method' => "GET",
+							'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:74.0) Gecko/20100101 Firefox/74.0\r\n"
+						]
+					];
+
+					$context = stream_context_create($options);
+
+					$nano_node_json = file_get_contents( 'https://api.github.com/repos/nanocurrency/nano-node/releases/latest', false, $context );
+					
+					$nano_node_array = json_decode( $nano_node_json, true );
+					
+					if( !$nano_node_json || !is_array( $nano_node_array ) || !isset( $nano_node_array['tag_name'] ) )
+					{
+						$call_return['updates']['error'] = notice['version_error_api1']; break;
+					}
+						
+					if( version_compare( str_replace( 'Nano V', '', $version['node_vendor'] ), str_replace( 'V', '', $nano_node_array['tag_name'] )  ) >= 0 )
+					{
+						$call_return['updates']['node_vendor'] = false;
+					}
+					else
+					{
+						$call_return['updates']['node_vendor'] = $nano_node_array['tag_name'];
+					}
+
+				}
+				
+				break;
+				
 			}
 			
 			
@@ -2355,7 +2384,7 @@
 			
 			
 			
-			// *** Print config.json (except tags) ***
+			// *** Print config.json ***
 			
 			
 			

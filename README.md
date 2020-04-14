@@ -18,19 +18,19 @@ Read documentation in the [Wiki](https://github.com/mikerow/php4nano/wiki)
 <pre>
 [examples]                  useful example scripts
 ---------------------------------------------------------------------------------------
-nano-raws.php               example of mathematical operations with raw amounts
-ncm-remote.php              example of managing a node via SSH using a script and ncm
+    nano-raws.php           example of mathematical operations with raw amounts
+    ncm-remote.php          example of managing a node via SSH using a script and ncm
 
 [lib]                       classes for Nano
 ---------------------------------------------------------------------------------------
-NanoCli.php                 interface for nano_node CLI commands
-NanoRPC.php                 interface for RPC commands
-NanoRPCExtension.php        extension commands for NanoRPC.php
-NanoTools.php               usefull node-independent tools for Nano
+    NanoCli.php             interface for nano_node CLI commands
+    NanoRPC.php             interface for RPC commands
+    NanoRPCExtension.php    extension commands for NanoRPC.php
+    NanoTools.php           usefull node-independent tools for Nano
 
 [ncm]                       node CLI manager - exhaustively manage Nano node using bash
 ---------------------------------------------------------------------------------------
-ncm.php                     ncm script
+    ncm.php                 ncm script
 
 
 LICENSE.md                  repository license
