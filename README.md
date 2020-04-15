@@ -45,7 +45,7 @@ updates.php                 check for repository updates
 
 ## To do
 
-* massive node manager (additional application for ncm)
+* multi node viewer (web application for ncm)
 * RPC 2.0 support (lib,ncm)
 * IPC support (lib,ncm)
 

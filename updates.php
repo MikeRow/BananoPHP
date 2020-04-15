@@ -19,16 +19,16 @@
 
 	if( !$php4nano_json || !is_array( $php4nano_array ) || !isset( $php4nano_array['tag_name'] ) )
 	{
-		echo 'API error' . "\n"; exit;
+		echo null . "\n"; exit;
 	}
 
 	if( version_compare( str_replace( 'v', '', $version ), str_replace( 'v', '', $php4nano_array['tag_name'] )  ) >= 0 )
 	{
-		echo 'Updated' . "\n";
+		echo false . "\n";
 	}
 	else
 	{
-		echo 'New version available: ' . $php4nano_array['tag_name'] . "\n";
+		echo $php4nano_array['tag_name'] . "\n";
 	}
 
 ?>
