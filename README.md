@@ -45,7 +45,7 @@ updates.php                 check for repository updates
 
 ## To do
 
-* massive node CLI manager (mncm) (additional application for ncm)
+* massive node manager (additional application for ncm)
 * RPC 2.0 support (lib,ncm)
 * IPC support (lib,ncm)
 
@@ -61,14 +61,6 @@ WebSocket is a better solution
 
 Since usage is pretty custom in each situation, I've decided to don't develop any class or ncm implementation<br/>
 If you are looking for an easy way to implement a WebSocket client for PHP I suggest [Textalk/websocket-php](https://github.com/Textalk/websocket-php) repository
-
-<br/>
-
-## Welcome third-party implementations
-
-* HTML/JavaScript ncm visual manager
-
-HTML/JavaScript visual manager that connects via SSH to a server hosting a Nano node and ncm
 
 <br/>
 
