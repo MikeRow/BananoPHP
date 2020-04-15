@@ -10,7 +10,7 @@
 
 	// Include
 
-	require_once 'path/to/vendor/autoload.php';
+	require_once 'path/to/composer/autoload.php';
 
 	use phpseclib\Crypt\RSA;
 	
