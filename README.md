@@ -45,7 +45,7 @@ updates.php                 check for repository updates
 
 ## To do
 
-* multi node monitor (web application for ncm)
+* mncm: multi node CLI monitor
 * RPC 2.0 support (lib,ncm)
 * IPC support (lib,ncm)
 
