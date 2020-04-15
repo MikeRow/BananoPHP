@@ -12,7 +12,7 @@
 
 	$loader = new \Composer\Autoload\ClassLoader();
 	
-	$loader->addPsr4('phpseclib\\', __DIR__ . '/path/to/phpseclib2.0');
+	$loader->addPsr4( 'phpseclib\\', __DIR__ . '/path/to/phpseclib2.0' );
 	
 	$loader->register();
 
