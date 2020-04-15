@@ -8,13 +8,9 @@
 
 	*/
 
-	include 'autoload.php';
+	// Include
 
-	$loader = new \Composer\Autoload\ClassLoader();
-	
-	$loader->addPsr4( 'phpseclib\\', __DIR__ . '/path/to/phpseclib2.0' );
-	
-	$loader->register();
+	include 'path/to/vendor/autoload.php';
 
 	use phpseclib\Crypt\RSA;
 	
@@ -26,7 +22,7 @@
 	
 	$username = 'nano';
 	
-	$privkeyfile_path = 'path_to_private_key_file';
+	$privkeyfile_path = 'path/to/private/key/file';
 	
 	function ncmCall( $command, $arguments, $flags, $callerID )
 	{
