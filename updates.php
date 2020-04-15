@@ -19,7 +19,7 @@
 
 	if( !$php4nano_json || !is_array( $php4nano_array ) || !isset( $php4nano_array['tag_name'] ) )
 	{
-		echo null . "\n"; exit;
+		echo 'error' . "\n"; exit;
 	}
 
 	if( version_compare( str_replace( 'v', '', $version ), str_replace( 'v', '', $php4nano_array['tag_name'] )  ) >= 0 )
