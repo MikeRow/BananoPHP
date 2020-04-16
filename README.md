@@ -30,9 +30,9 @@ Read install and usage documentation in the [Wiki](https://github.com/mikerow/ph
 	
 [lib3]                         third-party libraries
 --------------------------------------------------------------------------------------------
-    php-cli-tools-0.11.11      A collection of tools to help with PHP command line utilities
+    clitable-1.2               CLI Table Output for PHP
     phpseclib-2.0.27           PHP Secure Communications Library
-    php-cli-tools_loader.php   php-cli-tools loader
+    clitable_loader.php        clitable loader
     phpseclib_loader.php       phpseclib loader
 
 [ncm]                          node CLI manager - exhaustively manage Nano node using bash
