@@ -9,11 +9,15 @@ PHP libraries and tools for the Nano currency
 
 ## Documentation
 
+<br/>
+
 Read documentation in the [Wiki](https://github.com/mikerow/php4nano/wiki)
 
 <br/>
 
 ## Repository contents
+
+<br/>
 
 <pre>
 [examples]                     useful example scripts
@@ -52,12 +56,16 @@ updates.php                    check for repository updates
 
 ## To do
 
+<br/>
+
 - RPC 2.0 support (lib,ncm)
 - IPC support (lib,ncm)
 
 <br/>
 
 ## Discarded
+
+<br/>
 
 - HTTP Callback
 
@@ -72,6 +80,8 @@ If you are looking for an easy way to implement a WebSocket client for PHP I sug
 
 ## Credits
 
+<br/>
+
 - [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP) <br/>
 - [wp-cli/php-cli-tools](https://github.com/wp-cli/php-cli-tools) <br/>
 - [phpseclib/phpseclib](https://github.com/phpseclib/phpseclib) <br/>
@@ -83,6 +93,8 @@ Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the prompt sup
 <br/>
 
 ## Support
+
+<br/>
 
 Support Nano decentralization! If you wish to delegate me your weight, here is my representative:
 <pre>
