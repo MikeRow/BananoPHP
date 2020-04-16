@@ -17,26 +17,26 @@ Read documentation in the [Wiki](https://github.com/mikerow/php4nano/wiki)
 
 <pre>
 [examples]                     useful example scripts
----------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
     nano-raws.php              example of mathematical operations with raw amounts
     ncm-remote.php             example of managing a node via SSH using a script and ncm
 
 [lib]                          library for Nano
----------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
     NanoCli.php                interface for nano_node CLI commands
     NanoRPC.php                interface for RPC commands
     NanoRPCExtension.php       extension commands for NanoRPC.php
     NanoTools.php              usefull node-independent tools for Nano
 	
 [lib3]                         third-party libraries
----------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
     php-cli-tools-0.11.11      A collection of tools to help with PHP command line utilities
     phpseclib-2.0.27           PHP Secure Communications Library
     php-cli-tools_loader.php   php-cli-tools loader
     phpseclib_loader.php       phpseclib loader
 
 [ncm]                          node CLI manager - exhaustively manage Nano node using bash
----------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
     ncm.php                    ncm script
 
 
@@ -72,11 +72,11 @@ If you are looking for an easy way to implement a WebSocket client for PHP I sug
 
 ## Credits
 
-* [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
-* [wp-cli/php-cli-tools](https://github.com/wp-cli/php-cli-tools)
-* [phpseclib/phpseclib](https://github.com/phpseclib/phpseclib)
-* [coingecko.com/API](https://www.coingecko.com/en/api)
-* [mynano.ninja/API](https://mynano.ninja/api)
+[aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
+[wp-cli/php-cli-tools](https://github.com/wp-cli/php-cli-tools)
+[phpseclib/phpseclib](https://github.com/phpseclib/phpseclib)
+[coingecko.com/API](https://www.coingecko.com/en/api)
+[mynano.ninja/API](https://mynano.ninja/api)
 
 Special thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the prompt support given to me over the months
 
