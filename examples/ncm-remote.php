@@ -3,20 +3,24 @@
 	/*
 	
 		Manage a node via SSH using a script and ncm
-	
-		Install phpseclib: composer require phpseclib/phpseclib:~2.0
 
 	*/
 
-	// Include
+	// *** Includes ***
 
-	require_once 'path/to/composer/autoload.php';
+
+
+	require_once __DIR__ . '/../lib3/phpseclib_loader.php';
 
 	use phpseclib\Crypt\RSA;
 	
 	use phpseclib\Net\SSH2;
 	
-	// Configuration
+	
+	
+	// *** Configuration ***
+	
+	
 	
 	$target = 'target_host';
 	
@@ -35,7 +39,11 @@
 		
 	}
 	
-	// Connection
+	
+	
+	// *** Connection ***
+
+
 
 	$ssh = new SSH2( $target );
 	
@@ -48,7 +56,11 @@
 		exit( 'Login Failed' );
 	}
 
-	// Execution
+
+
+	// *** Execution ***
+	
+	
 	
 	$flags = 'raw_in,raw_out,json_in,json_out,no_confirm';
 	
@@ -67,7 +79,11 @@
 	
 	print_r( $return );
 
-	// Disconnection
+
+
+	// *** Disconnection ***
+	
+	
 	
 	$ssh->disconnect();
 
