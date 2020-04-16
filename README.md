@@ -78,7 +78,7 @@ If you are looking for an easy way to implement a WebSocket client for PHP I sug
 [coingecko.com/API](https://www.coingecko.com/en/api) <br/>
 [mynano.ninja/API](https://mynano.ninja/api)
 
-Special thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the prompt support given to me over the months
+Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the prompt support given to me over the months
 
 <br/>
 
