@@ -19,6 +19,10 @@
 	
 	
 	
+	use php4nano\lib\NanoTools\NanoTools as NanoTools;
+	
+	
+	
 	
 	
 	
@@ -908,13 +912,13 @@
 	
 	// Node CLI
 	
-	$nanocli = new NanoCLI( $C['nano']['node_file'] );
+	$nanocli = new php4nano\lib\NanoCLI\NanoCLI( $C['nano']['node_file'] );
 	
 	// Node call
 	
 	if( $C['nano']['connection'] == 'rpc' )
 	{
-		$nanocall = new NanoRPCExtension( $C['nano']['rpc']['host'], $C['nano']['rpc']['port'] );
+		$nanocall = new php4nano\lib\NanoRPCExtension\NanoRPCExtension( $C['nano']['rpc']['host'], $C['nano']['rpc']['port'] );
 
 	}
 	

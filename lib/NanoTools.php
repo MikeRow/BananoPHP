@@ -1,5 +1,9 @@
 <?php
 
+	namespace php4nano\lib\NanoTools;
+
+
+
 	class NanoTools
 	{
 

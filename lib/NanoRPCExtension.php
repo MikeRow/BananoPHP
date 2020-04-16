@@ -1,5 +1,11 @@
 <?php
 
+	namespace php4nano\lib\NanoRPCExtension;
+
+	use php4nano\lib\NanoRPC\NanoRPC as NanoRPC;
+
+
+
 	class NanoRPCExtension extends NanoRPC
 	{
 	
