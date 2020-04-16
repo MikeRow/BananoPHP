@@ -52,18 +52,18 @@ updates.php                    check for repository updates
 
 ## To do
 
-* RPC 2.0 support (lib,ncm)
-* IPC support (lib,ncm)
+- RPC 2.0 support (lib,ncm)
+- IPC support (lib,ncm)
 
 <br/>
 
 ## Discarded
 
-* HTTP Callback
+- HTTP Callback
 
 WebSocket is a better solution
 
-* WebSocket
+- WebSocket
 
 Since usage is pretty custom in each situation, I've decided to don't develop any class or ncm implementation<br/>
 If you are looking for an easy way to implement a WebSocket client for PHP I suggest [Textalk/websocket-php](https://github.com/Textalk/websocket-php) repository
@@ -84,11 +84,7 @@ Special thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the pr
 
 ## Support
 
-Don't support me, support Nano decentralization! If you wish to delegate me your weight, here is my representative:
+Support Nano decentralization! If you wish to delegate me your weight, here is my representative:
 <pre>
 nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m
 </pre>
-
-## Developer's note
-
-> I don't, and I'll never, use Composer
