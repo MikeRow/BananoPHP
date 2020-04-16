@@ -21,7 +21,7 @@ Read documentation in the [Wiki](https://github.com/mikerow/php4nano/wiki)
     nano-raws.php              example of mathematical operations with raw amounts
     ncm-remote.php             example of managing a node via SSH using a script and ncm
 
-[lib]                          classes for Nano
+[lib]                          library for Nano
 ---------------------------------------------------------------------------------------
     NanoCli.php                interface for nano_node CLI commands
     NanoRPC.php                interface for RPC commands
@@ -75,7 +75,6 @@ If you are looking for an easy way to implement a WebSocket client for PHP I sug
 * [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
 * [wp-cli/php-cli-tools](https://github.com/wp-cli/php-cli-tools)
 * [phpseclib/phpseclib](https://github.com/phpseclib/phpseclib)
-
 * [coingecko.com/API](https://www.coingecko.com/en/api)
 * [mynano.ninja/API](https://mynano.ninja/api)
 
