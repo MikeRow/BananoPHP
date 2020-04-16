@@ -41,7 +41,7 @@
 	
 	define( 'tags_file'             , data_dir . '/tags.json' );    
 	
-	define( 'thirdtags_file'        , data_dir . '/3tags.json' );
+	define( 'thirdtags_file'        , data_dir . '/tags3.json' );
 	
 	define( 'tabulation'            , '    ' );
 	
@@ -70,14 +70,14 @@
 		'tag_removed'               => 'Tag removed',
 		'ticker_not_updated'        => 'Ticker not updated',
 		'ticker_updated'            => 'Ticker updated',
-		'3tags_updated'             => '3tags updated',
+		'tags3_updated'             => 'tags3 updated',
 		'ticker_not_enabled'        => 'Ticker not enabled',
-		'3tags_not_enabled'         => '3tags not enabled',
+		'tags3_not_enabled'         => 'tags3 not enabled',
 		'block_count_error_api1'    => 'block_count failed API #1',
 		'version_error_api1'        => 'version failed API #1',
 		'ticker_update_error_api1'  => 'ticker_update failed API #1',
 		'ticker_update_error_api2'  => 'ticker_update failed API #2',
-		'3tags_update_error_api1'   => '3tags_update failed API #1'
+		'tags3_update_error_api1'   => 'tags3_update failed API #1'
 	]);
 	
 	$C = []; // Primary configuration
@@ -151,7 +151,7 @@
 			'view'      => true,
 			'separator' => '||'
 		],
-		'3tags' =>
+		'tags3' =>
 		[
 			'enable' => false
 		]
@@ -253,13 +253,13 @@
 	
 	
 	
-	// *** Get 3tags ***
+	// *** Get tags3 ***
 	
 	
 	
-	if( $C['3tags']['enable'] )
+	if( $C['tags3']['enable'] )
 	{
-		$C2['3tags'] = json_decode( file_get_contents( thirdtags_file ), true );
+		$C2['tags3'] = json_decode( file_get_contents( thirdtags_file ), true );
 	}
 	
 	
@@ -520,9 +520,9 @@
 			{
 				return $C2['tags']['account'][$value];
 			}
-			elseif( $C['3tags']['enable'] && array_key_exists( $value, $C2['3tags']['account'] ) )
+			elseif( $C['tags3']['enable'] && array_key_exists( $value, $C2['tags3']['account'] ) )
 			{
-				return $C2['3tags']['account'][$value];
+				return $C2['tags3']['account'][$value];
 			}
 			else
 			{}
@@ -581,13 +581,13 @@
 			{
 				return array_search( 'nano_' . $key_check[1], $C2['tags']['account'] ) . $C['tags']['separator'] . $value;
 			}
-			elseif( $C['3tags']['enable'] && array_search( 'xrb_' . $key_check[1], $C2['3tags']['account'] ) )
+			elseif( $C['tags3']['enable'] && array_search( 'xrb_' . $key_check[1], $C2['tags3']['account'] ) )
 			{
-				return array_search( 'xrb_' . $key_check[1], $C2['3tags']['account'] ) . $C['tags']['separator'] . $value;
+				return array_search( 'xrb_' . $key_check[1], $C2['tags3']['account'] ) . $C['tags']['separator'] . $value;
 			}
-			elseif( $C['3tags']['enable'] && array_search( 'nano_' . $key_check[1], $C2['3tags']['account'] ) )
+			elseif( $C['tags3']['enable'] && array_search( 'nano_' . $key_check[1], $C2['tags3']['account'] ) )
 			{
-				return array_search( 'nano_' . $key_check[1], $C2['3tags']['account'] ) . $C['tags']['separator'] . $value;
+				return array_search( 'nano_' . $key_check[1], $C2['tags3']['account'] ) . $C['tags']['separator'] . $value;
 			}
 			else
 			{
@@ -2370,7 +2370,7 @@
 			
 			
 			
-			case '3tags_update':
+			case 'tags3_update':
 			{
 				
 				$thirdy_party_tags_elaborated['account'] = [];
@@ -2381,7 +2381,7 @@
 				
 				if( !$third_party_tags_json || !is_array( $third_party_tags_array ) || !isset( $third_party_tags_array[0]['alias'] ) )
 				{
-					$call_return['error'] = notice['3tags_update_error_api1']; break;
+					$call_return['error'] = notice['tags3_update_error_api1']; break;
 				}
 				
 				foreach( $third_party_tags_array as $index => $data )
@@ -2401,11 +2401,11 @@
 				
 				ksort( $thirdy_party_tags_elaborated['account'] );
 				
-				// Save 3tags.json
+				// Save tags3.json
 				
 				file_put_contents( thirdtags_file, json_encode( $thirdy_party_tags_elaborated, JSON_PRETTY_PRINT ) );
 				
-				$call_return['success'] = notice['3tags_updated'];
+				$call_return['success'] = notice['tags3_updated'];
 				
 				break;
 			
@@ -2441,19 +2441,19 @@
 			
 			
 			
-			// *** Print 3tags ***
+			// *** Print tags3 ***
 			
 			
 			
-			case '3tags':
+			case 'tags3':
 			{
 				
-				if( !$C['3tags']['enable'] )
+				if( !$C['tags3']['enable'] )
 				{
-					$call_return['error'] = notice['3tags_not_enabled']; break;
+					$call_return['error'] = notice['tags3_not_enabled']; break;
 				}
 
-				foreach( $C2['3tags']['account'] as $tag => $id )
+				foreach( $C2['tags3']['account'] as $tag => $id )
 				{
 					$call_return['account'][] = $id;
 				}
