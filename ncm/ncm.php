@@ -45,7 +45,7 @@
 	
 	define( 'tags_file'             , data_dir . '/tags.json' );    
 	
-	define( 'thirdtags_file'        , data_dir . '/tags3.json' );
+	define( 'tags3_file'            , data_dir . '/tags3.json' );
 	
 	define( 'tabulation'            , '    ' );
 	
@@ -263,7 +263,7 @@
 	
 	if( $C['tags3']['enable'] )
 	{
-		$C2['tags3'] = json_decode( file_get_contents( thirdtags_file ), true );
+		$C2['tags3'] = json_decode( file_get_contents( tags3_file ), true );
 	}
 	
 	
@@ -2407,7 +2407,7 @@
 				
 				// Save tags3.json
 				
-				file_put_contents( thirdtags_file, json_encode( $thirdy_party_tags_elaborated, JSON_PRETTY_PRINT ) );
+				file_put_contents( tags3_file, json_encode( $thirdy_party_tags_elaborated, JSON_PRETTY_PRINT ) );
 				
 				$call_return['success'] = notice['tags3_updated'];
 				
