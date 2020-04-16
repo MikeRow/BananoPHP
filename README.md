@@ -91,4 +91,4 @@ nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m
 
 ## Developer's note
 
-I don't, and I'll never, use Composer
+> I don't, and I'll never, use Composer
