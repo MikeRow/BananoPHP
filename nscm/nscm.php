@@ -104,11 +104,11 @@
 	
 	$node_model =
 	[
-		'hostname'  => 'target host',
-		'username'  => 'username',
-		'password'  => 'password',
-		'key_path'  => 'path/to/private/key/file',
-		'auth_type' => 'pass or key',
+		'hostname'  => 'SSH hostname',
+		'username'  => 'SSH username',
+		'password'  => 'SSH password',
+		'key_path'  => 'SSH keyfile path',
+		'auth_type' => 'password or key',
 		'ncm_path'  => 'path/to/node/ncm.php'
 	];
 	
