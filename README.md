@@ -35,9 +35,13 @@ Read install and usage documentation in the [Wiki](https://github.com/mikerow/ph
     clitable_loader.php        clitable loader
     phpseclib_loader.php       phpseclib loader
 
-[ncm]                          node CLI manager - exhaustively manage Nano node using bash
+[ncm]                          exhaustively manage Nano node using bash
 --------------------------------------------------------------------------------------------
     ncm.php                    ncm script
+
+[ncm-monitor]                  get and view real time informations from your nodes
+--------------------------------------------------------------------------------------------
+    ncm-monitor.php            ncm-monitor script
 
 
 LICENSE.md                     license
@@ -73,7 +77,7 @@ If you are looking for an easy way to implement a WebSocket client for PHP I sug
 ## Credits
 
 - [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP) <br/>
-- [wp-cli/php-cli-tools](https://github.com/wp-cli/php-cli-tools) <br/>
+- [jc21/clitable](https://github.com/jc21/clitable) <br/>
 - [phpseclib/phpseclib](https://github.com/phpseclib/phpseclib) <br/>
 - [coingecko.com/API](https://www.coingecko.com/en/api) <br/>
 - [mynano.ninja/API](https://mynano.ninja/api)
