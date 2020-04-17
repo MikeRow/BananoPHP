@@ -52,7 +52,8 @@
 		'init_completed'            => 'Init completed',
 		'unknown_command'           => 'Unknown command',
 		'unknown_error'             => 'Unknown error',
-		'streaming_in_progress'     => ' Streaming in progress...',
+		'delay'                     => 'delay',
+		'nodes'                     => 'nodes',
 		'failed_ssh'                => 'SSH failed',
 		'failed_ncm'                => 'ncm failed',
 		'success'                   => 'Success'
@@ -297,7 +298,7 @@
 		
 		// Show cursor
 		
-		fprintf( STDOUT, "\033[?25h" );
+		// fprintf( STDOUT, "\033[?25h" );
 		
 	}
 	
@@ -429,6 +430,8 @@
 	{
 		
 		$first_table_display = true;
+		
+		$last_update = time();
 		
 		while( true )
 		{
@@ -705,14 +708,14 @@
 				
 				$table->injectData( $table_data );
 				
-				// Display table
+				// Hide cursor
+				
+				fprintf( STDOUT, "\033[?25l" );
+				
+				// Clear screen
 				
 				if( $first_table_display )
 				{
-					
-					// Hide cursor
-				
-					fprintf( STDOUT, "\033[?25l" );
 					
 					// Clear all screen
 					
@@ -726,18 +729,25 @@
 					
 					// Clear only last table
 					
-					echo "\033[" . strval( 6 + count( $nodes_data ) ) . "A";
+					echo "\033[" . strval( 5 + count( $nodes_data ) ) . "A";
 					
 				}
 				
+				// Print table
+				
 				$table->display();
 				
-				// Refresh?
+				// Print other info
 			
-				if( !$flags['no_refresh'] )
-				{
-					echo notice['streaming_in_progress'] . PHP_EOL . PHP_EOL;
-				}
+				echo ' '. notice['delay'] . ': ' . ( time() - $last_update );
+				
+				echo ' | ' . notice['nodes'] . ': ' . count( $table_data );
+				
+				echo PHP_EOL;
+				
+				// Show cursor
+				
+				fprintf( STDOUT, " \033[?25h" );
 				
 			}
 			
@@ -747,6 +757,8 @@
 			}
 			
 			sleep( $C['delay'] );
+			
+			$last_update = time();
 
 		}
 			
