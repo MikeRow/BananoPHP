@@ -84,7 +84,7 @@
 		'nano' =>
 		[
 			'denomination' => 'NANO',
-			'decimals'     => 0
+			'decimals'     => 3
 		],
 		'refresh' => 1,
 		'timezone' => 'UTC',
