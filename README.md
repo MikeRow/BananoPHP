@@ -1,5 +1,5 @@
 <p align="center">
-	<img width="540" alt="php4nano logo" src="https://raw.githubusercontent.com/mikerow/php4nano/master/logo.png">
+	<img width="540" alt="php4nano logo" src="https://raw.githubusercontent.com/mikerow/php4nano/master/media/logo.png">
 </p>
 
 # php4nano
@@ -34,6 +34,11 @@ Read install and usage documentation in the [Wiki](https://github.com/mikerow/ph
     phpseclib-2.0.27           PHP Secure Communications Library
     clitable_loader.php        clitable loader
     phpseclib_loader.php       phpseclib loader
+	
+[media]                        media folder
+--------------------------------------------------------------------------------------------
+    logo.png                   png logo format
+    logo.svg                   svg logo format
 
 [ncm]                          node CLI manager - fully manage a node via CLI
 --------------------------------------------------------------------------------------------
@@ -44,11 +49,10 @@ Read install and usage documentation in the [Wiki](https://github.com/mikerow/ph
     nco.php                    nco script
 
 
+
 LICENSE.md                     license
 README.md                      (this file)
 VERSION.txt                    current version
-logo.png                       png logo format
-logo.svg                       svg logo format
 updates.php                    check for repository updates
 </pre>
 
