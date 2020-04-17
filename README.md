@@ -35,11 +35,11 @@ Read install and usage documentation in the [Wiki](https://github.com/mikerow/ph
     clitable_loader.php        clitable loader
     phpseclib_loader.php       phpseclib loader
 
-[ncm]                          exhaustively manage Nano node using bash
+[ncm]                          node CLI manager - fully manage a node via CLI
 --------------------------------------------------------------------------------------------
     ncm.php                    ncm script
 
-[nscm]                         get and view real time informations from your nodes
+[nscm]                         nodes CLI monitor - monitor multiple nodes via CLI
 --------------------------------------------------------------------------------------------
     nscm.php                   nscm script
 
