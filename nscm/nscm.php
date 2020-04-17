@@ -472,7 +472,7 @@
 					
 				}
 				
-				$nodes_data[$tag] = json_decode( $ssh->exec( "php " . $node_data['ncm_path'] . " status flags=raw_out,json_out callerID=nscm" . PHP_EOL ), true );
+				$nodes_data[$tag] = json_decode( $ssh->exec( "php " . $node_data['ncm_path'] . " status flags=raw_in,json_in,raw_out,json_out callerID=nscm" . PHP_EOL ), true );
 			
 				$ssh->disconnect();
 			
