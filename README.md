@@ -37,8 +37,8 @@ Read install and usage documentation in the [Wiki](https://github.com/mikerow/ph
 	
 [media]                        media folder
 --------------------------------------------------------------------------------------------
-    logo.png                   png logo format
-    logo.svg                   svg logo format
+    logo.png                   png repository logo format
+    logo.svg                   svg repository logo format
 
 [ncm]                          node CLI manager - fully manage a node via CLI
 --------------------------------------------------------------------------------------------
@@ -49,9 +49,9 @@ Read install and usage documentation in the [Wiki](https://github.com/mikerow/ph
     nco.php                    nco script
 
 
-LICENSE.md                     license
+LICENSE.md                     repository license
 README.md                      (this file)
-VERSION.txt                    current version
+VERSION.txt                    current repository version
 updates.php                    check for repository updates
 </pre>
 
