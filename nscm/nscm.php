@@ -86,7 +86,7 @@
 			'denomination' => 'NANO',
 			'decimals'     => 3
 		],
-		'refresh' => 1,
+		'delay' => 1,
 		'timezone' => 'UTC',
 		'format' =>
 		[
@@ -746,7 +746,7 @@
 				break;
 			}
 			
-			sleep( $C['refresh'] );
+			sleep( $C['delay'] );
 
 		}
 			
