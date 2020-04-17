@@ -39,9 +39,9 @@ Read install and usage documentation in the [Wiki](https://github.com/mikerow/ph
 --------------------------------------------------------------------------------------------
     ncm.php                    ncm script
 
-[ncm-monitor]                  get and view real time informations from your nodes
+[nscm]                         get and view real time informations from your nodes
 --------------------------------------------------------------------------------------------
-    ncm-monitor.php            ncm-monitor script
+    nscm.php                   nscm script
 
 
 LICENSE.md                     license
