@@ -39,9 +39,9 @@ Read install and usage documentation in the [Wiki](https://github.com/mikerow/ph
 --------------------------------------------------------------------------------------------
     ncm.php                    ncm script
 
-[nscm]                         nodes CLI monitor - monitor multiple nodes via CLI
+[nco]                          nodes CLI observer - monitor multiple nodes via CLI
 --------------------------------------------------------------------------------------------
-    nscm.php                   nscm script
+    nco.php                    nco script
 
 
 LICENSE.md                     license
