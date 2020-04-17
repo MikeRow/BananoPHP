@@ -56,6 +56,7 @@
 		'nodes'                     => 'nodes',
 		'failed_ssh'                => 'SSH failed',
 		'failed_ncm'                => 'ncm failed',
+		'alerts'                    => 'Alerts',
 		'success'                   => 'Success'
 	]);
 	
@@ -426,7 +427,7 @@
 	{
 		echo notice['init_completed'] . PHP_EOL;
 	}
-	else
+	elseif( $command == 'sync' || $command == 'wallets' || $command == 'general' )
 	{
 		
 		$first_table_display = true;
@@ -583,10 +584,19 @@
 				else
 				{
 					
+					if( isset( $node_data['alert'] ) )
+					{
+						$alert = notice['alerts'];
+					}
+					else
+					{
+						$alert = notice['success'];
+					}
+					
 					$table_data[] =
 					[
 						'tag'                            => $tag,
-						'notice'                         => notice['success'],
+						'notice'                         => $alert,
 						'node_version'                   => $node_data['node']['version'],
 						'node_uptime'                    => custom_number( $node_data['node']['uptime']/60/60, 2) . ' h',
 						'node_blockchain'                => custom_number( $node_data['node']['blockchain']/1000000, 0) . ' MB',
@@ -687,7 +697,7 @@
 					$table->addField( '%', 'network_weight_online_percent', false );
 					
 				}
-				elseif( $command == 'general' )
+				else
 				{
 					
 					$table->addField( 'Version', 'node_version', false );
@@ -698,10 +708,6 @@
 					
 					$table->addField( 'Block', 'blocks_size_average', false );
 					
-				}
-				else
-				{
-					echo notice['unknown_command'] . PHP_EOL; break;
 				}
 				
 				// Set table data
@@ -729,7 +735,7 @@
 					
 					// Clear only last table
 					
-					echo "\033[" . strval( 5 + count( $nodes_data ) ) . "A";
+					echo "\033[" . strval( 5 + count( $table_data ) ) . "A";
 					
 				}
 				
@@ -762,6 +768,10 @@
 
 		}
 			
+	}
+	else
+	{
+		echo notice['unknown_command'] . PHP_EOL;
 	}
 
 ?>
