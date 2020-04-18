@@ -47,19 +47,6 @@
 	
 	define( 'nodes_file'            , data_dir . '/nodes.json' );
 	
-	define( 'notice'                ,
-	[
-		'init_completed'            => 'Init completed',
-		'unknown_command'           => 'Unknown command',
-		'unknown_error'             => 'Unknown error',
-		'delay'                     => 'delay',
-		'nodes'                     => 'nodes',
-		'failed_ssh'                => 'SSH failed',
-		'failed_ncm'                => 'ncm failed',
-		'alerts'                    => 'Alerts',
-		'success'                   => 'Success'
-	]);
-	
 	$C = []; // Configuration
 	
 	$C2 = []; // Secondary configuration
@@ -290,25 +277,6 @@
 	
 	
 	
-	// *** Shutdown ***
-	
-	
-	
-	function shutdown()
-	{
-		
-		// Show cursor
-		
-		// fprintf( STDOUT, "\033[?25h" );
-		
-	}
-	
-	register_shutdown_function('shutdown');
-	
-	// pcntl_signal( SIGINT, 'shutdown' );
-	
-	
-	
 	
 	
 	
@@ -385,8 +353,6 @@
 		
 	}
 	
-	// if( $flags['json_out'] ) $flags['no_refresh'] = true;
-	
 
 
 	// *** Arguments ***
@@ -425,9 +391,9 @@
 	
 	if( $command == 'init' )
 	{
-		echo notice['init_completed'] . PHP_EOL;
+		echo 'Init completed' . PHP_EOL;
 	}
-	elseif( $command == 'sync' || $command == 'wallets' || $command == 'general' )
+	elseif( in_array( $command, ['sync','wallets','general'] ) )
 	{
 		
 		$first_table_display = true;
@@ -468,7 +434,7 @@
 				if( @!$ssh->login( $node_data['username'], $key ) )
 				{
 					
-					$nodes_data[$tag]['error'] = notice['failed_ssh'];
+					$nodes_data[$tag]['error'] = 'SSH failed';
 					
 					$ssh->disconnect();
 					
@@ -548,11 +514,11 @@
 					}
 					elseif( !isset( $node_data['node']['version'] ) )
 					{
-						$error = notice['failed_ncm'];
+						$error = 'ncm failed';
 					}
 					else
 					{
-						$error = notice['unknown_error'];
+						$error = 'Unknown error';
 					}
 					
 					$table_data[] =
@@ -586,17 +552,17 @@
 					
 					if( isset( $node_data['alert'] ) )
 					{
-						$alert = notice['alerts'];
+						$notice = 'Alerts';
 					}
 					else
 					{
-						$alert = notice['success'];
+						$notice = 'Success';
 					}
 					
 					$table_data[] =
 					[
 						'tag'                            => $tag,
-						'notice'                         => $alert,
+						'notice'                         => $notice,
 						'node_version'                   => $node_data['node']['version'],
 						'node_uptime'                    => custom_number( $node_data['node']['uptime']/60/60, 2) . ' h',
 						'node_blockchain'                => custom_number( $node_data['node']['blockchain']/1000000, 0) . ' MB',
@@ -655,11 +621,11 @@
 					'middle'       => ' ',
 				]);
 			
-				//$table->setTableColor('blue');
+				// $table->setTableColor('blue');
 			
 				$table->setHeaderColor('cyan');
 				
-				// Set headers
+				// Set table fields
 				
 				$table->addField( 'Tag', 'tag', false );
 				
@@ -745,9 +711,9 @@
 				
 				// Print other info
 			
-				echo ' '. notice['delay'] . ': ' . ( time() - $last_update );
+				echo ' delay: ' . ( time() - $last_update );
 				
-				echo ' | ' . notice['nodes'] . ': ' . count( $table_data );
+				echo ' | nodes: ' . count( $table_data );
 				
 				echo PHP_EOL;
 				
@@ -762,16 +728,16 @@
 				break;
 			}
 			
-			sleep( $C['delay'] );
-			
 			$last_update = time();
-
+			
+			sleep( (int) $C['delay'] );
+			
 		}
 			
 	}
 	else
 	{
-		echo notice['unknown_command'] . PHP_EOL;
+		echo 'Unknown command' . PHP_EOL;
 	}
 
 ?>
