@@ -641,8 +641,6 @@
 				
 				$table->addField( 'Tag', 'tag', false );
 				
-				$table->addField( 'Notice', 'notice', false );
-				
 				if( $command == 'wallets' )
 				{
 					
@@ -687,6 +685,8 @@
 					$table->addField( 'Block', 'blocks_size_average', false );
 					
 				}
+				
+				$table->addField( 'Notice', 'notice', false );
 				
 				// Set table data
 				
