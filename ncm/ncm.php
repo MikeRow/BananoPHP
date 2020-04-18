@@ -837,7 +837,7 @@
 				
 				$check_words = 
 				[
-					'size_average'
+					'block_average'
 				];
 			
 				if( in_array( $key, $check_words ) && is_numeric( $value ) )
@@ -1479,13 +1479,13 @@
 				
 				$block_count = $nanocall->block_count();
 				
-				$call_return['blocks']['count'] = $block_count['count'];
+				$call_return['block']['count'] = $block_count['count'];
 				
-				$call_return['blocks']['unchecked'] = $block_count['unchecked'];
+				$call_return['block']['unchecked'] = $block_count['unchecked'];
 				
-				$call_return['blocks']['cemented'] = $block_count['cemented'];
+				$call_return['block']['cemented'] = $block_count['cemented'];
 				
-				$call_return['blocks']['size_average'] = round( filesize( $C['nano']['data_dir'] . '/data.ldb' ) / $block_count["count"] );
+				$call_return['node']['block_average'] = round( filesize( $C['nano']['data_dir'] . '/data.ldb' ) / $block_count["count"] );
 				
 				// Summary wallets info
 				
@@ -2137,6 +2137,25 @@
 			
 			
 			
+			// *** Print blockchain info ***
+			
+			
+			
+			case 'blockchain':
+			{
+				
+				$call_return['blockchain'] = filesize( $C['nano']['data_dir'] . '/data.ldb' );
+				
+				$block_count = $nanocall->block_count();
+				
+				$call_return['block_average'] = round( $call_return['blockchain'] / $block_count["count"] );
+				
+				break;
+				
+			}
+			
+			
+			
 			// *** Print block count ***
 			
 			
@@ -2144,9 +2163,9 @@
 			case 'block_count':
 			{
 			
-				// Any sync?
+				// Any block3?
 					
-				$sync = isset( $arguments['sync'] ) ? (bool) $arguments['sync'] : false;
+				$block3 = isset( $arguments['block3'] ) ? (bool) $arguments['block3'] : false;
 			
 				//
 				
@@ -2156,7 +2175,7 @@
 			
 				// Blocks sync info
 			
-				if( $sync )
+				if( $block3 )
 				{
 				
 					$sync_blocks_json = file_get_contents( 'https://mynano.ninja/api/blockcount' );
@@ -2165,14 +2184,14 @@
 					
 					if( !$sync_blocks_json || !is_array( $sync_blocks_array ) || !isset( $sync_blocks_array['count'] ) )
 					{
-						$call_return['sync']['error'] = 'Failed API #1'; break;
+						$call_return['block3']['error'] = 'Failed API #1'; break;
 					}
 						
-					$call_return['sync']['reference'] = $sync_blocks_array['count'];
+					$call_return['block3']['reference'] = $sync_blocks_array['count'];
 					
-					$call_return['sync']['difference'] = gmp_strval( gmp_sub( $sync_blocks_array['count'], $block_count['count'] ) );
+					$call_return['block3']['difference'] = gmp_strval( gmp_sub( $sync_blocks_array['count'], $block_count['count'] ) );
 
-					$call_return['sync']['percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $block_count['count'], '10000' ), $sync_blocks_array['count'] ) ) / 100 );
+					$call_return['block3']['percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $block_count['count'], '10000' ), $sync_blocks_array['count'] ) ) / 100 );
 					
 				}
 				

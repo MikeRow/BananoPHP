@@ -75,7 +75,7 @@
 			'denomination' => 'NANO',
 			'decimals'     => 3
 		],
-		'delay' => 1,
+		'delay' => 100,
 		'timezone' => 'UTC',
 		'format' =>
 		[
@@ -393,30 +393,85 @@
 	{
 		echo 'Init completed' . PHP_EOL;
 	}
-	elseif( in_array( $command, ['sync','wallets','general'] ) )
+	elseif( in_array( $command, ['sync','wallets','node'] ) )
 	{
 		
 		$first_table_display = true;
 		
-		$last_update = time();
+		$last_update = microtime( true );
 		
 		//
 		
 		while( true )
 		{
-			
+		
+		
+		
+			// *** Create table ***
+		
+
+		
 			$table_data = [];
+				
+			$table = new CliTable;
+		
+			$table->setChars(
+			[
+				'top'          => ' ',
+				'top-mid'      => ' ',
+				'top-left'     => ' ',
+				'top-right'    => ' ',
+				'bottom'       => ' ',
+				'bottom-mid'   => ' ',
+				'bottom-left'  => ' ',
+				'bottom-right' => ' ',
+				'left'         => ' ',
+				'left-mid'     => ' ',
+				'mid'          => ' ',
+				'mid-mid'      => ' ',
+				'right'        => ' ',
+				'right-mid'    => ' ',
+				'middle'       => ' ',
+			]);
+		
+			$table->setHeaderColor('cyan');
 			
-			$nodes_data = [];
+				
 		
-		
-		
-			// *** Get nodes info ***
+			// *** Get info from nodes ***
 		
 		
 		
 			foreach( $C2['nodes'] as $tag => $node_data )
 			{
+				
+				$table_data[$tag] =
+				[
+					'tag'                            => $tag,
+					'notice'                         => null,
+					'node_version'                   => null,
+					'node_uptime'                    => null,
+					'node_blockchain'                => null,
+					'node_block_average'             => null,
+					'block_count'                    => null,
+					'block_unchecked'                => null,
+					'block_cemented'                 => null,
+					'network_peers'                  => null,
+					'network_representatives_online' => null,
+					'network_weight_online'          => null,
+					'network_weight_online_percent'  => null,
+					'wallets_balance'                => null,
+					'wallets_pending'                => null,
+					'wallets_weight'                 => null,
+					'wallets_count'                  => null,
+					'wallets_accounts_count'         => null
+				];
+				
+				
+				
+				// *** SSH connection ***
+				
+				
 				
 				$ssh = new SSH2( $node_data['hostname'] );
 				
@@ -446,7 +501,7 @@
 				if( @!$ssh->login( $node_data['username'], $key ) )
 				{
 					
-					$nodes_data[$tag]['error'] = 'SSH failed';
+					$table_data[$tag]['notice'] = 'SSH failed';
 					
 					$ssh->disconnect();
 					
@@ -454,147 +509,139 @@
 					
 				}
 				
-				$nodes_data[$tag] = json_decode( $ssh->exec( "php " . $node_data['ncm_path'] . " status flags=raw_in,json_in,raw_out,json_out callerID=nco" . PHP_EOL ), true );
-			
-				$ssh->disconnect();
-			
-			}
-			
-			
-			
-			// *** Set comparison variables ***
-			
-			/*
-			
-			$average_blocks_count = 0;
-			
-			$average_peers = 0;
-			
-			$average_representatives_online = 0;
-			
-			$average_weight_online = '0';
-			
-			$nodes = 0;
-			
-			
-			foreach( $nodes_data as $tag => $node_data )
-			{
 				
-				if( isset( $node_data['error'] ) ) continue;
 				
-				if( !isset( $node_data['node']['version'] ) ) continue;
+				// *** Call configuration ***
 				
-				$average_blocks_count += $node_data['blocks']['count'];
 				
-				$average_peers = $node_data['network']['peers'];
 				
-				$average_representatives_online = $node_data['network']['representatives_online'];
+				$ncm_flags = 'raw_in,json_in,raw_out,json_out';
 				
-				$average_weight_online = gmp_add( $average_weight_online, $node_data['network']['weight_online'] );
+				$ncm_callerID = 'nco';
 				
-				$nodes++;
-				
-			}
-			
-			if( $nodes == 0 ) $nodes = 1;
-			
-			$average_blocks_count /= $nodes;
-			
-			$average_peers /= $nodes;
-			
-			$average_representatives_online /= $nodes;
-			
-			$average_weight_online = gmp_strval( gmp_div_q( $average_weight_online, strval( $nodes ) ) );
-			
-			*/
-			
-			// *** Build table data ***
-			
-			
-			
-			foreach( $nodes_data as $tag => $node_data )
-			{
-				
-				// any error?
-				
-				if( isset( $node_data['error'] ) || !isset( $node_data['node']['version'] ) )
+				$ncmCall = json_decode( $ssh->exec( "php " . $node_data['ncm_path'] . " version flags=$ncm_flags callerID=$ncm_callerID" . PHP_EOL ), true );
+	
+				// Check for errors
+	
+				if( isset( $ncmCall['error'] ) )
 				{
-					
-					if( isset( $node_data['error'] ) )
-					{
-						$error = $node_data['error'];
-					}
-					elseif( !isset( $node_data['node']['version'] ) )
-					{
-						$error = 'ncm failed';
-					}
-					else
-					{
-						$error = 'Unknown error';
-					}
-					
-					$table_data[] =
-					[
-						'tag'                            => $tag,
-						'notice'        		         => $error,
-						'node_version'                   => null,
-						'node_uptime'                    => null,
-						'node_blockchain'                => null,
-						'blocks_count'                   => null,
-						'blocks_unchecked'               => null,
-						'blocks_cemented'                => null,
-						'blocks_size_average'            => null,
-						'network_peers'                  => null,
-						'network_representatives_online' => null,
-						'network_weight_online'          => null,
-						'network_weight_online_percent'  => null,
-						'wallets_balance'                => null,
-						'wallets_pending'                => null,
-						'wallets_weight'                 => null,
-						'wallets_count'                  => null,
-						'wallets_accounts_count'         => null
-					];
-					
+					$table_data[$tag]['notice'] = $ncmCall['error']; continue;
 				}
 				
-				// all ok
+				if( !isset( $ncmCall['node_vendor'] ) )
+				{
+					$table_data[$tag]['notice'] = 'Failed ncm'; continue;
+				}
 				
+				// Check for alerts
+				
+				if( isset( $ncmCall['alert'] ) )
+				{
+					$table_data[$tag]['notice'] = 'Alerts';
+				}
+				else
+				{
+					$table_data[$tag]['notice'] = 'OK';
+				}	
+					
+				
+				
+				// *** Call to node ***
+				
+				
+				
+				if( $command == 'sync' )
+				{
+					
+					$ncmCall = json_decode( $ssh->exec( "php " . $node_data['ncm_path'] . " block_count flags=$ncm_flags callerID=$ncm_callerID" . PHP_EOL ), true );
+					
+					$table_data[$tag]['block_count'] = custom_number( $ncmCall['count'] );
+					
+					$table_data[$tag]['block_unchecked'] = custom_number( $ncmCall['unchecked'] );
+					
+					$table_data[$tag]['block_cemented'] = custom_number( $ncmCall['cemented'] );
+					
+					$ncmCall = json_decode( $ssh->exec( "php " . $node_data['ncm_path'] . " peers flags=$ncm_flags callerID=$ncm_callerID" . PHP_EOL ), true );
+					
+					$table_data[$tag]['network_peers'] = custom_number( count( $ncmCall['peers'] ) );
+					
+					$ncmCall = json_decode( $ssh->exec( "php " . $node_data['ncm_path'] . " representatives_online flags=$ncm_flags callerID=$ncm_callerID" . PHP_EOL ), true );
+					
+					$table_data[$tag]['network_representatives_online'] = custom_number( $ncmCall['count'] );
+					
+					$table_data[$tag]['network_weight_online'] = custom_number( NanoTools::raw2den( $ncmCall['weight'], $C['nano']['denomination'] ), $C['nano']['decimals'] );
+					
+					$table_data[$tag]['network_weight_online_percent'] = custom_number( $ncmCall['weight_percent'], 2 );
+					
+				}
+				elseif( $command == 'wallets' )
+				{
+					
+					$ncmCall = json_decode( $ssh->exec( "php " . $node_data['ncm_path'] . " wallet_list flags=$ncm_flags callerID=$ncm_callerID" . PHP_EOL ), true );
+					
+					$wallets_balance = '0';
+					
+					$wallets_pending = '0';
+					
+					$wallets_weight = '0';
+					
+					$wallets_count = 0;
+					
+					$wallets_accounts_count = 0;
+			
+					foreach( $ncmCall as $wallet_id => $wallet_info )
+					{
+						
+						$wallets_count++;
+						
+						$wallets_balance = gmp_add( $wallets_balance, $wallet_info['balance'] );
+						
+						$wallets_pending = gmp_add( $wallets_pending, $wallet_info['pending'] );
+					
+						$wallets_weight = gmp_add( $wallets_weight, $wallet_info['weight'] );
+						
+						$wallets_accounts_count += $wallet_info['accounts_count'];
+					
+					}
+					
+					$table_data[$tag]['wallets_balance'] = custom_number( NanoTools::raw2den( gmp_strval( $wallets_balance ), $C['nano']['denomination'] ), $C['nano']['decimals'] );
+					
+					$table_data[$tag]['wallets_pending'] = custom_number( NanoTools::raw2den( gmp_strval( $wallets_pending ), $C['nano']['denomination'] ), $C['nano']['decimals'] );
+					
+					$table_data[$tag]['wallets_weight'] = custom_number( NanoTools::raw2den( gmp_strval( $wallets_weight ), $C['nano']['denomination'] ), $C['nano']['decimals'] );
+					
+					$table_data[$tag]['wallets_count'] = custom_number( $wallets_count );
+					
+					$table_data[$tag]['wallets_accounts_count'] = custom_number( $wallets_accounts_count );
+					
+				}
 				else
 				{
 					
-					if( isset( $node_data['alert'] ) )
-					{
-						$notice = 'Alerts';
-					}
-					else
-					{
-						$notice = 'OK';
-					}
+					$ncmCall = json_decode( $ssh->exec( "php " . $node_data['ncm_path'] . " version flags=$ncm_flags callerID=$ncm_callerID" . PHP_EOL ), true );
 					
-					$table_data[] =
-					[
-						'tag'                            => $tag,
-						'notice'                         => $notice,
-						'node_version'                   => $node_data['node']['version'],
-						'node_uptime'                    => custom_number( $node_data['node']['uptime']/60/60, 2) . ' h',
-						'node_blockchain'                => custom_number( $node_data['node']['blockchain']/1000000, 0) . ' MB',
-						'blocks_count'                   => custom_number( $node_data['blocks']['count'] ),
-						'blocks_unchecked'               => custom_number( $node_data['blocks']['unchecked'] ),
-						'blocks_cemented'                => custom_number( $node_data['blocks']['cemented'] ),
-						'blocks_size_average'            => custom_number( $node_data['blocks']['size_average'] ) . ' B',
-						'network_peers'                  => custom_number( $node_data['network']['peers'] ),
-						'network_representatives_online' => custom_number( $node_data['network']['representatives_online'] ),
-						'network_weight_online'          => custom_number( NanoTools::raw2den( $node_data['network']['weight_online'], $C['nano']['denomination'] ), $C['nano']['decimals'] ), 
-						'network_weight_online_percent'  => custom_number( $node_data['network']['weight_online_percent'], 2 ),
-						'wallets_balance'                => custom_number( NanoTools::raw2den( $node_data['wallets']['balance'], $C['nano']['denomination'] ), $C['nano']['decimals'] ),
-						'wallets_pending'                => custom_number( NanoTools::raw2den( $node_data['wallets']['pending'], $C['nano']['denomination'] ), $C['nano']['decimals'] ),
-						'wallets_weight'                 => custom_number( NanoTools::raw2den( $node_data['wallets']['weight'], $C['nano']['denomination'] ), $C['nano']['decimals'] ),
-						'wallets_count'                  => custom_number( $node_data['wallets']['count'] ),
-						'wallets_accounts_count'         => custom_number( $node_data['wallets']['accounts_count'] )
-					];
-				
+					$table_data[$tag]['node_version'] = $ncmCall['node_vendor'];
+					
+					$ncmCall = json_decode( $ssh->exec( "php " . $node_data['ncm_path'] . " uptime flags=$ncm_flags callerID=$ncm_callerID" . PHP_EOL ), true );
+					
+					$table_data[$tag]['node_uptime'] = custom_number( $ncmCall['seconds']/60/60, 3 ) . ' h';
+					
+					$ncmCall = json_decode( $ssh->exec( "php " . $node_data['ncm_path'] . " blockchain flags=$ncm_flags callerID=$ncm_callerID" . PHP_EOL ), true );
+					
+					$table_data[$tag]['node_blockchain'] = custom_number( $ncmCall['blockchain']/1000000, 0 ) . ' MB';
+					
+					$table_data[$tag]['node_block_average'] = custom_number( $ncmCall['block_average'], 0 ) . ' B';
+					
 				}
-				
+			
+			
+			
+				// *** SSH disconnection ***
+			
+			
+			
+				$ssh->disconnect();
+			
 			}
 			
 			
@@ -610,59 +657,18 @@
 			else
 			{
 				
-				// Create table
-				
-				$table = new CliTable;
-			
-				$table->setChars(
-				[
-					'top'          => ' ',
-					'top-mid'      => ' ',
-					'top-left'     => ' ',
-					'top-right'    => ' ',
-					'bottom'       => ' ',
-					'bottom-mid'   => ' ',
-					'bottom-left'  => ' ',
-					'bottom-right' => ' ',
-					'left'         => ' ',
-					'left-mid'     => ' ',
-					'mid'          => ' ',
-					'mid-mid'      => ' ',
-					'right'        => ' ',
-					'right-mid'    => ' ',
-					'middle'       => ' ',
-				]);
-			
-				// $table->setTableColor('blue');
-			
-				$table->setHeaderColor('cyan');
-				
 				// Set table fields
 				
 				$table->addField( 'Tag', 'tag', false );
 				
-				if( $command == 'wallets' )
+				if( $command == 'sync' )
 				{
 					
-					$table->addField( 'Balance', 'wallets_balance', false );
+					$table->addField( 'Blocks', 'block_count', false );
 					
-					$table->addField( 'Pending', 'wallets_pending', false );
+					$table->addField( 'Unchecked', 'block_unchecked', false );
 					
-					$table->addField( 'Weight', 'wallets_weight', false );
-					
-					$table->addField( 'Count', 'wallets_count', false );
-					
-					$table->addField( 'Accounts', 'wallets_accounts_count', false );
-					
-				}
-				elseif( $command == 'sync' )
-				{
-					
-					$table->addField( 'Blocks', 'blocks_count', false );
-					
-					$table->addField( 'Unchecked', 'blocks_unchecked', false );
-					
-					$table->addField( 'Cemented', 'blocks_cemented', false );
+					$table->addField( 'Cemented', 'block_cemented', false );
 					
 					$table->addField( 'Peers', 'network_peers', false );
 					
@@ -673,6 +679,20 @@
 					$table->addField( '%', 'network_weight_online_percent', false );
 					
 				}
+				elseif( $command == 'wallets' )
+				{
+				
+					$table->addField( 'Balance', 'wallets_balance', false );
+					
+					$table->addField( 'Pending', 'wallets_pending', false );
+					
+					$table->addField( 'Weight', 'wallets_weight', false );
+					
+					$table->addField( 'Count', 'wallets_count', false );
+					
+					$table->addField( 'Accounts', 'wallets_accounts_count', false );
+				
+				}
 				else
 				{
 					
@@ -682,7 +702,7 @@
 					
 					$table->addField( 'Blockchain', 'node_blockchain', false );
 					
-					$table->addField( 'Block', 'blocks_size_average', false );
+					$table->addField( 'Block', 'node_block_average', false );
 					
 				}
 				
@@ -723,7 +743,7 @@
 				
 				// Print other info
 			
-				echo ' delay: ' . ( time() - $last_update );
+				echo ' delay: ' . custom_number( microtime( true ) - $last_update, 3 );
 				
 				echo ' | nodes: ' . count( $table_data );
 				
@@ -740,9 +760,9 @@
 				break;
 			}
 			
-			$last_update = time();
+			$last_update = microtime( true );
 			
-			sleep( (int) $C['delay'] );
+			usleep( (int) $C['delay'] * 1000 );
 			
 		}
 			
