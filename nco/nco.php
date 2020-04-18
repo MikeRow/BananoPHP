@@ -97,7 +97,7 @@
 		'username'  => 'SSH username',
 		'password'  => 'SSH password',
 		'key_path'  => 'SSH private key path',
-		'auth_type' => 'password or key',
+		'auth_type' => 'password,key,protected-key',
 		'ncm_path'  => '/home/nano/php4nano/ncm/ncm.php'
 	];
 	
@@ -426,6 +426,14 @@
 					$key = new RSA();
 					
 					$key->loadKey( file_get_contents( $node_data['key_path'] ) );
+					
+				}
+				elseif( $node_data['auth_type'] == 'protected-key' )
+				{
+					
+					$key = new Crypt_RSA();
+					
+					$key->setPassword( $node_data['password'] );
 					
 				}
 				else
