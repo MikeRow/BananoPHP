@@ -30,8 +30,8 @@ Read install and usage documentation in the [Wiki](https://github.com/mikerow/ph
 	
 [lib3]                         third-party libraries
 --------------------------------------------------------------------------------------------
-    clitable-1.2               CLI Table Output for PHP
-    phpseclib-2.0.27           PHP Secure Communications Library
+    [clitable-1.2]             CLI Table Output for PHP
+    [phpseclib-2.0.27]         PHP Secure Communications Library
     clitable_loader.php        clitable loader
     phpseclib_loader.php       phpseclib loader
 	
