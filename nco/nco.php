@@ -501,7 +501,7 @@
 				if( @!$ssh->login( $node_data['username'], $key ) )
 				{
 					
-					$table_data[$tag]['notice'] = 'SSH failed';
+					$table_data[$tag]['notice'] = 'Failed SSH connection';
 					
 					$ssh->disconnect();
 					
