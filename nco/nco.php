@@ -93,12 +93,12 @@
 	
 	$node_model =
 	[
-		'hostname'  => 'SSH hostname',
-		'username'  => 'SSH username',
-		'password'  => 'SSH password',
-		'key_path'  => 'SSH private key path',
-		'auth_type' => 'password,key,protected-key',
-		'ncm_path'  => '/home/nano/php4nano/ncm/ncm.php'
+		'hostname'  => '',
+		'username'  => '',
+		'password'  => '',
+		'key_path'  => '',
+		'auth_type' => '',
+		'ncm_path'  => ''
 	];
 	
 	
@@ -434,6 +434,8 @@
 					$key = new Crypt_RSA();
 					
 					$key->setPassword( $node_data['password'] );
+					
+					$key->loadKey( file_get_contents( $node_data['key_path'] ) );
 					
 				}
 				else
