@@ -1355,7 +1355,7 @@
 	
 	elseif( !is_array( $check_node_connection ) || !isset( $check_node_connection['rpc_version'] ) )
 	{
-		$call_return['error'] = 'Failed node connection';
+		$call_return['error'] = 'Failed node call';
 	}
 	
 	

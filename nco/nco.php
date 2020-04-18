@@ -530,7 +530,7 @@
 				
 				if( !isset( $ncmCall['node_vendor'] ) )
 				{
-					$table_data[$tag]['notice'] = 'Failed ncm'; continue;
+					$table_data[$tag]['notice'] = 'Failed ncm call'; continue;
 				}
 				
 				// Check for alerts
