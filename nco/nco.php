@@ -400,6 +400,8 @@
 		
 		$last_update = time();
 		
+		//
+		
 		while( true )
 		{
 			
@@ -556,7 +558,7 @@
 					}
 					else
 					{
-						$notice = 'Success';
+						$notice = 'OK';
 					}
 					
 					$table_data[] =

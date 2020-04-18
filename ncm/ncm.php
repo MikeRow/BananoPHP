@@ -1355,7 +1355,7 @@
 	
 	elseif( !is_array( $check_node_connection ) || !isset( $check_node_connection['rpc_version'] ) )
 	{
-		$call_return['error'] = 'Connection to node failed';
+		$call_return['error'] = 'Failed node connection';
 	}
 	
 	
@@ -1390,7 +1390,7 @@
 		
 		$call_return = $nanocli->{ $command }( $arguments );
 		
-		if( $call_return == null ) $call_return = ['error'=>'Bad call'];
+		if( $call_return == null ) $call_return['error'] = 'Bad call';
 		
 	}
 	
