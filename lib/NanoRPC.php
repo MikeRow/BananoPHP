@@ -23,8 +23,6 @@
 		
 		public $status;
 		
-		public $node_error;
-		
 		public $error;
 		
 		public $response_raw;
@@ -159,7 +157,7 @@
 			
 			if( isset( $this->response['error'] ) )
 			{
-				$this->node_error = $this->response['error'];
+				$this->error = $this->response['error'];
 			}
 
 			if( !empty( $curl_error ) )

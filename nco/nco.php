@@ -224,7 +224,7 @@
 	
 	
 	
-	function custom_number( string $number, int $decimals = -1 )
+	function custom_number( $number,$decimals = -1 )
 	{
 		
 		global $C;
@@ -273,6 +273,23 @@
 			return number_format( $number, $decimals, $C['format']['decimal'], $C['format']['thousand'] );
 		}
 	
+	}
+	
+	
+	
+	// *** ncmCall ***
+	
+	
+	
+	function ncmCall( &$ssh, string $ncm_path, string $command, array $arguments, string $flags, string $callerID = 'remote-script' )
+	{
+		
+		$flags .= ',json_in,json_out,no_confirm';
+		
+		$return = $ssh->exec( "php $ncm_path $command '" . json_encode( $arguments ) . "' flags=$flags callerID=$callerID" . PHP_EOL );
+		
+		return json_decode( $return, true );
+		
 	}
 	
 	
@@ -393,48 +410,23 @@
 	{
 		echo 'Init completed' . PHP_EOL;
 	}
-	elseif( in_array( $command, ['sync','wallets','node'] ) )
+	else
 	{
 		
 		$first_table_display = true;
 		
 		$last_update = microtime( true );
 		
+		$ncm_flags = 'raw_in,raw_out'; // ncmCall default flags
+	
+		$ncm_callerID = 'nco'; // ncmCall default callerID
+		
 		//
 		
 		while( true )
 		{
 		
-		
-		
-			// *** Create table ***
-		
-
-		
 			$table_data = [];
-				
-			$table = new CliTable;
-		
-			$table->setChars(
-			[
-				'top'          => ' ',
-				'top-mid'      => ' ',
-				'top-left'     => ' ',
-				'top-right'    => ' ',
-				'bottom'       => ' ',
-				'bottom-mid'   => ' ',
-				'bottom-left'  => ' ',
-				'bottom-right' => ' ',
-				'left'         => ' ',
-				'left-mid'     => ' ',
-				'mid'          => ' ',
-				'mid-mid'      => ' ',
-				'right'        => ' ',
-				'right-mid'    => ' ',
-				'middle'       => ' ',
-			]);
-		
-			$table->setHeaderColor('cyan');
 			
 				
 		
@@ -515,11 +507,7 @@
 				
 				
 				
-				$ncm_flags = 'raw_in,json_in,raw_out,json_out';
-				
-				$ncm_callerID = 'nco';
-				
-				$ncmCall = json_decode( $ssh->exec( "php " . $node_data['ncm_path'] . " version flags=$ncm_flags callerID=$ncm_callerID" . PHP_EOL ), true );
+				$ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'version', [], $ncm_flags, $ncm_callerID );
 	
 				// Check for errors
 	
@@ -553,19 +541,21 @@
 				if( $command == 'sync' )
 				{
 					
-					$ncmCall = json_decode( $ssh->exec( "php " . $node_data['ncm_path'] . " block_count flags=$ncm_flags callerID=$ncm_callerID" . PHP_EOL ), true );
+					$ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'block_count', [], $ncm_flags, $ncm_callerID );
 					
 					$table_data[$tag]['block_count'] = custom_number( $ncmCall['count'] );
 					
 					$table_data[$tag]['block_unchecked'] = custom_number( $ncmCall['unchecked'] );
 					
 					$table_data[$tag]['block_cemented'] = custom_number( $ncmCall['cemented'] );
-					
-					$ncmCall = json_decode( $ssh->exec( "php " . $node_data['ncm_path'] . " peers flags=$ncm_flags callerID=$ncm_callerID" . PHP_EOL ), true );
+						
+						
+					$ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'peers', [], $ncm_flags, $ncm_callerID );
 					
 					$table_data[$tag]['network_peers'] = custom_number( count( $ncmCall['peers'] ) );
-					
-					$ncmCall = json_decode( $ssh->exec( "php " . $node_data['ncm_path'] . " representatives_online flags=$ncm_flags callerID=$ncm_callerID" . PHP_EOL ), true );
+						
+						
+					$ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'representatives_online', [], $ncm_flags, $ncm_callerID );
 					
 					$table_data[$tag]['network_representatives_online'] = custom_number( $ncmCall['count'] );
 					
@@ -577,7 +567,7 @@
 				elseif( $command == 'wallets' )
 				{
 					
-					$ncmCall = json_decode( $ssh->exec( "php " . $node_data['ncm_path'] . " wallet_list flags=$ncm_flags callerID=$ncm_callerID" . PHP_EOL ), true );
+					$ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'wallet_list', [], $ncm_flags, $ncm_callerID );
 					
 					$wallets_balance = '0';
 					
@@ -615,22 +605,34 @@
 					$table_data[$tag]['wallets_accounts_count'] = custom_number( $wallets_accounts_count );
 					
 				}
-				else
+				elseif( $command == 'node' )
 				{
 					
-					$ncmCall = json_decode( $ssh->exec( "php " . $node_data['ncm_path'] . " version flags=$ncm_flags callerID=$ncm_callerID" . PHP_EOL ), true );
+					$ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'version', [], $ncm_flags, $ncm_callerID );
 					
 					$table_data[$tag]['node_version'] = $ncmCall['node_vendor'];
 					
-					$ncmCall = json_decode( $ssh->exec( "php " . $node_data['ncm_path'] . " uptime flags=$ncm_flags callerID=$ncm_callerID" . PHP_EOL ), true );
 					
+					$ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'uptime', [], $ncm_flags, $ncm_callerID );
+										
 					$table_data[$tag]['node_uptime'] = custom_number( $ncmCall['seconds']/60/60, 3 ) . ' h';
 					
-					$ncmCall = json_decode( $ssh->exec( "php " . $node_data['ncm_path'] . " blockchain flags=$ncm_flags callerID=$ncm_callerID" . PHP_EOL ), true );
 					
+					$ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'blockchain', [], $ncm_flags, $ncm_callerID );
+										
 					$table_data[$tag]['node_blockchain'] = custom_number( $ncmCall['blockchain']/1000000, 0 ) . ' MB';
 					
 					$table_data[$tag]['node_block_average'] = custom_number( $ncmCall['block_average'], 0 ) . ' B';
+					
+				}
+				else
+				{
+					
+					echo 'Unknown command' . PHP_EOL; 
+					
+					$ssh->disconnect();
+					
+					exit;
 					
 				}
 			
@@ -657,7 +659,38 @@
 			else
 			{
 				
-				// Set table fields
+				// *** Create table ***
+				
+				
+				
+				$table = new CliTable;
+			
+				$table->setChars(
+				[
+					'top'          => ' ',
+					'top-mid'      => ' ',
+					'top-left'     => ' ',
+					'top-right'    => ' ',
+					'bottom'       => ' ',
+					'bottom-mid'   => ' ',
+					'bottom-left'  => ' ',
+					'bottom-right' => ' ',
+					'left'         => ' ',
+					'left-mid'     => ' ',
+					'mid'          => ' ',
+					'mid-mid'      => ' ',
+					'right'        => ' ',
+					'right-mid'    => ' ',
+					'middle'       => ' ',
+				]);
+			
+				$table->setHeaderColor('cyan');
+				
+				
+				
+				// *** Set table fields ***
+				
+				
 				
 				$table->addField( 'Tag', 'tag', false );
 				
@@ -693,7 +726,7 @@
 					$table->addField( 'Accounts', 'wallets_accounts_count', false );
 				
 				}
-				else
+				elseif( $command == 'node' )
 				{
 					
 					$table->addField( 'Version', 'node_version', false );
@@ -705,12 +738,25 @@
 					$table->addField( 'Block', 'node_block_average', false );
 					
 				}
+				else
+				{
+					//
+				}
 				
 				$table->addField( 'Notice', 'notice', false );
 				
-				// Set table data
+				
+				
+				// *** Set table data ***
+				
+				
 				
 				$table->injectData( $table_data );
+				
+				
+				
+				// *** Output adjustments ***
+				
 				
 				// Hide cursor
 				
@@ -766,10 +812,6 @@
 			
 		}
 			
-	}
-	else
-	{
-		echo 'Unknown command' . PHP_EOL;
 	}
 
 ?>

@@ -3,8 +3,13 @@
 	/*
 	
 		Manage a node via SSH using a script and ncm
+		
+		This script use a custom function "ncmCall" to simplify ncm call procedure
+		Some flags like json_in,json_out,no_confirm are set as default due to the nature of the custom function
 
 	*/
+
+
 
 	// *** Includes ***
 
@@ -28,14 +33,18 @@
 	
 	$privkeyfile_path = 'path/to/private/key/file';
 	
-	function ncmCall( $command, $arguments, $flags, $callerID )
+	$ncm_path = '/home/nano/php4nano/ncm/ncm.php';
+	
+	$flags = 'raw_in,raw_out';
+	
+	function ncmCall( &$ssh, string $ncm_path, string $command, array $arguments, string $flags, string $callerID = 'remote-script' )
 	{
 		
-		global $ssh;
-	
-		$output = $ssh->exec( "php /home/nano/php4nano/ncm/ncm.php " . $command . " '" . json_encode( $arguments ) . "' flags=" . $flags . " callerID=" . $callerID . PHP_EOL );
+		$flags .= ',json_in,json_out,no_confirm';
 		
-		return json_decode( $output, true );
+		$return = $ssh->exec( "php $ncm_path $command '" . json_encode( $arguments ) . "' flags=$flags callerID=$callerID" . PHP_EOL );
+		
+		return json_decode( $return, true );
 		
 	}
 	
@@ -62,22 +71,22 @@
 	
 	
 	
-	$flags = 'raw_in,raw_out,json_in,json_out,no_confirm';
-	
-	$callerID = 'remote-script';
+	// Call 1
 	
 	$arguments =
 	[
 		'account' => 'nano_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3'
 	];
 	
-	$return = ncmCall( 'account_info', $arguments, $flags, $callerID );
+	$ncmCall = ncmCall( $ssh, $ncm_path, 'account_info', $arguments, $flags, $callerID );
 	
-	print_r( $return );
+	print_r( $ncmCall );
 	
-	$return = ncmCall( 'status', [], $flags, $callerID );
+	// Call 2
 	
-	print_r( $return );
+	$ncmCall = ncmCall( $ssh, $ncm_path, 'status', [], $flags, $callerID );
+	
+	print_r( $ncmCall );
 
 
 

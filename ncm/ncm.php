@@ -313,7 +313,7 @@
 	
 	
 	
-	function custom_number( string $number, int $decimals = -1 )
+	function custom_number( $number, $decimals = -1 )
 	{
 		
 		global $C;
