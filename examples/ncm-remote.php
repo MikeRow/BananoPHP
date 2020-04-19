@@ -23,7 +23,7 @@
 	
 	
 	
-	// *** ncmCall ***
+	// *** ncm call ***
 	
 	
 	
@@ -44,7 +44,7 @@
 	
 	
 	
-	// *** Connection ***
+	// *** SSH connection ***
 
 
 
