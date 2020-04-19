@@ -797,9 +797,11 @@
 				
 				// Print other info
 			
-				echo ' delay: ' . custom_number( microtime( true ) - $last_update, 3 );
-				
+				echo ' ' . $command;
+			
 				echo ' | nodes: ' . count( $table_data );
+			
+				echo ' | delay: ' . custom_number( microtime( true ) - $last_update, 3 );
 				
 				echo PHP_EOL;
 				
