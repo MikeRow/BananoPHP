@@ -23,24 +23,18 @@
 	
 	
 	
-	// *** Configuration ***
+	// *** ncmCall ***
 	
 	
-	
-	$target = 'target_host';
-	
-	$username = 'nano';
-	
-	$privkeyfile_path = 'path/to/private/key/file';
 	
 	$ncm_path = '/home/nano/php4nano/ncm/ncm.php';
 	
-	$flags = 'raw_in,raw_out';
-	
-	function ncmCall( &$ssh, string $ncm_path, string $command, array $arguments, string $flags, string $callerID = 'remote-script' )
+	function ncmCall( &$ssh, string $ncm_path, string $command, array $arguments, string $flags = '', string $callerID = 'remote-script' )
 	{
 		
-		$flags .= ',json_in,json_out,no_confirm';
+		if( $flags != '' ) $flags .= ',';
+		
+		$flags .= 'json_in,json_out,no_confirm';
 		
 		$return = $ssh->exec( "php $ncm_path $command '" . json_encode( $arguments ) . "' flags=$flags callerID=$callerID" . PHP_EOL );
 		
@@ -54,7 +48,15 @@
 
 
 
-	$ssh = new SSH2( $target );
+	$hostname = 'localhost';
+	
+	$username = 'nano';
+	
+	$privkeyfile_path = 'path/to/private/key/file';
+
+	//
+
+	$ssh = new SSH2( $hostname );
 	
 	$key = new RSA();
 	
@@ -78,13 +80,13 @@
 		'account' => 'nano_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3'
 	];
 	
-	$ncmCall = ncmCall( $ssh, $ncm_path, 'account_info', $arguments, $flags, $callerID );
+	$ncmCall = ncmCall( $ssh, $ncm_path, 'account_info', $arguments, 'raw_in,raw_out', 'remote-script' );
 	
 	print_r( $ncmCall );
 	
 	// Call 2
 	
-	$ncmCall = ncmCall( $ssh, $ncm_path, 'status', [], $flags, $callerID );
+	$ncmCall = ncmCall( $ssh, $ncm_path, 'status', [], 'raw_in,raw_out', 'remote-script' );
 	
 	print_r( $ncmCall );
 

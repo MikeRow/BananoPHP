@@ -224,7 +224,7 @@
 	
 	
 	
-	function custom_number( $number,$decimals = -1 )
+	function custom_number( $number, $decimals = -1 )
 	{
 		
 		global $C;
@@ -281,10 +281,12 @@
 	
 	
 	
-	function ncmCall( &$ssh, string $ncm_path, string $command, array $arguments, string $flags, string $callerID = 'remote-script' )
+	function ncmCall( &$ssh, string $ncm_path, string $command, array $arguments, string $flags = '', string $callerID = 'remote-script' )
 	{
 		
-		$flags .= ',json_in,json_out,no_confirm';
+		if( $flags != '' ) $flags .= ',';
+		
+		$flags .= 'json_in,json_out,no_confirm';
 		
 		$return = $ssh->exec( "php $ncm_path $command '" . json_encode( $arguments ) . "' flags=$flags callerID=$callerID" . PHP_EOL );
 		
