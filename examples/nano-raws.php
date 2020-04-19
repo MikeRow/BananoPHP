@@ -22,26 +22,26 @@
 	
 	// Sum of raws
 	
-	echo gmp_strval( gmp_add( $raw1, $raw2 ) ); // Prints '3000000000000000000000000000000000000' (3 NANO)
+	echo gmp_strval( gmp_add( $raw1, $raw2 ) ) . PHP_EOL; // Prints '3000000000000000000000000000000000000' (3 NANO)
 	
 	// Subtraction of raws
 	
-	echo gmp_strval( gmp_sub( $raw1, $raw2 ) ); // Prints '1000000000000000000000000000000000000' (1 NANO)
+	echo gmp_strval( gmp_sub( $raw1, $raw2 ) ) . PHP_EOL; // Prints '1000000000000000000000000000000000000' (1 NANO)
 	
 	// Multiplication of raws
 	
-	echo gmp_strval( gmp_sub( $raw1, '5' ) ); // Prints '10000000000000000000000000000000000000' (10 NANO)
+	echo gmp_strval( gmp_sub( $raw1, '5' ) ) . PHP_EOL; // Prints '10000000000000000000000000000000000000' (10 NANO)
 	
 	// Division of raws
 	
-	echo gmp_strval( gmp_sub( $raw1, '2' ) ); // Prints '1000000000000000000000000000000000000' (1 NANO)
+	echo gmp_strval( gmp_sub( $raw1, '2' ) ) . PHP_EOL; // Prints '1000000000000000000000000000000000000' (1 NANO)
 	
 	// Comparison of raws
 	
-	echo gmp_cmp( $raw1, $raw2 ); // Prints 1
+	echo gmp_cmp( $raw1, $raw2 ) . PHP_EOL; // Prints 1
 	
-	echo gmp_cmp( $raw2, $raw1 ); // Prints -1
+	echo gmp_cmp( $raw2, $raw1 ) . PHP_EOL; // Prints -1
 	
-	echo gmp_cmp( $raw1, $raw3 ); // Prints 0
+	echo gmp_cmp( $raw1, $raw3 ) . PHP_EOL; // Prints 0
 
 ?>
