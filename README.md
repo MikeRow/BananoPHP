@@ -21,7 +21,7 @@ Installation, usage, FAQ and more informations in the [Wiki](https://github.com/
 
     NanoCli.php................interface for nano_node CLI
     NanoRPC.php................interface for nano_node RPC
-    NanoRPCExtension.php.......extension commands for NanoRPC.php
+    NanoRPCExtension.php.......extension commands for nano_node RPC
     NanoTools.php..............usefull node-independent tools
 	
 [lib3].........................third-party libraries
