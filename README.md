@@ -7,33 +7,9 @@ PHP libraries and tools for the Nano currency
 
 <br/>
 
-## Repository contents
+## Wiki
 
-<pre>
-[lib]               library for Nano
-[lib3]              third-party libraries
-[media]             media folder
-[ncm]               node CLI manager
-[nco]               nodes CLI observer
-[scripts]           useful scripts
-updates.php         check for repository updates
-</pre>
-
-## To do
-
-- RPC 2.0 support (lib,ncm)
-- IPC support (lib,ncm)
-
-## Discarded
-
-- HTTP Callback
-
-WebSocket is a better solution
-
-- WebSocket
-
-Since usage is pretty custom in each situation, I've decided to don't develop any class or ncm implementation<br/>
-If you are looking for an easy way to implement a WebSocket client for PHP I suggest [Textalk/websocket-php](https://github.com/Textalk/websocket-php) repository
+<br/>
 
 ## Credits
 
@@ -45,6 +21,8 @@ If you are looking for an easy way to implement a WebSocket client for PHP I sug
 - [mynano.ninja/API](https://mynano.ninja/api)
 
 Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the prompt support given to me over the months
+
+<br/>
 
 ## Support
 
