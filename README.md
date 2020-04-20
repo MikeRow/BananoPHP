@@ -9,7 +9,7 @@ PHP libraries and tools for the Nano currency
 
 ## Documentation
 
-Read repository documentation in the [Wiki](https://github.com/mikerow/php4nano/wiki)
+Read installation and usage informations in the [Wiki](https://github.com/mikerow/php4nano/wiki)
 
 <br/>
 
