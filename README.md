@@ -9,7 +9,7 @@ PHP libraries and tools for the Nano currency
 
 ## Documentation
 
-Read install and usage documentation in the [Wiki](https://github.com/mikerow/php4nano/wiki)
+Read repository documentation in the [Wiki](https://github.com/mikerow/php4nano/wiki)
 
 <br/>
 
@@ -18,13 +18,13 @@ Read install and usage documentation in the [Wiki](https://github.com/mikerow/ph
 <pre>
 [examples]                     useful example scripts
 --------------------------------------------------------------------------------------------
-    nano-raws.php              example of mathematical operations with raw amounts
-    ncm-remote.php             example of managing a node via SSH using a script and ncm
+    nano-raws.php              operations with raw amounts
+    ncm-remote.php             managing a node via SSH
 
 [lib]                          library for Nano
 --------------------------------------------------------------------------------------------
-    NanoCli.php                interface for nano_node CLI commands
-    NanoRPC.php                interface for RPC commands
+    NanoCli.php                interface for nano_node CLI
+    NanoRPC.php                interface for nano_node RPC
     NanoRPCExtension.php       extension commands for NanoRPC.php
     NanoTools.php              usefull node-independent tools for Nano
 	
