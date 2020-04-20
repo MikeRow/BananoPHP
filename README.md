@@ -10,12 +10,13 @@ PHP libraries and tools for the Nano currency
 ## Repository contents
 
 <pre>
-[lib]                          library for Nano
-[lib3]                         third-party libraries
-[media]                        media folder
-[ncm]                          node CLI manager
-[nco]                          nodes CLI observer
-[scripts]                      useful scripts
+[lib]               library for Nano
+[lib3]              third-party libraries
+[media]             media folder
+[ncm]               node CLI manager
+[nco]               nodes CLI observer
+[scripts]           useful scripts
+updates.php         check for repository updates
 </pre>
 
 <br/>
