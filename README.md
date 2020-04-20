@@ -40,11 +40,11 @@ Read install and usage documentation in the [Wiki](https://github.com/mikerow/ph
     logo.png                   png repository logo format
     logo.svg                   svg repository logo format
 
-[ncm]                          node CLI manager - fully manage a node via CLI
+[ncm]                          node CLI manager
 --------------------------------------------------------------------------------------------
     ncm.php                    ncm script
 
-[nco]                          nodes CLI observer - monitor multiple nodes via CLI
+[nco]                          nodes CLI observer
 --------------------------------------------------------------------------------------------
     nco.php                    nco script
 
@@ -81,6 +81,7 @@ If you are looking for an easy way to implement a WebSocket client for PHP I sug
 - [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP) <br/>
 - [jc21/clitable](https://github.com/jc21/clitable) <br/>
 - [phpseclib/phpseclib](https://github.com/phpseclib/phpseclib) <br/>
+- [strawbrary/php-blake2](https://github.com/strawbrary/php-blake2) <br/>
 - [coingecko.com/API](https://www.coingecko.com/en/api) <br/>
 - [mynano.ninja/API](https://mynano.ninja/api)
 
