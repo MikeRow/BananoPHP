@@ -16,11 +16,6 @@ Read installation and usage informations in the [Wiki](https://github.com/mikero
 ## Repository contents
 
 <pre>
-[examples]                     useful example scripts
---------------------------------------------------------------------------------------------
-    nano-raws.php              operations with raw amounts
-    ncm-remote.php             managing a node via SSH
-
 [lib]                          library for Nano
 --------------------------------------------------------------------------------------------
     NanoCli.php                interface for nano_node CLI
@@ -47,6 +42,11 @@ Read installation and usage informations in the [Wiki](https://github.com/mikero
 [nco]                          nodes CLI observer
 --------------------------------------------------------------------------------------------
     nco.php                    nco script
+	
+[scripts]                      useful scripts
+--------------------------------------------------------------------------------------------
+    nano-raws.php              operations with raw amounts
+    ncm-remote.php             managing a node via SSH
 
 LICENSE.md                     repository license
 README.md                      (this file)
