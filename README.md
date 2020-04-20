@@ -11,34 +11,34 @@ PHP libraries and tools for the Nano currency
 
 <pre>
 [lib]                          library for Nano
-------------------------------------------------------------------
+
     NanoCli.php                interface for nano_node CLI
     NanoRPC.php                interface for nano_node RPC
     NanoRPCExtension.php       extension commands for NanoRPC.php
     NanoTools.php              usefull node-independent tools
 	
 [lib3]                         third-party libraries
-------------------------------------------------------------------
+
     [clitable-1.2]             CLI Table Output for PHP
     [phpseclib-2.0.27]         PHP Secure Communications Library
     clitable_loader.php        clitable loader
     phpseclib_loader.php       phpseclib loader
 	
 [media]                        media folder
-------------------------------------------------------------------
+
     logo.png                   png repository logo format
     logo.svg                   svg repository logo format
 
 [ncm]                          node CLI manager
-------------------------------------------------------------------
+
     ncm.php                    ncm script
 
 [nco]                          nodes CLI observer
-------------------------------------------------------------------
+
     nco.php                    nco script
 	
 [scripts]                      useful scripts
-------------------------------------------------------------------
+
     nano-raws.php              operations with raw amounts
     ncm-remote.php             managing a node via SSH and ncm
 
