@@ -412,7 +412,7 @@
 	{
 		echo 'Init completed' . PHP_EOL;
 	}
-	else
+	elseif( in_array( $command, ['sync','wallets','node'] ) )
 	{
 		
 		$first_table_display = true;
@@ -572,7 +572,8 @@
 					$table_data[$tag]['network_weight_online_percent'] = custom_number( $ncmCall['weight_percent'], 2 );
 					
 				}
-				elseif( $command == 'wallets' )
+				
+				if( $command == 'wallets' )
 				{
 					
 					$ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'wallet_list', [], $ncm_flags, $ncm_callerID );
@@ -613,7 +614,8 @@
 					$table_data[$tag]['wallets_accounts_count'] = custom_number( $wallets_accounts_count );
 					
 				}
-				elseif( $command == 'node' )
+				
+				if( $command == 'node' )
 				{
 					
 					$ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'version', [], $ncm_flags, $ncm_callerID );
@@ -631,16 +633,6 @@
 					$table_data[$tag]['node_blockchain'] = custom_number( $ncmCall['blockchain']/1000000, 0 ) . ' MB';
 					
 					$table_data[$tag]['node_block_average'] = custom_number( $ncmCall['block_average'], 0 ) . ' B';
-					
-				}
-				else
-				{
-					
-					echo 'Unknown command' . PHP_EOL; 
-					
-					$ssh->disconnect();
-					
-					exit;
 					
 				}
 			
@@ -720,7 +712,8 @@
 					$table->addField( '%', 'network_weight_online_percent', false );
 					
 				}
-				elseif( $command == 'wallets' )
+				
+				if( $command == 'wallets' )
 				{
 				
 					$table->addField( 'Balance', 'wallets_balance', false );
@@ -734,7 +727,8 @@
 					$table->addField( 'Accounts', 'wallets_accounts_count', false );
 				
 				}
-				elseif( $command == 'node' )
+				
+				if( $command == 'node' )
 				{
 					
 					$table->addField( 'Version', 'node_version', false );
@@ -745,10 +739,6 @@
 					
 					$table->addField( 'Block', 'node_block_average', false );
 					
-				}
-				else
-				{
-					//
 				}
 				
 				$table->addField( 'Notice', 'notice', false );
@@ -822,6 +812,10 @@
 			
 		}
 			
+	}
+	else
+	{
+		echo 'Unknown command' . PHP_EOL;  exit;
 	}
 
 ?>
