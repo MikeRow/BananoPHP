@@ -5,8 +5,6 @@
 # php4nano
 PHP libraries and tools for the Nano currency
 
-<br/>
-
 ## Repository contents
 
 <pre>
@@ -19,14 +17,10 @@ PHP libraries and tools for the Nano currency
 updates.php         check for repository updates
 </pre>
 
-<br/>
-
 ## To do
 
 - RPC 2.0 support (lib,ncm)
 - IPC support (lib,ncm)
-
-<br/>
 
 ## Discarded
 
@@ -39,8 +33,6 @@ WebSocket is a better solution
 Since usage is pretty custom in each situation, I've decided to don't develop any class or ncm implementation<br/>
 If you are looking for an easy way to implement a WebSocket client for PHP I suggest [Textalk/websocket-php](https://github.com/Textalk/websocket-php) repository
 
-<br/>
-
 ## Credits
 
 - [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP) <br/>
@@ -51,8 +43,6 @@ If you are looking for an easy way to implement a WebSocket client for PHP I sug
 - [mynano.ninja/API](https://mynano.ninja/api)
 
 Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the prompt support given to me over the months
-
-<br/>
 
 ## Support
 
