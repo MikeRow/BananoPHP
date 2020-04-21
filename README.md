@@ -17,6 +17,7 @@ Installation, usage, FAQ and more informations can be found in the [Wiki](https:
 ## Repository contents
 
 <pre>
+
 [lib]...............................library for Nano
 
     NanoCli.php.....................interface for nano_node CLI
@@ -53,6 +54,7 @@ LICENSE.md..........................repository license
 README.md...........................(this file)
 VERSION.txt.........................current repository version
 updates.php.........................check for repository updates
+
 </pre>
 
 <br/>
