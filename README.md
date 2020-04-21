@@ -75,4 +75,4 @@ Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the support gi
 ## Support
 
 Sends funds or delegate your weight to my representative:<br/>
-`[nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m](https://mynano.ninja/account/mikerow)`
+[nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m](https://mynano.ninja/account/mikerow)
