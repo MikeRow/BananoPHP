@@ -31,4 +31,6 @@ Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the support gi
 
 Support Nano decentralization! If you wish to delegate me your weight, here is my representative:
 
-> nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m
+<pre>
+nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m
+</pre>
