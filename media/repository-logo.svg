@@ -9,13 +9,13 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="1280"
-   height="400"
-   viewBox="0 0 960.00002 300.00002"
+   height="640"
+   viewBox="0 0 960.00002 480.00002"
    version="1.1"
    id="svg219"
-   sodipodi:docname="logo.svg"
+   sodipodi:docname="repository-logo.svg"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
-   inkscape:export-filename="logo.png"
+   inkscape:export-filename="repository-logo.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96">
   <metadata
@@ -26,7 +26,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -131,10 +131,10 @@
      inkscape:snap-smooth-nodes="true" />
   <g
      id="#000101ff"
-     transform="translate(0,-508.99995)" />
+     transform="translate(0,-328.99995)" />
   <g
      id="#ffffffff"
-     transform="translate(0,-508.99995)" />
+     transform="translate(0,-328.99995)" />
   <style
      id="style3930"
      type="text/css">
@@ -151,7 +151,7 @@
 </style>
   <g
      style="fill:#ffffff;fill-opacity:1"
-     transform="matrix(0.59836881,0,0,0.59836881,-490.70408,-394.3391)"
+     transform="matrix(0.59836881,0,0,0.59836881,-490.70408,-214.3391)"
      id="g971">
     <g
        style="fill:#ffffff;fill-opacity:1"
@@ -162,12 +162,12 @@
   </g>
   <path
      style="opacity:0.5;fill:none;stroke:#ffffff;stroke-width:22.5;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-     d="m 984.17915,-552.07449 -33.93513,247.30195 67.87028,-14.60391 -33.93515,247.301954"
+     d="m 984.17915,-372.07449 -33.93513,247.30195 67.87028,-14.60391 -33.93515,247.30196"
      id="path1680"
      inkscape:connector-curvature="0" />
   <g
      id="g845"
-     transform="matrix(0.63443756,0,0,0.63443756,-103.19911,-103.1507)"
+     transform="matrix(0.63443756,0,0,0.63443756,-103.19911,76.849302)"
      style="fill:url(#linearGradient921);fill-opacity:1">
     <g
        id="#8993beff"
@@ -179,7 +179,7 @@
   </g>
   <g
      id="g838"
-     transform="matrix(0.20934762,0,0,0.20934762,563.09593,264.35329)"
+     transform="matrix(0.20934762,0,0,0.20934762,563.09594,354.35329)"
      style="fill:url(#linearGradient911);fill-opacity:1;stroke:none;stroke-width:72.04040527;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill">
     <path
        style="fill:url(#linearGradient845);fill-opacity:1;stroke:none;stroke-width:20.1086483;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
@@ -190,6 +190,6 @@
   </g>
   <g
      style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:72.04040527;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
-     transform="matrix(0.20934762,0,0,0.20934762,562.95979,-21.645566)"
+     transform="matrix(0.20934762,0,0,0.20934762,562.95979,158.35444)"
      id="g860" />
 </svg>
