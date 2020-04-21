@@ -23,7 +23,7 @@ Installation, usage, FAQ and more informations can be found in the [Wiki](https:
 - [coingecko.com/API](https://www.coingecko.com/en/api) <br/>
 - [mynano.ninja/API](https://mynano.ninja/api)
 
-Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the prompt support given to me over the months
+Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the support given
 
 <br/>
 
