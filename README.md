@@ -5,11 +5,13 @@
 # php4nano
 
 PHP libraries and tools for the Nano currency
+
 <br/>
 
 ## Documentation
 
 Full documentation is located in the [Wiki](https://github.com/mikerow/php4nano/wiki)
+
 <br/>
 
 ## Repository contents
@@ -52,6 +54,7 @@ README.md...........................(this file)
 VERSION.txt.........................current repository version
 updates.php.........................check for repository updates
 </pre>
+
 <br/>
 
 ## Credits
@@ -64,6 +67,7 @@ updates.php.........................check for repository updates
 - [mynano.ninja/API](https://mynano.ninja/api)
 
 Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the support given
+
 <br/>
 
 ## Support
