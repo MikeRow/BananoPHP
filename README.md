@@ -72,8 +72,6 @@ Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the support gi
 
 <br/>
 
-## Support
-
-Support Nano decentralization!
+## Support decentralization
 
 If you wish to delegate me your weight, here is my [representative](https://mynano.ninja/account/mikerow)
