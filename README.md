@@ -6,9 +6,13 @@
 
 PHP libraries and tools for the Nano currency
 
+***
+
 ## Documentation
 
 Full documentation is located in the [Wiki](https://github.com/mikerow/php4nano/wiki)
+
+***
 
 ## Repository contents
 
@@ -51,6 +55,8 @@ VERSION.txt.........................current repository version
 updates.php.........................check for repository updates
 </pre>
 
+***
+
 ## Credits
 
 - [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP) <br/>
@@ -61,6 +67,8 @@ updates.php.........................check for repository updates
 - [mynano.ninja/API](https://mynano.ninja/api)
 
 Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the support given
+
+***
 
 ## Support
 
