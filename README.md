@@ -33,8 +33,10 @@ Full documentation is located in the [Wiki](https://github.com/mikerow/php4nano/
 	
 [media].............................media folder
 
-    logo.png........................png repository logo format
-    logo.svg........................svg repository logo format
+    logo.png........................png logo format
+    logo.svg........................svg logo format
+    repository-logo.png.............png repository logo format
+    repository-logo.svg.............svg repository logo format
 
 [ncm]...............................node CLI manager
 
