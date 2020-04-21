@@ -14,7 +14,7 @@ Installation, usage, FAQ and more informations can be found in the [Wiki](https:
 
 <br/>
 
-## Contents
+## Repository contents
 
 <pre>
 <br/>
