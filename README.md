@@ -74,6 +74,4 @@ Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the support gi
 
 ## Support
 
-One of the best way to support php4nano development is... the one of support Nano decentralization!
-
-If you wish to delegate me your weight, here is my [representative](https://mynano.ninja/account/mikerow)
+Sends funds or delegate your weight to my [representative](https://mynano.ninja/account/mikerow)
