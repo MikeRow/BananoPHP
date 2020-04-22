@@ -2093,7 +2093,7 @@
 					
 					$i++;
 					
-					$weight_cumulative = gmp_strval( gmp_add( $weight_cumulative, $data['weight'] ) );
+					$weight_cumulative = gmp_add( $weight_cumulative, $data['weight'] );
 					
 					$representatives_array[$representative]['index'] = $i;
 					
@@ -2123,7 +2123,7 @@
 				
 				// $call_return['count'] = count( $representatives_online['representatives'] );
 				
-				$call_return['weight'] = $weight_cumulative;
+				$call_return['weight'] = gmp_strval( $weight_cumulative );
 				
 				$call_return['weight_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
 				
