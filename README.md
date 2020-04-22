@@ -57,11 +57,11 @@ updates.php.........................check for repository updates
 
 ## Credits
 
-- [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP) <br/>
-- [jc21/clitable](https://github.com/jc21/clitable) <br/>
-- [phpseclib/phpseclib](https://github.com/phpseclib/phpseclib) <br/>
-- [strawbrary/php-blake2](https://github.com/strawbrary/php-blake2) <br/>
-- [coingecko.com/API](https://www.coingecko.com/en/api) <br/>
+- [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
+- [jc21/clitable](https://github.com/jc21/clitable)
+- [phpseclib/phpseclib](https://github.com/phpseclib/phpseclib)
+- [strawbrary/php-blake2](https://github.com/strawbrary/php-blake2)
+- [coingecko.com/API](https://www.coingecko.com/en/api)
 - [mynano.ninja/API](https://mynano.ninja/api)
 
 Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the support given
