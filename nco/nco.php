@@ -559,11 +559,11 @@
 						
 					$ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'representatives_online', [], $ncm_flags, $ncm_callerID );
 					
-					if( $ncmCall['count'] == null ) $ncmCall['count'] = 0;
+					if( !isset( $ncmCall['count'] ) || $ncmCall['count'] == null ) $ncmCall['count'] = 0;
 					
-					if( $ncmCall['weight'] == null ) $ncmCall['weight'] = 0;
+					if( !isset( $ncmCall['weight'] ) || $ncmCall['weight'] == null ) $ncmCall['weight'] = 0;
 					
-					if( $ncmCall['weight_percent'] == null ) $ncmCall['weight_percent'] = 0;
+					if( !isset( $ncmCall['weight_percent'] ) || $ncmCall['weight_percent'] == null ) $ncmCall['weight_percent'] = 0;
 					
 					$table_data[$tag]['network_representatives_online'] = custom_number( $ncmCall['count'] );
 					
