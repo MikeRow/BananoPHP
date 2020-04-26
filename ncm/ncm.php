@@ -2386,5 +2386,5 @@
 			file_put_contents( $log_file, $newline . date( 'm/d/Y H:i:s', time() ) . ' ' . $callerID . ' ' . $command . ' ' . json_encode( $arguments ) . ' ' . $log_flags . ' ' . json_encode( $call_return ), FILE_APPEND );
 		}
 	}
-		
+	
 ?>
