@@ -6,23 +6,12 @@
 	
 	
 	
-	
-	
-	
 	require_once __DIR__ . '/../lib/NanoTools.php';
-	
 	require_once __DIR__ . '/../lib/NanoCLI.php';
-	
 	require_once __DIR__ . '/../lib/NanoRPC.php';
-	
 	require_once __DIR__ . '/../lib/NanoRPCExtension.php';
 	
-	
-	
 	use php4nano\lib\NanoTools\NanoTools as NanoTools;
-	
-	
-	
 	
 	
 	
@@ -32,35 +21,21 @@
 	
 	
 	
-	
-	
-	
 	define( 'data_dir'              , __DIR__ . '/data' );
-	
 	define( 'log_dir'               , __DIR__ . '/log' );
-	
 	define( 'config_file'           , data_dir . '/config.json' );
-	 
 	define(	'ticker_file'           , data_dir . '/ticker.json' );
-	
 	define( 'tags_file'             , data_dir . '/tags.json' );    
-	
 	define( 'tags3_file'            , data_dir . '/tags3.json' );
-	
 	define( 'tabulation'            , '    ' );
-	
 	define( 'available_supply'      , '133248061996216572282917317807824970865' );
 	
 	$C = []; // Primary configuration
-	
 	$C2 = []; // Secondary configuration
-	
 	$call_return = []; // Output
-
 	
 	
 	// *** Create data folder if not exsist ***
-	
 	
 	
 	if( !is_dir( data_dir ) )
@@ -69,20 +44,16 @@
 	}
 	
 	
-	
 	// *** Create log folder if not exsist ***
-	
 	
 	
 	if( !is_dir( log_dir ) )
 	{
 		mkdir( log_dir );
 	}
-
 	
 	
 	// *** config.json model ***
-	
 	
 	
 	$C_model =
@@ -129,9 +100,7 @@
 	];
 	
 	
-	
 	// *** tags.json model ***
-	
 	
 	
 	$tags_model =
@@ -149,9 +118,7 @@
 	];
 	
 	
-	
 	// *** Load config.json ***
-	
 	
 	
 	if( !file_exists( config_file ) )
@@ -160,19 +127,12 @@
 	}
 	else
 	{
-		
 		$C = json_decode( file_get_contents( config_file ), true );
-	
-		// Check
-		
 		$C = array_merge_new_recursive( $C, $C_model );
-		
 	}
 	
 	
-	
 	// *** Load tags.json ***
-	
 	
 	
 	if( !file_exists( tags_file ) )
@@ -181,10 +141,7 @@
 	}
 	else
 	{
-		
 		$C2['tags'] = json_decode( file_get_contents( tags_file ), true );
-		
-		// Check
 		
 		foreach( $tags_model as $section => $data )
 		{
@@ -192,40 +149,29 @@
 			{
 				$C2['tags'][$section] = [];
 			}
-			
 		}
-	
 	}
-	
 	
 	
 	// *** Set timezone ***
 	
 	
-	
 	date_default_timezone_set( $C['timezone'] );
-	
 	
 	
 	// *** Get ticker ***
 	
 	
-	
 	if( $C['ticker']['enable'] )
 	{
-		
 		$ticker_array = json_decode( file_get_contents( ticker_file ), true );
 		
 		$C2['vs_currencies'] = $ticker_array['nano'];
-		
 		$C2['ticker_last'] = $ticker_array['last_updated_at'];
-		
 	}
 	
 	
-	
 	// *** Get tags3 ***
-	
 	
 	
 	if( $C['tags3']['enable'] )
@@ -234,102 +180,73 @@
 	}
 	
 	
-	
 	// *** Save config.json, tags.json ***
 	
 	
-	
 	file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
-	
 	file_put_contents( tags_file, json_encode( $C2['tags'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
-	
-	
-	
 	
 
 
 	// *****************
 	// *** Functions ***
 	// *****************
-	
-	
-	
-	
+
 	
 	
 	// *** Merge array2 to array1, only missing elements ***
 	
 	
-	
 	function array_merge_new_recursive( array $array1, array $array2 )
 	{
-		
 		foreach( $array2 as $key => $value )
 		{
-			
 			if( is_array( $value ) && isset( $array1[$key] ) && is_array( $array1[$key] ) )
 			{
 				$array1[$key] = array_merge_new_recursive( $array1[$key], $value );
 			}
 			else
 			{
-				
 				if( !isset( $array1[$key] ) )
 				{
 					$array1[$key] = $value;
 				}
-				
 			}
-			
 		}
 		
 		return $array1;
-		
 	}
-	
 	
 	
 	// *** Sort array by key recursively ***
 	
 	
-	
 	function ksort_recursive( array &$array )
 	{
-		
 		if( is_array( $array ) )
 		{
-			
 			ksort( $array );
-			
 			array_walk( $array, 'ksort_recursive' );
-			
 		}
-		
 	}
-	
 	
 	
 	// *** Custom number format ***
 	
 	
-	
 	function custom_number( $number, $decimals = -1 )
 	{
-		
 		global $C;
-		
 		global $C2;
 		
 		// $number = sprintf( "%s", $number );
 		
 		if( $decimals < 0 )
 		{
-		
 			$amount_array = explode( '.', $number );
 			
 			if( isset( $amount_array[1] ) )
 			{
-		
 				// Remove useless decimals
 			
 				while( substr( $amount_array[1], -1 ) == '0' )
@@ -345,13 +262,11 @@
 				{
 					return number_format( $amount_array[0], 0, '', $C['format']['thousand'] ) . '.' . $amount_array[1];
 				}
-			
 			}
 			else
 			{
 				return number_format( floor( $number ), 0, '', $C['format']['thousand'] );
 			}
-			
 		}
 		elseif( $decimals == 0 )
 		{
@@ -361,23 +276,18 @@
 		{
 			return number_format( $number, $decimals, $C['format']['decimal'], $C['format']['thousand'] );
 		}
-	
 	}
-	
 	
 	
 	// *** Pretty print_r ***
 	
 	
-	
 	function pretty_print_r( array $array, int $level = 1 )
 	{
-		
 		$output = '';
 		
 		foreach( $array as $key => $value )
 		{
-			
 			if( !is_array( $key ) )
 			{
 				$key = sprintf( "%s", $key );
@@ -390,19 +300,14 @@
 			
 			if( is_array( $value ) )
 			{
-				
 				// It is an array
 				
 				$output .= str_repeat( tabulation, $level );
-				
 				$output .= '['.$key.'] =>' . PHP_EOL;
-				
 				$output .= pretty_print_r( $value, $level + 1 );
-				
 			}
 			else
 			{
-				
 				// It is not an array
 				
 				$output .= str_repeat( tabulation, $level );
@@ -417,47 +322,33 @@
 				}
 				
 				$output .= PHP_EOL;
-				
 			}
-			
 		}
 		
 		return $output;
-		
 	}
-	
 	
 	
 	// *** Tag filter ***
 	
 	
-	
 	function tag_filter( string $value )
 	{
-		
 		$value = preg_replace( '/[^a-z0-9_. ]+/i', '', $value );
-	
 		$value = str_replace( ' ', '-', $value );
-		
 		$value = str_replace( '_', '-', $value );
-		
 		$value = strtolower( $value );
 		
 		return $value;
-		
 	}
-	
 	
 	
 	// *** Tag to value ***
 	
 	
-	
 	function tag2value( string $key, string $value )
 	{
-	
 		global $C;
-		
 		global $C2;
 	
 		// Check if a wallet tag is available
@@ -466,12 +357,10 @@
 		
 		if( in_array( $key, $check_words ) )
 		{
-			
 			if( array_key_exists( $value, $C2['tags']['wallet'] ) )
 			{
 				return $C2['tags']['wallet'][$value];
 			}
-			
 		}
 		
 		// Check if an account tag is available
@@ -486,7 +375,6 @@
 		
 		if( in_array( $key, $check_words ) )
 		{
-			
 			if( array_key_exists( $value, $C2['tags']['account'] ) )
 			{
 				return $C2['tags']['account'][$value];
@@ -497,7 +385,6 @@
 			}
 			else
 			{}
-			
 		}
 		
 		// Check if an block tag is available
@@ -506,33 +393,25 @@
 		
 		if( in_array( $key, $check_words ) )
 		{
-			
 			if( array_key_exists( $value, $C2['tags']['block'] ) )
 			{
 				return $C2['tags']['block'][$value];
 			}
-			
 		}
 		
 		return $value;
-		
 	}
-	
 	
 	
 	// *** Value to tag ***
 	
 	
-	
 	function value2tag( $value )
 	{
-		
 		global $C;
-		
 		global $C2;
 		
 		if( !$C['tags']['view'] ) return $value;
-		
 		if( is_array( $value ) ) return $value;
 		
 		$key_check = explode( '_', $value );
@@ -543,7 +422,6 @@
 		}
 		elseif( isset( $key_check[1] ) && ( $key_check[0] == 'xrb' || $key_check[0] == 'nano' ) ) // Find an account tag
 		{
-
 			if( array_search( 'xrb_' . $key_check[1], $C2['tags']['account'] ) )
 			{
 				return array_search( 'xrb_' . $key_check[1], $C2['tags']['account'] ) . $C['tags']['separator'] . $value;
@@ -564,7 +442,6 @@
 			{
 				return $value;
 			}
-		
 		}
 		elseif( array_search( $value, $C2['tags']['block'] ) ) // Find a block tag
 		{
@@ -574,27 +451,20 @@
 		{
 			return $value;
 		}
-		
 	}
-	
 	
 	
 	// *** Elaborate output ***
 	
 	
-	
 	function eleborate_output( array $array )
 	{
-		
 		global $C;
-		
 		global $C2;
-		
 		global $command;
 		
 		foreach( $array as $key => $value )
 		{	
-
 			if( !is_array( $key ) )
 			{
 				$key = sprintf( "%s", $key );
@@ -602,12 +472,10 @@
 			
 			if( !is_array( $value ) )
 			{
-			
 				// Bool format
 				
 				if( is_bool( $value ) || $key == 'locked' )
 				{
-					
 					if( $value == true )
 					{
 						$array[$key] = 'true';
@@ -617,40 +485,32 @@
 					{
 						$array[$key] = 'false';
 					}
-					
 				}
 			
 				$value = sprintf( "%s", $value );
-			
 			}
 			
 			// It is an array
 			
 			if( is_array( $value ) )
 			{
-				
 				unset( $array[$key] );
 				
 				$key = value2tag( $key );
-				
 				$array[$key] = eleborate_output( $value );
-				
 			}
 			
 			// It is not an array but it's a encoded json
 			
 			elseif( !is_array( $value ) && $key == 'contents' )
 			{
-			
 				$array[$key] = eleborate_output( json_decode( $value, true ) );
-			
 			}
 			
 			// It is not an array
 			
 			else
 			{
-				
 				// Amount format
 				
 				$check_words = 
@@ -674,32 +534,24 @@
 			
 				if( in_array( $key, $check_words ) && is_numeric( $value ) )
 				{
-				
 					$array[$key] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ) ) . ' ' . $C['nano']['denomination'];
 					
 					// If ticker is enabled shows amounts in favourite vs currencies
 					
 					if( $C['ticker']['enable'] )
 					{
-						
 						$array[$key] = [];
-						
 						$array[$key][] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ) ) . ' ' . $C['nano']['denomination'];
-					
 						$fav_vs_currencies = explode( ',', $C['ticker']['fav_vs_currencies'] );
 					
 						foreach( $fav_vs_currencies as $fav_vs_currency )
 						{
-						
 							if( isset( $C2['vs_currencies'][strtoupper( $fav_vs_currency )] ) )
 							{
 								$array[$key][] = custom_number( number_format( NanoTools::raw2den( $value, 'NANO' ) * $C2['vs_currencies'][strtoupper( $fav_vs_currency )], 8, '.', '' ) ) . ' ' . strtoupper( $fav_vs_currency );
 							}
-							
 						}
-						
 					}
-					
 				}
 				
 				// Date format
@@ -848,32 +700,22 @@
 				// Error format
 				
 				if( $key == 'error' && $value == 'Unable to parse JSON' ) $array[$key] = 'Bad call';
-				
 				if( $key == 'error' && $value == 'Unable to parse Array' ) $array[$key] = 'Bad call';
 				
 				// Tag replacement
 				
 				$array[$key] = value2tag( $array[$key] );
-				
 			}
-			
 		}
 		
 		return $array;
-		
 	}
-	
-	
-	
 	
 	
 	
 	// ************************
 	// *** Node connections ***
 	// ************************
-	
-	
-	
 	
 	
 	
@@ -886,7 +728,6 @@
 	if( $C['nano']['connection'] == 'rpc' )
 	{
 		$nanocall = new php4nano\lib\NanoRPCExtension\NanoRPCExtension( $C['nano']['rpc']['host'], $C['nano']['rpc']['port'] );
-
 	}
 	
 	// Node call check
@@ -903,16 +744,10 @@
 	}
 
 	
-	
-	
-	
 
 	// *****************
 	// *** Get input ***
 	// *****************
-	
-	
-	
 	
 	
 	
@@ -921,22 +756,15 @@
 	$command = $argv[1];
 	
 	unset( $argv[0] );
-	
 	unset( $argv[1] );
 	
 	$argv = array_values( $argv );
 	
 	
 	
-	
-	
-	
 	// *******************
 	// *** Build input ***
 	// *******************
-	
-	
-	
 	
 	
 	
@@ -955,51 +783,40 @@
 	];
 	
 	$callerID = 'default';
-	
 	$alerts = [];
-	
 	
 	
 	// *** Search for flags and callerID ***
 	
 	
-	
 	foreach( $argv as $index => $arg )
 	{
-		
 		$arguments_row = explode( '=', $arg, 2 );
 		
 		if( $arguments_row[0] == 'flags' )
 		{
-			
 			$input_flags = explode( ',', $arguments_row[1] );
 			
 			foreach( $input_flags as $input_flag )
 			{
-				
 				if( array_key_exists( $input_flag, $flags ) )
 				{
 					$flags[$input_flag] = true;
 				}
-				
 			}
 			
 			unset( $argv[$index] );
-		
 		}
 		
 		if( $arguments_row[0] == 'callerID' )
 		{
-			
 			if( strlen( $arguments_row[1] ) > 0 )
 			{
 				$callerID = $arguments_row[1];
 			}
 			
 			unset( $argv[$index] );
-		
 		}
-		
 	}
 	
 	if( $flags['call'] && $flags['cli'] )
@@ -1008,28 +825,21 @@
 	}
 	
 	
-	
 	// *** Json/Default input ***
-	
 	
 	
 	if( $flags['json_in'] )
 	{
-		
 		if( count( $argv ) > 0 )
 		{
 			$arguments = json_decode( $argv[0], true );
 		}
-	
 	}
 	else
 	{
-		
 		foreach( $argv as $arg )
 		{
-		
 			$arguments_row = [];
-			
 			$arguments_row = explode( '=', $arg, 2 );
 			
 			if( !isset( $arguments_row[1] ) )
@@ -1056,35 +866,27 @@
 			}
 			
 			$arguments[$arguments_row[0]] = $arguments_row[1];
-			
 		}
-		
 	}
-	
 	
 	
 	// *** Default/Raw input ***
 	
 	
-	
 	if( !$flags['raw_in'] )
 	{
-	
 		foreach( $arguments as $argument0 => $argument1 )
 		{
-			
 			// Check for tags in account array
 
 			$check_words = ['accounts'];
 			
 			if( in_array( $argument0, $check_words ) )
 			{
-			
 				foreach( $argument1 as $key => $value )
 				{
 					$arguments[$argument0][$key] = tag2value( 'account', $value );
 				}
-				
 			}
 			
 			// Check for tags in block array
@@ -1093,12 +895,10 @@
 			
 			if( in_array( $argument0, $check_words ) )
 			{
-			
 				foreach( $argument1 as $key => $value )
 				{
 					$arguments[$argument0][$key] = tag2value( 'block', $value );
 				}
-				
 			}
 			
 			// Convert amount to raw
@@ -1114,12 +914,9 @@
 			
 			if( in_array( $argument0, $check_words ) )
 			{
-				
 				if( !is_numeric( $argument1 ) )
 				{
-				
 					$input_currency = explode( '-', $argument1 );
-					
 					$input_currency[0] = str_replace( '-', '', $input_currency[0] );
 					
 					// raw input
@@ -1149,11 +946,9 @@
 					{
 						$arguments[$argument0] = '0';
 					}
-					
 				}
 				else
 				{
-					
 					$argument1 = str_replace( '-', '', $argument1 );
 					
 					// default denomination input
@@ -1169,9 +964,7 @@
 					{
 						$arguments[$argument0] = '0';
 					}
-					
 				}
-				
 			}
 			
 			// Check for tags
@@ -1187,13 +980,8 @@
 			{
 				$arguments[$argument0] = uniqid();
 			}
-		
 		}
-
 	}
-	
-	
-	
 	
 	
 	
@@ -1203,44 +991,32 @@
 	
 	
 	
-	
-	
-	
 	if( !$flags['no_confirm'] )
 	{
-
 		$check_words = ['send','wallet_wipe','wallet_send'];
 			
 		if( in_array( $command, $check_words ) )
 		{
-		
 			// send call
 		
 			if( $command == 'send' )
 			{
-			
 				if( isset( $arguments['wallet'] ) && isset( $arguments['source'] ) && isset( $arguments['destination'] ) && isset( $arguments['amount'] ) )
 				{
-					
 					$confirmation_amount = $arguments['amount'];
-					
 				}
 				else
 				{
 					$confirmation_amount = 0;
-					
 				}
-			
 			}
 			
 			// wallet_send call
 			
 			elseif( $command == 'wallet_send' )
 			{
-			
 				if( isset( $arguments['wallet'] ) && isset( $arguments['destination'] ) && isset( $arguments['amount'] ) )
 				{
-					
 					$wallet_info = $nanocall->wallet_info( ['wallet'=>$arguments['wallet']] );
 					
 					if( !isset( $wallet_info['error'] ) )
@@ -1251,24 +1027,19 @@
 					{
 						$confirmation_amount = 0;
 					}
-					
 				}
 				else
 				{
 					$confirmation_amount = 0;
-					
 				}
-			
 			}
 			
 			// wallet_wipe call
 			
 			elseif( $command == 'wallet_wipe' )
 			{
-			
 				if( isset( $arguments['wallet'] ) && isset( $arguments['destination'] ) )
 				{
-					
 					$wallet_info = $nanocall->wallet_info( ['wallet'=>$arguments['wallet']] );
 					
 					if( !isset( $wallet_info['error'] ) )
@@ -1279,14 +1050,11 @@
 					{
 						$confirmation_amount = 0;
 					}
-					
 				}
 				else
 				{
 					$confirmation_amount = 0;
-					
 				}
-			
 			}
 			
 			// Impossible
@@ -1300,32 +1068,22 @@
 			
 			if( $confirmation_amount != 0 )
 			{
-				
 				$confirmation_amount = custom_number( NanoTools::raw2den( $confirmation_amount, $C['nano']['denomination'] ) ) . ' ' . $C['nano']['denomination'];
 				
 				echo PHP_EOL . 'Sending ' . $confirmation_amount . PHP_EOL;
-				
 				echo 'Do you want to proceed? Type \'confirm\' to proceed: ';
 				
 				$line = stream_get_line( STDIN, 10, PHP_EOL );
 				
 				if( $line != 'confirm' )
 				{
-				
 					echo PHP_EOL;
 					
 					exit;
-				
 				}
-				
 			}
-			
 		}
-		
 	}
-	
-	
-	
 	
 	
 	
@@ -1335,11 +1093,7 @@
 	
 	
 	
-	
-	
-	
 	// *** Initialization ***
-	
 	
 	
 	if( $command == 'init' )
@@ -1348,9 +1102,7 @@
 	}
 	
 	
-	
 	// *** Check node connection ***
-	
 	
 	
 	elseif( !is_array( $check_node_connection ) || !isset( $check_node_connection['rpc_version'] ) )
@@ -1359,9 +1111,7 @@
 	}
 	
 	
-	
 	// *** Check nano_node path ***
-	
 	
 	
 	elseif( !file_exists( $C['nano']['node_file'] ) )
@@ -1370,9 +1120,7 @@
 	}
 	
 	
-	
 	// ***  Check Nano directory ***
-	
 	
 	
 	elseif( !file_exists( $C['nano']['data_dir'] ) )
@@ -1381,23 +1129,18 @@
 	}
 	
 	
-	
 	// *** CLI ***
 	
 	
 	elseif( $flags['cli'] )
 	{
-		
 		$call_return = $nanocli->{ $command }( $arguments );
 		
 		if( $call_return == null ) $call_return['error'] = 'Bad call';
-		
 	}
 	
 	
-	
 	// *** Call ***
-	
 	
 	
 	elseif( $flags['call'] )
@@ -1407,35 +1150,21 @@
 	
 	
 	
-	
-	
-	
 	// **********************
 	// *** Switch command ***
 	// **********************
 	
 	
 	
-	
-	
-	
 	else
 	{
-		
-		
-	
 		switch( $command )
 		{
-		
-			
-			
 			// *** Print node summary info ***
-			
 			
 			
 			case 'status':
 			{ 
-			
 				// Node version
 				
 				$version = $nanocall->version();
@@ -1468,7 +1197,6 @@
 				}
 				
 				$call_return['network']['weight_online'] = $weight_cumulative;
-				
 				$call_return['network']['weight_online_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
 				
 				// Blockchain file size
@@ -1480,69 +1208,48 @@
 				$block_count = $nanocall->block_count();
 				
 				$call_return['block']['count'] = $block_count['count'];
-				
 				$call_return['block']['unchecked'] = $block_count['unchecked'];
-				
 				$call_return['block']['cemented'] = $block_count['cemented'];
-				
 				$call_return['node']['block_average'] = round( filesize( $C['nano']['data_dir'] . '/data.ldb' ) / $block_count["count"] );
 				
 				// Summary wallets info
 				
 				$wallets_count = '0';
-				
 				$wallets_accounts = '0';
-				
 				$wallets_balance = '0';
-				
 				$wallets_pending = '0';
-				
 				$wallets_weight = '0';
-				
 				$wallet_list = $nanocli->wallet_list();
 				
 				$wallet_ID = [];
 				
 				if( is_array( $wallet_list ) && count( $wallet_list ) > 0 )
 				{
-					
 					foreach( $wallet_list as $row )
 					{
-
 						$columns = explode( ': ', $row );
 						
 						if( $columns[0] == 'Wallet ID' )
 						{
 							$wallet_ID[] = $columns[1];
 						}
-					
 					}
 					
 					foreach( $wallet_ID as $id )
 					{
-					
 						$wallet_info = $nanocall->wallet_info( ['wallet'=>$id] );
-						
 						$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$id] );
-						
 						$wallets_accounts += $wallet_info['accounts_count'];
-						
 						$wallets_count++;
-						
 						$wallets_balance = gmp_add( $wallets_balance, $wallet_info['balance'] );
-						
 						$wallets_pending = gmp_add( $wallets_pending, $wallet_info['pending'] );
-					
 						$wallets_weight = gmp_add( $wallets_weight, $wallet_weight['weight'] );
 					
 					}
 					
 					$wallets_balance = gmp_strval( $wallets_balance );
-					
 					$wallets_pending = gmp_strval( $wallets_pending );
-					
 					$wallets_weight = gmp_strval( $wallets_weight );
-				
 				}
 				else
 				{
@@ -1550,28 +1257,20 @@
 				}	
 				
 				$call_return['wallets']['balance'] = $wallets_balance;
-				
 				$call_return['wallets']['pending'] = $wallets_pending;
-				
 				$call_return['wallets']['weight'] = $wallets_weight;
-				
 				$call_return['wallets']['count'] = $wallets_count;
-				
 				$call_return['wallets']['accounts_count'] = $wallets_accounts;
 				
 				break;
-				
 			}
-			
 			
 			
 			// *** Print wallet list ***
 			
 			
-			
 			case 'wallet_list':
 			{ 
-					
 				$wallet_list = $nanocli->wallet_list();
 				
 				$wallet_ID = [];
@@ -1583,54 +1282,39 @@
 				
 				foreach( $wallet_list as $row )
 				{
-
 					$columns = explode( ': ', $row );
 					
 					if( $columns[0] == 'Wallet ID' )
 					{
 						$wallet_ID[] = $columns[1];
 					}
-				
 				}
 				
 				foreach( $wallet_ID as $id )
 				{
-				
 					$wallet_info = $nanocall->wallet_info( ['wallet' => $id] );
-					
 					$wallet_weight = $nanocall->wallet_weight( ['wallet' => $id] );
-					
 					$wallet_locked = $nanocall->wallet_locked( ['wallet' => $id] );
 					
 					$call_return[$id]['balance'] = $wallet_info['balance'];
-					
 					$call_return[$id]['pending'] = $wallet_info['pending'];
-					
 					$call_return[$id]['weight'] = $wallet_weight['weight'];
-					
 					$call_return[$id]['accounts_count'] = $wallet_info['accounts_count'];
-					
 					$call_return[$id]['locked'] = $wallet_locked['locked'];
 					
 					// $wallet_balances = $nanocall->wallet_balances( ['wallet'=>$id] );
-					
 					// $call_return[$id]['balances'] = $wallet_balances['balances'];
-				
 				}
 				
 				break;
-				
 			}
-			
 			
 			
 			// *** Print wallet info ***
 			
 			
-			
 			case 'wallet_info':
 			{
-				
 				if( !isset( $arguments['wallet'] ) )
 				{
 					$call_return['error'] = 'Bad wallet number'; break;
@@ -1644,44 +1328,30 @@
 				}
 
 				$wallet_locked = $nanocall->wallet_locked( ['wallet' => $arguments['wallet']] );
-				
 				$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$arguments['wallet']] );
 				
 				$call_return[$arguments['wallet']]['balance'] = $wallet_info['balance'];
-				
 				$call_return[$arguments['wallet']]['pending'] = $wallet_info['pending'];
-				
 				$call_return[$arguments['wallet']]['weight'] = $wallet_weight['weight'];
-				
 				// $call_return[$arguments['wallet']]['weight_percent'] = gmp_strval( gmp_div_q( gmp_mul( $wallet_weight['weight'], '100' ), available_supply ) );
-				
 				$call_return[$arguments['wallet']]['accounts_count'] = $wallet_info['accounts_count'];
-				
 				$call_return[$arguments['wallet']]['adhoc_count'] = $wallet_info['adhoc_count'];
-				
 				$call_return[$arguments['wallet']]['deterministic_count'] = $wallet_info['deterministic_count'];
-				
 				$call_return[$arguments['wallet']]['deterministic_index'] = $wallet_info['deterministic_index'];
-				
 				$call_return[$arguments['wallet']]['locked'] = $wallet_locked['locked'];
 				
 				// $wallet_balances = $nanocall->wallet_balances( ['wallet'=>$arguments['wallet']] );
-				
 				// $call_return[$arguments['wallet']]['balances'] = $wallet_balances['balances'];
 				
 				break;
-				
 			}
-			
 			
 			
 			// *** Print wallet weight ***
 			
 			
-			
 			case 'wallet_weight':
 			{
-
 				if( !isset( $arguments['wallet'] ) )
 				{
 					$call_return['error'] = 'Bad wallet number'; break;
@@ -1697,12 +1367,10 @@
 				$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$arguments['wallet'],'sort'=>'desc'] );
 				
 				$call_return['weight'] = $wallet_weight['weight'];
-				
 				$call_return['percent'] = gmp_strval( gmp_div_q( gmp_mul( $wallet_weight['weight'], '100' ), available_supply ) );
 				
 				foreach( $wallet_weight['weights'] as $account => $weight )
 				{
-				
 					$call_return['weights'][$account]['weight'] = $weight;
 					
 					if( gmp_cmp( $weight, '0' ) > 0 )
@@ -1713,22 +1381,17 @@
 					{
 						$call_return['weights'][$account]['wallet_percent'] = '0';
 					}
-					
 				}
 				
 				break;
-				
 			}
-			
 			
 			
 			// *** Print account info ***
 			
 			
-			
 			case 'account_info':
 			{
-			
 				if( !isset( $arguments['account'] ) )
 				{
 					$call_return['error'] = 'Bad account'; break;
@@ -1746,44 +1409,28 @@
 				$account_info['weight_percent'] = gmp_strval( gmp_div_q( gmp_mul( $account_info['weight'], '100' ), available_supply ) );
 				
 				$call_return[$arguments['account']]['frontier'] = $account_info['frontier'];
-				
 				$call_return[$arguments['account']]['open_block'] = $account_info['open_block'];
-				
 				$call_return[$arguments['account']]['representative'] = $account_info['representative'];
-				
 				$call_return[$arguments['account']]['representative_block'] = $account_info['representative_block'];
-				
 				$call_return[$arguments['account']]['balance'] = $account_info['balance'];
-				
 				$call_return[$arguments['account']]['pending'] = $account_info['pending'];
-				
 				$call_return[$arguments['account']]['weight'] = $account_info['weight'];
-				
 				$call_return[$arguments['account']]['weight_percent'] = $account_info['weight_percent'];
-				
 				$call_return[$arguments['account']]['modified_timestamp'] = $account_info['modified_timestamp'];
-				
 				$call_return[$arguments['account']]['block_count'] = $account_info['block_count'];
-				
 				$call_return[$arguments['account']]['confirmation_height'] = $account_info['confirmation_height'];
-				
 				// $call_return[$arguments['account']]['confirmation_height_frontier'] = $account_info['confirmation_height_frontier'];
-				
 				$call_return[$arguments['account']]['account_version'] = $account_info['account_version'];
 				
 				break;
-			
 			}
-			
 			
 			
 			// *** Print account delegators ***
 			
 			
-			
 			case 'delegators':
 			{
-			
 				if( !isset( $arguments['account'] ) )
 				{
 					$call_return['error'] = 'Bad account'; break;
@@ -1830,21 +1477,17 @@
 				
 				if( $sort == 'asc' )
 				{
-				
 					uasort( $delegators['delegators'], function( $a, $b )
 					{
 						return gmp_cmp( $a, $b );
 					});
-				
 				}
 				else
 				{
-					
 					uasort( $delegators['delegators'], function( $a, $b )
 					{
 						return gmp_cmp( $b, $a );
 					});
-					
 				}
 				
 				$i = 0;
@@ -1855,7 +1498,6 @@
 				
 				foreach( $delegators['delegators'] as $delegator => $balance )
 				{
-					
 					if( isset( $arguments['balance_min'] ) )
 					{
 						if( gmp_cmp( $balance, $balance_min ) < 0 ) continue;
@@ -1878,9 +1520,7 @@
 					$balance_cumulative = gmp_strval( gmp_add( $balance_cumulative, $balance ) );
 				
 					$delegators_array[$delegator]['index'] = $i;
-				
 					$delegators_array[$delegator]['balance'] = $balance;
-					
 					$delegators_array[$delegator]['balance_cumulative'] = $balance_cumulative;
 					
 					if( gmp_cmp( $balance, '0' ) > 0 )
@@ -1905,26 +1545,20 @@
 					{
 						if( $delegators_array[$delegator]['percent_cumulative'] >= $percent_limit ) break;
 					}
-					
 				}
 				
 				$call_return['count'] = $i;
-				
 				$call_return['delegators'] = $delegators_array;
 				
 				break;
-			
 			}
-			
 			
 			
 			// *** Print representatives ***
 			
 			
-			
 			case 'representatives':
 			{
-			
 				// Any weight_min?
 						
 				$weight_min = isset( $arguments['weight_min'] ) ? $arguments['weight_min'] : '0';
@@ -1953,7 +1587,6 @@
 				
 				foreach( $representatives['representatives'] as $representative => $weight )
 				{
-					
 					if( isset( $arguments['weight_min'] ) )
 					{
 						if( gmp_cmp( $weight, $weight_min ) < 0 ) continue;
@@ -1976,9 +1609,7 @@
 					$weight_cumulative = gmp_add( $weight_cumulative, $weight );
 					
 					$representatives_array[$representative]['index'] = $i;
-					
 					$representatives_array[$representative]['weight'] = $weight;
-					
 					$representatives_array[$representative]['weight_cumulative'] = $weight_cumulative;
 					
 					if( gmp_cmp( $weight, '0' ) > 0 )
@@ -1996,32 +1627,23 @@
 					{
 						if( $representatives_array[$representative]['percent_cumulative'] >= $percent_limit ) break;
 					}
-					
 				}
 				
 				// $call_return['count'] = count( $representatives['representatives'] );	
-				
 				$call_return['weight'] = gmp_strval( $weight_cumulative );
-				
 				$call_return['weight_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
-				
 				$call_return['count'] = $i;
-				
 				$call_return['representatives'] = $representatives_array;
 				
 				break;
-			
 			}
-			
 			
 			
 			// *** Print representatives online ***
 			
 			
-			
 			case 'representatives_online':
 			{
-			
 				// Any weight_min?
 						
 				$weight_min = isset( $arguments['weight_min'] ) ? $arguments['weight_min'] : '0';
@@ -2048,21 +1670,17 @@
 				
 				if( $sort == 'asc' )
 				{
-				
 					uasort( $representatives_online['representatives'], function( $a, $b )
 					{
 						return gmp_cmp( $a['weight'], $b['weight'] );
 					});
-				
 				}
 				else
 				{
-					
 					uasort( $representatives_online['representatives'], function( $a, $b )
 					{
 						return gmp_cmp( $b['weight'], $a['weight'] );
 					});
-					
 				}
 				
 				$i = 0;
@@ -2073,7 +1691,6 @@
 				
 				foreach( $representatives_online['representatives'] as $representative => $data )
 				{
-					
 					if( isset( $arguments['weight_min'] ) )
 					{
 						if( gmp_cmp( $data['weight'], $weight_min ) < 0 ) continue;
@@ -2096,9 +1713,7 @@
 					$weight_cumulative = gmp_add( $weight_cumulative, $data['weight'] );
 					
 					$representatives_array[$representative]['index'] = $i;
-					
 					$representatives_array[$representative]['weight'] = $data['weight'];
-					
 					$representatives_array[$representative]['weight_cumulative'] = $weight_cumulative;
 					
 					if( gmp_cmp( $data['weight'], '0' ) > 0 )
@@ -2116,34 +1731,24 @@
 					{
 						if( $representatives_array[$representative]['percent_cumulative'] >= $percent_limit ) break;
 					}
-					
 				}
 				
 				// $call_return['weight_cumulative'] = $weight_cumulative;
-				
 				// $call_return['count'] = count( $representatives_online['representatives'] );
-				
 				$call_return['weight'] = gmp_strval( $weight_cumulative );
-				
 				$call_return['weight_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
-				
 				$call_return['count'] = $i;
-				
 				$call_return['representatives_online'] = $representatives_array;
 				
 				break;
-			
 			}
-			
 			
 			
 			// *** Print blockchain info ***
 			
 			
-			
 			case 'blockchain':
 			{
-				
 				$call_return['blockchain'] = filesize( $C['nano']['data_dir'] . '/data.ldb' );
 				
 				$block_count = $nanocall->block_count();
@@ -2151,18 +1756,14 @@
 				$call_return['block_average'] = round( $call_return['blockchain'] / $block_count["count"] );
 				
 				break;
-				
 			}
-			
 			
 			
 			// *** Print block count ***
 			
 			
-			
 			case 'block_count':
 			{
-			
 				// Any block3?
 					
 				$block3 = isset( $arguments['block3'] ) ? (bool) $arguments['block3'] : false;
@@ -2177,7 +1778,6 @@
 			
 				if( $block3 )
 				{
-				
 					$sync_blocks_json = file_get_contents( 'https://mynano.ninja/api/blockcount' );
 					
 					$sync_blocks_array = json_decode( $sync_blocks_json, true );
@@ -2188,26 +1788,19 @@
 					}
 						
 					$call_return['block3']['reference'] = $sync_blocks_array['count'];
-					
 					$call_return['block3']['difference'] = gmp_strval( gmp_sub( $sync_blocks_array['count'], $block_count['count'] ) );
-
 					$call_return['block3']['percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $block_count['count'], '10000' ), $sync_blocks_array['count'] ) ) / 100 );
-					
 				}
 				
 				break;
-			
 			}
-			
 			
 			
 			// *** Print version ***
 			
 			
-			
 			case 'version':
 			{
-				
 				// Any updates?
 					
 				$updates = isset( $arguments['updates'] ) ? (bool) $arguments['updates'] : false;
@@ -2222,7 +1815,6 @@
 				
 				if( $updates )
 				{
-					
 					$options =
 					[
 						'http' =>
@@ -2235,7 +1827,6 @@
 					$context = stream_context_create($options);
 
 					$nano_node_json = file_get_contents( 'https://api.github.com/repos/nanocurrency/nano-node/releases/latest', false, $context );
-					
 					$nano_node_array = json_decode( $nano_node_json, true );
 					
 					if( !$nano_node_json || !is_array( $nano_node_array ) || !isset( $nano_node_array['tag_name'] ) )
@@ -2251,22 +1842,17 @@
 					{
 						$call_return['updates']['node_vendor'] = $nano_node_array['tag_name'];
 					}
-
 				}
 				
 				break;
-				
 			}
-			
 			
 			
 			// *** Print ticker vs favourite currencies ***
 			
 			
-			
 			case 'ticker':
 			{
-				
 				if( !$C['ticker']['enable'] )
 				{
 					$call_return['error'] = 'Ticker not enabled'; break;
@@ -2282,20 +1868,15 @@
 				}
 				
 				break;
-				
 			}
-			
 			
 			
 			// *** Update ticker ***
 			
 			
-			
 			case 'ticker_update':
 			{
-
 				$vs_currency_json = file_get_contents( 'https://api.coingecko.com/api/v3/simple/supported_vs_currencies' );
-				
 				$vs_currencies_array = json_decode( $vs_currency_json, true );
 
 				if( !$vs_currency_json || !is_array( $vs_currencies_array ) || !isset( $vs_currencies_array[0] ) )
@@ -2308,7 +1889,6 @@
 				$vs_currencies_string = implode( ',', $vs_currencies_array );
 				
 				$nano_vs_currency_json = file_get_contents( 'https://api.coingecko.com/api/v3/simple/price?ids=nano&vs_currencies=' . $vs_currencies_string . '&include_last_updated_at=true' );
-				
 				$nano_vs_currencies_array = json_decode( $nano_vs_currency_json, true );
 				
 				if( !$nano_vs_currency_json || !is_array( $nano_vs_currencies_array ) || !isset( $nano_vs_currencies_array['nano'] ) )
@@ -2320,26 +1900,21 @@
 				
 				foreach( $nano_vs_currencies_array['nano'] as $currency => $rate )
 				{
-					
 					if( $currency == 'last_updated_at' )
 					{
-						
 						$last_updated_at = $rate;
 						
 						unset( $nano_vs_currencies_array['nano'][$currency] );
 						
 						continue;
-					
 					}
 					
 					$nano_vs_currencies_array['nano'][strtoupper( $currency )] = $rate;
 					
-					unset( $nano_vs_currencies_array['nano'][$currency] );
-						
+					unset( $nano_vs_currencies_array['nano'][$currency] );	
 				}
 				
 				$nano_vs_currencies_array['nano']['NANO'] = 1;
-				
 				$nano_vs_currencies_array['last_updated_at'] = $last_updated_at;
 				
 				// Save ticker.json
@@ -2351,22 +1926,17 @@
 				$call_return['success'] = 'Ticker updated';
 				
 				break;
-			
 			}
-			
 			
 			
 			// *** Update third-party tags ***
 			
 			
-			
 			case 'tags3_update':
 			{
-				
 				$thirdy_party_tags_elaborated['account'] = [];
 			
 				$third_party_tags_json = file_get_contents( 'https://mynano.ninja/api/accounts/aliases' );
-				
 				$third_party_tags_array = json_decode( $third_party_tags_json, true );
 				
 				if( !$third_party_tags_json || !is_array( $third_party_tags_array ) || !isset( $third_party_tags_array[0]['alias'] ) )
@@ -2376,7 +1946,6 @@
 				
 				foreach( $third_party_tags_array as $index => $data )
 				{
-				
 					$tag = $data['alias'];
 				
 					$tag = tag_filter( $tag );
@@ -2386,7 +1955,6 @@
 					if( $tag == '' ) continue;
 				
 					$thirdy_party_tags_elaborated['account'][$tag] = $data['account'];
-				
 				}
 				
 				ksort( $thirdy_party_tags_elaborated['account'] );
@@ -2398,18 +1966,14 @@
 				$call_return['success'] = 'tags3 updated';
 				
 				break;
-			
 			}
-			
 			
 			
 			// *** Print tags ***
 			
 			
-			
 			case 'tags':
 			{
-				
 				foreach( $C2['tags']['wallet'] as $tag => $id )
 				{
 					$call_return['wallet'][] = $id;
@@ -2426,18 +1990,14 @@
 				}
 				
 				break;
-				
 			}
-			
 			
 			
 			// *** Print tags3 ***
 			
 			
-			
 			case 'tags3':
 			{
-				
 				if( !$C['tags3']['enable'] )
 				{
 					$call_return['error'] = 'tags3 not enabled'; break;
@@ -2449,18 +2009,14 @@
 				}
 				
 				break;
-				
 			}
-			
 			
 			
 			// *** Add new tag ***
 			
 			
-			
 			case 'tag_add':
 			{
-				
 				// Check if cat is defined
 				
 				if( !isset( $arguments['cat'] ) )
@@ -2542,18 +2098,14 @@
 				file_put_contents( tags_file, json_encode( $C2['tags'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 					
 				break;
-			
 			}
-			
 			
 			
 			// *** Edit tag ***
 			
 			
-			
 			case 'tag_edit':
 			{
-				
 				// Check if cat is defined
 				
 				if( !isset( $arguments['cat'] ) )
@@ -2635,18 +2187,14 @@
 				file_put_contents( tags_file, json_encode( $C2['tags'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 				
 				break;
-			
 			}
-			
 			
 			
 			// *** Remove tag ***
 			
 			
-			
 			case 'tag_remove':
 			{
-				
 				// Check if cat is defined
 				
 				if( !isset( $arguments['cat'] ) )
@@ -2691,30 +2239,18 @@
 				file_put_contents( tags_file, json_encode( $C2['tags'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 					
 				break;
-			
 			}
 			
 			
-			
 			// *** Default node call ***
-			
 			
 			
 			default:
 			{
 				$call_return = $nanocall->{ $command }( $arguments ); break;
 			}
-		
-		
-		
 		}
-	
-	
-	
 	}
-	
-	
-	
 	
 	
 	
@@ -2724,36 +2260,24 @@
 
 
 
-
-	
-
 	// *** Check if ticker is updated ***
-	
 	
 	
 	if( $C['ticker']['enable'] )
 	{
-	
 		$ticker_delay = time() - $C2['ticker_last'];
 	
 		if( $ticker_delay > 60*30 )
 		{
 			$alerts[] = 'Ticker not updated';
 		}
-	
 	}
-	
-	
-	
 	
 	
 	
 	// ********************
 	// *** Build output ***
 	// ********************
-	
-	
-	
 	
 	
 	
@@ -2766,74 +2290,51 @@
 	
 	if( $flags['json_out'] )
 	{
-		
 		echo json_encode( $call_return );
-		
 		echo "\n";
-		
 	}
 	else
 	{
-		
 		echo PHP_EOL;
-			
 		echo pretty_print_r( $call_return );
-
 		echo PHP_EOL;
-	
 	}
-	
-	
-	
 	
 	
 	
 	// ************
 	// *** Logs ***
 	// ************
-	
-	
-	
-	
+
 	
 	
 	// *** Clean logs? ***
 	
 	
-	
 	if( $C['log']['expiration'] > 0 )
 	{
-		
 		$logs = array_diff( scandir( log_dir ), array( '.', '..' ) );
 		
 		foreach( $logs as $log )
 		{
-		
 			$log = explode( '.', $log );
 			
 			if( isset( $log[1] ) && $log[1] == 'txt' )
 			{
-				
 				if( strtotime( $log[0] ) < ( time() - ( ( $C['log']['expiration'] + 1 ) * 24 * 60 * 60 ) ) )
 				{
 					unlink( log_dir . '/' . $log[0] . '.' . $log[1] );
 				}
-				
 			}
-		
 		}
-		
 	}
-	
 	
 	
 	// *** Save log? ***
 	
 	
-	
 	if( !$flags['no_log'] )
 	{
-	
 		$check_words = 
 		[
 			'deterministic_key',
@@ -2851,7 +2352,6 @@
 		
 		if( $C['log']['save'] && ( !in_array( $command, $check_words ) || !$C['log']['privacy'] ) )
 		{
-			
 			// Generate flags string
 		
 			$log_flags = [];
@@ -2884,9 +2384,7 @@
 			}
 			
 			file_put_contents( $log_file, $newline . date( 'm/d/Y H:i:s', time() ) . ' ' . $callerID . ' ' . $command . ' ' . json_encode( $arguments ) . ' ' . $log_flags . ' ' . json_encode( $call_return ), FILE_APPEND );
-		
 		}
-	
 	}
 		
 ?>
