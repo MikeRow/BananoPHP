@@ -1,26 +1,20 @@
 <?php
 
 	namespace php4nano\lib\NanoRPCExtension;
-
+	
 	use php4nano\lib\NanoRPC\NanoRPC as NanoRPC;
-
-
 
 	class NanoRPCExtension extends NanoRPC
 	{
-	
 		const hash0 = '0000000000000000000000000000000000000000000000000000000000000000';
-	
-	
-	
+
+
 		// *** Wallet wipe ***
-		
-		
-		
+
+
 		public function wallet_wipe( array $args )
 		{
-				
-			// *** Check args ***
+			// Check args
 			
 			if( !isset( $args['wallet'] ) || !isset( $args['destination'] ) )
 			{
@@ -28,7 +22,6 @@
 			}
 			
 			$wallet = $args['wallet'];
-			
 			$destination = $args['destination'];
 			
 			// Wallet ok?
@@ -78,21 +71,17 @@
 			
 			if( $sort == 'asc' )
 			{
-			
 				uasort( $wallet_balances['balances'], function( $a, $b )
 				{
 					return gmp_cmp( $a['balance'], $b['balance'] );
 				});
-			
 			}
 			elseif( $sort == 'desc' )
 			{
-
 				uasort( $wallet_balances['balances'], function( $a, $b )
 				{
 					return gmp_cmp( $b['balance'], $a['balance'] );
 				});
-
 			}
 			else
 			{
@@ -103,7 +92,6 @@
 			
 			foreach( $wallet_balances['balances'] as $account => $balances )
 			{
-				
 				if( $account == $destination ) continue;
 				
 				$args =
@@ -129,11 +117,9 @@
 				{
 					$return['error'] = 'Bad send';
 				}
-				
 			}
 			
 			$this->response_raw = json_encode( $return );
-			
 			$this->response = $return;
 			
 			return $this->response;
@@ -141,16 +127,12 @@
 		}
 		
 		
-		
-		
 		// *** Wallet send ***
-		
 		
 		
 		public function wallet_send( array $args )
 		{
-			
-			// *** Check args ***
+			// Check args
 			
 			if( !isset( $args['wallet'] ) || !isset( $args['destination'] ) || !isset( $args['amount'] ) )
 			{
@@ -158,9 +140,7 @@
 			}
 			
 			$wallet = $args['wallet'];
-			
 			$destination = $args['destination'];
-			
 			$amount = $args['amount'];
 			
 			// Wallet ok?
@@ -206,9 +186,7 @@
 			//
 			
 			$return = ['balances' => []];
-			
 			$selected_accounts = [];
-			
 			$amount_left = $amount;
 			
 			// Get wallet balances
@@ -225,21 +203,17 @@
 			
 			if( $sort == 'asc' )
 			{
-			
 				uasort( $wallet_balances['balances'], function( $a, $b )
 				{
 					return gmp_cmp( $a['balance'], $b['balance'] );
 				});
-			
 			}
 			elseif( $sort == 'desc' )
 			{
-
 				uasort( $wallet_balances['balances'], function( $a, $b )
 				{
 					return gmp_cmp( $b['balance'], $a['balance'] );
 				});
-
 			}
 			else
 			{
@@ -250,36 +224,27 @@
 			
 			foreach( $wallet_balances['balances'] as $account => $balances )
 			{
-				
 				if( gmp_cmp( $balances['balance'], $amount_left ) >= 0 )
 				{
-					
 					$selected_accounts[$account] = $amount_left;
-					
 					$amount_left = '0';
-					
 				}
 				else
 				{
-					
 					$selected_accounts[$account] = $balances['balance'];
-					
 					$amount_left = gmp_strval( gmp_sub( $amount_left, $balances['balance'] ) );
-					
 				}
 				
 				if( gmp_cmp( $amount_left, '0' ) <= 0 )
 				{
 					break; // Amount reached
 				}
-				
 			}
 
 			// Send from selected accounts
 			
 			foreach( $selected_accounts as $account => $balance )
 			{
-				
 				if( $account == $destination ) continue;
 				
 				$args =
@@ -305,11 +270,9 @@
 				{
 					$return['error'] = 'Bad send';
 				}
-			
 			}
 			
 			$this->response_raw = json_encode( $return );
-			
 			$this->response = $return;
 			
 			return $this->response;
@@ -317,15 +280,12 @@
 		}
 		
 		
-		
 		// *** Wallet weight ***
-		
 		
 		
 		public function wallet_weight( array $args )
 		{
-			
-			// *** Check args ***
+			// Check args
 			
 			if( !isset( $args['wallet'] ) )
 			{
@@ -350,7 +310,6 @@
 			//
 			
 			$return = ['weight' => '', 'weights' => []];
-			
 			$wallet_weight = '0';
 			
 			// Get wallet balances
@@ -366,13 +325,9 @@
 			
 			foreach( $wallet_accounts['accounts'] as $account )
 			{
-			
 				$account_weight = $this->account_weight( ['account'=>$account] );
-			
 				$wallet_weight = gmp_add( $wallet_weight, $account_weight['weight'] );
-			
 				$return['weights'][$account] = gmp_strval( $account_weight['weight'] );
-			
 			}
 			
 			$return['weight'] = gmp_strval( $wallet_weight );
@@ -381,21 +336,17 @@
 			
 			if( $sort == 'asc' )
 			{
-			
 				uasort( $return['weights'], function( $a, $b )
 				{
 					return gmp_cmp( $a, $b );
 				});
-			
 			}
 			elseif( $sort == 'desc' )
 			{
-
 				uasort( $return['weights'], function( $a, $b )
 				{
 					return gmp_cmp( $b, $a );
 				});
-
 			}
 			else
 			{
@@ -403,13 +354,10 @@
 			}
 			
 			$this->response_raw = json_encode( $return );
-			
 			$this->response = $return;
 			
 			return $this->response;
-			
 		}
-	
 	}
 	
 ?>
