@@ -9,7 +9,11 @@
 		const hash0 = '0000000000000000000000000000000000000000000000000000000000000000';
 
 
+
+		// *******************
 		// *** Wallet wipe ***
+		// *******************
+		
 
 
 		public function wallet_wipe( array $args )
@@ -127,7 +131,11 @@
 		}
 		
 		
+		
+		// *******************
 		// *** Wallet send ***
+		// *******************
+		
 		
 		
 		public function wallet_send( array $args )
@@ -280,7 +288,11 @@
 		}
 		
 		
+		
+		// *********************
 		// *** Wallet weight ***
+		// *********************
+		
 		
 		
 		public function wallet_weight( array $args )

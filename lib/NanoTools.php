@@ -18,7 +18,11 @@
 		];	
 	
 	
+	
+		// ***************************
 		// *** Denomination to raw ***
+		// ***************************
+	
 	
 	
 		public static function den2raw( $amount, string $denomination )
@@ -50,7 +54,11 @@
 		}
 	
 	
+	
+		// ***************************
 		// *** Raw to denomination ***
+		// ***************************
+		
 		
 		
 		public static function raw2den( $amount, string $denomination )
@@ -99,7 +107,11 @@
 		}
 		
 		
-		// *** Denomination to denomination 
+		
+		// ************************************
+		// *** Denomination to denomination ***
+		// ************************************
+		
 		
 		
 		public static function den2den( $amount, string $denomination_from, string $denomination_to )
@@ -110,7 +122,11 @@
 		}
 		
 		
+		
+		// ************************
 		// *** Account validate ***
+		// ************************
+		
 		
 		
 		private static function to_uint5( $n )
@@ -159,25 +175,11 @@
 						{
 							return true;
 						}
-						else
-						{
-							return false;
-						}
-					}
-					else
-					{
-						return false;
 					}
 				}
-				else
-				{
-					return false;
-				}
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		}
 	}
 
