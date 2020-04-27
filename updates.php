@@ -13,8 +13,7 @@
 
 	$context = stream_context_create($options);
 	
-	$php4nano_json = file_get_contents( 'https://api.github.com/repos/mikerow/php4nano/releases/latest', false, $context );
-				
+	$php4nano_json = file_get_contents( 'https://api.github.com/repos/mikerow/php4nano/releases/latest', false, $context );	
 	$php4nano_array = json_decode( $php4nano_json, true );
 
 	if( !$php4nano_json || !is_array( $php4nano_array ) || !isset( $php4nano_array['tag_name'] ) )
