@@ -68,5 +68,6 @@ Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the support gi
 
 ## Support
 
-Send funds or delegate your weight to my representative:<br/>
+- Contributing to the code by developing the [planned features](https://github.com/mikerow/php4nano/wiki/roadmap)
+- Sending funds or delegating your weight to my representative:<br/>
 [nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m](https://mynano.ninja/account/mikerow)
