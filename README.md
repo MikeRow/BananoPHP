@@ -71,7 +71,7 @@ APIs
 
 Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the support given
 
-## How can I support?
+## Support
 
-- Contributing to the code by developing the [planned features](https://github.com/mikerow/php4nano/wiki/roadmap)
-- Sending funds or delegating your weight to [my representative](https://mynano.ninja/account/mikerow)
+- Contribute to code by developing the [planned features](https://github.com/mikerow/php4nano/wiki/roadmap)
+- Send funds or delegate your weight to [my representative](https://mynano.ninja/account/mikerow)
