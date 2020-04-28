@@ -57,19 +57,21 @@ updates.php.........................check for repository updates
 
 ## Credits
 
+Scripts
+
 - [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
 - [jc21/clitable](https://github.com/jc21/clitable)
 - [phpseclib/phpseclib](https://github.com/phpseclib/phpseclib)
 - [strawbrary/php-blake2](https://github.com/strawbrary/php-blake2)
+
+APIs
+
 - [coingecko.com/API](https://www.coingecko.com/en/api)
 - [mynano.ninja/API](https://mynano.ninja/api)
 
 Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the support given
 
-## Support
+## How can I support?
 
 - Contributing to the code by developing the [planned features](https://github.com/mikerow/php4nano/wiki/roadmap)
-- Sending funds or delegating your weight to my representative
-<pre>
-[nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m](https://mynano.ninja/account/mikerow)
-</pre>
+- Sending funds or delegating your weight to [nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m](https://mynano.ninja/account/mikerow)
