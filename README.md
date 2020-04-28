@@ -57,7 +57,7 @@ updates.php.........................check for repository updates
 
 ## Credits
 
-Scripts
+Repositories
 
 - [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
 - [jc21/clitable](https://github.com/jc21/clitable)
