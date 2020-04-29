@@ -23,7 +23,7 @@
 
 	if( version_compare( str_replace( 'v', '', $version ), str_replace( 'v', '', $php4nano_array['tag_name'] )  ) < 0 )
 	{
-		shell_exec( 'git checkout ' . $php4nano_array['tag_name'] );
+		shell_exec( 'git checkout ' . $php4nano_array['tag_name'] . ' &' );
 	}
 
 ?>
