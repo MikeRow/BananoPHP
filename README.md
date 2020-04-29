@@ -52,7 +52,7 @@ Full documentation is located in the [Wiki](https://github.com/mikerow/php4nano/
 LICENSE.md..........................repository license
 README.md...........................(this file)
 VERSION.txt.........................current repository version
-updates.php.........................check for repository updates
+update.php..........................update to latest release
 </pre>
 
 ## Credits
