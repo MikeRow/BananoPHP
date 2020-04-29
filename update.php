@@ -7,7 +7,7 @@
 		'http' =>
 		[
 			'method' => "GET",
-			'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:74.0) Gecko/20100101 Firefox/74.0\r\n"
+			'header' => "User-Agent: php4nano/update.php\r\n"
 		]
 	];
 
@@ -18,16 +18,12 @@
 
 	if( !$php4nano_json || !is_array( $php4nano_array ) || !isset( $php4nano_array['tag_name'] ) )
 	{
-		echo 'error' . "\n"; exit;
+		echo 'Can\'t retrieve repository version' . "\n"; exit;
 	}
 
-	if( version_compare( str_replace( 'v', '', $version ), str_replace( 'v', '', $php4nano_array['tag_name'] )  ) >= 0 )
+	if( version_compare( str_replace( 'v', '', $version ), str_replace( 'v', '', $php4nano_array['tag_name'] )  ) < 0 )
 	{
-		echo false . "\n";
-	}
-	else
-	{
-		echo $php4nano_array['tag_name'] . "\n";
+		shell_exec( 'git checkout ' . $php4nano_array['tag_name'] );
 	}
 
 ?>
