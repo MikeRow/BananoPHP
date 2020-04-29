@@ -49,9 +49,9 @@ Full documentation is located in the [Wiki](https://github.com/mikerow/php4nano/
     nano-raws.php...................operations with raw amounts
     ncm-remote.php..................managing a node via SSH and ncm
 
-LICENSE.md..........................repository license
-README.md...........................(this file)
-VERSION.txt.........................current repository version
+LICENSE.md..........................license
+README.md...........................readme
+VERSION.txt.........................current version
 update.php..........................update to latest release
 </pre>
 
