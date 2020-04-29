@@ -28,6 +28,15 @@
 	else
 	{
 		echo 'New release found: ' . $php4nano_array['tag_name'] . "\n";
+		echo 'Do you want to update? Type \'confirm\' to proceed: ';
+		
+		$line = stream_get_line( STDIN, 10, PHP_EOL );
+				
+		if( $line != 'confirm' )
+		{
+			exit;
+		}
+		
 		echo 'Updating...' . "\n";
 		
 		shell_exec( 'git checkout ' . $php4nano_array['tag_name'] . ' &' );
