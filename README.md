@@ -26,7 +26,7 @@ Full documentation is located in the [Wiki](https://github.com/mikerow/php4nano/
 
     [clitable-1.2]..................CLI Table Output for PHP
     [phpseclib-2.0.27]..............PHP Secure Communications Library
-	[RaiBlocksPHP-master]...........A bunch of PHP methods to build and sign transactions
+    [RaiBlocksPHP-master]...........A bunch of PHP methods to build and sign transactions
     clitable_loader.php.............clitable loader
     phpseclib_loader.php............phpseclib loader
 	
