@@ -8,6 +8,7 @@
 	use \Uint as Uint;
 	use \SplFixedArray as SplFixedArray;
 	use \Blake2b as Blake2b;
+	use \Salt as Salt;
 	
 	class NanoTools
 	{
@@ -130,13 +131,13 @@
 		
 		
 		
-		// *******************
-		// *** Account key ***
-		// *******************
+		// *****************************
+		// *** Account to public key ***
+		// *****************************
 		
 		
 		
-		public static function account2public( string account )
+		public static function account2public( string $account )
 		{
 			if( ( strpos( $account, 'xrb_1' ) === 0 || strpos( $account, 'xrb_3' ) === 0 || strpos( $account, 'nano_1' ) === 0 || strpos( $account, 'nano_3' ) === 0 ) && ( strlen( $account ) == 64 || strlen( $account ) == 65 ) )
 			{
@@ -168,6 +169,45 @@
 			}
 			
 			return false;
+		}
+		
+		
+		
+		// *****************************
+		// *** Public key to account ***
+		// *****************************
+		
+		
+		
+		public static function public2account( string $pk )
+		{
+			if( !preg_match( '/[0-9A-F]{64}/i', $pk ) ) return false;
+			
+			$key = Uint::fromHex( $pk );
+			$checksum;
+			$hash = new SplFixedArray( 64 );
+			$b2b = new Blake2b();
+			$ctx = $b2b->init( null, 5 );
+			$b2b->update( $ctx, $key->toUint8(), 32 );
+			$b2b->finish( $ctx, $hash );
+			$hash = Uint::fromUint8Array( array_slice( $hash->toArray(), 0, 5 ) )->reverse();
+			
+			$checksum = $hash->toString();
+			$c_account = Uint::fromHex( '0' . $pk )->toString();
+			return 'nano_' . $c_account . $checksum;
+		}
+		
+		
+		
+		// *********************************
+		// *** Private key to public key ***
+		// *********************************
+		
+		
+		
+		public static function private2public( string $sk )
+		{
+			return Salt::crypto_sign_public_from_secret_key( $sk );
 		}
 		
 		
@@ -266,6 +306,32 @@
 
 				return false;
 			}
+		}
+		
+		
+		
+		// *********************
+		// *** Generate keys ***
+		// *********************
+		
+		
+		
+		public static function keys( string $seed = null, int $index = 0 )
+		{
+			if( $seed != null )
+			{
+				$b2b = new Blake2b();
+				$ctx = $b2b->init( null, 32 );
+				$b2b->update( $ctx, $seed, count( $seed ) );
+				$b2b->finish( $ctx, $key_hash );
+			}
+			
+			$salt = Salt::instance();
+			$keys = $salt->crypto_sign_keypair( $seed );
+			$keys[0] = Uint::fromUint8Array(array_slice($keys[0]->toArray(), 0, 32))->toHexString();
+			$keys[1] = Uint::fromUint8Array($keys[1])->toHexString();
+			
+			return $keys;
 		}
 	}
 
