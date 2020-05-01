@@ -143,10 +143,10 @@
 			return( array_search( $n, $letter_list ) );
 		}
 		
-		public static function account_validate( string $account, bool $use_salt = true )
+		public static function account_validate( string $account, bool $php_blake2 = false )
 		{
 			
-			if( $use_salt )
+			if( !$php_blake2 )
 			{
 				if( ( strpos( $account, 'xrb_1' ) === 0 || strpos( $account, 'xrb_3' ) === 0 || strpos( $account, 'nano_1' ) === 0 || strpos( $account, 'nano_3' ) === 0 ) && ( strlen( $account ) == 64 || strlen( $account ) == 65 ) )
 				{
