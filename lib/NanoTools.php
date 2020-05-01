@@ -130,6 +130,48 @@
 		
 		
 		
+		// *******************
+		// *** Account key ***
+		// *******************
+		
+		
+		
+		public static function account_key( string account )
+		{
+			if( ( strpos( $account, 'xrb_1' ) === 0 || strpos( $account, 'xrb_3' ) === 0 || strpos( $account, 'nano_1' ) === 0 || strpos( $account, 'nano_3' ) === 0 ) && ( strlen( $account ) == 64 || strlen( $account ) == 65 ) )
+			{
+				$crop = explode( '_', $account );
+				$crop = $crop[1];
+				
+				if( preg_match( '/^[13456789abcdefghijkmnopqrstuwxyz]+$/', $crop ) )
+				{
+					$aux = Uint::fromString( substr( $crop, 0, 52 ) )->toUint4()->toArray();
+					array_shift( $aux );
+					$key_uint4 = $aux;
+					$hash_uint8 = Uint::fromString( substr( $crop, 52, 60 ) )->toUint8()->toArray();
+					$key_uint8 = Uint::fromUint4Array( $key_uint4 )->toUint8();
+					
+					$key_hash = new SplFixedArray( 64 );
+					
+					$b2b = new Blake2b();
+					$ctx = $b2b->init( null, 5 );
+					$b2b->update( $ctx, $key_uint8, count( $key_uint8 ) );
+					$b2b->finish( $ctx, $key_hash );
+
+					$key_hash = array_reverse( array_slice( $key_hash->toArray(), 0, 5 ) );
+					
+					if( $hash_uint8 == $key_hash )
+					{
+						return Uint::fromUint4Array( $key_uint4 )->toHexString();
+					}
+				}
+			}
+			
+			return false;
+		}
+		
+		
+		
 		// ************************
 		// *** Account validate ***
 		// ************************
