@@ -136,7 +136,7 @@
 		
 		
 		
-		public static function account_key( string account )
+		public static function account2public( string account )
 		{
 			if( ( strpos( $account, 'xrb_1' ) === 0 || strpos( $account, 'xrb_3' ) === 0 || strpos( $account, 'nano_1' ) === 0 || strpos( $account, 'nano_3' ) === 0 ) && ( strlen( $account ) == 64 || strlen( $account ) == 65 ) )
 			{
