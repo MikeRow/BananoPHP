@@ -102,7 +102,7 @@ class Uint
 	{
 		if(strlen($hex) % 2 != 0)
 			$hex = '0' . $hex;
-		$arr = new SplFixedArray(strlen($hex) / 2);
+		$arr = new \SplFixedArray(strlen($hex) / 2);
 		for($i = 0; $i < strlen($hex); $i+=2)
 		{
 			$arr[$i/2] = base_convert($hex[$i] . $hex[$i+1], 16, 10);
@@ -112,7 +112,7 @@ class Uint
 	
 	public function hexU4($hex)
 	{
-		$arr = new SplFixedArray(strlen($hex));
+		$arr = new \SplFixedArray(strlen($hex));
 		for($i = 0; $i < strlen($hex); $i++)
 		{
 			$arr[$i] = base_convert($hex[$i], 16, 10);
@@ -143,7 +143,7 @@ class Uint
 	
 	public function u8U4($u8)
 	{
-		$u4 = new SplFixedArray(count($u8) * 2);
+		$u4 = new \SplFixedArray(count($u8) * 2);
 		for($i = 0; $i < count($u8); $i++)
 		{
 			$u4[$i*2] = $u8[$i] / 16 | 0;
@@ -154,7 +154,7 @@ class Uint
 	
 	public function u4U8($u4)
 	{
-		$u8 = new SplFixedArray(count($u4) / 2);
+		$u8 = new \SplFixedArray(count($u4) / 2);
 		for($i = 0; $i < count($u8); $i++)
 			$u8[$i] = $u4[$i*2] * 16 + $u4[$i*2 + 1];
 		return $u8;
@@ -162,7 +162,7 @@ class Uint
 	
 	public function u4U5($u4)
 	{
-		$u5 = new SplFixedArray(count($u4) / 5 * 4);
+		$u5 = new \SplFixedArray(count($u4) / 5 * 4);
 		for($i = 1; $i <= count($u5); $i++)
 		{
 			$n = $i - 1;
@@ -180,7 +180,7 @@ class Uint
 	
 	public function u5U4($u5)
 	{
-		$u4 = new SplFixedArray(count($u5) / 4 * 5);
+		$u4 = new \SplFixedArray(count($u5) / 4 * 5);
 		for($i = 1; $i <= count($u4); $i++)
 		{
 			$n = $i - 1;
@@ -200,7 +200,7 @@ class Uint
 		$letters = '13456789abcdefghijkmnopqrstuwxyz';
 		$len = strlen($str);
 		$arr = str_split($str);
-		$u5 = new SplFixedArray($len);
+		$u5 = new \SplFixedArray($len);
 		for($i = 0; $i < $len; $i++)
 			$u5[$i] = strpos($letters, $arr[$i]);
 		return $u5;
@@ -272,7 +272,7 @@ class Uint
 		if(count($uint->toUint8()) < $size)
 		{
 			$u8 = $uint->toUint8();
-			$new = new SplFixedArray($size);
+			$new = new \SplFixedArray($size);
 			$diff = $size - count($u8);
 			for($i = 0; $i < $size; $i++)
 			{

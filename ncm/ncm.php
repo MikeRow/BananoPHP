@@ -8,7 +8,6 @@
 	
 	require_once __DIR__ . '/../lib/NanoTools.php';
 	require_once __DIR__ . '/../lib/NanoCLI.php';
-	require_once __DIR__ . '/../lib/NanoRPC.php';
 	require_once __DIR__ . '/../lib/NanoRPCExtension.php';
 	
 	use php4nano\lib\NanoTools\NanoTools as NanoTools;

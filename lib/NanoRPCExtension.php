@@ -2,6 +2,8 @@
 
 	namespace php4nano\lib\NanoRPCExtension;
 	
+	require_once __DIR__ . '/../lib/NanoRPC.php';
+	
 	use php4nano\lib\NanoRPC\NanoRPC as NanoRPC;
 
 	class NanoRPCExtension extends NanoRPC

@@ -7,6 +7,7 @@
  * 
  * @link https://github.com/devi/Salt
  */
+ 
 class Blake2b {
 
 	const BLOCKBYTES = 128;
