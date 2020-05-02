@@ -313,9 +313,7 @@
 			if( count( $index ) < 4 )
 			{
 				$missing_bytes = [];
-				
 				for ($i = 0; $i < ( 4 - count( $index ) ); $i++) $missing_bytes[] = 0;
-				
 				$index = array_merge( $missing_bytes, $index );
 			}
 			
