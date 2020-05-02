@@ -207,7 +207,14 @@
 		
 		public static function private2public( string $sk )
 		{
-			return Salt::crypto_sign_public_from_secret_key( $sk );
+		    if( !preg_match( '/[0-9A-F]{64}/i', $sk ) ) return false;
+		    
+		    $salt = Salt::instance();
+		    
+		    $sk = Uint::fromHex( $sk )->toUint8();
+			$pk = $salt::crypto_sign_public_from_secret_key( $sk );
+			
+			return Uint::fromUint8Array( $pk )->toHexString();
 		}
 		
 		
@@ -328,8 +335,8 @@
 			
 			$salt = Salt::instance();
 			$keys = $salt->crypto_sign_keypair( $seed );
-			$keys[0] = Uint::fromUint8Array(array_slice($keys[0]->toArray(), 0, 32))->toHexString();
-			$keys[1] = Uint::fromUint8Array($keys[1])->toHexString();
+			$keys[0] = Uint::fromUint8Array( array_slice( $keys[0]->toArray(), 0, 32 ) )->toHexString();
+			$keys[1] = Uint::fromUint8Array( $keys[1] )->toHexString();
 			
 			return $keys;
 		}
