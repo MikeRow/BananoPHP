@@ -345,11 +345,11 @@
 		
 		public static function seed()
 		{
-		    $salt = Salt::instance();
-		    $keys = $salt->crypto_sign_keypair();
-		    $keys[0] = Uint::fromUint8Array( array_slice( $keys[0]->toArray(), 0, 32 ) )->toHexString();
-		    
-		    return $keys[0];
+            $salt = Salt::instance();
+            $keys = $salt->crypto_sign_keypair();
+            $keys[0] = Uint::fromUint8Array( array_slice( $keys[0]->toArray(), 0, 32 ) )->toHexString();
+            
+            return $keys[0];
 		}
 		
 		
@@ -362,14 +362,14 @@
 		
 		public static function seed2keys( string $seed, int $index = 0, bool $get_account = false )
 		{
-		    $seed = Uint::fromHex( $seed )->toUint8();
-		    $index = Uint::fromDec( $index )->toUint8();
+            $seed = Uint::fromHex( $seed )->toUint8();
+            $index = Uint::fromDec( $index )->toUint8();
             
-		    $b2b = new Blake2b();
-		    $ctx = $b2b->init( null, 32 );
-		    $b2b->update( $ctx, $seed, count( $seed ) );
-		    $b2b->update( $ctx, $index, count( $index ) );
-		    $b2b->finish( $ctx, $sk );
+            $b2b = new Blake2b();
+            $ctx = $b2b->init( null, 32 );
+            $b2b->update( $ctx, $seed, count( $seed ) );
+            $b2b->update( $ctx, $index, count( $index ) );
+            $b2b->finish( $ctx, $sk );
             
             $sk = Uint::fromUint8Array( array_slice( $sk->toArray(), 0, 32 ) )->toHexString();
             $pk = self::private2public( $sk );
