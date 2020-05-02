@@ -317,28 +317,64 @@
 		
 		
 		
-		// *********************
-		// *** Generate keys ***
-		// *********************
+		// ****************
+		// *** Get keys ***
+		// ****************
 		
 		
 		
-		public static function keys( string $seed = null, int $index = 0 )
+		public static function keys( bool $get_account = false )
 		{
-			if( $seed != null )
-			{
-				$b2b = new Blake2b();
-				$ctx = $b2b->init( null, 32 );
-				$b2b->update( $ctx, $seed, count( $seed ) );
-				$b2b->finish( $ctx, $key_hash );
-			}
-			
 			$salt = Salt::instance();
-			$keys = $salt->crypto_sign_keypair( $seed );
+			$keys = $salt->crypto_sign_keypair();
 			$keys[0] = Uint::fromUint8Array( array_slice( $keys[0]->toArray(), 0, 32 ) )->toHexString();
 			$keys[1] = Uint::fromUint8Array( $keys[1] )->toHexString();
 			
+			if( $get_account ) $keys[2] = self::public2account( $keys[1] );
+			
 			return $keys;
+		}
+		
+		
+		
+		// ****************
+		// *** Get seed ***
+		// ****************
+		
+		
+		
+		public static function seed()
+		{
+		    $salt = Salt::instance();
+		    $keys = $salt->crypto_sign_keypair();
+		    $keys[0] = Uint::fromUint8Array( array_slice( $keys[0]->toArray(), 0, 32 ) )->toHexString();
+		    
+		    return $keys[0];
+		}
+		
+		
+		
+		// **************************
+		// *** Get keys from seed ***
+		// **************************
+		
+		
+		
+		public static function seed2keys( string $seed, int $index = 0, bool $get_account = false )
+		{
+		    $seed = Uint::fromHex( $seed )->toUint8();
+		    $index = Uint::fromDec( $index )->toUint8();
+		    
+		    $b2b = new Blake2b();
+		    $ctx = $b2b->init( null, 32 );
+		    $b2b->update( $ctx, $seed, count( $seed ) );
+		    $b2b->update( $ctx, $index, count( $index ) );
+		    $b2b->finish( $ctx, $sk );
+		    
+		    $sk = Uint::fromUint8Array( array_slice( $sk->toArray(), 0, 32 ) )->toHexString();
+            $pk = self::private2public( $sk );
+            
+            return [$sk,$pk];
 		}
 	}
 
