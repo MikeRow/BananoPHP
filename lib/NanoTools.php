@@ -364,14 +364,14 @@
 		{
 		    $seed = Uint::fromHex( $seed )->toUint8();
 		    $index = Uint::fromDec( $index )->toUint8();
-		    
+            
 		    $b2b = new Blake2b();
 		    $ctx = $b2b->init( null, 32 );
 		    $b2b->update( $ctx, $seed, count( $seed ) );
 		    $b2b->update( $ctx, $index, count( $index ) );
 		    $b2b->finish( $ctx, $sk );
-		    
-		    $sk = Uint::fromUint8Array( array_slice( $sk->toArray(), 0, 32 ) )->toHexString();
+            
+            $sk = Uint::fromUint8Array( array_slice( $sk->toArray(), 0, 32 ) )->toHexString();
             $pk = self::private2public( $sk );
             
             return [$sk,$pk];
