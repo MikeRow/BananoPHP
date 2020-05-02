@@ -9,6 +9,7 @@
 	use \SplFixedArray as SplFixedArray;
 	use \Blake2b as Blake2b;
 	use \Salt as Salt;
+	use \FieldElement as FieldElement;
 	
 	class NanoTools
 	{
@@ -307,18 +308,34 @@
 		public static function seed2keys( string $seed, int $index = 0, bool $get_account = false )
 		{
 			$seed = Uint::fromHex( $seed )->toUint8();
-			$index = Uint::fromDec( $index )->toUint8();
-            
+			$index = Uint::fromDec( $index )->toUint8()->toArray();
+			
+			if( count( $index ) < 4 )
+			{
+				$missing_bytes = [];
+				
+				for ($i = 0; $i < ( 4 - count( $index ) ); $i++) $missing_bytes[] = 0;
+				
+				$index = array_merge( $missing_bytes, $index );
+			}
+			
+			$index = Uint::fromUint8Array( $index )->toUint8();
+			$sk = new SplFixedArray( 64 );
+			
 			$b2b = new Blake2b();
 			$ctx = $b2b->init( null, 32 );
  			$b2b->update( $ctx, $seed, count( $seed ) );
-			$b2b->update( $ctx, $index, count( $index ) );
+			$b2b->update( $ctx, $index, 4 );
 			$b2b->finish( $ctx, $sk );
             
-			//$sk = Uint::fromUint8Array( array_slice( $sk->toArray(), 0, 32 ) )->toHexString();
+			$sk = Uint::fromUint8Array( array_slice( $sk->toArray(), 0, 32 ) )->toHexString();
 			$pk = self::private2public( $sk );
             
-			return [$sk,$pk];
+			$keys = [$sk,$pk];
+			
+			if( $get_account ) $keys[2] = self::public2account( $pk );
+			
+			return $keys;
 		}
 	}
 
