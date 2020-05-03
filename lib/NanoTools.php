@@ -391,9 +391,44 @@
 		
 		
 		
-		public static function work()
+		public static function work( int $difficulty )
 		{
+			$b2b = new Blake2b();
+			$ctx = $b2b->init( null, 8 );
+			$output = [0,0,0,0,0,0,0,0];
 			
+			$output = Uint::fromUint8Array( $output )->toUint8();
+			$difficulty = Uint::fromDec( $difficulty )->toUint8()->toArray();
+			
+			if( count( $difficulty ) < 8 )
+			{
+				$missing_bytes = [];
+				for ($i = 0; $i < ( 8 - count( $difficulty ) ); $i++) $missing_bytes[] = 0;
+				$difficulty = array_merge( $missing_bytes, $difficulty );
+			}
+			
+			$difficulty = Uint::fromUint8Array( $difficulty )->toUint8();
+			
+			while( Uint::fromUint8Array( $output )->toString() < Uint::fromUint8Array( $difficulty )->toString() )
+			{
+				$iteration = 256;
+				
+				while( $iteration && Uint::fromUint8Array( $output )->toString() < Uint::fromUint8Array( $difficulty )->toString() )
+				{
+					$work = [];
+					for ($i = 0; $i < 8; $i++) $work[] = mt_rand( 0, 255 );
+					$work = Uint::fromUint8Array( $work )->toUint8();
+					
+					$b2b->update( $ctx, $work, 8 );
+					$b2b->update( $ctx, $difficulty, 8 );
+					$b2b->finish( $ctx, $output, 8 );
+					$ctx = $b2b->init( null, 8 );
+					
+					$iteration--;
+				}
+			}
+			
+			return Uint::fromUint8( $output )->toHexString();
 		}
 		
 		
