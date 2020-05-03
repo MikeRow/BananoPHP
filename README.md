@@ -12,51 +12,6 @@ PHP libraries and tools for the Nano currency
 
 Full documentation is located in the [Wiki](https://github.com/mikerow/php4nano/wiki)
 
-## Repository contents
-
-<pre>
-[lib]...............................library for Nano
-
-    NanoCli.php.....................interface for nano_node CLI
-    NanoRPC.php.....................interface for nano_node RPC
-    NanoRPCExtension.php............extension commands for nano_node RPC
-    NanoTools.php...................usefull node-independent tools
-	
-[lib3]..............................third-party libraries
-
-    [RaiBlocksPHP-master]...........A bunch of PHP methods to build and sign transactions
-    [clitable-1.2]..................CLI Table Output for PHP
-    [phpseclib-2.0.27]..............PHP Secure Communications Library
-    
-    clitable_loader.php.............clitable loader
-    phpseclib_loader.php............phpseclib loader
-	
-[media].............................media folder
-
-    logo.png........................png logo format
-    logo.svg........................svg logo format
-    repository-logo.png.............png repository logo format
-    repository-logo.svg.............svg repository logo format
-
-[ncm]...............................node CLI manager
-
-    ncm.php.........................ncm script
-
-[nco]...............................nodes CLI observer
-
-    nco.php.........................nco script
-	
-[scripts]...........................useful scripts
-
-    nano-raws.php...................operations with raw amounts
-    ncm-remote.php..................managing a node via SSH and ncm
-
-LICENSE.............................license
-README.md...........................readme
-VERSION.txt.........................current version
-update.php..........................update to latest release
-</pre>
-
 ## Credits
 
 Repositories
