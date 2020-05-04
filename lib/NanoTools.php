@@ -411,7 +411,7 @@
 				$b2b->update( $ctx, $work, count( $work ) );
 				$b2b->update( $ctx, $hash, count( $hash ) );
 				$b2b->finish( $ctx, $output );
-				$ctx = $b2b->init( null, count( $output ) );
+				$ctx = $b2b->init( null, 8 );
 				echo hexdec( Uint::fromUint8Array( $output )->toHexString() ) . ' - ' . $difficulty . PHP_EOL;
 			}
 			
