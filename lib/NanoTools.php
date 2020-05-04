@@ -292,10 +292,12 @@
 		public static function seed()
 		{
 			$salt = Salt::instance();
-			$keys = $salt->crypto_sign_keypair();
-			$keys[0] = Uint::fromUint8Array( array_slice( $keys[0]->toArray(), 0, 32 ) )->toHexString();
+			
+			$sk = FieldElement::fromString( Salt::randombytes() );
+			$sk->setSize( 64 );
+			$sk = Uint::fromUint8Array( array_slice( $sk->toArray(), 0, 32 ) )->toHexString();
             
-			return $keys[0];
+			return $sk;
 		}
 		
 		
@@ -409,26 +411,20 @@
 			
 			$difficulty = Uint::fromUint8Array( $difficulty )->toUint8();
 			
-			while( Uint::fromUint8Array( $output )->toString() < Uint::fromUint8Array( $difficulty )->toString() )
+			while( gmp_cmp( hexdec( Uint::fromUint8Array( $output )->toHexString() ), hexdec( Uint::fromUint8Array( $difficulty )->toHexString() ) ) < 0 )
 			{
-				$iteration = 256;
+				$work = [];
+				for ($i = 0; $i < 8; $i++) $work[] = mt_rand( 0, 255 );
+				$work = Uint::fromUint8Array( $work )->toUint8();
 				
-				while( $iteration && Uint::fromUint8Array( $output )->toString() < Uint::fromUint8Array( $difficulty )->toString() )
-				{
-					$work = [];
-					for ($i = 0; $i < 8; $i++) $work[] = mt_rand( 0, 255 );
-					$work = Uint::fromUint8Array( $work )->toUint8();
-					
-					$b2b->update( $ctx, $work, 8 );
-					$b2b->update( $ctx, $difficulty, 8 );
-					$b2b->finish( $ctx, $output, 8 );
-					$ctx = $b2b->init( null, 8 );
-					
-					$iteration--;
-				}
+				$b2b->update( $ctx, $work, 8 );
+				$b2b->update( $ctx, $difficulty, 8 );
+				$b2b->finish( $ctx, $output );
+				$ctx = $b2b->init( null, 8 );
+				echo hexdec( Uint::fromUint8Array( $output )->toHexString() ) . ' - ' . hexdec( Uint::fromUint8Array( $difficulty )->toHexString() ) . PHP_EOL;
 			}
 			
-			return Uint::fromUint8( $output )->toHexString();
+			return Uint::fromUint8Array( $output )->toHexString();
 		}
 		
 		
@@ -439,9 +435,32 @@
 		
 		
 		
-		public static function work_validate()
+		public static function work_validate( $hash, $work )
 		{
+			if( !hex2bin( $work ) ) return false;
+			if( strlen( $work ) != 16 ) return false;
+			if( strlen( $hash ) != 64 ) return false;
+			if( !hex2bin( $hash ) ) return false;
+				
+			$res = new SplFixedArray( 64 );
+			$workBytes = Uint::fromHex( $work )->toUint8();
+			$hashBytes = Uint::fromHex( $hash )->toUint8();
+			$workBytes = array_reverse( $workBytes->toArray() );
+			$workBytes = SplFixedArray::fromArray( $workBytes );
 			
+			$blake2b = new Blake2b();
+			$ctx = $blake2b->init( null, 8 );
+			$blake2b->update( $ctx, $workBytes, 8 );
+			$blake2b->update( $ctx, $hashBytes, 32 );
+			$blake2b->finish( $ctx, $res );
+			
+			if( $res[7] == 255 )
+				if( $res[6] == 255 )
+					if( $res[5] == 255 )
+						if( $res[4] >= 192 )
+							return true;
+			
+			return false;
 		}
 	}
 
