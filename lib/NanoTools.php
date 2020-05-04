@@ -393,12 +393,13 @@
 		
 		
 		
-		public static function work( int $difficulty )
+		public static function work( string $root, int $difficulty )
 		{
 			$b2b = new Blake2b();
 			$ctx = $b2b->init( null, 8 );
 			$output = [0,0,0,0,0,0,0,0];
 			
+			$root = Uint::fromHex( $root )->toUint8();
 			$output = Uint::fromUint8Array( $output )->toUint8();
 			$difficulty = Uint::fromDec( $difficulty )->toUint8()->toArray();
 			
@@ -418,7 +419,7 @@
 				$work = Uint::fromUint8Array( $work )->toUint8();
 				
 				$b2b->update( $ctx, $work, 8 );
-				$b2b->update( $ctx, $difficulty, 8 );
+				$b2b->update( $ctx, $root, 32 );
 				$b2b->finish( $ctx, $output );
 				$ctx = $b2b->init( null, 8 );
 				echo hexdec( Uint::fromUint8Array( $output )->toHexString() ) . ' - ' . hexdec( Uint::fromUint8Array( $difficulty )->toHexString() ) . PHP_EOL;
