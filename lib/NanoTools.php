@@ -393,13 +393,13 @@
 		
 		
 		
-		public static function work( string $root, int $difficulty )
+		public static function work( string $hash, int $difficulty )
 		{
 			$b2b = new Blake2b();
 			$ctx = $b2b->init( null, 8 );
 			$output = [0,0,0,0,0,0,0,0];
 			
-			$root = Uint::fromHex( $root )->toUint8();
+			$hash = Uint::fromHex( $hash )->toUint8();
 			$output = Uint::fromUint8Array( $output )->toUint8();
 			
 			while( gmp_cmp( hexdec( Uint::fromUint8Array( $output )->toHexString() ), $difficulty ) < 0 )
@@ -409,8 +409,8 @@
 				$work = Uint::fromUint8Array( $work )->toUint8();
 				
 				$b2b->update( $ctx, $work, count( $work ) );
-				$b2b->update( $ctx, $root, count( $root ) );
-				$b2b->finish( $ctx, $output, count( $output ) );
+				$b2b->update( $ctx, $hash, count( $hash ) );
+				$b2b->finish( $ctx, $output );
 				$ctx = $b2b->init( null, count( $output ) );
 				echo hexdec( Uint::fromUint8Array( $output )->toHexString() ) . ' - ' . $difficulty . PHP_EOL;
 			}
