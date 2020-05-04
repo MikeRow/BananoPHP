@@ -420,7 +420,7 @@
 				
 				$b2b->update( $ctx, $work, 8 );
 				$b2b->update( $ctx, $root, 32 );
-				$b2b->finish( $ctx, $output );
+				$b2b->finish( $ctx, $output, 8 );
 				$ctx = $b2b->init( null, 8 );
 				echo hexdec( Uint::fromUint8Array( $output )->toHexString() ) . ' - ' . hexdec( Uint::fromUint8Array( $difficulty )->toHexString() ) . PHP_EOL;
 			}
