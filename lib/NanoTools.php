@@ -10,6 +10,8 @@
 	use \Blake2b as Blake2b;
 	use \Salt as Salt;
 	use \FieldElement as FieldElement;
+	use \hexToDec as hexToDec;
+	use \decToHex as decToHex;
 	
 	class NanoTools
 	{
@@ -396,26 +398,30 @@
 		public static function work( string $hash, int $difficulty )
 		{
 			$b2b = new Blake2b();
-			$ctx = $b2b->init( null, 8 );
-			$output = [0,0,0,0,0,0,0,0];
 			
 			$hash = Uint::fromHex( $hash )->toUint8();
-			$output = Uint::fromUint8Array( $output )->toUint8();
+			$output = new SplFixedArray( 64 );
 			
-			while( gmp_cmp( hexdec( Uint::fromUint8Array( $output )->toHexString() ), $difficulty ) < 0 )
+			while( true )
 			{
-				$work = [];
-				for ($i = 0; $i < 8; $i++) $work[] = mt_rand( 0, 255 );
-				$work = Uint::fromUint8Array( $work )->toUint8();
+				$rng = [];
+				for ($i = 0; $i < 8; $i++) $rng[] = mt_rand( 0, 255 );
+				$rng = Uint::fromUint8Array( $rng )->toUint8();
 				
-				$b2b->update( $ctx, $work, count( $work ) );
-				$b2b->update( $ctx, $hash, count( $hash ) );
-				$b2b->finish( $ctx, $output );
 				$ctx = $b2b->init( null, 8 );
-				echo hexdec( Uint::fromUint8Array( $output )->toHexString() ) . ' - ' . $difficulty . PHP_EOL;
+				$b2b->update( $ctx, $rng, count( $rng ) );
+				$b2b->update( $ctx, $hash, count( $hash ) );
+				$b2b->finish( $ctx, $output, 8 );
+				
+				$work = array_slice( $output->toArray(), 0, 8 );
+				$work = Uint::fromUint8Array( $work )->toHexString();
+				
+				echo hexToDec( $work ) . ' - ' . $difficulty . PHP_EOL;
+				
+				if( hexToDec( $work ) < $difficulty ) return $work;
 			}
 			
-			return Uint::fromUint8Array( $output )->toHexString();
+			
 		}
 		
 		
