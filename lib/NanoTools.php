@@ -395,7 +395,7 @@
 		
 		
 		
-		public static function work( string $hash, int $difficulty )
+		public static function work( string $hash, $difficulty )
 		{
 			$b2b = new Blake2b();
 			
@@ -416,12 +416,8 @@
 				$work = array_reverse( array_slice( $output->toArray(), 0, 8 ) );
 				$work = Uint::fromUint8Array( $work )->toHexString();
 				
-				echo hexToDec( $work ) . ' - ' . $difficulty . PHP_EOL;
-				
-				if( hexToDec( $work ) < $difficulty ) return $work;
+				if( '0x' . $work >= $difficulty ) return $work;
 			}
-			
-			
 		}
 		
 		
