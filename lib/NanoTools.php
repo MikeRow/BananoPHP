@@ -416,7 +416,8 @@
 				$work = array_reverse( array_slice( $output->toArray(), 0, 8 ) );
 				$work = Uint::fromUint8Array( $work )->toHexString();
 				
-				if( '0x' . $work >= $difficulty ) return $work;
+				//echo hexToDec( $work ) . '-' . $difficulty. PHP_EOL;
+				if( hexToDec( $work ) >= $difficulty ) return $work;
 			}
 		}
 		
