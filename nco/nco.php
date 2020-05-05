@@ -459,11 +459,14 @@
 					{
 						foreach( $ncmCall as $wallet_id => $wallet_info )
 						{
-							$wallets_count++;
-							$wallets_balance = gmp_add( $wallets_balance, $wallet_info['balance'] );
-							$wallets_pending = gmp_add( $wallets_pending, $wallet_info['pending'] );
-							$wallets_weight = gmp_add( $wallets_weight, $wallet_info['weight'] );
-							$wallets_accounts_count += $wallet_info['accounts_count'];
+							if( is_array( $wallet_info ) )
+							{
+								$wallets_count++;
+								$wallets_balance = gmp_add( $wallets_balance, $wallet_info['balance'] );
+								$wallets_pending = gmp_add( $wallets_pending, $wallet_info['pending'] );
+								$wallets_weight = gmp_add( $wallets_weight, $wallet_info['weight'] );
+								$wallets_accounts_count += $wallet_info['accounts_count'];
+							}
 						}
 					}
 					
