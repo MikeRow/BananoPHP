@@ -1,6 +1,6 @@
 <p align="center">
 	<img width="360" alt="php4nano logo" src="https://raw.githubusercontent.com/mikerow/php4nano/master/media/logo.png">
-
+</p>
 
 # php4nano
 
@@ -32,4 +32,4 @@ Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the support gi
 ## Support
 
 - Contribute to code by developing the [planned features](https://github.com/mikerow/php4nano/wiki/roadmap)
-- Send funds or delegate your weight to [my representative](https://mynano.ninja/account/mikerow)</p>
+- Send funds or delegate your weight to [my representative](https://mynano.ninja/account/mikerow)
