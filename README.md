@@ -10,8 +10,7 @@ PHP libraries and tools for the Nano currency
 
 ## Origins
 
-php4nano is the evolution of the now archived [easyraikitphp](https://github.com/mikerow/easyraikitphp) repository, which was used between 2016 and 2017 for the, in that moment, unique block explorer for RaiBlocks hosted on [raiblockscommunity.net](https://raiblockscommunity.net).<br/>
-At the same time it was used to manage the distribution of the cryptocurrency through the faucet over the same domain.
+php4nano is the evolution of the now archived [easyraikitphp](https://github.com/mikerow/easyraikitphp) repository, which was used between 2016 and 2017 for the, in that moment, unique block explorer for RaiBlocks hosted on [raiblockscommunity.net](https://raiblockscommunity.net). At the same time it was used to manage the distribution of the cryptocurrency through the faucet over the same domain.
 
 The code has been rewritten from 0 in order to make it easier and faster for developers to use it, moreover the references to the previous name RaiBlocks have been replaced with the cooler, better known name Nano.
 
