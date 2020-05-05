@@ -403,7 +403,7 @@
 				}
 				else
 				{
-					$table_data[$tag]['notice'] = 'OK';
+					$table_data[$tag]['notice'] = 'OK                       ';
 				}	
 				
 				
