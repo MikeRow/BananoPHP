@@ -413,7 +413,7 @@
 				$b2b->update( $ctx, $hash, count( $hash ) );
 				$b2b->finish( $ctx, $output, 8 );
 				
-				$work = array_slice( $output->toArray(), 0, 8 );
+				$work = array_reverse( array_slice( $output->toArray(), 0, 8 ) );
 				$work = Uint::fromUint8Array( $work )->toHexString();
 				
 				echo hexToDec( $work ) . ' - ' . $difficulty . PHP_EOL;
