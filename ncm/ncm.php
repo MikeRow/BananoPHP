@@ -744,23 +744,6 @@
 
 	
 
-	// *****************
-	// *** Get input ***
-	// *****************
-	
-	
-	
-	if( count( $argv ) < 2 ) exit;
-	
-	$command = $argv[1];
-	
-	unset( $argv[0] );
-	unset( $argv[1] );
-	
-	$argv = array_values( $argv );
-	
-	
-	
 	// *******************
 	// *** Build input ***
 	// *******************
@@ -822,6 +805,19 @@
 	{
 		$flags['cli'] = false;
 	}
+	
+	
+	// *** Command and arguments ***
+	
+	
+	if( count( $argv ) < 2 ) exit;
+	
+	$command = $argv[1];
+	
+	unset( $argv[0] );
+	unset( $argv[1] );
+	
+	$argv = array_values( $argv );
 	
 	
 	// *** Json/Default input ***

@@ -222,23 +222,6 @@
 	
 	
 	
-	// *****************
-	// *** Get input ***
-	// *****************
-	
-
-	
-	if( count( $argv ) < 2 ) exit;
-	
-	$command = $argv[1];
-	
-	unset( $argv[0] );
-	unset( $argv[1] );
-	
-	$argv = array_values( $argv );
-	
-
-	
 	// *******************
 	// *** Build input ***
 	// *******************
@@ -276,6 +259,19 @@
 			unset( $argv[$index] );
 		}
 	}
+	
+	
+	// *** Command and arguments ***
+	
+	
+	if( count( $argv ) < 2 ) exit;
+	
+	$command = $argv[1];
+	
+	unset( $argv[0] );
+	unset( $argv[1] );
+	
+	$argv = array_values( $argv );
 
 
 	// *** Arguments ***
@@ -312,7 +308,7 @@
 		
 		$last_update = microtime( true );
 		
-		$ncm_flags = 'raw_in,raw_out'; // ncmCall default flags
+		$ncm_flags = 'raw_in,raw_out,no_log'; // ncmCall default flags
 	
 		$ncm_callerID = 'nco'; // ncmCall default callerID
 		
@@ -416,16 +412,28 @@
 				
 				if( $command == 'sync' )
 				{
+					// Blocks
+					
 					$ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'block_count', [], $ncm_flags, $ncm_callerID );
+					
+					if( !isset( $ncmCall['count'] ) || $ncmCall['count'] == null ) $ncmCall['count'] = 0;
+					if( !isset( $ncmCall['unchecked'] ) || $ncmCall['unchecked'] == null ) $ncmCall['unchecked'] = 0;
+					if( !isset( $ncmCall['cemented'] ) || $ncmCall['cemented'] == null ) $ncmCall['cemented'] = 0;
 					
 					$table_data[$tag]['block_count'] = custom_number( $ncmCall['count'] );
 					$table_data[$tag]['block_unchecked'] = custom_number( $ncmCall['unchecked'] );
 					$table_data[$tag]['block_cemented'] = custom_number( $ncmCall['cemented'] );
-						
+					
+					// Peers
+					
 					$ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'peers', [], $ncm_flags, $ncm_callerID );
 					
+					if( !isset( $ncmCall['peers'] ) || !is_array( $ncmCall['peers'] ) ) $ncmCall['peers'] = [];
+					
 					$table_data[$tag]['network_peers'] = custom_number( count( $ncmCall['peers'] ) );	
-						
+					
+					// Representatives
+					
 					$ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'representatives_online', [], $ncm_flags, $ncm_callerID );
 					
 					if( !isset( $ncmCall['count'] ) || $ncmCall['count'] == null ) $ncmCall['count'] = 0;
@@ -468,16 +476,29 @@
 				
 				if( $command == 'node' )
 				{
+					// Version
+					
 					$ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'version', [], $ncm_flags, $ncm_callerID );
+					
+					if( !isset( $ncmCall['node_vendor'] ) || $ncmCall['node_vendor'] == null ) $ncmCall['node_vendor'] = '0';
 					
 					$table_data[$tag]['node_version'] = $ncmCall['node_vendor'];
 					
+					// Uptime
+					
 					$ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'uptime', [], $ncm_flags, $ncm_callerID );
 										
+					if( !isset( $ncmCall['seconds'] ) || $ncmCall['seconds'] == null ) $ncmCall['seconds'] = 0;
+					
 					$table_data[$tag]['node_uptime'] = custom_number( $ncmCall['seconds']/60/60, 3 ) . ' h';
 					
+					// Blockchain
+					
 					$ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'blockchain', [], $ncm_flags, $ncm_callerID );
-										
+						
+					if( !isset( $ncmCall['blockchain'] ) || $ncmCall['blockchain'] == null ) $ncmCall['blockchain'] = 0;
+					if( !isset( $ncmCall['block_average'] ) || $ncmCall['block_average'] == null ) $ncmCall['block_average'] = 0;
+					
 					$table_data[$tag]['node_blockchain'] = custom_number( $ncmCall['blockchain']/1000000, 0 ) . ' MB';
 					$table_data[$tag]['node_block_average'] = custom_number( $ncmCall['block_average'], 0 ) . ' B';
 				}
