@@ -161,7 +161,7 @@
 					$ctx = $b2b->init( null, 5 );
 					$b2b->update( $ctx, $key_uint8, count( $key_uint8 ) );
 					$b2b->finish( $ctx, $key_hash );
-
+					
 					$key_hash = array_reverse( array_slice( $key_hash->toArray(), 0, 5 ) );
 					
 					if( $hash_uint8 == $key_hash )
@@ -395,29 +395,33 @@
 		
 		
 		
-		public static function work( string $hash, $difficulty )
+		public static function work( string $hash, string $difficulty )
 		{
-			$b2b = new Blake2b();
+			$hash = sodium_hex2bin( $hash );
+			$difficulty = hexdec( $difficulty );
 			
-			$hash = Uint::fromHex( $hash )->toUint8();
-			$output = new SplFixedArray( 64 );
-			
+			$o = 1; $start = microtime( true );
 			while( true )
 			{
-				$rng = [];
-				for ($i = 0; $i < 8; $i++) $rng[] = mt_rand( 0, 255 );
-				$rng = Uint::fromUint8Array( $rng )->toUint8();
+				$rng = random_bytes( 8 );
+
+				$ctx = sodium_crypto_generichash_init( null, 16 );
+				sodium_crypto_generichash_update( $ctx, $rng );
+				sodium_crypto_generichash_update( $ctx, $hash );
+				$work = sodium_crypto_generichash_final( $ctx );
+				//echo strlen( $work ); exit;
+				//$work = strrev( substr( $work, strlen( $work )-9, 8 ) );
+				$work = sodium_bin2hex( $work );
+				//echo strlen( $work ); exit;
+				$work = strrev( substr( $work, 0, 16 ) );
+				//$work = strrev( $work );
 				
-				$ctx = $b2b->init( null, 8 );
-				$b2b->update( $ctx, $rng, count( $rng ) );
-				$b2b->update( $ctx, $hash, count( $hash ) );
-				$b2b->finish( $ctx, $output, 8 );
-				
-				$work = array_reverse( array_slice( $output->toArray(), 0, 8 ) );
-				$work = Uint::fromUint8Array( $work )->toHexString();
-				
-				//echo hexToDec( $work ) . '-' . $difficulty. PHP_EOL;
-				if( hexToDec( $work ) >= $difficulty ) return $work;
+				$o++;
+				if( hexdec( $work ) >= $difficulty )
+				{
+					echo number_format( $o / ( microtime( true ) - $start ), 0, '.', ',' ) . ' works/s'. PHP_EOL . number_format( $o, 0, '.', ',' ) . PHP_EOL . number_format( microtime( true ) - $start, 0, '.', ',' ) . ' s' . PHP_EOL;
+					return $work;
+				}
 			}
 		}
 		
@@ -429,12 +433,12 @@
 		
 		
 		
-		public static function work_validate( $hash, $work )
+		public static function work_validate( string $hash, string $work, string $difficulty = null )
 		{
-			if( !hex2bin( $work ) ) return false;
 			if( strlen( $work ) != 16 ) return false;
 			if( strlen( $hash ) != 64 ) return false;
 			if( !hex2bin( $hash ) ) return false;
+			if( !hex2bin( $work ) ) return false;
 				
 			$res = new SplFixedArray( 64 );
 			$workBytes = Uint::fromHex( $work )->toUint8();
