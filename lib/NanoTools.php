@@ -223,48 +223,6 @@
 		
 		
 		
-		// ************************
-		// *** Account validate ***
-		// ************************
-		
-		
-		
-		public static function account_validate( string $account )
-		{
-			if( ( strpos( $account, 'xrb_1' ) === 0 || strpos( $account, 'xrb_3' ) === 0 || strpos( $account, 'nano_1' ) === 0 || strpos( $account, 'nano_3' ) === 0 ) && ( strlen( $account ) == 64 || strlen( $account ) == 65 ) )
-			{
-				$crop = explode( '_', $account );
-				$crop = $crop[1];
-				
-				if( preg_match( '/^[13456789abcdefghijkmnopqrstuwxyz]+$/', $crop ) )
-				{
-					$aux = Uint::fromString( substr( $crop, 0, 52 ) )->toUint4()->toArray();
-					array_shift( $aux );
-					$key_uint4 = $aux;
-					$hash_uint8 = Uint::fromString( substr( $crop, 52, 60 ) )->toUint8()->toArray();
-					$key_uint8 = Uint::fromUint4Array( $key_uint4 )->toUint8();
-					
-					$key_hash = new SplFixedArray( 64 );
-					
-					$b2b = new Blake2b();
-					$ctx = $b2b->init( null, 5 );
-					$b2b->update( $ctx, $key_uint8, count( $key_uint8 ) );
-					$b2b->finish( $ctx, $key_hash );
-
-					$key_hash = array_reverse( array_slice( $key_hash->toArray(), 0, 5 ) );
-					
-					if( $hash_uint8 == $key_hash )
-					{
-						return true;
-					}
-				}
-			}
-			
-			return false;
-		}
-		
-		
-		
 		// ****************
 		// *** Get keys ***
 		// ****************
@@ -394,9 +352,11 @@
 		// ***********************
 		
 		
-		
+		/*
 		public static function work( string $hash, string $difficulty )
 		{
+			// *** Using libsodium ***
+			
 			$hash = sodium_hex2bin( $hash );
 			$difficulty = hexdec( $difficulty );
 			
@@ -405,15 +365,17 @@
 			{
 				$rng = random_bytes( 8 );
 
-				$ctx = sodium_crypto_generichash_init( null, 16 );
+				$ctx = sodium_crypto_generichash_init( null, 64 );
 				sodium_crypto_generichash_update( $ctx, $rng );
 				sodium_crypto_generichash_update( $ctx, $hash );
 				$work = sodium_crypto_generichash_final( $ctx );
 				//echo strlen( $work ); exit;
 				//$work = strrev( substr( $work, strlen( $work )-9, 8 ) );
-				$work = sodium_bin2hex( $work );
+				// $work = sodium_bin2hex( $work );
 				//echo strlen( $work ); exit;
-				$work = strrev( substr( $work, 0, 16 ) );
+				$work = substr( $work, 0, 8 );
+				$work = strrev( $work );
+				$work = sodium_bin2hex( $work );
 				//$work = strrev( $work );
 				
 				$o++;
@@ -423,8 +385,42 @@
 					return $work;
 				}
 			}
+			
+			// *** Using Salt ***
+			
+			$b2b = new Blake2b();
+			
+			$hash = Uint::fromHex( $hash )->toUint8();
+			$difficulty = hexToDec( $difficulty );
+			$work = new SplFixedArray( 64 );
+			
+			while( true )
+			{
+				$rng = [];
+				for ($i = 0; $i < 8; $i++) $rng[] = mt_rand( 0, 255 );
+				$rng = Uint::fromUint8Array( $rng )->toUint8();
+				$work = new SplFixedArray( 64 );
+				
+				$ctx = $b2b->init( null, 8 );
+				$b2b->update( $ctx, $rng, 8 );
+				$b2b->update( $ctx, $hash, 32 );
+				$b2b->finish( $ctx, $work );
+				
+				$work = $work->toArray();
+				$work = array_slice( $work, 0, 8 );
+				$work = array_reverse( $work );
+				$work = Uint::fromUint8Array( $work )->toHexString();
+				//echo $work; exit;
+				//$work = array_slice( $work->toArray(), 0, 8 );
+				//$work = Uint::fromUint8Array( $work )->toHexString();
+				//$work = array_slice( Uint::fromUint8Array($work)->toArray(), 0, 8 )->toHexString();
+				
+				//echo hexToDec( $work ) . '-' . $difficulty. PHP_EOL;
+				if( hexToDec( $work ) >= $difficulty ) return $work;
+				
+			}
 		}
-		
+		*/
 		
 		
 		// ***********************
@@ -433,12 +429,14 @@
 		
 		
 		
-		public static function work_validate( string $hash, string $work, string $difficulty = null )
+		public static function work_validate( string $hash, string $work, string $difficulty )
 		{
 			if( strlen( $work ) != 16 ) return false;
 			if( strlen( $hash ) != 64 ) return false;
+			if( strlen( $difficulty ) != 16 ) return false;
 			if( !hex2bin( $hash ) ) return false;
 			if( !hex2bin( $work ) ) return false;
+			if( !hex2bin( $difficulty ) ) return false;
 				
 			$res = new SplFixedArray( 64 );
 			$workBytes = Uint::fromHex( $work )->toUint8();
@@ -452,11 +450,12 @@
 			$blake2b->update( $ctx, $hashBytes, 32 );
 			$blake2b->finish( $ctx, $res );
 			
-			if( $res[7] == 255 )
-				if( $res[6] == 255 )
-					if( $res[5] == 255 )
-						if( $res[4] >= 192 )
-							return true;
+			$res = $res->toArray();
+			$res = array_slice( $res, 0, 8 );
+			$res = array_reverse( $res );
+			$res = Uint::fromUint8Array( $res )->toHexString();
+			
+			if( hexToDec( $res ) >= hexToDec( $difficulty ) ) return true;
 			
 			return false;
 		}
