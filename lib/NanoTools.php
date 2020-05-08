@@ -316,7 +316,7 @@
 			{
 				if( !hex2bin( $value ) ) return false;
 				
-				$value =  Uint::fromHex( $value )->toUint8();
+				$value = Uint::fromHex( $value )->toUint8();
 				$b2b->update( $ctx, $value, count( $value ) );
 			}
 
