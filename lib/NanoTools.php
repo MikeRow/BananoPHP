@@ -301,6 +301,36 @@
 		
 		
 		
+		// ****************************
+		// *** Hash array of values ***
+		// ****************************
+		
+		
+		
+		public static function hash_array( array $inputs, int $size = 64 )
+		{
+			$ctx = $b2b->init( null, $size );
+			$hash = new SplFixedArray( 64 );
+			
+			foreach( $inputs as $index->$value )
+			{
+				if( !hex2bin( $value ) ) return false;
+				
+				$value =  Uint::fromHex( $value )->toUint8();
+				$b2b->update( $ctx, $value, count( $value ) );
+			}
+
+			$b2b->finish( $ctx, $hash );
+			$hash = $hash->toArray();
+			$hash = array_slice( $hash, 0, $size );
+			$hash = array_reverse( $hash );
+			$hash = Uint::fromUint8Array( $hash )->toHexString();
+			
+			return $hash;
+		}
+		
+		
+		
 		// **********************
 		// *** Sign a message ***
 		// **********************
@@ -351,13 +381,13 @@
 		// *** Generate a work ***
 		// ***********************
 		
-		
 		/*
+		
 		public static function work( string $hash, string $difficulty )
 		{
 			// *** Using libsodium ***
 			
-			$hash = sodium_hex2bin( $hash );
+			$hash = hex2bin( $hash );
 			$difficulty = hexdec( $difficulty );
 			
 			$o = 1; $start = microtime( true );
@@ -365,17 +395,17 @@
 			{
 				$rng = random_bytes( 8 );
 
-				$ctx = sodium_crypto_generichash_init( null, 64 );
-				sodium_crypto_generichash_update( $ctx, $rng );
-				sodium_crypto_generichash_update( $ctx, $hash );
-				$work = sodium_crypto_generichash_final( $ctx );
+				blake2b_init( $ctx, 8 );
+				blake2b_update( $ctx, $rng, 8 );
+				blake2b_update( $ctx, $hash, 32 );
+				blake2b_final( $ctx, $work, 8 );
 				//echo strlen( $work ); exit;
 				//$work = strrev( substr( $work, strlen( $work )-9, 8 ) );
 				// $work = sodium_bin2hex( $work );
 				//echo strlen( $work ); exit;
 				$work = substr( $work, 0, 8 );
 				$work = strrev( $work );
-				$work = sodium_bin2hex( $work );
+				$work = bin2hex( $work );
 				//$work = strrev( $work );
 				
 				$o++;
@@ -419,9 +449,10 @@
 				if( hexToDec( $work ) >= $difficulty ) return $work;
 				
 			}
+			
 		}
-		*/
 		
+		*/
 		
 		// ***********************
 		// *** Validate a work ***
