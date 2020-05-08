@@ -442,7 +442,7 @@
 		
 		public static function work( string $hash, string $difficulty )
 		{
-			// *** Using libsodium ***
+			// *** Using php-blake2 ***
 			
 			$hash = hex2bin( $hash );
 			$difficulty = hexdec( $difficulty );
