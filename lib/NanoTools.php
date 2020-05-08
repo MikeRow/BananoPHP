@@ -28,15 +28,15 @@
 			'Gnano' => '1000000000000000000000000000000000'
 		];	
 	
-		private static function to_uint5( $n )
+		private static function to_uint5_( $n )
 		{
 			$letter_list = str_split( "13456789abcdefghijkmnopqrstuwxyz" );
 			
 			return( array_search( $n, $letter_list ) );
 		}
 		
-	
-	
+		
+		
 		// ***************************
 		// *** Denomination to raw ***
 		// ***************************
@@ -45,6 +45,8 @@
 	
 		public static function den2raw( $amount, string $denomination )
 		{
+			if( !array_key_exists( $denomination, self::raw2 ) ) return false;
+			
 			$raw2denomination = self::raw2[$denomination];
 			
 			if( $amount == 0 )
@@ -81,6 +83,8 @@
 		
 		public static function raw2den( string $amount, string $denomination )
 		{
+			if( !array_key_exists( $denomination, self::raw2 ) ) return false;
+			
 			$raw2denomination = self::raw2[$denomination];
 			
 			if( $amount == '0' )
@@ -134,6 +138,9 @@
 		
 		public static function den2den( $amount, string $denomination_from, string $denomination_to )
 		{
+			if( !array_key_exists( $denomination_from, self::raw2 ) ) return false;
+			if( !array_key_exists( $denomination_to, self::raw2 ) ) return false;
+			
 			$raw = self::den2raw( $amount, $denomination_from );
 			
 			return self::raw2den( $raw, $denomination_to );
@@ -241,7 +248,7 @@
 		
 		public static function public2account( string $pk )
 		{
-			if( !preg_match( '/[0-9A-F]{64}/i', $pk ) ) return false;
+			if( strlen( $pk ) != 64 || !hex2bin( $pk ) ) return false;
 			
 			$key = Uint::fromHex( $pk );
 			$checksum;
@@ -268,7 +275,7 @@
 		
 		public static function private2public( string $sk )
 		{
-		    if( !preg_match( '/[0-9A-F]{64}/i', $sk ) ) return false;
+			if( strlen( $sk ) != 64 || !hex2bin( $sk ) ) return false;
 		    
 		    $salt = Salt::instance();
 		    
@@ -327,6 +334,8 @@
 		
 		public static function seed2keys( string $seed, int $index = 0, bool $get_account = false )
 		{
+			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) return false;
+			
 			$seed = Uint::fromHex( $seed )->toUint8();
 			$index = Uint::fromDec( $index )->toUint8()->toArray();
 			
@@ -396,18 +405,21 @@
 		
 		public static function sign( $sk, $msg )
 		{
+			if( strlen( $sk ) != 64 || !hex2bin( $sk ) ) return false;
+			if( strlen( $msg ) != 64 || !hex2bin( $msg ) ) return false;
+			
 			$salt = Salt::instance();
-			$sk = FieldElement::fromArray(Uint::fromHex($sk)->toUint8());
-			$pk = Salt::crypto_sign_public_from_secret_key($sk);
-			$sk->setSize(64);
-			$sk->copy($pk, 32, 32);
-			$msg = Uint::fromHex($msg)->toUint8();
-			$sm = $salt->crypto_sign($msg, count($msg), $sk);
+			$sk = FieldElement::fromArray( Uint::fromHex( $sk )->toUint8() );
+			$pk = Salt::crypto_sign_public_from_secret_key( $sk );
+			$sk->setSize( 64 );
+			$sk->copy( $pk, 32, 32 );
+			$msg = Uint::fromHex( $msg )->toUint8();
+			$sm = $salt->crypto_sign( $msg, count( $msg ), $sk );
 			
 			$signature = [];
-			for($i = 0; $i < 64; $i++) $signature[$i] = $sm[$i];
+			for( $i = 0; $i < 64; $i++ ) $signature[$i] = $sm[$i];
 			
-			return Uint::fromUint8Array($signature)->toHexString();
+			return Uint::fromUint8Array( $signature )->toHexString();
 		}
 		
 		
@@ -420,16 +432,21 @@
 		
 		public static function sign_validate( $msg, $sig, $account )
 		{
-			$sig = Uint::fromHex($sig)->toUint8();
-			$msg = Uint::fromHex($msg)->toUint8();
-			$pk = Uint::fromHex(self::account2public($account))->toUint8();
+			if( strlen( $msg ) != 64 || !hex2bin( $msg ) ) return false;
+			if( strlen( $sig ) != 128 || !hex2bin( $sig ) ) return false;
+			$pk = self::account2public( $account );
+			if( !$pk ) return false;
 			
-			$sm = new SplFixedArray(64 + count($msg));
-			$m = new SplFixedArray(64 + count($msg));
-			for ($i = 0; $i < 64; $i++) $sm[$i] = $sig[$i];
-			for ($i = 0; $i < count($msg); $i++) $sm[$i+64] = $msg[$i];
+			$sig = Uint::fromHex( $sig )->toUint8();
+			$msg = Uint::fromHex( $msg )->toUint8();
+			$pk = Uint::fromHex( $pk )->toUint8();
 			
-			return Salt::crypto_sign_open2($m, $sm, count($sm), $pk);
+			$sm = new SplFixedArray( 64 + count( $msg) );
+			$m = new SplFixedArray( 64 + count( $msg) );
+			for( $i = 0; $i < 64; $i++ ) $sm[$i] = $sig[$i];
+			for( $i = 0; $i < count( $msg ); $i++ ) $sm[$i+64] = $msg[$i];
+			
+			return Salt::crypto_sign_open2( $m, $sm, count( $sm ), $pk );
 		}
 		
 		
@@ -443,6 +460,9 @@
 		public static function work( string $hash, string $difficulty )
 		{
 			// *** Using php-blake2 ***
+			
+			if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) return false;
+			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) return false;
 			
 			$hash = hex2bin( $hash );
 			$difficulty = hexdec( $difficulty );
@@ -474,6 +494,9 @@
 			}
 			
 			// *** Using Salt ***
+			
+			if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) return false;
+			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) return false;
 			
 			$b2b = new Blake2b();
 			
@@ -519,12 +542,9 @@
 		
 		public static function work_validate( string $hash, string $work, string $difficulty )
 		{
-			if( strlen( $work ) != 16 ) return false;
-			if( strlen( $hash ) != 64 ) return false;
-			if( strlen( $difficulty ) != 16 ) return false;
-			if( !hex2bin( $hash ) ) return false;
-			if( !hex2bin( $work ) ) return false;
-			if( !hex2bin( $difficulty ) ) return false;
+			if( strlen( $work ) != 16 || !hex2bin( $work ) ) return false;
+			if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) return false;
+			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) return false;
 				
 			$res = new SplFixedArray( 64 );
 			$workBytes = Uint::fromHex( $work )->toUint8();
