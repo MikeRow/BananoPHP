@@ -1157,7 +1157,7 @@
 		{
 			// *** Print node summary info ***
 			
-			
+
 			case 'status':
 			{ 
 				// Node version
