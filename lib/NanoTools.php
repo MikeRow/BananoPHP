@@ -251,6 +251,29 @@
 		}
 		
 		
+		// *** Using php-blake2 ***
+		
+		
+		public static function public2account_ext( string $pk )
+		{
+			if( strlen( $pk ) != 64 || !hex2bin( $pk ) ) return false;
+			
+			$key = Uint::fromHex( $pk )->toUint8();
+			$key = (array) $key;
+			$key = implode( array_map( 'chr', $key ) );
+			
+			$hash = blake2( $key, 5, null, true );
+			$hash = str_split( $hash );
+			$hash = array_map( 'ord', $hash );
+			$hash = array_reverse( array_slice( $hash, 0, 5 ) );
+			
+			$checksum = Uint::fromUint8Array( $hash )->toString();
+			$c_account = Uint::fromHex( '0' . $pk )->toString();
+			
+			return 'nano_' . $c_account . $checksum;
+		}
+		
+		
 		
 		// *********************************
 		// *** Private key to public key ***
