@@ -27,13 +27,6 @@
 			 'NANO' => '1000000000000000000000000000000',
 			'Gnano' => '1000000000000000000000000000000000'
 		];	
-	
-		private static function to_uint5_( $n )
-		{
-			$letter_list = str_split( "13456789abcdefghijkmnopqrstuwxyz" );
-			
-			return( array_search( $n, $letter_list ) );
-		}
 		
 		
 		
@@ -154,6 +147,9 @@
 		
 		
 		
+		// *** Using Salt ***
+		
+		
 		public static function account2public( string $account )
 		{
 			if( ( strpos( $account, 'xrb_1' ) === 0 || strpos( $account, 'xrb_3' ) === 0 || strpos( $account, 'nano_1' ) === 0 || strpos( $account, 'nano_3' ) === 0 ) && ( strlen( $account ) == 64 || strlen( $account ) == 65 ) )
@@ -194,43 +190,29 @@
 		
 		public static function account2public_ext( string $account )
 		{
-			if( is_string( $account ) )
+			if( ( strpos( $account, 'xrb_1' ) === 0 || strpos( $account, 'xrb_3' ) === 0 || strpos( $account, 'nano_1' ) === 0 || strpos( $account, 'nano_3' ) === 0 ) && ( strlen( $account ) == 64 || strlen( $account ) == 65 ) )
 			{
-				if( ( ( strpos( $account, 'xrb_1' ) === 0 ) || ( strpos( $account, 'xrb_3' ) === 0 ) || ( strpos( $account, 'nano_1' ) === 0 ) || ( strpos( $account, 'nano_3' ) === 0 ) ) && ( strlen( $account ) == 64 || strlen( $account ) == 65 ) )
+				$crop = explode( '_', $account );
+				$crop = $crop[1];
+				
+				if( preg_match( '/^[13456789abcdefghijkmnopqrstuwxyz]+$/', $crop ) )
 				{
+					$aux = Uint::fromString( substr( $crop, 0, 52 ) )->toUint4()->toArray();
+					array_shift( $aux );
+					$key_uint4 = $aux;
+					$hash_uint8 = Uint::fromString( substr( $crop, 52, 60 ) )->toUint8()->toArray();
+					$key_uint8 = Uint::fromUint4Array( $key_uint4 )->toUint8();
+					$key_uint8 = (array) $key_uint8;
+					$key_uint8 = implode( array_map( 'chr', $key_uint8 ) );
 					
-					$account = explode( '_', $account );
-					$account = $account[1];
+					$key_hash = blake2( $key_uint8, 5, null, true );
+					$key_hash = str_split( $key_hash );
+					$key_hash = array_map( 'ord', $key_hash );
+					$key_hash = array_reverse( array_slice( $key_hash, 0, 5 ) );
 					
-					$char_validation = preg_match( "/^[13456789abcdefghijkmnopqrstuwxyz]+$/", $account );
-					
-					if( $char_validation === 1 )
+					if( $hash_uint8 == $key_hash )
 					{
-						$account_array = str_split( $account );
-						$uint5 = array_map( "self::to_uint5", $account_array );
-						$uint8[0] = ( ( $uint5[0] << 7 ) + ( $uint5[1] << 2 ) + ( $uint5[2] >> 3 ) ) % 256;
-						$uint8[1] = ( ( $uint5[2] << 5 ) + $uint5[3] ) % 256;
-						
-						for( $i = 0; $i < 7; ++$i )
-						{
-							$uint8[5*$i+2] = ( $uint5[8*$i+4] << 3 ) + ( $uint5[8*$i+5] >> 2 );
-							$uint8[5*$i+3] = ( ( $uint5[8*$i+5] << 6 ) + ( $uint5[8*$i+6] << 1 ) + ( $uint5[8*$i+7] >> 4 ) ) % 256;
-							$uint8[5*$i+4] = ( ( $uint5[8*$i+7] << 4 ) + ( $uint5[8*$i+8] >> 1 ) ) % 256;
-							$uint8[5*$i+5] = ( ( $uint5[8*$i+8] << 7 ) + ( $uint5[8*$i+9] << 2 ) + ( $uint5[8*$i+10] >> 3 ) ) % 256;
-							$uint8[5*$i+6] = ( ( $uint5[8*$i+10] << 5 ) + $uint5[8*$i+11] ) % 256;
-						}
-						
-						$key = array_slice( $uint8, 0, 32 );
-						$key_string = implode( array_map( "chr", $key ) );
-						
-						$hash = bin2hex( implode( array_map( "chr", array_reverse( array_slice( $uint8, 32, 5 ) ) ) ) );
-						
-						$check = blake2( $key_string, 5 );
-						
-						if( $hash === $check )
-						{
-							return true;
-						}
+						return Uint::fromUint4Array( $key_uint4 )->toHexString();
 					}
 				}
 			}
@@ -244,6 +226,9 @@
 		// *** Public key to account ***
 		// *****************************
 		
+		
+		
+		// *** Using Salt ***
 		
 		
 		public static function public2account( string $pk )
@@ -273,6 +258,9 @@
 		
 		
 		
+		// *** Using Salt ***
+		
+		
 		public static function private2public( string $sk )
 		{
 			if( strlen( $sk ) != 64 || !hex2bin( $sk ) ) return false;
@@ -291,6 +279,9 @@
 		// *** Get keys ***
 		// ****************
 		
+		
+		
+		// *** Using Salt ***
 		
 		
 		public static function keys( bool $get_account = false )
@@ -313,6 +304,9 @@
 		
 		
 		
+		// *** Using Salt ***
+		
+		
 		public static function seed()
 		{
 			$salt = Salt::instance();
@@ -332,9 +326,13 @@
 		
 		
 		
+		// *** Using Salt ***
+		
+		
 		public static function seed2keys( string $seed, int $index = 0, bool $get_account = false )
 		{
 			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) return false;
+			if( $index < 0 ) return false;
 			
 			$seed = Uint::fromHex( $seed )->toUint8();
 			$index = Uint::fromDec( $index )->toUint8()->toArray();
@@ -373,8 +371,13 @@
 		
 		
 		
+		// *** Using Salt ***
+		
+		
 		public static function hash_array( array $inputs, int $size = 64 )
 		{
+			if( $size <1 ) return false;
+			
 			$ctx = $b2b->init( null, $size );
 			$hash = new SplFixedArray( 64 );
 			
@@ -401,6 +404,9 @@
 		// *** Sign a message ***
 		// **********************
 		
+		
+		
+		// *** Using Salt ***
 		
 		
 		public static function sign( $sk, $msg )
@@ -430,6 +436,9 @@
 		
 		
 		
+		// *** Using Salt ***
+		
+		
 		public static function sign_validate( $msg, $sig, $account )
 		{
 			if( strlen( $msg ) != 64 || !hex2bin( $msg ) ) return false;
@@ -455,46 +464,13 @@
 		// *** Generate a work ***
 		// ***********************
 		
+			
+			
+		// *** Using Salt ***
+			
 		/*
-		
 		public static function work( string $hash, string $difficulty )
 		{
-			// *** Using php-blake2 ***
-			
-			if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) return false;
-			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) return false;
-			
-			$hash = hex2bin( $hash );
-			$difficulty = hexdec( $difficulty );
-			
-			$o = 1; $start = microtime( true );
-			while( true )
-			{
-				$rng = random_bytes( 8 );
-
-				blake2b_init( $ctx, 8 );
-				blake2b_update( $ctx, $rng, 8 );
-				blake2b_update( $ctx, $hash, 32 );
-				blake2b_final( $ctx, $work, 8 );
-				//echo strlen( $work ); exit;
-				//$work = strrev( substr( $work, strlen( $work )-9, 8 ) );
-				// $work = sodium_bin2hex( $work );
-				//echo strlen( $work ); exit;
-				$work = substr( $work, 0, 8 );
-				$work = strrev( $work );
-				$work = bin2hex( $work );
-				//$work = strrev( $work );
-				
-				$o++;
-				if( hexdec( $work ) >= $difficulty )
-				{
-					echo number_format( $o / ( microtime( true ) - $start ), 0, '.', ',' ) . ' works/s'. PHP_EOL . number_format( $o, 0, '.', ',' ) . PHP_EOL . number_format( microtime( true ) - $start, 0, '.', ',' ) . ' s' . PHP_EOL;
-					return $work;
-				}
-			}
-			
-			// *** Using Salt ***
-			
 			if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) return false;
 			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) return false;
 			
@@ -527,17 +503,57 @@
 				
 				//echo hexToDec( $work ) . '-' . $difficulty. PHP_EOL;
 				if( hexToDec( $work ) >= $difficulty ) return $work;
-				
 			}
-			
 		}
-		
 		*/
 		
-		// ***********************
-		// *** Validate a work ***
-		// ***********************
+		// *** Using php-blake2 ***
 		
+		/*
+		public static function work_ext( string $hash, string $difficulty )
+		{
+			if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) return false;
+			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) return false;
+			
+			$hash = hex2bin( $hash );
+			$difficulty = hexdec( $difficulty );
+			
+			$o = 1; $start = microtime( true );
+			while( true )
+			{
+				$rng = random_bytes( 8 );
+				
+				blake2b_init( $ctx, 8 );
+				blake2b_update( $ctx, $rng, 8 );
+				blake2b_update( $ctx, $hash, 32 );
+				blake2b_final( $ctx, $work, 8 );
+				//echo strlen( $work ); exit;
+				//$work = strrev( substr( $work, strlen( $work )-9, 8 ) );
+				// $work = sodium_bin2hex( $work );
+				//echo strlen( $work ); exit;
+				$work = substr( $work, 0, 8 );
+				$work = strrev( $work );
+				$work = bin2hex( $work );
+				//$work = strrev( $work );
+				
+				$o++;
+				if( hexdec( $work ) >= $difficulty )
+				{
+					echo number_format( $o / ( microtime( true ) - $start ), 0, '.', ',' ) . ' works/s'. PHP_EOL . number_format( $o, 0, '.', ',' ) . PHP_EOL . number_format( microtime( true ) - $start, 0, '.', ',' ) . ' s' . PHP_EOL;
+					return $work;
+				}
+			}
+		}
+		*/
+		
+		
+		// *********************
+		// *** Validate work ***
+		// *********************
+		
+		
+		
+		// *** Using Salt ***
 		
 		
 		public static function work_validate( string $hash, string $work, string $difficulty )
