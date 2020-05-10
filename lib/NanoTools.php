@@ -481,6 +481,7 @@
 			$difficulty = hexToDec( $difficulty );
 			$work = new SplFixedArray( 64 );
 			
+			$o = 1;
 			while( true )
 			{
 				$rng = [];
@@ -501,7 +502,8 @@
 				//$work = array_slice( $work->toArray(), 0, 8 );
 				//$work = Uint::fromUint8Array( $work )->toHexString();
 				//$work = array_slice( Uint::fromUint8Array($work)->toArray(), 0, 8 )->toHexString();
-				
+				echo $o . PHP_EOL;
+				$o++;
 				//echo hexToDec( $work ) . '-' . $difficulty. PHP_EOL;
 				if( hexToDec( $work ) >= $difficulty ) return $work;
 			}

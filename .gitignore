@@ -3,4 +3,5 @@ ncm/log/
 nco/data/
 test/
 wiki/
+.gitignore
 .project
