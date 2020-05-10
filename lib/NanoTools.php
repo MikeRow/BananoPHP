@@ -321,28 +321,6 @@
 		
 		
 		
-		// ****************
-		// *** Get seed ***
-		// ****************
-		
-		
-		
-		// *** Using Salt ***
-		
-		
-		public static function seed()
-		{
-			$salt = Salt::instance();
-			
-			$sk = FieldElement::fromString( Salt::randombytes() );
-			$sk->setSize( 64 );
-			$sk = Uint::fromUint8Array( array_slice( $sk->toArray(), 0, 32 ) )->toHexString();
-            
-			return $sk;
-		}
-		
-		
-		
 		// **************************
 		// *** Get keys from seed ***
 		// **************************
@@ -491,7 +469,7 @@
 			
 		// *** Using Salt ***
 			
-		/*
+		
 		public static function work( string $hash, string $difficulty )
 		{
 			if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) return false;
@@ -528,7 +506,7 @@
 				if( hexToDec( $work ) >= $difficulty ) return $work;
 			}
 		}
-		*/
+		
 		
 		// *** Using php-blake2 ***
 		
