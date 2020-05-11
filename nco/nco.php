@@ -202,7 +202,23 @@
 		}
 		else
 		{
-			return number_format( $number, $decimals, $C['format']['decimal'], $C['format']['thousand'] );
+			$amount = number_format( $number, $decimals, $C['format']['decimal'], $C['format']['thousand'] );
+			
+			// Remove useless decimals
+			
+			while( substr( $amount, -1 ) == '0' )
+			{
+				$amount = substr( $amount, 0, -1 );
+			}
+			
+			// Remove dot if all decimals are zeroes
+			
+			if( substr( $amount, -1 ) == '.' )
+			{
+				$amount = substr( $amount, 0, -1 );
+			}
+			
+			return $amount;
 		}
 	}
 	
@@ -492,7 +508,7 @@
 										
 					if( !isset( $ncmCall['seconds'] ) || $ncmCall['seconds'] == null ) $ncmCall['seconds'] = 0;
 					
-					$table_data[$tag]['node_uptime'] = custom_number( $ncmCall['seconds']/60/60, 3 ) . ' h';
+					$table_data[$tag]['node_uptime'] = custom_number( $ncmCall['seconds']/60/60, 2 ) . ' h';
 					
 					// Blockchain
 					

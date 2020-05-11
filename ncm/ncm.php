@@ -280,7 +280,23 @@
 		}
 		else
 		{
-			return number_format( $number, $decimals, $C['format']['decimal'], $C['format']['thousand'] );
+			$amount = number_format( $number, $decimals, $C['format']['decimal'], $C['format']['thousand'] );
+			
+			// Remove useless decimals
+			
+			while( substr( $amount, -1 ) == '0' )
+			{
+				$amount = substr( $amount, 0, -1 );
+			}
+			
+			// Remove dot if all decimals are zeroes
+			
+			if( substr( $amount, -1 ) == '.' )
+			{
+				$amount = substr( $amount, 0, -1 );
+			}
+			
+			return $amount;
 		}
 	}
 	
@@ -1016,7 +1032,7 @@
 				{
 					$wallet_info = $nanocall->wallet_info( ['wallet'=>$arguments['wallet']] );
 					
-					if( $wallet_info != false )
+					if( $nanocall->error != null )
 					{
 						$confirmation_amount = $arguments['amount'];
 					}
@@ -1039,7 +1055,7 @@
 				{
 					$wallet_info = $nanocall->wallet_info( ['wallet'=>$arguments['wallet']] );
 					
-					if( $wallet_info != false )
+					if( $nanocall->error != null )
 					{
 						$confirmation_amount = $wallet_info['balance'];
 					}
@@ -1309,6 +1325,7 @@
 						// *** Set tables fields ***
 						
 						
+						$table1->addField( ' ', 'type', false );
 						$table1->addField( 'Blocks', 'block_count', false );
 						$table1->addField( 'Unchecked', 'block_unchecked', false );
 						$table1->addField( 'Cemented', 'block_cemented', false );
@@ -1317,12 +1334,14 @@
 						$table1->addField( 'Weight Online', 'network_weight_online', false );
 						$table1->addField( '%', 'network_weight_online_percent', false );
 						
+						$table2->addField( ' ', 'type', false );
 						$table2->addField( 'Balance', 'wallets_balance', false );
 						$table2->addField( 'Pending', 'wallets_pending', false );
 						$table2->addField( 'Weight', 'wallets_weight', false );
 						$table2->addField( 'Count', 'wallets_count', false );
 						$table2->addField( 'Accounts', 'wallets_accounts_count', false );
 						
+						$table3->addField( ' ', 'type', false );
 						$table3->addField( 'Version', 'node_version', false );
 						$table3->addField( 'Uptime', 'node_uptime', false );
 						$table3->addField( 'Blockchain', 'node_blockchain', false );
@@ -1330,6 +1349,7 @@
 						
 						$table_data1 = [];
 						
+						$table_data1[0]['type'] = 'Sync    ';
 						$table_data1[0]['block_count'] = custom_number( $call_return['block']['count'] );
 						$table_data1[0]['block_unchecked'] = custom_number( $call_return['block']['unchecked'] );
 						$table_data1[0]['block_cemented'] = custom_number( $call_return['block']['cemented'] );
@@ -1340,6 +1360,7 @@
 						
 						$table_data2 = [];
 						
+						$table_data2[0]['type'] = 'Wallets ';
 						$table_data2[0]['wallets_balance'] = custom_number( NanoTools::raw2den( $call_return['wallets']['balance'], $C['nano']['denomination'] ), $C['nano']['decimals'] );
 						$table_data2[0]['wallets_pending'] = custom_number( NanoTools::raw2den( $call_return['wallets']['pending'], $C['nano']['denomination'] ), $C['nano']['decimals'] );
 						$table_data2[0]['wallets_weight'] = custom_number( NanoTools::raw2den( $call_return['wallets']['weight'], $C['nano']['denomination'] ), $C['nano']['decimals'] );
@@ -1348,8 +1369,9 @@
 						
 						$table_data3 = [];
 						
+						$table_data3[0]['type'] = 'Node    ';
 						$table_data3[0]['node_version'] = $call_return['node']['version'];
-						$table_data3[0]['node_uptime'] = custom_number( $call_return['node']['uptime']/60/60, 3 ) . ' h';
+						$table_data3[0]['node_uptime'] = custom_number( $call_return['node']['uptime']/60/60, 2 ) . ' h';
 						$table_data3[0]['node_blockchain'] = custom_number( $call_return['node']['blockchain']/1000000, 0 ) . ' MB';
 						$table_data3[0]['node_block_average'] = custom_number( $call_return['node']['block_average'], 0 ) . ' B';
 						
@@ -1453,7 +1475,7 @@
 				
 				$wallet_info = $nanocall->wallet_info( ['wallet'=>$arguments['wallet']] );
 			
-				if( $wallet_info == false )
+				if( $nanocall->error != null )
 				{
 					$call_return['error'] = 'Bad wallet number'; break;
 				}
@@ -1490,7 +1512,7 @@
 				
 				$wallet_info = $nanocall->wallet_info( ['wallet'=>$arguments['wallet']] );
 			
-				if( $wallet_info == false )
+				if( $nanocall->error != null )
 				{
 					$call_return['error'] = 'Bad wallet number'; break;
 				}
@@ -2412,7 +2434,7 @@
 	
 	
 	
-	if( $call_return == false ) $call_return = [ 'error' => 'Unknown command' ];
+	if( $call_return == false && $nanocall->error != null ) $call_return = ['error'=>$nanocall->error];
 	
 	if( !$flags['raw_out'] )
 	{
