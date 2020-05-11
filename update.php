@@ -1,6 +1,6 @@
 <?php
 
-	$version = file_get_contents( 'VERSION.txt' );
+	$version = file_get_contents( __DIR__ . '/VERSION.txt' );
 
 	$options =
 	[
