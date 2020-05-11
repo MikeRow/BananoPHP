@@ -1181,6 +1181,8 @@
 			{
 				$first_table_display = true;
 				
+				$last_update = microtime( true );
+				
 				$tableChars =
 				[
 						'top'          => ' ',
@@ -1358,6 +1360,15 @@
 						$table_data1[0]['network_weight_online'] = custom_number( NanoTools::raw2den( $call_return['network']['weight_online'], $C['nano']['denomination'] ), $C['nano']['decimals'] );
 						$table_data1[0]['network_weight_online_percent'] = custom_number( $call_return['network']['weight_online_percent'], 2 );
 						
+						$table_data1[1]['type'] = '';
+						$table_data1[1]['block_count'] = '            ';
+						$table_data1[1]['block_unchecked'] = '            ';
+						$table_data1[1]['block_cemented'] = '            ';
+						$table_data1[1]['network_peers'] = '         ';
+						$table_data1[1]['network_representatives_online'] = '       ';
+						$table_data1[1]['network_weight_online'] = '                  ';
+						$table_data1[1]['network_weight_online_percent'] = '      ';
+						
 						$table_data2 = [];
 						
 						$table_data2[0]['type'] = 'Wallets ';
@@ -1367,6 +1378,13 @@
 						$table_data2[0]['wallets_count'] = custom_number( $call_return['wallets']['count'] );
 						$table_data2[0]['wallets_accounts_count'] = custom_number( $call_return['wallets']['accounts_count'] );
 						
+						$table_data2[1]['type'] = '';
+						$table_data2[1]['wallets_balance'] = '                  ';
+						$table_data2[1]['wallets_pending'] = '                  ';
+						$table_data2[1]['wallets_weight'] = '                  ';
+						$table_data2[1]['wallets_count'] = '         ';
+						$table_data2[1]['wallets_accounts_count'] = '         ';
+						
 						$table_data3 = [];
 						
 						$table_data3[0]['type'] = 'Node    ';
@@ -1374,6 +1392,12 @@
 						$table_data3[0]['node_uptime'] = custom_number( $call_return['node']['uptime']/60/60, 2 ) . ' h';
 						$table_data3[0]['node_blockchain'] = custom_number( $call_return['node']['blockchain']/1000000, 0 ) . ' MB';
 						$table_data3[0]['node_block_average'] = custom_number( $call_return['node']['block_average'], 0 ) . ' B';
+						
+						$table_data3[1]['type'] = '';
+						$table_data3[1]['node_version'] = '           ';
+						$table_data3[1]['node_uptime'] = '           ';
+						$table_data3[1]['node_blockchain'] = '             ';
+						$table_data3[1]['node_block_average'] = '          ';
 						
 						$table1->injectData( $table_data1 );
 						$table2->injectData( $table_data2 );
@@ -1400,7 +1424,7 @@
 						else
 						{
 							// Clear only last table
-							echo "\033[" . strval( 15 + count( $table_data1 ) + count( $table_data2 ) + count( $table_data3 ) ) . "A";
+							echo "\033[" . strval( 100 + count( $table_data1 ) + count( $table_data2 ) + count( $table_data3 ) ) . "A";
 						}
 						
 						// Print table
@@ -1409,9 +1433,16 @@
 						$table2->display();
 						$table3->display();
 						
+						// Print other info
+						
+						echo ' monitor | delay: ' . custom_number( microtime( true ) - $last_update, 3 );
+						echo PHP_EOL;
+						
 						// Show cursor
 						
 						fprintf( STDOUT, " \033[?25h" );
+						
+						$last_update = microtime( true );
 						
 						usleep( 100 * 1000 );
 					}

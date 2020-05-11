@@ -385,7 +385,7 @@
 				
 				if( @!$ssh->login( $node_data['username'], $key ) )
 				{
-					$table_data[$tag]['notice'] = 'Failed SSH connection';
+					$table_data[$tag]['notice'] = '!SSH';
 					
 					$ssh->disconnect();
 					
@@ -407,7 +407,7 @@
 				
 				if( !isset( $ncmCall['node_vendor'] ) )
 				{
-					$table_data[$tag]['notice'] = 'Failed ncm call'; continue;
+					$table_data[$tag]['notice'] = '!ncm'; continue;
 				}
 				
 				// Check for alerts
@@ -418,7 +418,7 @@
 				}
 				else
 				{
-					$table_data[$tag]['notice'] = 'OK                       ';
+					$table_data[$tag]['notice'] = 'OK     ';
 				}	
 				
 				
@@ -458,6 +458,16 @@
 					$table_data[$tag]['network_representatives_online'] = custom_number( $ncmCall['count'] );
 					$table_data[$tag]['network_weight_online'] = custom_number( NanoTools::raw2den( $ncmCall['weight'], $C['nano']['denomination'] ), $C['nano']['decimals'] );
 					$table_data[$tag]['network_weight_online_percent'] = custom_number( $ncmCall['weight_percent'], 2 );
+					
+					$table_data[1]['tag'] = '';
+					$table_data[1]['block_count'] = '            ';
+					$table_data[1]['block_unchecked'] = '            ';
+					$table_data[1]['block_cemented'] = '            ';
+					$table_data[1]['network_peers'] = '         ';
+					$table_data[1]['network_representatives_online'] = '       ';
+					$table_data[1]['network_weight_online'] = '                  ';
+					$table_data[1]['network_weight_online_percent'] = '      ';
+					$table_data[1]['notice'] = '';
 				}
 				
 				if( $command == 'wallets' )
@@ -490,6 +500,14 @@
 					$table_data[$tag]['wallets_weight'] = custom_number( NanoTools::raw2den( gmp_strval( $wallets_weight ), $C['nano']['denomination'] ), $C['nano']['decimals'] );
 					$table_data[$tag]['wallets_count'] = custom_number( $wallets_count );
 					$table_data[$tag]['wallets_accounts_count'] = custom_number( $wallets_accounts_count );
+					
+					$table_data[1]['tag'] = '';
+					$table_data[1]['wallets_balance'] = '                  ';
+					$table_data[1]['wallets_pending'] = '                  ';
+					$table_data[1]['wallets_weight'] = '                  ';
+					$table_data[1]['wallets_count'] = '         ';
+					$table_data[1]['wallets_accounts_count'] = '         ';
+					$table_data[1]['notice'] = '';
 				}
 				
 				if( $command == 'node' )
@@ -519,6 +537,13 @@
 					
 					$table_data[$tag]['node_blockchain'] = custom_number( $ncmCall['blockchain']/1000000, 0 ) . ' MB';
 					$table_data[$tag]['node_block_average'] = custom_number( $ncmCall['block_average'], 0 ) . ' B';
+					
+					$table_data[1]['tag'] = '';
+					$table_data[1]['node_version'] = '           ';
+					$table_data[1]['node_uptime'] = '           ';
+					$table_data[1]['node_blockchain'] = '             ';
+					$table_data[1]['node_block_average'] = '          ';
+					$table_data[1]['notice'] = '';
 				}
 			
 			
@@ -627,7 +652,7 @@
 				else
 				{
 					// Clear only last table
-					echo "\033[" . strval( 5 + count( $table_data ) ) . "A";
+					echo "\033[" . strval( 100 + count( $table_data ) ) . "A";
 				}
 				
 				// Print table
