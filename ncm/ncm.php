@@ -1016,7 +1016,7 @@
 				{
 					$wallet_info = $nanocall->wallet_info( ['wallet'=>$arguments['wallet']] );
 					
-					if( !isset( $wallet_info['error'] ) )
+					if( $wallet_info != false )
 					{
 						$confirmation_amount = $arguments['amount'];
 					}
@@ -1039,7 +1039,7 @@
 				{
 					$wallet_info = $nanocall->wallet_info( ['wallet'=>$arguments['wallet']] );
 					
-					if( !isset( $wallet_info['error'] ) )
+					if( $wallet_info != false )
 					{
 						$confirmation_amount = $wallet_info['balance'];
 					}
