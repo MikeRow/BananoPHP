@@ -34,7 +34,7 @@
 			
 			$wallet_info = $this->wallet_info( ['wallet' => $wallet] );
 			
-			if( isset( $wallet_info['error'] ) )
+			if( $wallet_info == false )
 			{
 				return ['error'=>'Bad wallet number'];
 			}
@@ -157,7 +157,7 @@
 			
 			$wallet_info = $this->wallet_info( ['wallet' => $wallet] );
 			
-			if( isset( $wallet_info['error'] ) )
+			if( $wallet_info == false )
 			{
 				return ['error'=>'Bad wallet number'];
 			}
@@ -312,7 +312,7 @@
 			
 			$wallet_info = $this->wallet_info( ['wallet' => $wallet] );
 			
-			if( isset( $wallet_info['error'] ) )
+			if( $wallet_info == false )
 			{
 				return ['error'=>'Bad wallet number'];
 			}
