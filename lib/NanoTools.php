@@ -15,8 +15,9 @@
 	
 	class NanoTools
 	{
-		// Denominations and raw values
+		// *** Denominations and raw values ***
 	
+		
 		const raw2 =
 		[
 			'unano' => '1000000000000000000',
@@ -27,6 +28,24 @@
 			 'NANO' => '1000000000000000000000000000000',
 			'Gnano' => '1000000000000000000000000000000000'
 		];	
+		
+		
+		// *** Binary array to binary string
+		
+		
+		public static function bin_arr2str( $array )
+		{
+			return implode( array_map( 'chr', $key_uint8 ) );
+		}
+		
+		
+		// *** Binary string to binary array
+		
+		
+		public static function bin_str2arr( $string )
+		{
+			return array_map( 'ord', str_split( $string ) );
+		}
 		
 		
 		
@@ -202,12 +221,10 @@
 					$key_uint4 = $aux;
 					$hash_uint8 = Uint::fromString( substr( $crop, 52, 60 ) )->toUint8()->toArray();
 					$key_uint8 = Uint::fromUint4Array( $key_uint4 )->toUint8();
-					$key_uint8 = (array) $key_uint8;
-					$key_uint8 = implode( array_map( 'chr', $key_uint8 ) );
+					$key_uint8 = self::bin_arr2str( (array) $key_uint8 );
 					
 					$key_hash = blake2( $key_uint8, 5, null, true );
-					$key_hash = str_split( $key_hash );
-					$key_hash = array_map( 'ord', $key_hash );
+					$key_hash = self::bin_str2arr( $key_hash );
 					$key_hash = array_reverse( array_slice( $key_hash, 0, 5 ) );
 					
 					if( $hash_uint8 == $key_hash )
@@ -259,12 +276,10 @@
 			if( strlen( $pk ) != 64 || !hex2bin( $pk ) ) return false;
 			
 			$key = Uint::fromHex( $pk )->toUint8();
-			$key = (array) $key;
-			$key = implode( array_map( 'chr', $key ) );
+			$key = self::bin_arr2str( (array) $key );
 			
 			$hash = blake2( $key, 5, null, true );
-			$hash = str_split( $hash );
-			$hash = array_map( 'ord', $hash );
+			$hash = self::bin_str2arr( $hash );
 			$hash = array_reverse( array_slice( $hash, 0, 5 ) );
 			
 			$checksum = Uint::fromUint8Array( $hash )->toString();
@@ -469,7 +484,7 @@
 			
 		// *** Using Salt ***
 			
-		
+		/*
 		public static function work( string $hash, string $difficulty )
 		{
 			if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) return false;
@@ -508,7 +523,7 @@
 				if( hexToDec( $work ) >= $difficulty ) return $work;
 			}
 		}
-		
+		*/
 		
 		// *** Using php-blake2 ***
 		

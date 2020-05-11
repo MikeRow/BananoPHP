@@ -9,8 +9,11 @@
 	require_once __DIR__ . '/../lib/NanoTools.php';
 	require_once __DIR__ . '/../lib/NanoCLI.php';
 	require_once __DIR__ . '/../lib/NanoRPCExtension.php';
+	require_once __DIR__ . '/../lib3/clitable_loader.php';
 	
 	use php4nano\lib\NanoTools\NanoTools as NanoTools;
+	use jc21\CliTable;
+	use jc21\CliTableManipulator;
 	
 	
 	
@@ -31,6 +34,9 @@
 	
 	$C = []; // Primary configuration
 	$C2 = []; // Secondary configuration
+	$arguments = []; // Arguments
+	$callerID = 'default'; // Caller ID
+	$alerts = []; // Alerts
 	$call_return = []; // Output
 	
 	
@@ -60,6 +66,7 @@
 		'nano' =>
 		[
 			'denomination' => 'NANO',
+			'decimals'     => 6,
 			'node_file'    => '/home/nano/nano_node',
 			'data_dir'     => '/home/nano/Nano',
 			'connection'   => 'rpc',
@@ -533,14 +540,14 @@
 			
 				if( in_array( $key, $check_words ) && is_numeric( $value ) )
 				{
-					$array[$key] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ) ) . ' ' . $C['nano']['denomination'];
+					$array[$key] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ), $C['nano']['decimals'] ) . ' ' . $C['nano']['denomination'];
 					
 					// If ticker is enabled shows amounts in favourite vs currencies
 					
 					if( $C['ticker']['enable'] )
 					{
 						$array[$key] = [];
-						$array[$key][] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ) ) . ' ' . $C['nano']['denomination'];
+						$array[$key][] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ), $C['nano']['decimals'] ) . ' ' . $C['nano']['denomination'];
 						$fav_vs_currencies = explode( ',', $C['ticker']['fav_vs_currencies'] );
 					
 						foreach( $fav_vs_currencies as $fav_vs_currency )
@@ -750,8 +757,6 @@
 	
 	
 	
-	$arguments = [];
-	
 	$flags =
 	[
 		'raw_in'          => false,
@@ -763,9 +768,6 @@
 		'no_confirm'      => false,
 		'no_log'          => false
 	];
-	
-	$callerID = 'default';
-	$alerts = [];
 	
 	
 	// *** Search for flags and callerID ***
@@ -1157,107 +1159,241 @@
 		{
 			// *** Print node summary info ***
 			
-
+			
+			case 'monitor':
 			case 'status':
-			{ 
-				// Node version
+			{
+				$first_table_display = true;
 				
-				$version = $nanocall->version();
+				$tableChars =
+				[
+						'top'          => ' ',
+						'top-mid'      => ' ',
+						'top-left'     => ' ',
+						'top-right'    => ' ',
+						'bottom'       => ' ',
+						'bottom-mid'   => ' ',
+						'bottom-left'  => ' ',
+						'bottom-right' => ' ',
+						'left'         => ' ',
+						'left-mid'     => ' ',
+						'mid'          => ' ',
+						'mid-mid'      => ' ',
+						'right'        => ' ',
+						'right-mid'    => ' ',
+						'middle'       => ' '
+				];
 				
-				$call_return['node']['version'] = $version['node_vendor'];
-				
-				// Uptime
-				
-				$uptime = $nanocall->uptime();
-				
-				$call_return['node']['uptime'] = $uptime['seconds'];
-				
-				// Online peers
-				
-				$peers = $nanocall->peers();
-				
-				$call_return['network']['peers'] = count( $peers['peers'] );
-				
-				// Online representatives and weight
-				
-				$representatives_online = $nanocall->representatives_online( ['weight'=>true] );
-				
-				$call_return['network']['representatives_online'] = count( $representatives_online['representatives'] );
-				
-				$weight_cumulative = '0';
-				
-				foreach( $representatives_online['representatives'] as $representative => $data )
-				{			
-					$weight_cumulative = gmp_strval( gmp_add( $weight_cumulative, $data['weight'] ) );
-				}
-				
-				$call_return['network']['weight_online'] = $weight_cumulative;
-				$call_return['network']['weight_online_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
-				
-				// Blockchain file size
-				
-				$call_return['node']['blockchain'] = filesize( $C['nano']['data_dir'] . '/data.ldb' );
-				
-				// Block count
-				
-				$block_count = $nanocall->block_count();
-				
-				$call_return['block']['count'] = $block_count['count'];
-				$call_return['block']['unchecked'] = $block_count['unchecked'];
-				$call_return['block']['cemented'] = $block_count['cemented'];
-				$call_return['node']['block_average'] = round( filesize( $C['nano']['data_dir'] . '/data.ldb' ) / $block_count["count"] );
-				
-				// Summary wallets info
-				
-				$wallets_count = '0';
-				$wallets_accounts = '0';
-				$wallets_balance = '0';
-				$wallets_pending = '0';
-				$wallets_weight = '0';
-				$wallet_list = $nanocli->wallet_list();
-				
-				$wallet_ID = [];
-				
-				if( is_array( $wallet_list ) && count( $wallet_list ) > 0 )
+				while( true )
 				{
-					foreach( $wallet_list as $row )
+					
+					// Node version
+					
+					$version = $nanocall->version();
+					
+					$call_return['node']['version'] = $version['node_vendor'];
+					
+					// Uptime
+					
+					$uptime = $nanocall->uptime();
+					
+					$call_return['node']['uptime'] = $uptime['seconds'];
+					
+					// Online peers
+					
+					$peers = $nanocall->peers();
+					
+					$call_return['network']['peers'] = count( $peers['peers'] );
+					
+					// Online representatives and weight
+					
+					$representatives_online = $nanocall->representatives_online( ['weight'=>true] );
+					
+					$call_return['network']['representatives_online'] = count( $representatives_online['representatives'] );
+					
+					$weight_cumulative = '0';
+					
+					foreach( $representatives_online['representatives'] as $representative => $data )
+					{			
+						$weight_cumulative = gmp_strval( gmp_add( $weight_cumulative, $data['weight'] ) );
+					}
+					
+					$call_return['network']['weight_online'] = $weight_cumulative;
+					$call_return['network']['weight_online_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
+					
+					// Blockchain file size
+					
+					$call_return['node']['blockchain'] = filesize( $C['nano']['data_dir'] . '/data.ldb' );
+					
+					// Block count
+					
+					$block_count = $nanocall->block_count();
+					
+					$call_return['block']['count'] = $block_count['count'];
+					$call_return['block']['unchecked'] = $block_count['unchecked'];
+					$call_return['block']['cemented'] = $block_count['cemented'];
+					$call_return['node']['block_average'] = round( filesize( $C['nano']['data_dir'] . '/data.ldb' ) / $block_count["count"] );
+					
+					// Summary wallets info
+					
+					$wallets_count = '0';
+					$wallets_accounts = '0';
+					$wallets_balance = '0';
+					$wallets_pending = '0';
+					$wallets_weight = '0';
+					$wallet_list = $nanocli->wallet_list();
+					
+					$wallet_ID = [];
+					
+					if( is_array( $wallet_list ) && count( $wallet_list ) > 0 )
 					{
-						$columns = explode( ': ', $row );
-						
-						if( $columns[0] == 'Wallet ID' )
+						foreach( $wallet_list as $row )
 						{
-							$wallet_ID[] = $columns[1];
+							$columns = explode( ': ', $row );
+							
+							if( $columns[0] == 'Wallet ID' )
+							{
+								$wallet_ID[] = $columns[1];
+							}
 						}
+						
+						foreach( $wallet_ID as $id )
+						{
+							$wallet_info = $nanocall->wallet_info( ['wallet'=>$id] );
+							$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$id] );
+							$wallets_accounts += $wallet_info['accounts_count'];
+							$wallets_count++;
+							$wallets_balance = gmp_add( $wallets_balance, $wallet_info['balance'] );
+							$wallets_pending = gmp_add( $wallets_pending, $wallet_info['pending'] );
+							$wallets_weight = gmp_add( $wallets_weight, $wallet_weight['weight'] );
+						
+						}
+						
+						$wallets_balance = gmp_strval( $wallets_balance );
+						$wallets_pending = gmp_strval( $wallets_pending );
+						$wallets_weight = gmp_strval( $wallets_weight );
 					}
-					
-					foreach( $wallet_ID as $id )
+					else
 					{
-						$wallet_info = $nanocall->wallet_info( ['wallet'=>$id] );
-						$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$id] );
-						$wallets_accounts += $wallet_info['accounts_count'];
-						$wallets_count++;
-						$wallets_balance = gmp_add( $wallets_balance, $wallet_info['balance'] );
-						$wallets_pending = gmp_add( $wallets_pending, $wallet_info['pending'] );
-						$wallets_weight = gmp_add( $wallets_weight, $wallet_weight['weight'] );
+						$call_return['wallets']['error'] = 'No wallets found';
+					}	
 					
+					$call_return['wallets']['balance'] = $wallets_balance;
+					$call_return['wallets']['pending'] = $wallets_pending;
+					$call_return['wallets']['weight'] = $wallets_weight;
+					$call_return['wallets']['count'] = $wallets_count;
+					$call_return['wallets']['accounts_count'] = $wallets_accounts;
+					
+					if( $command == 'status' )
+					{
+						break 2;
 					}
-					
-					$wallets_balance = gmp_strval( $wallets_balance );
-					$wallets_pending = gmp_strval( $wallets_pending );
-					$wallets_weight = gmp_strval( $wallets_weight );
+					else
+					{
+						// *** Create tables ***
+						
+						
+						$table1 = new CliTable;
+						$table2 = new CliTable;
+						$table3 = new CliTable;
+						
+						$table1->setChars( $tableChars );
+						$table2->setChars( $tableChars );
+						$table3->setChars( $tableChars );
+						
+						$table1->setHeaderColor('cyan');
+						$table2->setHeaderColor('cyan');
+						$table3->setHeaderColor('cyan');
+						
+						
+						// *** Set tables fields ***
+						
+						
+						$table1->addField( 'Blocks', 'block_count', false );
+						$table1->addField( 'Unchecked', 'block_unchecked', false );
+						$table1->addField( 'Cemented', 'block_cemented', false );
+						$table1->addField( 'Peers', 'network_peers', false );
+						$table1->addField( 'Reps.', 'network_representatives_online', false );
+						$table1->addField( 'Weight Online', 'network_weight_online', false );
+						$table1->addField( '%', 'network_weight_online_percent', false );
+						
+						$table2->addField( 'Balance', 'wallets_balance', false );
+						$table2->addField( 'Pending', 'wallets_pending', false );
+						$table2->addField( 'Weight', 'wallets_weight', false );
+						$table2->addField( 'Count', 'wallets_count', false );
+						$table2->addField( 'Accounts', 'wallets_accounts_count', false );
+						
+						$table3->addField( 'Version', 'node_version', false );
+						$table3->addField( 'Uptime', 'node_uptime', false );
+						$table3->addField( 'Blockchain', 'node_blockchain', false );
+						$table3->addField( 'Block', 'node_block_average', false );
+						
+						$table_data1 = [];
+						
+						$table_data1[0]['block_count'] = custom_number( $call_return['block']['count'] );
+						$table_data1[0]['block_unchecked'] = custom_number( $call_return['block']['unchecked'] );
+						$table_data1[0]['block_cemented'] = custom_number( $call_return['block']['cemented'] );
+						$table_data1[0]['network_peers'] = custom_number( $call_return['network']['peers'] );	
+						$table_data1[0]['network_representatives_online'] = custom_number( $call_return['network']['representatives_online'] );
+						$table_data1[0]['network_weight_online'] = custom_number( NanoTools::raw2den( $call_return['network']['weight_online'], $C['nano']['denomination'] ), $C['nano']['decimals'] );
+						$table_data1[0]['network_weight_online_percent'] = custom_number( $call_return['network']['weight_online_percent'], 2 );
+						
+						$table_data2 = [];
+						
+						$table_data2[0]['wallets_balance'] = custom_number( NanoTools::raw2den( $call_return['wallets']['balance'], $C['nano']['denomination'] ), $C['nano']['decimals'] );
+						$table_data2[0]['wallets_pending'] = custom_number( NanoTools::raw2den( $call_return['wallets']['pending'], $C['nano']['denomination'] ), $C['nano']['decimals'] );
+						$table_data2[0]['wallets_weight'] = custom_number( NanoTools::raw2den( $call_return['wallets']['weight'], $C['nano']['denomination'] ), $C['nano']['decimals'] );
+						$table_data2[0]['wallets_count'] = custom_number( $call_return['wallets']['count'] );
+						$table_data2[0]['wallets_accounts_count'] = custom_number( $call_return['wallets']['accounts_count'] );
+						
+						$table_data3 = [];
+						
+						$table_data3[0]['node_version'] = $call_return['node']['version'];
+						$table_data3[0]['node_uptime'] = custom_number( $call_return['node']['uptime']/60/60, 3 ) . ' h';
+						$table_data3[0]['node_blockchain'] = custom_number( $call_return['node']['blockchain']/1000000, 0 ) . ' MB';
+						$table_data3[0]['node_block_average'] = custom_number( $call_return['node']['block_average'], 0 ) . ' B';
+						
+						$table1->injectData( $table_data1 );
+						$table2->injectData( $table_data2 );
+						$table3->injectData( $table_data3 );
+						
+						
+						// *** Output adjustments ***
+						
+						
+						// Hide cursor
+						
+						fprintf( STDOUT, "\033[?25l" );
+						
+						// Clear screen
+						
+						if( $first_table_display )
+						{
+							// Clear all screen
+							
+							echo "\033[2J\033[;H";
+							
+							$first_table_display = false;
+						}
+						else
+						{
+							// Clear only last table
+							echo "\033[" . strval( 15 + count( $table_data1 ) + count( $table_data2 ) + count( $table_data3 ) ) . "A";
+						}
+						
+						// Print table
+						
+						$table1->display();
+						$table2->display();
+						$table3->display();
+						
+						// Show cursor
+						
+						fprintf( STDOUT, " \033[?25h" );
+						
+						usleep( 100 * 1000 );
+					}
 				}
-				else
-				{
-					$call_return['wallets']['error'] = 'No wallets found';
-				}	
-				
-				$call_return['wallets']['balance'] = $wallets_balance;
-				$call_return['wallets']['pending'] = $wallets_pending;
-				$call_return['wallets']['weight'] = $wallets_weight;
-				$call_return['wallets']['count'] = $wallets_count;
-				$call_return['wallets']['accounts_count'] = $wallets_accounts;
-				
-				break;
 			}
 			
 			
@@ -1315,14 +1451,14 @@
 					$call_return['error'] = 'Bad wallet number'; break;
 				}
 				
-				$wallet_info = $nanocall->wallet_info( ['wallet' => $arguments['wallet']] );
+				$wallet_info = $nanocall->wallet_info( ['wallet'=>$arguments['wallet']] );
 			
-				if( isset( $wallet_info['error'] ) )
+				if( $wallet_info == false )
 				{
 					$call_return['error'] = 'Bad wallet number'; break;
 				}
 
-				$wallet_locked = $nanocall->wallet_locked( ['wallet' => $arguments['wallet']] );
+				$wallet_locked = $nanocall->wallet_locked( ['wallet'=>$arguments['wallet']] );
 				$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$arguments['wallet']] );
 				
 				$call_return[$arguments['wallet']]['balance'] = $wallet_info['balance'];
@@ -1352,13 +1488,13 @@
 					$call_return['error'] = 'Bad wallet number'; break;
 				}
 				
-				$wallet_info = $nanocall->wallet_info( ['wallet' => $arguments['wallet']] );
+				$wallet_info = $nanocall->wallet_info( ['wallet'=>$arguments['wallet']] );
 			
-				if( isset( $wallet_info['error'] ) )
+				if( $wallet_info == false )
 				{
 					$call_return['error'] = 'Bad wallet number'; break;
 				}
-					
+				
 				$wallet_weight = $nanocall->wallet_weight( ['wallet'=>$arguments['wallet'],'sort'=>'desc'] );
 				
 				$call_return['weight'] = $wallet_weight['weight'];
@@ -2275,6 +2411,8 @@
 	// ********************
 	
 	
+	
+	if( $call_return == false ) $call_return = [ 'error' => 'Unknown command' ];
 	
 	if( !$flags['raw_out'] )
 	{

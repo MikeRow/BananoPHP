@@ -30,6 +30,7 @@
 	
 	$C = []; // Configuration
 	$C2 = []; // Secondary configuration
+	$arguments = []; // Arguments
 	
 	
 	// *** Create data folder if not exsist ***
@@ -49,7 +50,7 @@
 		'nano' =>
 		[
 			'denomination' => 'NANO',
-			'decimals'     => 3
+			'decimals'     => 6
 		],
 		'delay' => 100,
 		'timezone' => 'UTC',
@@ -227,8 +228,6 @@
 	// *******************
 	
 
-	
-	$arguments = [];
 	
 	$flags =
 	[
@@ -544,7 +543,7 @@
 					'mid-mid'      => ' ',
 					'right'        => ' ',
 					'right-mid'    => ' ',
-					'middle'       => ' ',
+					'middle'       => ' '
 				]);
 			
 				$table->setHeaderColor('cyan');
