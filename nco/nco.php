@@ -457,17 +457,7 @@
 					
 					$table_data[$tag]['network_representatives_online'] = custom_number( $ncmCall['count'] );
 					$table_data[$tag]['network_weight_online'] = custom_number( NanoTools::raw2den( $ncmCall['weight'], $C['nano']['denomination'] ), $C['nano']['decimals'] );
-					$table_data[$tag]['network_weight_online_percent'] = custom_number( $ncmCall['weight_percent'], 2 );
-					
-					$table_data[1]['tag'] = '';
-					$table_data[1]['block_count'] = '            ';
-					$table_data[1]['block_unchecked'] = '            ';
-					$table_data[1]['block_cemented'] = '            ';
-					$table_data[1]['network_peers'] = '         ';
-					$table_data[1]['network_representatives_online'] = '       ';
-					$table_data[1]['network_weight_online'] = '                  ';
-					$table_data[1]['network_weight_online_percent'] = '      ';
-					$table_data[1]['notice'] = '';
+					$table_data[$tag]['network_weight_online_percent'] = custom_number( $ncmCall['weight_percent'], 2 );	
 				}
 				
 				if( $command == 'wallets' )
@@ -500,14 +490,6 @@
 					$table_data[$tag]['wallets_weight'] = custom_number( NanoTools::raw2den( gmp_strval( $wallets_weight ), $C['nano']['denomination'] ), $C['nano']['decimals'] );
 					$table_data[$tag]['wallets_count'] = custom_number( $wallets_count );
 					$table_data[$tag]['wallets_accounts_count'] = custom_number( $wallets_accounts_count );
-					
-					$table_data[1]['tag'] = '';
-					$table_data[1]['wallets_balance'] = '                  ';
-					$table_data[1]['wallets_pending'] = '                  ';
-					$table_data[1]['wallets_weight'] = '                  ';
-					$table_data[1]['wallets_count'] = '         ';
-					$table_data[1]['wallets_accounts_count'] = '         ';
-					$table_data[1]['notice'] = '';
 				}
 				
 				if( $command == 'node' )
@@ -537,13 +519,6 @@
 					
 					$table_data[$tag]['node_blockchain'] = custom_number( $ncmCall['blockchain']/1000000, 0 ) . ' MB';
 					$table_data[$tag]['node_block_average'] = custom_number( $ncmCall['block_average'], 0 ) . ' B';
-					
-					$table_data[1]['tag'] = '';
-					$table_data[1]['node_version'] = '           ';
-					$table_data[1]['node_uptime'] = '           ';
-					$table_data[1]['node_blockchain'] = '             ';
-					$table_data[1]['node_block_average'] = '          ';
-					$table_data[1]['notice'] = '';
 				}
 			
 			
@@ -604,6 +579,16 @@
 					$table->addField( 'Reps.', 'network_representatives_online', false );
 					$table->addField( 'Weight Online', 'network_weight_online', false );
 					$table->addField( '%', 'network_weight_online_percent', false );
+					
+					$table_data[9999]['tag'] = '';
+					$table_data[9999]['block_count'] = '            ';
+					$table_data[9999]['block_unchecked'] = '            ';
+					$table_data[9999]['block_cemented'] = '            ';
+					$table_data[9999]['network_peers'] = '         ';
+					$table_data[9999]['network_representatives_online'] = '       ';
+					$table_data[9999]['network_weight_online'] = '                  ';
+					$table_data[9999]['network_weight_online_percent'] = '      ';
+					$table_data[9999]['notice'] = '';
 				}
 				
 				if( $command == 'wallets' )
@@ -613,6 +598,14 @@
 					$table->addField( 'Weight', 'wallets_weight', false );
 					$table->addField( 'Count', 'wallets_count', false );
 					$table->addField( 'Accounts', 'wallets_accounts_count', false );
+					
+					$table_data[9999]['tag'] = '';
+					$table_data[9999]['wallets_balance'] = '                  ';
+					$table_data[9999]['wallets_pending'] = '                  ';
+					$table_data[9999]['wallets_weight'] = '                  ';
+					$table_data[9999]['wallets_count'] = '         ';
+					$table_data[9999]['wallets_accounts_count'] = '         ';
+					$table_data[9999]['notice'] = '';
 				}
 				
 				if( $command == 'node' )
@@ -621,6 +614,13 @@
 					$table->addField( 'Uptime', 'node_uptime', false );
 					$table->addField( 'Blockchain', 'node_blockchain', false );
 					$table->addField( 'Block', 'node_block_average', false );
+					
+					$table_data[9999]['tag'] = '';
+					$table_data[9999]['node_version'] = '           ';
+					$table_data[9999]['node_uptime'] = '           ';
+					$table_data[9999]['node_blockchain'] = '             ';
+					$table_data[9999]['node_block_average'] = '          ';
+					$table_data[9999]['notice'] = '';
 				}
 				
 				$table->addField( 'Notice', 'notice', false );
