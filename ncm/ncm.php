@@ -1221,23 +1221,39 @@
 					
 					$peers = $nanocall->peers();
 					
-					$call_return['network']['peers'] = count( $peers['peers'] );
+					if( $peers != null )
+					{
+						$call_return['network']['peers'] = count( $peers['peers'] );
+					}
+					else
+					{
+						$call_return['network']['peers'] = 0;
+					}
 					
 					// Online representatives and weight
 					
 					$representatives_online = $nanocall->representatives_online( ['weight'=>true] );
 					
-					$call_return['network']['representatives_online'] = count( $representatives_online['representatives'] );
-					
-					$weight_cumulative = '0';
-					
-					foreach( $representatives_online['representatives'] as $representative => $data )
-					{			
-						$weight_cumulative = gmp_strval( gmp_add( $weight_cumulative, $data['weight'] ) );
+					if( $representatives_online != null )
+					{
+						$call_return['network']['representatives_online'] = count( $representatives_online['representatives'] );
+						
+						$weight_cumulative = '0';
+						
+						foreach( $representatives_online['representatives'] as $representative => $data )
+						{
+							$weight_cumulative = gmp_strval( gmp_add( $weight_cumulative, $data['weight'] ) );
+						}
+						
+						$call_return['network']['weight_online'] = $weight_cumulative;
+						$call_return['network']['weight_online_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
 					}
-					
-					$call_return['network']['weight_online'] = $weight_cumulative;
-					$call_return['network']['weight_online_percent'] = strval( gmp_strval( gmp_div_q( gmp_mul( $weight_cumulative, '10000' ), available_supply ) ) / 100 );
+					else
+					{
+						$call_return['network']['representatives_online'] = 0;
+						$call_return['network']['weight_online'] = '0';
+						$call_return['network']['weight_online_percent'] = 0;
+					}
 					
 					// Blockchain file size
 					
@@ -1435,8 +1451,8 @@
 						
 						// Print other info
 						
-						echo ' monitor | delay: ' . custom_number( microtime( true ) - $last_update, 3 );
-						echo PHP_EOL;
+						echo ' monitor | wait: 5.000 | delay: ' . custom_number( microtime( true ) - $last_update, 3 );
+						echo PHP_EOL . PHP_EOL;
 						
 						// Show cursor
 						
@@ -1444,7 +1460,7 @@
 						
 						$last_update = microtime( true );
 						
-						usleep( 100 * 1000 );
+						usleep( 5000 * 1000 );
 					}
 				}
 			}

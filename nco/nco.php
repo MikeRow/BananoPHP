@@ -662,9 +662,9 @@
 				// Print other info
 			
 				echo ' ' . $command;
-				echo ' | nodes: ' . count( $table_data );
+				echo ' | nodes: ' . ( count( $table_data ) - 1 );
 				echo ' | delay: ' . custom_number( microtime( true ) - $last_update, 3 );
-				echo PHP_EOL;
+				echo PHP_EOL . PHP_EOL;
 				
 				// Show cursor
 				
