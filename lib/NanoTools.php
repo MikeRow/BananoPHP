@@ -451,36 +451,73 @@
 		/*
 		public static function work( string $hash, string $difficulty )
 		{
-			if( !extension_loaded( 'blake2' ) ) return false,
 			if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) return false;
 			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) return false;
 			
-			$hash = hex2bin( $hash );
-			$difficulty = hexdec( $difficulty );
-			
-			$o = 1; $start = microtime( true );
-			while( true )
+			if( !extension_loaded( 'blake2' ) )
 			{
-				$rng = random_bytes( 8 );
+				$b2b = new Blake2b();
 				
-				blake2b_init( $ctx, 8 );
-				blake2b_update( $ctx, $rng, 8 );
-				blake2b_update( $ctx, $hash, 32 );
-				blake2b_final( $ctx, $work, 8 );
-				//echo strlen( $work ); exit;
-				//$work = strrev( substr( $work, strlen( $work )-9, 8 ) );
-				// $work = sodium_bin2hex( $work );
-				//echo strlen( $work ); exit;
-				$work = substr( $work, 0, 8 );
-				$work = strrev( $work );
-				$work = bin2hex( $work );
-				//$work = strrev( $work );
+				$hash = Uint::fromHex( $hash )->toUint8();
+				$difficulty = hexToDec( $difficulty );
+				$work = new SplFixedArray( 64 );
 				
-				$o++;
-				if( hexdec( $work ) >= $difficulty )
+				$o = 1;
+				while( true )
 				{
-					echo number_format( $o / ( microtime( true ) - $start ), 0, '.', ',' ) . ' works/s'. PHP_EOL . number_format( $o, 0, '.', ',' ) . PHP_EOL . number_format( microtime( true ) - $start, 0, '.', ',' ) . ' s' . PHP_EOL;
-					return $work;
+					$rng = [];
+					for ($i = 0; $i < 8; $i++) $rng[] = mt_rand( 0, 255 );
+					$rng = Uint::fromUint8Array( $rng )->toUint8();
+					$work = new SplFixedArray( 64 );
+					
+					$ctx = $b2b->init( null, 8 );
+					$b2b->update( $ctx, $rng, 8 );
+					$b2b->update( $ctx, $hash, 32 );
+					$b2b->finish( $ctx, $work );
+					
+					$work = $work->toArray();
+					$work = array_slice( $work, 0, 8 );
+					$work = array_reverse( $work );
+					$work = Uint::fromUint8Array( $work )->toHexString();
+					//echo $work; exit;
+					//$work = array_slice( $work->toArray(), 0, 8 );
+					//$work = Uint::fromUint8Array( $work )->toHexString();
+					//$work = array_slice( Uint::fromUint8Array($work)->toArray(), 0, 8 )->toHexString();
+					echo $o . PHP_EOL;
+					$o++;
+					//echo hexToDec( $work ) . '-' . $difficulty. PHP_EOL;
+					if( hexToDec( $work ) >= $difficulty ) return $work;
+				}
+			}
+			else
+			{
+				$hash = hex2bin( $hash );
+				$difficulty = hexdec( $difficulty );
+				
+				$o = 1; $start = microtime( true );
+				while( true )
+				{
+					$rng = random_bytes( 8 );
+					
+					blake2b_init( $ctx, 8 );
+					blake2b_update( $ctx, $rng, 8 );
+					blake2b_update( $ctx, $hash, 32 );
+					blake2b_final( $ctx, $work, 8 );
+					//echo strlen( $work ); exit;
+					//$work = strrev( substr( $work, strlen( $work )-9, 8 ) );
+					// $work = sodium_bin2hex( $work );
+					//echo strlen( $work ); exit;
+					$work = substr( $work, 0, 8 );
+					$work = strrev( $work );
+					$work = bin2hex( $work );
+					//$work = strrev( $work );
+					
+					$o++;
+					if( hexdec( $work ) >= $difficulty )
+					{
+						echo number_format( $o / ( microtime( true ) - $start ), 0, '.', ',' ) . ' works/s'. PHP_EOL . number_format( $o, 0, '.', ',' ) . PHP_EOL . number_format( microtime( true ) - $start, 0, '.', ',' ) . ' s' . PHP_EOL;
+						return $work;
+					}
 				}
 			}
 		}
