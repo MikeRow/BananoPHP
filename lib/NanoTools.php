@@ -15,8 +15,14 @@
 	
 	class NanoTools
 	{
-		// *** Denominations and raw values ***
+		// *****************
+		// *** Constants ***
+		// *****************
 	
+		
+		
+		// *** Denomination to raw values ***
+		
 		
 		const raw2 =
 		[
@@ -30,7 +36,20 @@
 		];	
 		
 		
-		// *** Binary array to binary string
+		// *** Block preamble ***
+		
+		
+		const preamble = '0000000000000000000000000000000000000000000000000000000000000006';
+		
+		
+		
+		// *****************
+		// *** Utilities ***
+		// *****************
+		
+		
+		
+		// *** Binary array to binary string ***
 		
 		
 		public static function bin_arr2str( $array )
@@ -39,7 +58,7 @@
 		}
 		
 		
-		// *** Binary string to binary array
+		// *** Binary string to binary array ***
 		
 		
 		public static function bin_str2arr( $string )
