@@ -21,10 +21,10 @@
 	
 		
 		
-		// *** Denomination to raw values ***
+		// *** Raws for denomination ***
 		
 		
-		const raw2 =
+		const raw4 =
 		[
 			'unano' => '1000000000000000000',
 			'mnano' => '1000000000000000000000',
@@ -76,9 +76,9 @@
 	
 		public static function den2raw( $amount, string $denomination )
 		{
-			if( !array_key_exists( $denomination, self::raw2 ) ) return false;
+			if( !array_key_exists( $denomination, self::raw4 ) ) return false;
 			
-			$raw2denomination = self::raw2[$denomination];
+			$raw2denomination = self::raw4[$denomination];
 			
 			if( $amount == 0 )
 			{
@@ -114,9 +114,9 @@
 		
 		public static function raw2den( string $amount, string $denomination )
 		{
-			if( !array_key_exists( $denomination, self::raw2 ) ) return false;
+			if( !array_key_exists( $denomination, self::raw4 ) ) return false;
 			
-			$raw2denomination = self::raw2[$denomination];
+			$raw2denomination = self::raw4[$denomination];
 			
 			if( $amount == '0' )
 			{
@@ -169,8 +169,8 @@
 		
 		public static function den2den( $amount, string $denomination_from, string $denomination_to )
 		{
-			if( !array_key_exists( $denomination_from, self::raw2 ) ) return false;
-			if( !array_key_exists( $denomination_to, self::raw2 ) ) return false;
+			if( !array_key_exists( $denomination_from, self::raw4 ) ) return false;
+			if( !array_key_exists( $denomination_to, self::raw4 ) ) return false;
 			
 			$raw = self::den2raw( $amount, $denomination_from );
 			
@@ -454,6 +454,8 @@
 			if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) return false;
 			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) return false;
 			
+			$i = 1; $start = microtime( true );
+			
 			if( !extension_loaded( 'blake2' ) )
 			{
 				$b2b = new Blake2b();
@@ -462,7 +464,6 @@
 				$difficulty = hexToDec( $difficulty );
 				$work = new SplFixedArray( 64 );
 				
-				$o = 1;
 				while( true )
 				{
 					$rng = [];
@@ -484,9 +485,10 @@
 					//$work = Uint::fromUint8Array( $work )->toHexString();
 					//$work = array_slice( Uint::fromUint8Array($work)->toArray(), 0, 8 )->toHexString();
 					echo $o . PHP_EOL;
-					$o++;
 					//echo hexToDec( $work ) . '-' . $difficulty. PHP_EOL;
 					if( hexToDec( $work ) >= $difficulty ) return $work;
+					
+					$o++;
 				}
 			}
 			else
@@ -494,7 +496,6 @@
 				$hash = hex2bin( $hash );
 				$difficulty = hexdec( $difficulty );
 				
-				$o = 1; $start = microtime( true );
 				while( true )
 				{
 					$rng = random_bytes( 8 );
@@ -512,12 +513,13 @@
 					$work = bin2hex( $work );
 					//$work = strrev( $work );
 					
-					$o++;
 					if( hexdec( $work ) >= $difficulty )
 					{
 						echo number_format( $o / ( microtime( true ) - $start ), 0, '.', ',' ) . ' works/s'. PHP_EOL . number_format( $o, 0, '.', ',' ) . PHP_EOL . number_format( microtime( true ) - $start, 0, '.', ',' ) . ' s' . PHP_EOL;
 						return $work;
 					}
+					
+					$o++;
 				}
 			}
 		}

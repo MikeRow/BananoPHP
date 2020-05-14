@@ -941,7 +941,7 @@
 					
 					// denomination input
 					
-					elseif( is_numeric( $input_currency[0] ) && isset( $input_currency[1] ) && isset( NanoTools::raw2[$input_currency[1]] ) )
+					elseif( is_numeric( $input_currency[0] ) && isset( $input_currency[1] ) && isset( NanoTools::raw4[$input_currency[1]] ) )
 					{
 						$arguments[$argument0] = NanoTools::den2raw( $input_currency[0], $input_currency[1] );
 					}
@@ -2064,7 +2064,7 @@
 				}
 				else
 				{
-					$call_return['amount'] = NanoTools::raw2['NANO'];
+					$call_return['amount'] = NanoTools::raw4['NANO'];
 				}
 				
 				break;

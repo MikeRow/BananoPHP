@@ -50,7 +50,7 @@
 		'nano' =>
 		[
 			'denomination' => 'NANO',
-			'decimals'     => 6
+			'decimals'     => 3
 		],
 		'delay' => 100,
 		'timezone' => 'UTC',
@@ -329,6 +329,8 @@
 		
 		//
 		
+		echo 'Calling nodes...' . PHP_EOL;
+		
 		while( true )
 		{
 			$table_data = [];
@@ -385,7 +387,7 @@
 				
 				if( @!$ssh->login( $node_data['username'], $key ) )
 				{
-					$table_data[$tag]['notice'] = '!SSH';
+					$table_data[$tag]['notice'] = '!SSH            ';
 					
 					$ssh->disconnect();
 					
@@ -407,18 +409,18 @@
 				
 				if( !isset( $ncmCall['node_vendor'] ) )
 				{
-					$table_data[$tag]['notice'] = '!ncm'; continue;
+					$table_data[$tag]['notice'] = '!ncm           '; continue;
 				}
 				
 				// Check for alerts
 				
 				if( isset( $ncmCall['alert'] ) )
 				{
-					$table_data[$tag]['notice'] = 'Alerts';
+					$table_data[$tag]['notice'] = 'Alerts         ';
 				}
 				else
 				{
-					$table_data[$tag]['notice'] = 'OK     ';
+					$table_data[$tag]['notice'] = 'OK             ';
 				}	
 				
 				
@@ -584,7 +586,7 @@
 					$table_data[9999]['block_count'] = '            ';
 					$table_data[9999]['block_unchecked'] = '            ';
 					$table_data[9999]['block_cemented'] = '            ';
-					$table_data[9999]['network_peers'] = '         ';
+					$table_data[9999]['network_peers'] = '      ';
 					$table_data[9999]['network_representatives_online'] = '       ';
 					$table_data[9999]['network_weight_online'] = '                  ';
 					$table_data[9999]['network_weight_online_percent'] = '      ';
