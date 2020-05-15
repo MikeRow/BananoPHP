@@ -308,7 +308,7 @@
 			$keys[0] = Uint::fromUint8Array( array_slice( $keys[0]->toArray(), 0, 32 ) )->toHexString();
 			$keys[1] = Uint::fromUint8Array( $keys[1] )->toHexString();
 			
-			if( $get_account ) $keys[2] = self::public2account( $keys[1] );
+			if( $get_account ) $keys[] = self::public2account( $keys[1] );
 			
 			return $keys;
 		}
@@ -350,7 +350,7 @@
             
 			$keys = [$sk,$pk];
 			
-			if( $get_account ) $keys[2] = self::public2account( $pk );
+			if( $get_account ) $keys[] = self::public2account( $pk );
 			
 			return $keys;
 		}
@@ -454,29 +454,24 @@
 			if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) return false;
 			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) return false;
 			
-			$i = 1; $start = microtime( true );
-			
-			$b2b = new Blake2b();
-			
 			$hash = Uint::fromHex( $hash )->toUint8();
 			$difficulty = hexToDec( $difficulty );
-			$work = new SplFixedArray( 64 );
 			
-			$ctx = $b2b->init( null, 8 );
+			$b2b = new Blake2b();
 			
 			while( true )
 			{
 				$rng = [];
-				for ($i = 0; $i < 8; $i++) $rng[] = mt_rand( 0, 255 );
+				for ($i = 0; $i < 8; $i++) $rng[$i] = mt_rand( 0, 255 );
 				$rng = Uint::fromUint8Array( $rng )->toUint8();
 				$work = new SplFixedArray( 64 );
 				
+				$ctx = $b2b->init( null, 8 );
 				$b2b->update( $ctx, $rng, 8 );
 				$b2b->update( $ctx, $hash, 32 );
 				$b2b->finish( $ctx, $work );
-				$ctx = $b2b->init( null, 8 );
 				
-				$work = $work->toArray();
+				$work = $work->toArray(); 
 				$work = array_slice( $work, 0, 8 );
 				//$work = array_reverse( $work );
 				$work = Uint::fromUint8Array( $work )->toHexString();
