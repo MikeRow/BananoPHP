@@ -24,7 +24,8 @@
 			
 			if( !isset( $args['wallet'] ) || !isset( $args['destination'] ) )
 			{
-				return ['error'=>'Unable to parse Array'];
+				$this->error = 'Unable to parse Array';
+				return false;
 			}
 			
 			$wallet = $args['wallet'];
@@ -36,14 +37,16 @@
 			
 			if( $this->error != null )
 			{
-				return ['error'=>'Bad wallet number'];
+				$this->error = 'Bad wallet number';
+				return false;
 			}
 			
 			// Balance ok?
 			
 			if( gmp_cmp( $wallet_info['balance'], 1 ) < 0 )
 			{
-				return ['error'=>'Insufficient balance'];
+				$this->error = 'Insufficient balance';
+				return false;
 			}
 			
 			// Destination ok?
@@ -52,7 +55,8 @@
 			
 			if( $check_destination['valid'] != 1 )
 			{
-				return ['error'=>'Bad destination'];
+				$this->error = 'Bad destination';
+				return false;
 			}
 
 			// Any sort?
@@ -121,7 +125,10 @@
 				
 				if( $send['block'] == self::hash0 )
 				{
-					$return['error'] = 'Bad send';
+					$return['balances'][$account] =
+					[
+						'error' => 'Bad send'
+					];
 				}
 			}
 			
@@ -146,7 +153,8 @@
 			
 			if( !isset( $args['wallet'] ) || !isset( $args['destination'] ) || !isset( $args['amount'] ) )
 			{
-				return ['error'=>'Unable to parse Array'];
+				$this->error = 'Unable to parse Array';
+				return false;
 			}
 			
 			$wallet = $args['wallet'];
@@ -159,7 +167,8 @@
 			
 			if( $this->error != null )
 			{
-				return ['error'=>'Bad wallet number'];
+				$this->error = 'Bad wallet number';
+				return false;
 			}
 		
 			// Destination ok?
@@ -168,25 +177,28 @@
 			
 			if( $check_destination['valid'] != 1 )
 			{
-				return ['error'=>'Bad destination'];
+				$this->error = 'Bad destination';
+				return false;
 			}
 			
 			// Amount ok?
 			
 			if( !ctype_digit( $amount ) )
 			{
-				return ['error'=>'Bad amount'];
+				$this->error = 'Bad amount';
+				return false;
 			}
 			
 			if( gmp_cmp( $amount, 1 ) < 0 )
 			{
-				return ['error'=>'Bad amount'];
+				$this->error = 'Bad amount';
+				return false;
 			}
 			
 			if( gmp_cmp( $wallet_info['balance'], $amount ) < 0 )
 			{
-				return ['error'=>'Insufficient balance'];
-			
+				$this->error = 'Insufficient balance';
+				return false;
 			}
 			
 			// Any sort?
@@ -278,7 +290,10 @@
 				
 				if( $send['block'] == self::hash0 )
 				{
-					$return['error'] = 'Bad send';
+					$return['balances'][$account] =
+					[
+						'error' => 'Bad send'
+					];
 				}
 			}
 			
@@ -303,7 +318,8 @@
 			
 			if( !isset( $args['wallet'] ) )
 			{
-				return ['error'=>'Unable to parse Array'];
+				$this->error = 'Unable to parse Array';
+				return false;
 			}
 			
 			$wallet = $args['wallet'];
@@ -314,7 +330,8 @@
 			
 			if( $this->error != null )
 			{
-				return ['error'=>'Bad wallet number'];
+				$this->error = 'Bad wallet number';
+				return false;
 			}
 			
 			// Any sort?
