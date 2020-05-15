@@ -462,8 +462,8 @@
 			while( true )
 			{
 				$rng = [];
-				for ($i = 0; $i < 8; $i++) $rng[$i] = mt_rand( 0, 255 );
-				$rng = Uint::fromUint8Array( $rng )->toUint8();
+				for ($i = 0; $i < 8; $i++) $rng[] = mt_rand( 0, 255 );
+				//$rng = Uint::fromUint8Array( $rng )->toUint8();
 				$work = new SplFixedArray( 64 );
 				
 				$ctx = $b2b->init( null, 8 );
@@ -472,6 +472,7 @@
 				$b2b->finish( $ctx, $work );
 				
 				$work = $work->toArray(); 
+				//$work = array_reverse( $work );
 				$work = array_slice( $work, 0, 8 );
 				//$work = array_reverse( $work );
 				$work = Uint::fromUint8Array( $work )->toHexString();
