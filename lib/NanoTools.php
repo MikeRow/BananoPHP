@@ -54,7 +54,7 @@
 		
 		public static function bin_arr2str( $array )
 		{
-			return implode( array_map( 'chr', $key_uint8 ) );
+			return implode( array_map( 'chr', $array ) );
 		}
 		
 		
@@ -463,21 +463,20 @@
 			{
 				$rng = [];
 				for ($i = 0; $i < 8; $i++) $rng[] = mt_rand( 0, 255 );
-				//$rng = Uint::fromUint8Array( $rng )->toUint8();
-				$work = new SplFixedArray( 64 );
+				
+				$output = new SplFixedArray( 64 );
 				
 				$ctx = $b2b->init( null, 8 );
 				$b2b->update( $ctx, $rng, 8 );
 				$b2b->update( $ctx, $hash, 32 );
-				$b2b->finish( $ctx, $work );
+				$b2b->finish( $ctx, $output );
 				
-				$work = $work->toArray(); 
-				//$work = array_reverse( $work );
-				$work = array_slice( $work, 0, 8 );
-				//$work = array_reverse( $work );
-				$work = Uint::fromUint8Array( $work )->toHexString();
+				$output = $output->toArray(); 
+				$output = array_slice( $output, 0, 8 );
+				$output = array_reverse( $output );
+				$output = Uint::fromUint8Array( $output )->toHexString();
 
-				if( hexToDec( $work ) >= $difficulty ) return $work;
+				if( hexToDec( $output ) >= $difficulty ) return Uint::fromUint8Array( array_reverse( $rng ) )->toHexString();
 			}
 		}
 		
@@ -493,18 +492,19 @@
 		{
 			if( strlen( $work ) != 16 || !hex2bin( $work ) ) return false;
 			if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) return false;
-			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) return false;
-				
+			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) return false;	
+			
+			$hash = Uint::fromHex( $hash )->toUint8();
+			$work = Uint::fromHex( $work )->toUint8();
+			$work = array_reverse( $work->toArray() );
+			$work = SplFixedArray::fromArray( $work );
+			
 			$res = new SplFixedArray( 64 );
-			$workBytes = Uint::fromHex( $work )->toUint8();
-			$hashBytes = Uint::fromHex( $hash )->toUint8();
-			$workBytes = array_reverse( $workBytes->toArray() );
-			$workBytes = SplFixedArray::fromArray( $workBytes );
 			
 			$blake2b = new Blake2b();
 			$ctx = $blake2b->init( null, 8 );
-			$blake2b->update( $ctx, $workBytes, 8 );
-			$blake2b->update( $ctx, $hashBytes, 32 );
+			$blake2b->update( $ctx, $work, 8 );
+			$blake2b->update( $ctx, $hash, 32 );
 			$blake2b->finish( $ctx, $res );
 			
 			$res = $res->toArray();
