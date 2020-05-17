@@ -73,6 +73,24 @@
 		}
 		
 		
+		// *** Hexadecimal to decimal ***
+		
+		
+		public static function hex2dec( $string )
+		{
+			return hexToDec( $string );
+		}
+		
+		
+		// *** Decimal to hexadecimal ***
+		
+		
+		public static function dec2hex( $string )
+		{
+			return decToHex( $string );
+		}
+		
+		
 		
 		// ***************************
 		// *** Denomination to raw ***
