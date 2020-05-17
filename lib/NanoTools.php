@@ -58,7 +58,7 @@
 		// *** Binary array to binary string ***
 		
 		
-		public static function bin_arr2str( $array )
+		public static function bin_arr2str( array $array )
 		{
 			return implode( array_map( 'chr', $array ) );
 		}
@@ -67,7 +67,7 @@
 		// *** Binary string to binary array ***
 		
 		
-		public static function bin_str2arr( $string )
+		public static function bin_str2arr( string $string )
 		{
 			return array_map( 'ord', str_split( $string ) );
 		}
@@ -76,7 +76,7 @@
 		// *** Hexadecimal to decimal ***
 		
 		
-		public static function hex2dec( $string )
+		public static function hex2dec( string $string )
 		{
 			return hexToDec( $string );
 		}
@@ -85,7 +85,7 @@
 		// *** Decimal to hexadecimal ***
 		
 		
-		public static function dec2hex( $string )
+		public static function dec2hex( string $string )
 		{
 			return decToHex( $string );
 		}
