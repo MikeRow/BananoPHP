@@ -24,7 +24,7 @@
 	
 	
 	
-	define( 'data_dir'              , __DIR__ . '/data' );
+	define( 'data_dir'              , __DIR__ . '/../../nco/data' );
 	define( 'config_file'           , data_dir . '/config.json' );
 	define( 'nodes_file'            , data_dir . '/nodes.json' );
 	
@@ -38,7 +38,7 @@
 	
 	if( !is_dir( data_dir ) )
 	{
-		mkdir( data_dir );
+		mkdir( data_dir, 0777, true );
 	}
 	
 	

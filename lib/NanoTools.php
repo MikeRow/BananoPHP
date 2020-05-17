@@ -73,19 +73,19 @@
 		}
 		
 		
-		// *** Hexadecimal to decimal ***
+		// *** Hexadecimal string to decimal string ***
 		
 		
-		public static function hex2dec( string $string )
+		public static function str_hex2dec( string $string )
 		{
 			return hexToDec( $string );
 		}
 		
 		
-		// *** Decimal to hexadecimal ***
+		// *** Decimal string to hexadecimal string ***
 		
 		
-		public static function dec2hex( string $string )
+		public static function str_dec2hex( string $string )
 		{
 			return decToHex( $string );
 		}

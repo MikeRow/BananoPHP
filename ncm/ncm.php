@@ -23,8 +23,8 @@
 	
 	
 	
-	define( 'data_dir'              , __DIR__ . '/data' );
-	define( 'log_dir'               , __DIR__ . '/log' );
+	define( 'data_dir'              , __DIR__ . '/../../ncm/data' );
+	define( 'log_dir'               , __DIR__ . '/../../ncm/log' );
 	define( 'config_file'           , data_dir . '/config.json' );
 	define(	'ticker_file'           , data_dir . '/ticker.json' );
 	define( 'tags_file'             , data_dir . '/tags.json' );    
@@ -45,7 +45,7 @@
 	
 	if( !is_dir( data_dir ) )
 	{
-		mkdir( data_dir );
+		mkdir( data_dir, 0777, true );
 	}
 	
 	
@@ -54,7 +54,7 @@
 	
 	if( !is_dir( log_dir ) )
 	{
-		mkdir( log_dir );
+		mkdir( log_dir, 0777, true );
 	}
 	
 	
