@@ -24,7 +24,11 @@
 	
 	
 	
-	require_once __DIR__ . '/functions.php';
+	require_once __DIR__ . '/../ncm/function/ksort_recursive.php';
+	require_once __DIR__ . '/../ncm/function/array_merge_new_recursive.php';
+	require_once __DIR__ . '/../ncm/function/custom_number.php';
+	require_once __DIR__ . '/function/ncmCall.php';
+	require_once __DIR__ . '/function/misc.php';
 	
 	
 		
@@ -337,9 +341,9 @@
 					if( !isset( $ncmCall['unchecked'] ) || $ncmCall['unchecked'] == null ) $ncmCall['unchecked'] = 0;
 					if( !isset( $ncmCall['cemented'] ) || $ncmCall['cemented'] == null ) $ncmCall['cemented'] = 0;
 					
-					$table_data[$tag]['block_count'] = custom_number( $ncmCall['count'] );
-					$table_data[$tag]['block_unchecked'] = custom_number( $ncmCall['unchecked'] );
-					$table_data[$tag]['block_cemented'] = custom_number( $ncmCall['cemented'] );
+					$table_data[$tag]['block_count'] = custom_number( $ncmCall['count'], 0, $C['format']['decimal'], $C['format']['thousand'] );
+					$table_data[$tag]['block_unchecked'] = custom_number( $ncmCall['unchecked'], 0, $C['format']['decimal'], $C['format']['thousand'] );
+					$table_data[$tag]['block_cemented'] = custom_number( $ncmCall['cemented'], 0, $C['format']['decimal'], $C['format']['thousand'] );
 					
 					// Peers
 					
@@ -347,7 +351,7 @@
 					
 					if( !isset( $ncmCall['peers'] ) || !is_array( $ncmCall['peers'] ) ) $ncmCall['peers'] = [];
 					
-					$table_data[$tag]['network_peers'] = custom_number( count( $ncmCall['peers'] ) );	
+					$table_data[$tag]['network_peers'] = custom_number( count( $ncmCall['peers'] ), 0, $C['format']['decimal'], $C['format']['thousand'] );	
 					
 					// Representatives
 					
@@ -357,9 +361,9 @@
 					if( !isset( $ncmCall['weight'] ) || $ncmCall['weight'] == null ) $ncmCall['weight'] = 0;
 					if( !isset( $ncmCall['weight_percent'] ) || $ncmCall['weight_percent'] == null ) $ncmCall['weight_percent'] = 0;
 					
-					$table_data[$tag]['network_representatives_online'] = custom_number( $ncmCall['count'] );
-					$table_data[$tag]['network_weight_online'] = custom_number( NanoTools::raw2den( $ncmCall['weight'], $C['nano']['denomination'] ), $C['nano']['decimals'] );
-					$table_data[$tag]['network_weight_online_percent'] = custom_number( $ncmCall['weight_percent'], 2 );	
+					$table_data[$tag]['network_representatives_online'] = custom_number( $ncmCall['count'], 0, $C['format']['decimal'], $C['format']['thousand'] );
+					$table_data[$tag]['network_weight_online'] = custom_number( NanoTools::raw2den( $ncmCall['weight'], $C['nano']['denomination'] ), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand'] );
+					$table_data[$tag]['network_weight_online_percent'] = custom_number( $ncmCall['weight_percent'], 2, $C['format']['decimal'], $C['format']['thousand'] );	
 				}
 				
 				if( $command == 'wallets' )
@@ -387,11 +391,11 @@
 						}
 					}
 					
-					$table_data[$tag]['wallets_balance'] = custom_number( NanoTools::raw2den( gmp_strval( $wallets_balance ), $C['nano']['denomination'] ), $C['nano']['decimals'] );
-					$table_data[$tag]['wallets_pending'] = custom_number( NanoTools::raw2den( gmp_strval( $wallets_pending ), $C['nano']['denomination'] ), $C['nano']['decimals'] );
-					$table_data[$tag]['wallets_weight'] = custom_number( NanoTools::raw2den( gmp_strval( $wallets_weight ), $C['nano']['denomination'] ), $C['nano']['decimals'] );
-					$table_data[$tag]['wallets_count'] = custom_number( $wallets_count );
-					$table_data[$tag]['wallets_accounts_count'] = custom_number( $wallets_accounts_count );
+					$table_data[$tag]['wallets_balance'] = custom_number( NanoTools::raw2den( gmp_strval( $wallets_balance ), $C['nano']['denomination'] ), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand'] );
+					$table_data[$tag]['wallets_pending'] = custom_number( NanoTools::raw2den( gmp_strval( $wallets_pending ), $C['nano']['denomination'] ), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand'] );
+					$table_data[$tag]['wallets_weight'] = custom_number( NanoTools::raw2den( gmp_strval( $wallets_weight ), $C['nano']['denomination'] ), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand'] );
+					$table_data[$tag]['wallets_count'] = custom_number( $wallets_count, 0, $C['format']['decimal'], $C['format']['thousand'] );
+					$table_data[$tag]['wallets_accounts_count'] = custom_number( $wallets_accounts_count, 0, $C['format']['decimal'], $C['format']['thousand'] );
 				}
 				
 				if( $command == 'node' )
@@ -410,7 +414,7 @@
 										
 					if( !isset( $ncmCall['seconds'] ) || $ncmCall['seconds'] == null ) $ncmCall['seconds'] = 0;
 					
-					$table_data[$tag]['node_uptime'] = custom_number( $ncmCall['seconds']/60/60, 2 ) . ' h';
+					$table_data[$tag]['node_uptime'] = custom_number( $ncmCall['seconds']/60/60, 2, $C['format']['decimal'], $C['format']['thousand'] ) . ' h';
 					
 					// Blockchain
 					
@@ -419,8 +423,8 @@
 					if( !isset( $ncmCall['blockchain'] ) || $ncmCall['blockchain'] == null ) $ncmCall['blockchain'] = 0;
 					if( !isset( $ncmCall['block_average'] ) || $ncmCall['block_average'] == null ) $ncmCall['block_average'] = 0;
 					
-					$table_data[$tag]['node_blockchain'] = custom_number( $ncmCall['blockchain']/1000000, 0 ) . ' MB';
-					$table_data[$tag]['node_block_average'] = custom_number( $ncmCall['block_average'], 0 ) . ' B';
+					$table_data[$tag]['node_blockchain'] = custom_number( $ncmCall['blockchain']/1000000, 0, $C['format']['decimal'], $C['format']['thousand'] ) . ' MB';
+					$table_data[$tag]['node_block_average'] = custom_number( $ncmCall['block_average'], 0, $C['format']['decimal'], $C['format']['thousand'] ) . ' B';
 				}
 			
 			

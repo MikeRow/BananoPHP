@@ -1,106 +1,8 @@
-<?php 
+<?php 	
+	
+	use php4nano\lib\NanoTools\NanoTools as NanoTools;
+	
 
-	// *** Merge array2 to array1, only missing elements ***
-	
-	
-	function array_merge_new_recursive( array $array1, array $array2 )
-	{
-		foreach( $array2 as $key => $value )
-		{
-			if( is_array( $value ) && isset( $array1[$key] ) && is_array( $array1[$key] ) )
-			{
-				$array1[$key] = array_merge_new_recursive( $array1[$key], $value );
-			}
-			else
-			{
-				if( !isset( $array1[$key] ) )
-				{
-					$array1[$key] = $value;
-				}
-			}
-		}
-		
-		return $array1;
-	}
-	
-	
-	// *** Sort array by key recursively ***
-	
-	
-	function ksort_recursive( array &$array )
-	{
-		if( is_array( $array ) )
-		{
-			ksort( $array );
-			array_walk( $array, 'ksort_recursive' );
-		}
-	}
-	
-	
-	// *** Custom number format ***
-	
-	
-	function custom_number( $number, $decimals = -1 )
-	{
-		global $C;
-		global $C2;
-		
-		// $number = sprintf( "%s", $number );
-		
-		if( $decimals < 0 )
-		{
-			$amount_array = explode( '.', $number );
-			
-			if( isset( $amount_array[1] ) )
-			{
-				// Remove useless decimals
-				
-				while( substr( $amount_array[1], -1 ) == '0' )
-				{
-					$amount_array[1] = substr( $amount_array[1], 0, -1 );
-				}
-				
-				if( strlen( $amount_array[1] ) < 1 )
-				{
-					return number_format( $amount_array[0], 0, '', $C['format']['thousand'] );
-				}
-				else
-				{
-					return number_format( $amount_array[0], 0, '', $C['format']['thousand'] ) . '.' . $amount_array[1];
-				}
-			}
-			else
-			{
-				return number_format( floor( $number ), 0, '', $C['format']['thousand'] );
-			}
-		}
-		elseif( $decimals == 0 )
-		{
-			return number_format( floor( $number ), 0, $C['format']['decimal'], $C['format']['thousand'] );
-		}
-		else
-		{
-			$amount = number_format( $number, $decimals, $C['format']['decimal'], $C['format']['thousand'] );
-			
-			// Remove useless decimals
-			
-			while( substr( $amount, -1 ) == '0' )
-			{
-				$amount = substr( $amount, 0, -1 );
-			}
-			
-			// Remove dot if all decimals are zeroes
-			
-			if( substr( $amount, -1 ) == '.' )
-			{
-				$amount = substr( $amount, 0, -1 );
-			}
-			
-			return $amount;
-		}
-	}
-	
-	
 	// *** Pretty print_r ***
 	
 	
@@ -356,21 +258,21 @@
 				
 				if( in_array( $key, $check_words ) && is_numeric( $value ) )
 				{
-					$array[$key] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ), $C['nano']['decimals'] ) . ' ' . $C['nano']['denomination'];
+					$array[$key] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand'] ) . ' ' . $C['nano']['denomination'];
 					
 					// If ticker is enabled shows amounts in favourite vs currencies
 					
 					if( $C['ticker']['enable'] )
 					{
 						$array[$key] = [];
-						$array[$key][] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ), $C['nano']['decimals'] ) . ' ' . $C['nano']['denomination'];
+						$array[$key][] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand'] ) . ' ' . $C['nano']['denomination'];
 						$fav_vs_currencies = explode( ',', $C['ticker']['fav_vs_currencies'] );
 						
 						foreach( $fav_vs_currencies as $fav_vs_currency )
 						{
 							if( isset( $C2['vs_currencies'][strtoupper( $fav_vs_currency )] ) )
 							{
-								$array[$key][] = custom_number( number_format( NanoTools::raw2den( $value, 'NANO' ) * $C2['vs_currencies'][strtoupper( $fav_vs_currency )], 8, '.', '' ) ) . ' ' . strtoupper( $fav_vs_currency );
+								$array[$key][] = custom_number( number_format( NanoTools::raw2den( $value, 'NANO' ) * $C2['vs_currencies'][strtoupper( $fav_vs_currency )], 8, '.', '' ), -1, $C['format']['decimal'], $C['format']['thousand'] ) . ' ' . strtoupper( $fav_vs_currency );
 							}
 						}
 					}
@@ -401,12 +303,12 @@
 				
 				if( in_array( $key, $check_words ) && is_numeric( $value ) )
 				{
-					$array[$key] = custom_number( $value, 0 ) . ' s';
+					$array[$key] = custom_number( $value, 0, $C['format']['decimal'], $C['format']['thousand'] ) . ' s';
 				}
 				
-				if( $key == 'duration' && is_numeric( $value ) ) $array[$key] = custom_number( $value, 0 ) . ' ms';
+				if( $key == 'duration' && is_numeric( $value ) ) $array[$key] = custom_number( $value, 0, $C['format']['decimal'], $C['format']['thousand'] ) . ' ms';
 				
-				if( $key == 'uptime'   && is_numeric( $value ) ) $array[$key] = custom_number( $value / 3600, 2 ) . ' h';
+				if( $key == 'uptime'   && is_numeric( $value ) ) $array[$key] = custom_number( $value / 3600, 2, $C['format']['decimal'], $C['format']['thousand'] ) . ' h';
 				
 				// Duration exceptions
 				
@@ -417,7 +319,7 @@
 				
 				if( in_array( $command, $check_words ) )
 				{
-					$array['duration'] = custom_number( $value, 0 ) . ' s';
+					$array['duration'] = custom_number( $value, 0, $C['format']['decimal'], $C['format']['thousand'] ) . ' s';
 				}
 				
 				// Default numeric format
@@ -482,7 +384,7 @@
 				
 				if( in_array( $key, $check_words ) && is_numeric( $value ) )
 				{
-					$array[$key] = custom_number( $value, 0 );
+					$array[$key] = custom_number( $value, 0, $C['format']['decimal'], $C['format']['thousand'] );
 				}
 				
 				// Size format
@@ -496,7 +398,7 @@
 				
 				if( in_array( $key, $check_words ) && is_numeric( $value ) )
 				{
-					$array[$key] = custom_number( $value/1000000, 0 ) . ' MiB';
+					$array[$key] = custom_number( $value/1000000, 0, $C['format']['decimal'], $C['format']['thousand'] ) . ' MiB';
 				}
 				
 				$check_words =
@@ -506,7 +408,7 @@
 				
 				if( in_array( $key, $check_words ) && is_numeric( $value ) )
 				{
-					$array[$key] = custom_number( $value/1000000, 0 ) . ' MB';
+					$array[$key] = custom_number( $value/1000000, 0, $C['format']['decimal'], $C['format']['thousand'] ) . ' MB';
 				}
 				
 				$check_words =
@@ -516,7 +418,7 @@
 				
 				if( in_array( $key, $check_words ) && is_numeric( $value ) )
 				{
-					$array[$key] = custom_number( $value, 0 ) . ' B';
+					$array[$key] = custom_number( $value, 0, $C['format']['decimal'], $C['format']['thousand'] ) . ' B';
 				}
 				
 				// Error format

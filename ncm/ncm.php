@@ -23,7 +23,10 @@
 	
 	
 	
-	require_once __DIR__ . '/functions.php';
+	require_once __DIR__ . '/function/ksort_recursive.php';
+	require_once __DIR__ . '/function/array_merge_new_recursive.php';
+	require_once __DIR__ . '/function/custom_number.php';
+	require_once __DIR__ . '/function/misc.php';
 	
 	
 	
@@ -550,7 +553,7 @@
 			
 			if( $confirmation_amount != 0 )
 			{
-				$confirmation_amount = custom_number( NanoTools::raw2den( $confirmation_amount, $C['nano']['denomination'] ) ) . ' ' . $C['nano']['denomination'];
+				$confirmation_amount = custom_number( NanoTools::raw2den( $confirmation_amount, $C['nano']['denomination'] ), -1, $C['format']['decimal'], $C['format']['thousand'] ) . ' ' . $C['nano']['denomination'];
 				
 				echo PHP_EOL . 'Sending ' . $confirmation_amount . PHP_EOL;
 				echo 'Do you want to proceed? Type \'confirm\' to proceed: ';
@@ -837,13 +840,13 @@
 						$table_data1 = [];
 						
 						$table_data1[0]['type'] = 'Sync    ';
-						$table_data1[0]['block_count'] = custom_number( $call_return['block']['count'] );
-						$table_data1[0]['block_unchecked'] = custom_number( $call_return['block']['unchecked'] );
-						$table_data1[0]['block_cemented'] = custom_number( $call_return['block']['cemented'] );
-						$table_data1[0]['network_peers'] = custom_number( $call_return['network']['peers'] );	
-						$table_data1[0]['network_representatives_online'] = custom_number( $call_return['network']['representatives_online'] );
-						$table_data1[0]['network_weight_online'] = custom_number( NanoTools::raw2den( $call_return['network']['weight_online'], $C['nano']['denomination'] ), $C['nano']['decimals'] );
-						$table_data1[0]['network_weight_online_percent'] = custom_number( $call_return['network']['weight_online_percent'], 2 );
+						$table_data1[0]['block_count'] = custom_number( $call_return['block']['count'], -1, $C['format']['decimal'], $C['format']['thousand'] );
+						$table_data1[0]['block_unchecked'] = custom_number( $call_return['block']['unchecked'], -1, $C['format']['decimal'], $C['format']['thousand'] );
+						$table_data1[0]['block_cemented'] = custom_number( $call_return['block']['cemented'], -1, $C['format']['decimal'], $C['format']['thousand'] );
+						$table_data1[0]['network_peers'] = custom_number( $call_return['network']['peers'], -1, $C['format']['decimal'], $C['format']['thousand'] );	
+						$table_data1[0]['network_representatives_online'] = custom_number( $call_return['network']['representatives_online'], -1, $C['format']['decimal'], $C['format']['thousand'] );
+						$table_data1[0]['network_weight_online'] = custom_number( NanoTools::raw2den( $call_return['network']['weight_online'], $C['nano']['denomination'] ), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand'] );
+						$table_data1[0]['network_weight_online_percent'] = custom_number( $call_return['network']['weight_online_percent'], 2, $C['format']['decimal'], $C['format']['thousand'] );
 						
 						$table_data1[1]['type'] = '';
 						$table_data1[1]['block_count'] = '            ';
@@ -857,11 +860,11 @@
 						$table_data2 = [];
 						
 						$table_data2[0]['type'] = 'Wallets ';
-						$table_data2[0]['wallets_balance'] = custom_number( NanoTools::raw2den( $call_return['wallets']['balance'], $C['nano']['denomination'] ), $C['nano']['decimals'] );
-						$table_data2[0]['wallets_pending'] = custom_number( NanoTools::raw2den( $call_return['wallets']['pending'], $C['nano']['denomination'] ), $C['nano']['decimals'] );
-						$table_data2[0]['wallets_weight'] = custom_number( NanoTools::raw2den( $call_return['wallets']['weight'], $C['nano']['denomination'] ), $C['nano']['decimals'] );
-						$table_data2[0]['wallets_count'] = custom_number( $call_return['wallets']['count'] );
-						$table_data2[0]['wallets_accounts_count'] = custom_number( $call_return['wallets']['accounts_count'] );
+						$table_data2[0]['wallets_balance'] = custom_number( NanoTools::raw2den( $call_return['wallets']['balance'], $C['nano']['denomination'] ), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand'] );
+						$table_data2[0]['wallets_pending'] = custom_number( NanoTools::raw2den( $call_return['wallets']['pending'], $C['nano']['denomination'] ), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand'] );
+						$table_data2[0]['wallets_weight'] = custom_number( NanoTools::raw2den( $call_return['wallets']['weight'], $C['nano']['denomination'] ), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand'] );
+						$table_data2[0]['wallets_count'] = custom_number( $call_return['wallets']['count'], -1, $C['format']['decimal'], $C['format']['thousand'] );
+						$table_data2[0]['wallets_accounts_count'] = custom_number( $call_return['wallets']['accounts_count'], -1, $C['format']['decimal'], $C['format']['thousand'] );
 						
 						$table_data2[1]['type'] = '';
 						$table_data2[1]['wallets_balance'] = '                  ';
@@ -874,9 +877,9 @@
 						
 						$table_data3[0]['type'] = 'Node    ';
 						$table_data3[0]['node_version'] = $call_return['node']['version'];
-						$table_data3[0]['node_uptime'] = custom_number( $call_return['node']['uptime']/60/60, 2 ) . ' h';
-						$table_data3[0]['node_blockchain'] = custom_number( $call_return['node']['blockchain']/1000000, 0 ) . ' MB';
-						$table_data3[0]['node_block_average'] = custom_number( $call_return['node']['block_average'], 0 ) . ' B';
+						$table_data3[0]['node_uptime'] = custom_number( $call_return['node']['uptime']/60/60, 2, $C['format']['decimal'], $C['format']['thousand'] ) . ' h';
+						$table_data3[0]['node_blockchain'] = custom_number( $call_return['node']['blockchain']/1000000, 0, $C['format']['decimal'], $C['format']['thousand'] ) . ' MB';
+						$table_data3[0]['node_block_average'] = custom_number( $call_return['node']['block_average'], 0, $C['format']['decimal'], $C['format']['thousand'] ) . ' B';
 						
 						$table_data3[1]['type'] = '';
 						$table_data3[1]['node_version'] = '           ';
