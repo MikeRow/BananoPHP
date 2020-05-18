@@ -17,6 +17,16 @@
 	
 	
 	
+	// *****************
+	// *** Functions ***
+	// *****************
+	
+	
+	
+	require_once __DIR__ . '/functions.php';
+	
+	
+	
 	// *********************
 	// *** Configuration ***
 	// *********************
@@ -193,16 +203,6 @@
 	file_put_contents( tags_file, json_encode( $C2['tags'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 	
 
-
-	// *****************
-	// *** Functions ***
-	// *****************
-
-	
-	
-	require_once __DIR__ . '/functions.php';
-	
-	
 	
 	// ************************
 	// *** Node connections ***

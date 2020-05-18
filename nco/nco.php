@@ -18,6 +18,16 @@
 	
 
 	
+	// *****************
+	// *** Functions ***
+	// *****************
+	
+	
+	
+	require_once __DIR__ . '/functions.php';
+	
+	
+		
 	// *********************
 	// *** Configuration ***
 	// *********************
@@ -126,16 +136,6 @@
 	
 	file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 	file_put_contents( nodes_file, json_encode( $C2['nodes'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
-	
-	
-	
-	// *****************
-	// *** Functions ***
-	// *****************
-	
-	
-	
-	require_once __DIR__ . '/functions.php';
 	
 	
 	
