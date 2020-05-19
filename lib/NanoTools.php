@@ -240,8 +240,7 @@
 						$key_uint8 = self::bin_arr2str( (array) $key_uint8 );
 						
 						$key_hash = blake2( $key_uint8, 5, null, true );
-						$key_hash = self::bin_str2arr( $key_hash );
-						$key_hash = array_reverse( array_slice( $key_hash, 0, 5 ) );
+						$key_hash = self::bin_str2arr( strrev( $key_hash ) );
 					}
 					
 					if( $hash_uint8 == $key_hash )
@@ -294,7 +293,7 @@
 				
 				$hash = blake2( $key, 5, null, true );
 				$hash = self::bin_str2arr( $hash );
-				$hash = array_reverse( array_slice( $hash, 0, 5 ) );
+				$hash = array_reverse( $hash );
 				
 				$checksum = Uint::fromUint8Array( $hash )->toString();
 			}
@@ -485,10 +484,11 @@
 			if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) return false;
 			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) return false;
 			
+			$hash = Uint::fromHex( $hash )->toUint8();
+			
 			if( !extension_loaded( 'blake2' ) )
 			{
-				$hash = Uint::fromHex( $hash )->toUint8();
-				$difficulty = hexToDec( $difficulty );
+				$difficulty = hexdec( $difficulty );
 				
 				$b2b = new Blake2b();
 				
@@ -509,12 +509,23 @@
 					$output = array_reverse( $output );
 					$output = Uint::fromUint8Array( $output )->toHexString();
 					
-					if( hexToDec( $output ) >= $difficulty ) return Uint::fromUint8Array( array_reverse( $rng ) )->toHexString();
+					if( hexdec( $output ) >= $difficulty ) return Uint::fromUint8Array( array_reverse( $rng ) )->toHexString();
 				}
 			}
 			else 
 			{
+				$hash = self::bin_arr2str( (array) $hash );
+				$difficulty = hex2bin( $difficulty );
 				
+				while( true )
+				{
+					$rng = random_bytes( 8 );
+					
+					$output = blake2( $rng . $hash, 8, null, true );
+					$output = strrev( $output );
+					
+					if( strcasecmp( $output, $difficulty ) >= 0 ) return Uint::fromUint8Array( array_reverse( self::bin_str2arr( $rng ) ) )->toHexString();
+				}
 			}
 		}
 		
@@ -550,7 +561,7 @@
 			$res = array_reverse( $res );
 			$res = Uint::fromUint8Array( $res )->toHexString();
 			
-			if( hexToDec( $res ) >= hexToDec( $difficulty ) ) return true;
+			if( hexdec( $res ) >= hexdec( $difficulty ) ) return true;
 			
 			return false;
 		}
