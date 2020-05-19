@@ -485,29 +485,36 @@
 			if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) return false;
 			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) return false;
 			
-			$hash = Uint::fromHex( $hash )->toUint8();
-			$difficulty = hexToDec( $difficulty );
-			
-			$b2b = new Blake2b();
-			
-			while( true )
+			if( !extension_loaded( 'blake2' ) )
 			{
-				$rng = [];
-				for ($i = 0; $i < 8; $i++) $rng[] = mt_rand( 0, 255 );
+				$hash = Uint::fromHex( $hash )->toUint8();
+				$difficulty = hexToDec( $difficulty );
 				
-				$output = new SplFixedArray( 64 );
+				$b2b = new Blake2b();
 				
-				$ctx = $b2b->init( null, 8 );
-				$b2b->update( $ctx, $rng, 8 );
-				$b2b->update( $ctx, $hash, 32 );
-				$b2b->finish( $ctx, $output );
+				while( true )
+				{
+					$rng = [];
+					for ($i = 0; $i < 8; $i++) $rng[] = mt_rand( 0, 255 );
+					
+					$output = new SplFixedArray( 64 );
+					
+					$ctx = $b2b->init( null, 8 );
+					$b2b->update( $ctx, $rng, 8 );
+					$b2b->update( $ctx, $hash, 32 );
+					$b2b->finish( $ctx, $output );
+					
+					$output = $output->toArray();
+					$output = array_slice( $output, 0, 8 );
+					$output = array_reverse( $output );
+					$output = Uint::fromUint8Array( $output )->toHexString();
+					
+					if( hexToDec( $output ) >= $difficulty ) return Uint::fromUint8Array( array_reverse( $rng ) )->toHexString();
+				}
+			}
+			else 
+			{
 				
-				$output = $output->toArray(); 
-				$output = array_slice( $output, 0, 8 );
-				$output = array_reverse( $output );
-				$output = Uint::fromUint8Array( $output )->toHexString();
-
-				if( hexToDec( $output ) >= $difficulty ) return Uint::fromUint8Array( array_reverse( $rng ) )->toHexString();
 			}
 		}
 		
