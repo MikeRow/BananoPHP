@@ -3,7 +3,7 @@
 	// *** Custom number format ***
 	
 	
-	function custom_number( $number, $decimals = -1, $decimal = null, $thousand = null )
+	function custom_number( $number, int $decimals = -1, $decimal = null, $thousand = null )
 	{
 		// $number = sprintf( "%s", $number );
 		
