@@ -209,7 +209,7 @@
 		
 		
 		
-		public static function account2public( string $account )
+		public static function account2public( string $account, bool $get_public_key = true )
 		{
 			if( ( strpos( $account, 'xrb_1' ) === 0 || strpos( $account, 'xrb_3' ) === 0 || strpos( $account, 'nano_1' ) === 0 || strpos( $account, 'nano_3' ) === 0 ) && ( strlen( $account ) == 64 || strlen( $account ) == 65 ) )
 			{
@@ -246,7 +246,8 @@
 					
 					if( $hash_uint8 == $key_hash )
 					{
-						return Uint::fromUint4Array( $key_uint4 )->toHexString();
+						if( $get_public_key ) return Uint::fromUint4Array( $key_uint4 )->toHexString();
+						else return true;
 					}
 				}
 			}
