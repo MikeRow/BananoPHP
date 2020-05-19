@@ -1078,6 +1078,11 @@
 				
 				$account_info = $nanocall->account_info( ['account'=>$arguments['account'],'pending'=>true,'weight'=>true,'representative'=>true] );
 				
+				if( $nanocall->error )
+				{
+					$call_return['error'] = 'Account not found'; break;
+				}
+				
 				$account_info['weight_percent'] = gmp_strval( gmp_div_q( gmp_mul( $account_info['weight'], '100' ), available_supply ) );
 				
 				$call_return[$arguments['account']]['frontier'] = $account_info['frontier'];
@@ -1138,6 +1143,11 @@
 				//
 				
 				$delegators_count = $nanocall->delegators_count( ['account'=>$arguments['account']] );
+				
+				if( $nanocall->error )
+				{
+					$call_return['error'] = 'Account not found'; break;
+				}
 				
 				$account_weight = $nanocall->account_weight( ['account'=>$arguments['account']] );
 				
