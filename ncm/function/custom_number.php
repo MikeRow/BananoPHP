@@ -40,23 +40,30 @@
 		}
 		else
 		{
-			$amount = number_format( $number, $decimals, $decimal, $thousand );
+			$amount_array = explode( '.', $number );
 			
-			// Remove useless decimals
-			
-			while( substr( $amount, -1 ) == '0' )
+			if( isset( $amount_array[1] ) )
 			{
-				$amount = substr( $amount, 0, -1 );
+				// Remove useless decimals
+				
+				while( substr( $amount_array[1], -1 ) == '0' )
+				{
+					$amount_array[1] = substr( $amount_array[1], 0, -1 );
+				}
+				
+				if( strlen( $amount_array[1] ) < 1 )
+				{
+					return number_format( $amount_array[0], 0, '', $thousand );
+				}
+				else
+				{
+					return number_format( $amount_array[0], 0, '', $thousand ) . '.' . substr( $amount_array[1], 0, $decimals );
+				}
 			}
-			
-			// Remove dot if all decimals are zeroes
-			
-			if( substr( $amount, -1 ) == '.' )
+			else
 			{
-				$amount = substr( $amount, 0, -1 );
+				return number_format( floor( $number ), 0, '', $thousand );
 			}
-			
-			return $amount;
 		}
 	}
 
