@@ -292,8 +292,7 @@
 				$key = self::bin_arr2str( (array) $key );
 				
 				$hash = blake2( $key, 5, null, true );
-				$hash = self::bin_str2arr( $hash );
-				$hash = array_reverse( $hash );
+				$hash = self::bin_str2arr( strrev( $hash ) );
 				
 				$checksum = Uint::fromUint8Array( $hash )->toString();
 			}
