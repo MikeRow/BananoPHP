@@ -396,10 +396,12 @@
 		{
 			if( $size <1 ) return false;
 			
+			$b2b = new Blake2b();
+			
 			$ctx = $b2b->init( null, $size );
 			$hash = new SplFixedArray( 64 );
 			
-			foreach( $inputs as $index->$value )
+			foreach( $inputs as $index => $value )
 			{
 				if( !hex2bin( $value ) ) return false;
 				
