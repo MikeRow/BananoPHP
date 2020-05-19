@@ -246,8 +246,14 @@
 					
 					if( $hash_uint8 == $key_hash )
 					{
-						if( $get_public_key ) return Uint::fromUint4Array( $key_uint4 )->toHexString();
-						else return true;
+						if( $get_public_key )
+						{
+							return Uint::fromUint4Array( $key_uint4 )->toHexString();
+						}
+						else
+						{
+							return true;
+						}
 					}
 				}
 			}
