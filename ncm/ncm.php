@@ -929,7 +929,11 @@
 						
 						// Print other info
 						
-						echo ' monitor | denomination: NANO | wait: 5.000 | delay: ' . custom_number( microtime( true ) - $last_update - 5, 3 );
+						$delay = custom_number( microtime( true ) - $last_update - 5, 3 );
+						
+						if( $delay < 0 ) $delay = '0.000';
+						
+						echo ' monitor | denomination: NANO | wait: 5.000 | delay: ' . $delay;
 						echo PHP_EOL . PHP_EOL;
 						
 						// Show cursor
