@@ -259,13 +259,14 @@
 				if( in_array( $key, $check_words ) && is_numeric( $value ) )
 				{
 					
-					if( $C['nano']['denomination'] != 'raw' )
+					if( !array_key_exists( $C['nano']['denomination'], NanoTools::raw4 ) )
 					{
-						$array[$key] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand'] ) . ' ' . $C['nano']['denomination'];
+						$array[$key] = $value . ' ' . 'raw';
+						
 					}
 					else
 					{
-						$array[$key] = $value . ' ' . 'raw';
+						$array[$key] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand'] ) . ' ' . $C['nano']['denomination'];
 					}
 					// If ticker is enabled shows amounts in favourite vs currencies
 					
@@ -273,13 +274,13 @@
 					{
 						$array[$key] = [];
 						
-						if( $C['nano']['denomination'] != 'raw' )
+						if( !array_key_exists( $C['nano']['denomination'], NanoTools::raw4 ) )
 						{
-							$array[$key][] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand'] ) . ' ' . $C['nano']['denomination'];
+							$array[$key][] = $value . ' ' . 'raw';
 						}
 						else 
 						{
-							$array[$key][] = $value . ' ' . 'raw';
+							$array[$key][] = custom_number( NanoTools::raw2den( $value, $C['nano']['denomination'] ), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand'] ) . ' ' . $C['nano']['denomination'];
 						}
 						
 						$fav_vs_currencies = explode( ',', $C['ticker']['fav_vs_currencies'] );
