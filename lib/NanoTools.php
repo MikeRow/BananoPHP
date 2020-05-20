@@ -78,7 +78,10 @@
 		
 		public static function str_hex2dec( string $string )
 		{
-			return hexToDec( $string );
+			$dec = hexToDec( $string );
+			
+			if( $dec == '' ) return '0';
+			else return $dec;
 		}
 		
 		
@@ -87,7 +90,10 @@
 		
 		public static function str_dec2hex( string $string )
 		{
-			return decToHex( $string );
+			$hex = decToHex( $string );
+			
+			if( $hex == '' ) return '00';
+			else return $hex;
 		}
 		
 		
