@@ -14,12 +14,12 @@
 		public $response;
 		private $id = 0;
 		
-		function __construct( string $path_to_app = '/home/nano/nano_node' )
+		public function __construct( string $path_to_app = '/home/nano/nano_node' )
 		{
 			$this->path_to_app = escapeshellarg( $path_to_app );
 		}
 
-		function __call( $method, array $params )
+		public function __call( $method, array $params )
 		{
 			$this->response_raw = null;
 			$this->response = null;

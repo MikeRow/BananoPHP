@@ -20,7 +20,7 @@
 		public $response;
 		private $id = 0;
 		
-		function __construct( string $host = 'localhost', string $port = '7076', string $url = null )
+		public function __construct( string $host = 'localhost', string $port = '7076', string $url = null )
 		{
 			$this->host = $host;
 			$this->port = $port;
@@ -29,13 +29,13 @@
 			$this->CACertificate = null;
 		}
 		 
-		function setSSL( string $certificate = null )
+		public function setSSL( string $certificate = null )
 		{
 			$this->proto = 'https';
 			$this->CACertificate = $certificate;
 		}
 
-		function __call( $method, array $params )
+		public function __call( $method, array $params )
 		{
 			$this->status = null;
 			$this->error = null;
