@@ -230,7 +230,7 @@
 						
 						$b2b = new Blake2b();
 						$ctx = $b2b->init( null, 5 );
-						$b2b->update( $ctx, $key_uint8, count( $key_uint8 ) );
+						$b2b->update( $ctx, $key_uint8, 32 );
 						$b2b->finish( $ctx, $key_hash );
 						
 						$key_hash = array_reverse( array_slice( $key_hash->toArray(), 0, 5 ) );
@@ -370,7 +370,7 @@
 			
 			$b2b = new Blake2b();
 			$ctx = $b2b->init( null, 32 );
- 			$b2b->update( $ctx, $seed, count( $seed ) );
+ 			$b2b->update( $ctx, $seed, 32 );
 			$b2b->update( $ctx, $index, 4 );
 			$b2b->finish( $ctx, $sk );
             
