@@ -827,13 +827,13 @@
 						$table1->addField( 'Cemented', 'block_cemented', false );
 						$table1->addField( 'Peers', 'network_peers', false );
 						$table1->addField( 'Reps.', 'network_representatives_online', false );
-						$table1->addField( 'Weight Online (NANO)', 'network_weight_online', false );
+						$table1->addField( 'Weight Online', 'network_weight_online', false );
 						$table1->addField( '%', 'network_weight_online_percent', false );
 						
 						$table2->addField( ' ', 'type', false );
-						$table2->addField( 'Balance (NANO)', 'wallets_balance', false );
-						$table2->addField( 'Pending (NANO)', 'wallets_pending', false );
-						$table2->addField( 'Weight (NANO)', 'wallets_weight', false );
+						$table2->addField( 'Balance', 'wallets_balance', false );
+						$table2->addField( 'Pending', 'wallets_pending', false );
+						$table2->addField( 'Weight', 'wallets_weight', false );
 						$table2->addField( 'Count', 'wallets_count', false );
 						$table2->addField( 'Accounts', 'wallets_accounts_count', false );
 						
@@ -929,7 +929,7 @@
 						
 						// Print other info
 						
-						echo ' monitor | wait: 5.000 | delay: ' . custom_number( microtime( true ) - $last_update, 3 );
+						echo ' monitor | denomination: NANO | wait: 5.000 | delay: ' . custom_number( microtime( true ) - $last_update - 5, 3 );
 						echo PHP_EOL . PHP_EOL;
 						
 						// Show cursor
