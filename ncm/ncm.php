@@ -254,7 +254,6 @@
 		'call'            => false,
 		'cli'             => false,
 		'all_decimals'    => false,
-		'nano_raw'        => false,
 		'no_confirm'      => false,
 		'no_log'          => false
 	];
@@ -301,11 +300,6 @@
 	if( $flags['all_decimals'] )
 	{
 		$C['nano']['decimals'] = -1;
-	}
-	
-	if( $flags['nano_raw'] )
-	{
-		$C['nano']['denomination'] = 'raw';
 	}
 	
 	
@@ -833,13 +827,13 @@
 						$table1->addField( 'Cemented', 'block_cemented', false );
 						$table1->addField( 'Peers', 'network_peers', false );
 						$table1->addField( 'Reps.', 'network_representatives_online', false );
-						$table1->addField( 'Weight Online', 'network_weight_online', false );
+						$table1->addField( 'Weight Online (NANO)', 'network_weight_online', false );
 						$table1->addField( '%', 'network_weight_online_percent', false );
 						
 						$table2->addField( ' ', 'type', false );
-						$table2->addField( 'Balance', 'wallets_balance', false );
-						$table2->addField( 'Pending', 'wallets_pending', false );
-						$table2->addField( 'Weight', 'wallets_weight', false );
+						$table2->addField( 'Balance (NANO)', 'wallets_balance', false );
+						$table2->addField( 'Pending (NANO)', 'wallets_pending', false );
+						$table2->addField( 'Weight (NANO)', 'wallets_weight', false );
 						$table2->addField( 'Count', 'wallets_count', false );
 						$table2->addField( 'Accounts', 'wallets_accounts_count', false );
 						
