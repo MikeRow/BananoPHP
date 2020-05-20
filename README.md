@@ -26,6 +26,7 @@ Repositories
 - [jc21/clitable](https://github.com/jc21/clitable)
 - [phpseclib/phpseclib](https://github.com/phpseclib/phpseclib)
 - [strawbrary/php-blake2](https://github.com/strawbrary/php-blake2)
+- [devi/Salt](https://github.com/devi/Salt)
 - [jaimehgb/RaiBlocksPHP](https://github.com/jaimehgb/RaiBlocksPHP)
 
 APIs
