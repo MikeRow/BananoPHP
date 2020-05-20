@@ -253,6 +253,8 @@
 		'json_out'        => false,
 		'call'            => false,
 		'cli'             => false,
+		'all_decimals'    => false,
+		'nano_raw'        => false,
 		'no_confirm'      => false,
 		'no_log'          => false
 	];
@@ -294,6 +296,16 @@
 	if( $flags['call'] && $flags['cli'] )
 	{
 		$flags['cli'] = false;
+	}
+	
+	if( $flags['all_decimals'] )
+	{
+		$C['nano']['decimals'] = -1;
+	}
+	
+	if( $flags['nano_raw'] )
+	{
+		$C['nano']['denomination'] = 'raw';
 	}
 	
 	
@@ -845,7 +857,7 @@
 						$table_data1[0]['block_cemented'] = custom_number( $call_return['block']['cemented'], -1, $C['format']['decimal'], $C['format']['thousand'] );
 						$table_data1[0]['network_peers'] = custom_number( $call_return['network']['peers'], -1, $C['format']['decimal'], $C['format']['thousand'] );	
 						$table_data1[0]['network_representatives_online'] = custom_number( $call_return['network']['representatives_online'], -1, $C['format']['decimal'], $C['format']['thousand'] );
-						$table_data1[0]['network_weight_online'] = custom_number( NanoTools::raw2den( $call_return['network']['weight_online'], $C['nano']['denomination'] ), 6, $C['format']['decimal'], $C['format']['thousand'] );
+						$table_data1[0]['network_weight_online'] = custom_number( NanoTools::raw2den( $call_return['network']['weight_online'], 'NANO' ), 6, $C['format']['decimal'], $C['format']['thousand'] );
 						$table_data1[0]['network_weight_online_percent'] = custom_number( $call_return['network']['weight_online_percent'], 2, $C['format']['decimal'], $C['format']['thousand'] );
 						
 						$table_data1[1]['type'] = '';
@@ -860,9 +872,9 @@
 						$table_data2 = [];
 						
 						$table_data2[0]['type'] = 'Wallets ';
-						$table_data2[0]['wallets_balance'] = custom_number( NanoTools::raw2den( $call_return['wallets']['balance'], $C['nano']['denomination'] ), 6, $C['format']['decimal'], $C['format']['thousand'] );
-						$table_data2[0]['wallets_pending'] = custom_number( NanoTools::raw2den( $call_return['wallets']['pending'], $C['nano']['denomination'] ), 6, $C['format']['decimal'], $C['format']['thousand'] );
-						$table_data2[0]['wallets_weight'] = custom_number( NanoTools::raw2den( $call_return['wallets']['weight'], $C['nano']['denomination'] ), 6, $C['format']['decimal'], $C['format']['thousand'] );
+						$table_data2[0]['wallets_balance'] = custom_number( NanoTools::raw2den( $call_return['wallets']['balance'], 'NANO' ), 6, $C['format']['decimal'], $C['format']['thousand'] );
+						$table_data2[0]['wallets_pending'] = custom_number( NanoTools::raw2den( $call_return['wallets']['pending'], 'NANO' ), 6, $C['format']['decimal'], $C['format']['thousand'] );
+						$table_data2[0]['wallets_weight'] = custom_number( NanoTools::raw2den( $call_return['wallets']['weight'], 'NANO' ), 6, $C['format']['decimal'], $C['format']['thousand'] );
 						$table_data2[0]['wallets_count'] = custom_number( $call_return['wallets']['count'], -1, $C['format']['decimal'], $C['format']['thousand'] );
 						$table_data2[0]['wallets_accounts_count'] = custom_number( $call_return['wallets']['accounts_count'], -1, $C['format']['decimal'], $C['format']['thousand'] );
 						
