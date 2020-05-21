@@ -28,7 +28,7 @@
 				return false;
 			}
 			
-			$wallet = $args['wallet'];
+			$wallet      = $args['wallet'];
 			$destination = $args['destination'];
 			
 			// Wallet ok?
@@ -71,7 +71,7 @@
 			
 			$args =
 			[
-				'wallet' => $wallet,
+				'wallet'    => $wallet,
 				'threshold' => 1
 			];
 			
@@ -106,11 +106,11 @@
 				
 				$args =
 				[
-					'wallet' => $wallet,
-					'source' => $account,
+					'wallet'      => $wallet,
+					'source'      => $account,
 					'destination' => $destination,
-					'amount' => $balances['balance'],
-					'id' => uniqid()
+					'amount'      => $balances['balance'],
+					'id'          => uniqid()
 				];
 				
 				$send = $this->send($args);
@@ -119,7 +119,7 @@
 				
 				$return['balances'][$account] =
 				[
-					'block' => $send['block'],
+					'block'  => $send['block'],
 					'amount' => $balances['balance']
 				];
 				
@@ -133,7 +133,7 @@
 			}
 			
 			$this->response_raw = json_encode( $return );
-			$this->response = $return;
+			$this->response     = $return;
 			
 			return $this->response;
 		
@@ -157,9 +157,9 @@
 				return false;
 			}
 			
-			$wallet = $args['wallet'];
+			$wallet      = $args['wallet'];
 			$destination = $args['destination'];
-			$amount = $args['amount'];
+			$amount      = $args['amount'];
 			
 			// Wallet ok?
 			
@@ -207,15 +207,15 @@
 			
 			//
 			
-			$return = ['balances' => []];
+			$return            = ['balances' => []];
 			$selected_accounts = [];
-			$amount_left = $amount;
+			$amount_left       = $amount;
 			
 			// Get wallet balances
 			
 			$args =
 			[
-				'wallet' => $wallet,
+				'wallet'    => $wallet,
 				'threshold' => 1
 			];
 			
@@ -249,12 +249,12 @@
 				if( gmp_cmp( $balances['balance'], $amount_left ) >= 0 )
 				{
 					$selected_accounts[$account] = $amount_left;
-					$amount_left = '0';
+					$amount_left                 = '0';
 				}
 				else
 				{
 					$selected_accounts[$account] = $balances['balance'];
-					$amount_left = gmp_strval( gmp_sub( $amount_left, $balances['balance'] ) );
+					$amount_left                 = gmp_strval( gmp_sub( $amount_left, $balances['balance'] ) );
 				}
 				
 				if( gmp_cmp( $amount_left, '0' ) <= 0 )
@@ -271,11 +271,11 @@
 				
 				$args =
 				[
-					'wallet' => $wallet,
-					'source' => $account,
+					'wallet'      => $wallet,
+					'source'      => $account,
 					'destination' => $destination,
-					'amount' => $balance,
-					'id' => uniqid()
+					'amount'      => $balance,
+					'id'          => uniqid()
 				];
 				
 				$send = $this->send( $args );
@@ -284,7 +284,7 @@
 				
 				$return['balances'][$account] =
 				[
-					'block' => $send['block'],
+					'block'  => $send['block'],
 					'amount' => $balances['balance']
 				];
 				
@@ -298,7 +298,7 @@
 			}
 			
 			$this->response_raw = json_encode( $return );
-			$this->response = $return;
+			$this->response     = $return;
 			
 			return $this->response;
 			
@@ -356,8 +356,8 @@
 			
 			foreach( $wallet_accounts['accounts'] as $account )
 			{
-				$account_weight = $this->account_weight( ['account'=>$account] );
-				$wallet_weight = gmp_add( $wallet_weight, $account_weight['weight'] );
+				$account_weight              = $this->account_weight( ['account'=>$account] );
+				$wallet_weight               = gmp_add( $wallet_weight, $account_weight['weight'] );
 				$return['weights'][$account] = gmp_strval( $account_weight['weight'] );
 			}
 			
@@ -385,7 +385,7 @@
 			}
 			
 			$this->response_raw = json_encode( $return );
-			$this->response = $return;
+			$this->response     = $return;
 			
 			return $this->response;
 		}

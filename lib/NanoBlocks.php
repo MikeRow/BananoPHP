@@ -8,76 +8,50 @@
 	
 	class NanoBlocks
 	{
-		// *****************
-		// *** Variables ***
-		// *****************
-		
+		// *** Configuration options ***
 		
 		
 		private $private_key;
 		private $public_key;
-		private $owner;
+		private $account;
 		
-		private $representative;
+		private $prev_hash;
+		private $prev_block = [];
+		private $raw_signature = [];
+		private $signature;
 		private $work;
 		
-		private $signature;
-		private $hash;
-		private $raw_signature;
-		private $block;
-		
-		
-		
-		// *******************************
-		// *** Set shared informations ***
-		// *******************************
-		
+		public $hash;
+		public $block = [];
+
+
+		// *** Set owner ***
 		
 		
 		public function __construct( string $private_key )
 		{
 			$this->private_key = $private_key;
 			$this->public_key  = NanoTools::private2public( $private_key );
-			$this->owner       = NanoTools::public2account( $this->public_key );
+			$this->account     = NanoTools::public2account( $this->public_key );
 		}
 		
 		
-		
-		// ********************************
-		// *** Set block representative ***
-		// ********************************
+		// *** Set last head block ***
 		
 		
-		
-		public function representative_set( $representative )
+		public function prev_set( string $prev_hash, array $prev_block )
 		{
-			$this->representative = $representative;
+			$this->prev_hash  = $prev_hash;
+			$this->prev_block = $prev_block;
 		}
 		
 		
-		
-		// ****************
-		// *** Set work ***
-		// ****************
+		// *** Set work ***	
 		
 		
-		
-		public function work_set( $work )
+		public function work_set( string $work )
 		{
 			$this->work = $work;
-		}
-		
-		
-		
-		// ****************
-		// *** Get hash ***
-		// ****************
-		
-		
-		
-		public function hash_get()
-		{
-			return $this->hash;
 		}
 		
 		
@@ -88,27 +62,30 @@
 		
 		
 		
-		public function open( $pairing_block, $balance )
+		public function open( string $pairing_hash, string $amount, string $representative )
 		{
+			$balance = NanoTools::str_dec2hex( $amount );
+			$balance = str_repeat( '0', ( 32 - strlen( $balance ) ) ) . $balance;
+			
 			$this->raw_signature   = [];
 			$this->raw_signature[] = NanoTools::preamble;
 			$this->raw_signature[] = $this->public_key;
 			$this->raw_signature[] = NanoTools::empty32;
-			$this->raw_signature[] = NanoTools::account2public( $this->representative );
+			$this->raw_signature[] = NanoTools::account2public( $representative );
 			$this->raw_signature[] = $balance;
-			$this->raw_signature[] = $pairing_block;
+			$this->raw_signature[] = $pairing_hash;
 			
-			$this->hash      = NanoTools::hash_array( $this->raw_signature, 32 );
+			$this->hash = NanoTools::hash_array( $this->raw_signature, 32 );
 			$this->signature = NanoTools::sign( $this->private_key, $this->hash );
 			
 			$this->block = 
 			[
 				'type'           => 'state',
-				'account'        => $this->owner,
+				'account'        => $this->account,
 				'previous'       => NanoTools::empty32,
-				'representative' => $this->representative,
+				'representative' => $representative,
 				'balance'        => NanoTools::str_hex2dec( $balance ),
-				'link'           => $pairing_block,
+				'link'           => $pairing_hash,
 				'signature'      => $this->signature,
 				'work'           => $this->work
 			];
@@ -124,29 +101,33 @@
 		
 		
 		
-		public function receive( $previous_block, $pairing_block, $balance )
+		public function receive( string $pairing_hash, string $amount, string $representative = null )
 		{
+			$balance  = NanoTools::str_dec2hex( gmp_strval( gmp_add( NanoTools::str_hex2dec( $this->prev_block['balance'] ), $amount ) ) );
+			$balance = str_repeat( '0', ( 32 - strlen( $balance ) ) ) . $balance;
+			if( $representative == null ) $representative = $this->prev_block['representative'];
+			
 			$this->raw_signature   = [];
 			$this->raw_signature[] = NanoTools::preamble;
 			$this->raw_signature[] = $this->public_key;
-			$this->raw_signature[] = $previous_block;
-			$this->raw_signature[] = NanoTools::account2public( $this->representative );
+			$this->raw_signature[] = $this->prev_hash;
+			$this->raw_signature[] = NanoTools::account2public( $representative );
 			$this->raw_signature[] = $balance;
-			$this->raw_signature[] = $pairing_block;
+			$this->raw_signature[] = $pairing_hash;
 			
-			$this->hash      = NanoTools::hash_array( $this->raw_signature, 32 );
+			$this->hash = NanoTools::hash_array( $this->raw_signature, 32 );
 			$this->signature = NanoTools::sign( $this->private_key, $this->hash );
 			
-			$this->block =
+			$this->block = 
 			[
-					'type'           => 'state',
-					'account'        => $this->owner,
-					'previous'       => $previous_block,
-					'representative' => $this->representative,
-					'balance'        => NanoTools::str_hex2dec( $balance ),
-					'link'           => $pairing_block,
-					'signature'      => $this->signature,
-					'work'           => $this->work
+				'type'           => 'state',
+				'account'        => $this->account,
+				'previous'       => $this->prev_hash,
+				'representative' => $representative,
+				'balance'        => NanoTools::str_hex2dec( $balance ),
+				'link'           => $pairing_hash,
+				'signature'      => $this->signature,
+				'work'           => $this->work
 			];
 			
 			return $this->block;
@@ -160,13 +141,17 @@
 		
 		
 		
-		public function send( $previous_block, $destination, $balance )
+		public function send( string $destination, string $amount, string $representative = null )
 		{
+			$balance  = NanoTools::str_dec2hex( gmp_strval( gmp_sub( NanoTools::str_hex2dec( $this->prev_block['balance'] ), $amount ) ) );
+			$balance = str_repeat( '0', ( 32 - strlen( $balance ) ) ) . $balance;
+			if( $representative == null ) $representative = $this->prev_block['representative'];
+			
 			$this->raw_signature   = [];
 			$this->raw_signature[] = NanoTools::preamble;
 			$this->raw_signature[] = $this->public_key;
-			$this->raw_signature[] = $previous_block;
-			$this->raw_signature[] = NanoTools::account2public( $this->representative );
+			$this->raw_signature[] = $this->prev_hash;
+			$this->raw_signature[] = NanoTools::account2public( $representative );
 			$this->raw_signature[] = $balance;
 			$this->raw_signature[] = NanoTools::account2public( $destination );
 			
@@ -175,14 +160,14 @@
 			
 			$this->block =
 			[
-					'type'           => 'state',
-					'account'        => $this->owner,
-					'previous'       => $previous_block,
-					'representative' => $this->representative,
-					'balance'        => NanoTools::str_hex2dec( $balance ),
-					'link'           => $destination,
-					'signature'      => $this->signature,
-					'work'           => $this->work
+				'type'           => 'state',
+				'account'        => $this->account,
+				'previous'       => $this->prev_hash,
+				'representative' => $representative,
+				'balance'        => NanoTools::str_hex2dec( $balance ),
+				'link'           => $destination,
+				'signature'      => $this->signature,
+				'work'           => $this->work
 			];
 			
 			return $this->block;
@@ -196,13 +181,16 @@
 		
 		
 		
-		public function change( $previous_block, $balance )
+		public function change( string $representative )
 		{
+			$balance = NanoTools::str_dec2hex( $this->prev_block['balance'] );
+			$balance = str_repeat( '0', ( 32 - strlen( $balance ) ) ) . $balance;
+			
 			$this->raw_signature   = [];
 			$this->raw_signature[] = NanoTools::preamble;
 			$this->raw_signature[] = $this->public_key;
-			$this->raw_signature[] = $previous_block;
-			$this->raw_signature[] = NanoTools::account2public( $this->representative );
+			$this->raw_signature[] = $this->prev_hash;
+			$this->raw_signature[] = NanoTools::account2public( $representative );
 			$this->raw_signature[] = $balance;
 			$this->raw_signature[] = NanoTools::empty32;
 			
@@ -211,14 +199,14 @@
 			
 			$this->block =
 			[
-					'type'           => 'state',
-					'account'        => $this->owner,
-					'previous'       => $previous_block,
-					'representative' => $this->representative,
-					'balance'        => NanoTools::str_hex2dec( $balance ),
-					'link'           => NanoTools::empty32,
-					'signature'      => $this->signature,
-					'work'           => $this->work
+				'type'           => 'state',
+				'account'        => $this->account,
+				'previous'       => $this->prev_hash,
+				'representative' => $representative,
+				'balance'        => NanoTools::str_hex2dec( $balance ),
+				'link'           => NanoTools::empty32,
+				'signature'      => $this->signature,
+				'work'           => $this->work
 			];
 			
 			return $this->block;

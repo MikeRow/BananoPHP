@@ -4,25 +4,36 @@
 
 	class NanoCLI
 	{
-		// Configuration options
+		// *** Configuration options ***
+		
 		
 		private $path_to_app;
 		
-		// Information and debugging
+		
+		// *** Information and debugging ***
+		
 		
 		public $response_raw;
 		public $response;
 		private $id = 0;
+		
+		
+		// *** Initialization ***
+		
 		
 		public function __construct( string $path_to_app = '/home/nano/nano_node' )
 		{
 			$this->path_to_app = escapeshellarg( $path_to_app );
 		}
 
+		
+		// *** Call ***
+		
+		
 		public function __call( $method, array $params )
 		{
 			$this->response_raw = null;
-			$this->response = null;
+			$this->response     = null;
 			$this->id++;
 			$request = ' --' . $method;
 			

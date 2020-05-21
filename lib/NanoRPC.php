@@ -4,7 +4,8 @@
 
 	class NanoRPC
 	{
-		// Configuration options
+		// *** Configuration options ***
+		
 		
 		private $proto;
 		private $host;
@@ -12,7 +13,9 @@
 		private $url;
 		private $CACertificate;
 
-		// Information and debugging
+		
+		// *** Information and debugging ***
+		
 		
 		public $status;
 		public $error;
@@ -20,28 +23,40 @@
 		public $response;
 		private $id = 0;
 		
+		
+		// *** Initialization ***
+		
+		
 		public function __construct( string $host = 'localhost', string $port = '7076', string $url = null )
 		{
-			$this->host = $host;
-			$this->port = $port;
-			$this->url = $url;
-			$this->proto = 'http';
+			$this->host          = $host;
+			$this->port          = $port;
+			$this->url           = $url;
+			$this->proto         = 'http';
 			$this->CACertificate = null;
 		}
+		
+		
+		// *** Set SSL ***
+		
 		 
 		public function setSSL( string $certificate = null )
 		{
-			$this->proto = 'https';
+			$this->proto         = 'https';
 			$this->CACertificate = $certificate;
 		}
 
+		
+		// *** Call ***
+		
+		
 		public function __call( $method, array $params )
 		{
-			$this->status = null;
-			$this->error = null;
-			$this->node_error = null;
+			$this->status       = null;
+			$this->error        = null;
+			$this->node_error   = null;
 			$this->response_raw = null;
-			$this->response = null;
+			$this->response     = null;
 			$this->id++;
 			
 			$request =
@@ -67,11 +82,11 @@
 			[
 				CURLOPT_RETURNTRANSFER => true,
 				CURLOPT_FOLLOWLOCATION => true,
-				CURLOPT_USERAGENT => 'PHP',
-				CURLOPT_MAXREDIRS => 10,
-				CURLOPT_HTTPHEADER => ['Content-type: application/json'],
-				CURLOPT_POST => true,
-				CURLOPT_POSTFIELDS => $request
+				CURLOPT_USERAGENT      => 'PHP',
+				CURLOPT_MAXREDIRS      => 10,
+				CURLOPT_HTTPHEADER     => ['Content-type: application/json'],
+				CURLOPT_POST           => true,
+				CURLOPT_POSTFIELDS     => $request
 			];
 
 			// This prevents users from getting the following warning when open_basedir is set:
@@ -103,7 +118,7 @@
 			// Execute the request and decode to an array
 			
 			$this->response_raw = curl_exec( $curl );
-			$this->response = json_decode( $this->response_raw, true );
+			$this->response     = json_decode( $this->response_raw, true );
 
 			// If the status is not 200, something is wrong
 			
