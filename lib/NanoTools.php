@@ -464,6 +464,21 @@
 		
 		
 		
+		// ***************************
+		// *** Multiply difficulty ***
+		// ***************************
+		
+		
+		
+		public static function difficuly_multiply( string $difficulty, float $multiplier )
+		{
+			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) return false;
+			
+			return dechex( ceil( hexdec( $difficulty ) * $multiplier ) );
+		}
+		
+		
+		
 		// *********************
 		// *** Generate work ***
 		// *********************
@@ -532,7 +547,7 @@
 		{
 			if( strlen( $work ) != 16 || !hex2bin( $work ) ) return false;
 			if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) return false;
-			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) return false;	
+			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) return false;
 			
 			$hash = Uint::fromHex( $hash )->toUint8();
 			$work = Uint::fromHex( $work )->toUint8();

@@ -15,6 +15,7 @@
 		private $public_key;
 		private $account;
 		
+		private $prev_auto = false;
 		private $prev_hash;
 		private $prev_block = [];
 		private $raw_signature = [];
@@ -36,13 +37,22 @@
 		}
 		
 		
-		// *** Set last head block ***
+		// *** Set prev (head) block ***
 		
 		
 		public function prev_set( string $prev_hash, array $prev_block )
 		{
 			$this->prev_hash  = $prev_hash;
 			$this->prev_block = $prev_block;
+		}
+		
+		
+		// *** Auto-update prev (head) block ***
+		
+		
+		public function prev_auto( bool $auto )
+		{
+			$this->prev_auto = $auto;
 		}
 		
 		
@@ -90,6 +100,12 @@
 				'work'           => $this->work
 			];
 			
+			if( $this->prev_auto )
+			{
+				$this->prev_hash  = $this->hash;
+				$this->prev_block = $this->block;
+			}
+			
 			return $this->block;
 		}
 		
@@ -129,6 +145,12 @@
 				'signature'      => $this->signature,
 				'work'           => $this->work
 			];
+			
+			if( $this->prev_auto )
+			{
+				$this->prev_hash  = $this->hash;
+				$this->prev_block = $this->block;
+			}
 			
 			return $this->block;
 		}
@@ -170,6 +192,12 @@
 				'work'           => $this->work
 			];
 			
+			if( $this->prev_auto )
+			{
+				$this->prev_hash  = $this->hash;
+				$this->prev_block = $this->block;
+			}
+			
 			return $this->block;
 		}
 		
@@ -208,6 +236,12 @@
 				'signature'      => $this->signature,
 				'work'           => $this->work
 			];
+			
+			if( $this->prev_auto )
+			{
+				$this->prev_hash  = $this->hash;
+				$this->prev_block = $this->block;
+			}
 			
 			return $this->block;
 		}
