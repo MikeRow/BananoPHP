@@ -470,7 +470,7 @@
 		
 		
 		
-		public static function difficuly_multiply( string $difficulty, float $multiplier )
+		public static function difficulty_multiply( string $difficulty, float $multiplier )
 		{
 			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) return false;
 			
