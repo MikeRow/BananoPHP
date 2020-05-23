@@ -47,7 +47,7 @@
 		}
 		
 		
-		// *** Auto-update prev (head) block ***
+		// *** Auto-set prev (head) block ***
 		
 		
 		public function prev_auto( bool $auto )
