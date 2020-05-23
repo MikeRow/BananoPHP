@@ -712,7 +712,7 @@
 					
 					$representatives_online = $nanocall->representatives_online( ['weight'=>true] );
 					
-					if( $representatives_online != null )
+					if( $representatives_online != null && is_array( $representatives_online['representatives'] ) )
 					{
 						$call_return['network']['representatives_online'] = count( $representatives_online['representatives'] );
 						
@@ -929,8 +929,7 @@
 						
 						// Print other info
 						
-						$delay = custom_number( microtime( true ) - $last_update - 5, 3 );
-						
+						$delay = number_format( microtime( true ) - $last_update - 5, 3 );
 						if( $delay < 0 ) $delay = '0.000';
 						
 						echo ' monitor | denomination: NANO | wait: 5.000 | delay: ' . $delay;

@@ -66,7 +66,7 @@
 			'denomination' => 'NANO',
 			'decimals'     => 3
 		],
-		'delay' => 100,
+		'wait' => 100,
 		'timezone' => 'UTC',
 		'format' =>
 		[
@@ -566,11 +566,15 @@
 				$table->display();
 				
 				// Print other info
+				
+				$delay = number_format( microtime( true ) - $last_update - $C['wait']/1000, 3 );
+				if( $delay < 0 ) $delay = '0.000';
 			
-				echo ' ' . $command;
+				echo ' '                 . $command;
 				echo ' | denomination: ' . $C['nano']['denomination'];
-				echo ' | nodes: ' . ( count( $table_data ) - 1 );
-				echo ' | delay: ' . custom_number( microtime( true ) - $last_update, 3 );
+				echo ' | nodes: '        . ( count( $table_data ) - 1 );
+				echo ' | wait: '         . number_format( $C['wait']/1000, 3 );
+				echo ' | delay: '        . $delay;
 				echo PHP_EOL . PHP_EOL;
 				
 				// Show cursor
@@ -585,7 +589,7 @@
 			
 			$last_update = microtime( true );
 			
-			usleep( (int) $C['delay'] * 1000 );
+			usleep( (int) $C['wait'] * 1000 );
 		}
 	}
 	else
