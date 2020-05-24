@@ -10,6 +10,7 @@
 	use \Blake2b as Blake2b;
 	use \Salt as Salt;
 	use \FieldElement as FieldElement;
+	use \convertBase as convertBase;
 	use \hexToDec as hexToDec;
 	use \decToHex as decToHex;
 	
@@ -373,6 +374,78 @@
 			if( $get_account ) $keys[] = self::public2account( $pk );
 			
 			return $keys;
+		}
+		
+		
+	
+		// ************************************
+		// *** Get seed from BIP39 mnemonic ***
+		// ************************************
+		
+		
+		
+		public static function BIP39_mnem2seed( array $words )
+		{
+			if( !is_array( $words ) || count( $words ) != 24 ) return false;
+			
+			$BIP39 = json_decode( file_get_contents( __DIR__ . '/BIP39.json' ), true );
+			$bits = [];
+			$sk = [];
+			
+			foreach( $words as $index => $value )
+			{
+				$words[$index] = decbin( array_search( $value, $BIP39 ) ) ;
+				$words[$index] = str_split( str_repeat( '0', ( 11 - strlen( $words[$index] ) ) ) . $words[$index] );
+				
+				foreach( $words[$index] as $bit )
+				{
+					$bits[] = $bit;
+				}
+			}
+			
+			for( $i = 0; $i < 32; $i++ ) 
+			{
+				$sk[] = bindec( implode( '', array_slice( $bits, $i * 8, 8 ) ) );
+			}
+			
+			$sk = Uint::fromUint8Array( $sk )->toHexString();
+			$sk = substr( $sk, 0, 64 );
+			
+			return $sk;
+		}
+		
+		
+		
+		// ************************************
+		// *** Get BIP39 mnemonic from seed ***
+		// ************************************
+		
+		
+		
+		public static function BIP39_seed2mnem( string $sk )
+		{
+			if( strlen( $sk ) != 64 || !hex2bin( $sk ) ) return false;
+			
+			$BIP39 = json_decode( file_get_contents( __DIR__ . '/BIP39.json' ), true );
+			$bits = [];
+			$mnemonic = [];
+			
+			$sk = Uint::fromHex( $sk )->toUint8();
+			$check = hash( 'sha256', self::bin_arr2str( (array) $sk ), true );
+			$sk = array_merge( (array) $sk, self::bin_str2arr( substr( $check, 0, 1 ) ) );
+			
+			foreach( $sk as $byte )
+			{
+				$bits_raw = decbin( $byte );
+				$bits = array_merge( $bits, str_split( str_repeat( '0', ( 8 - strlen( $bits_raw ) ) ) . $bits_raw ) );
+			}
+			
+			for( $i = 0; $i < 24; $i++ )
+			{
+				$mnemonic[] = $BIP39[bindec( implode( '', array_slice( $bits, $i * 11, 11 ) ) )];
+			}
+			
+			return $mnemonic;
 		}
 		
 		
