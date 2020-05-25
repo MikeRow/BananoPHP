@@ -492,7 +492,7 @@
 
 			$b2b->finish( $ctx, $hash );
 			$hash = $hash->toArray();
-			$hash = array_slice( $hash, 0, $size );
+			$hash = array_slice( $hash, 0, 32 );
 			$hash = Uint::fromUint8Array( $hash )->toHexString();
 			
 			return $hash;
