@@ -460,8 +460,6 @@
 		{
 			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) return false;
 			
-			$BIP39 = json_decode( file_get_contents( __DIR__ . '/BIP39.json' ), true );
-			
 			
 		}
 		
