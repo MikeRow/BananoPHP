@@ -467,19 +467,19 @@
 		
 		
 		
-		// ******************************
-		// *** Get message / block id ***
-		// ******************************
+		// ***************************
+		// *** Get block id (hash) ***
+		// ***************************
 		
 		
 		
-		public static function message( array $inputs )
+		public static function block_id( array $inputs )
 		{
 			if( count( $inputs ) != 6 ) return false;
 			
 			$b2b = new Blake2b();
 			
-			$ctx = $b2b->init( null, $size );
+			$ctx = $b2b->init( null, 32 );
 			$hash = new SplFixedArray( 64 );
 			
 			foreach( $inputs as $index => $value )

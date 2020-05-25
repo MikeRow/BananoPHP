@@ -85,7 +85,7 @@
 			$this->raw_signature[] = $balance;
 			$this->raw_signature[] = $pairing_hash;
 			
-			$this->hash      = NanoTools::message( $this->raw_signature );
+			$this->hash      = NanoTools::block_id( $this->raw_signature );
 			$this->signature = NanoTools::sign( $this->private_key, $this->hash );
 			
 			$this->block = 
@@ -131,7 +131,7 @@
 			$this->raw_signature[] = $balance;
 			$this->raw_signature[] = $pairing_hash;
 			
-			$this->hash      = NanoTools::message( $this->raw_signature );
+			$this->hash      = NanoTools::block_id( $this->raw_signature );
 			$this->signature = NanoTools::sign( $this->private_key, $this->hash );
 			
 			$this->block = 
@@ -177,7 +177,7 @@
 			$this->raw_signature[] = $balance;
 			$this->raw_signature[] = NanoTools::account2public( $destination );
 			
-			$this->hash      = NanoTools::message( $this->raw_signature );
+			$this->hash      = NanoTools::block_id( $this->raw_signature );
 			$this->signature = NanoTools::sign( $this->private_key, $this->hash );
 			
 			$this->block =
@@ -222,7 +222,7 @@
 			$this->raw_signature[] = $balance;
 			$this->raw_signature[] = NanoTools::empty32;
 			
-			$this->hash      = NanoTools::message( $this->raw_signature );
+			$this->hash      = NanoTools::block_id( $this->raw_signature );
 			$this->signature = NanoTools::sign( $this->private_key, $this->hash );
 			
 			$this->block =
