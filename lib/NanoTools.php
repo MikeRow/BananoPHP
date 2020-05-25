@@ -450,15 +450,21 @@
 		
 		
 		
-		// ***************************************
-		// *** BIP44 get account deriving seed ***
-		// ***************************************
+		// ****************************************
+		// *** BIP44 get account keys from seed ***
+		// ****************************************
 		
 		
 		
 		public static function BIP44_seed2keys( string $seed, int $index = 0, bool $get_account = false )
 		{
 			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) return false;
+			if( $index < 0 ) return false;
+			
+			$I = hash_hmac( 'sha512', hex2bin( $seed ), 'ed25519 seed' );
+			$IL = substr($I, 0, 64);
+			$IR = substr($I, 64, 64);
+			$HDKey = ['privateKey' => $IL,'chainCode' => $IR];
 			
 			
 		}
@@ -504,7 +510,7 @@
 		
 		
 		
-		public static function sign( $sk, $msg )
+		public static function sign( string $sk, string $msg )
 		{
 			if( strlen( $sk ) != 64 || !hex2bin( $sk ) ) return false;
 			if( strlen( $msg ) != 64 || !hex2bin( $msg ) ) return false;
@@ -531,7 +537,7 @@
 		
 		
 		
-		public static function sign_validate( $msg, $sig, $account )
+		public static function sign_validate( string $msg, string $sig, string $account )
 		{
 			if( strlen( $msg ) != 64 || !hex2bin( $msg ) ) return false;
 			if( strlen( $sig ) != 128 || !hex2bin( $sig ) ) return false;
