@@ -454,13 +454,14 @@
 		// *** BIP44 get keys from seed ***
 		// ********************************
 		
-		
+		/*
 		
 		public static function BIP44_seed2keys( string $seed, int $index, bool $get_account = false )
 		{
 			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) return false;
 			if( $index < 0 ) return false;
 			
+			$path = "m/44'/165'/$index'";
 			$I = hash_hmac( 'sha512', hex2bin( $seed ), 'ed25519 seed' );
 			$IL = substr( $I, 0, 64 );
 			$IR = substr( $I, 64, 64 );
@@ -471,10 +472,39 @@
 				'chainCode' => $IR
 			];
 			
+			$entries = explode( '/', $path );
 			
+			foreach( $entries as $key => $entry )
+			{
+				if( $key === 0 )
+				{
+					if( $entry !== 'm' )
+					{
+						return false;
+					}
+					
+					continue;
+				}
+				
+				$childIndex = intval( $entry );
+				if( $childIndex > 0x80000000 )
+				{
+					return false;
+				}
+				
+				$hardened = ( strlen( $entry ) > 1 ) && ( $entry[strlen( $entry ) - 1] === "'" );
+				if( $hardened )
+				{
+					$childIndex += 0x80000000;
+				}
+				
+				$HDKey = $HDKey->deriveChild($childIndex);
+			}
+			
+			return $HDKey;
 		}
 		
-		
+		*/
 		
 		// ***************************
 		// *** Get block id (hash) ***
