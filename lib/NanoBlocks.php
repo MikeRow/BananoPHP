@@ -77,15 +77,15 @@
 			$balance = NanoTools::str_dec2hex( $amount );
 			$balance = str_repeat( '0', ( 32 - strlen( $balance ) ) ) . $balance;
 			
-			$this->raw_signature   = [];
-			$this->raw_signature[] = NanoTools::preamble;
-			$this->raw_signature[] = $this->public_key;
-			$this->raw_signature[] = NanoTools::empty32;
-			$this->raw_signature[] = NanoTools::account2public( $representative );
-			$this->raw_signature[] = $balance;
-			$this->raw_signature[] = $pairing_hash;
+			$this->raw_block_id   = [];
+			$this->raw_block_id[] = NanoTools::preamble;
+			$this->raw_block_id[] = $this->public_key;
+			$this->raw_block_id[] = NanoTools::empty32;
+			$this->raw_block_id[] = NanoTools::account2public( $representative );
+			$this->raw_block_id[] = $balance;
+			$this->raw_block_id[] = $pairing_hash;
 			
-			$this->hash      = NanoTools::block_id( $this->raw_signature );
+			$this->hash      = NanoTools::block_id( $this->raw_block_id );
 			$this->signature = NanoTools::sign( $this->private_key, $this->hash );
 			
 			$this->block = 
@@ -123,15 +123,15 @@
 			$balance = str_repeat( '0', ( 32 - strlen( $balance ) ) ) . $balance;
 			if( $representative == null ) $representative = $this->prev_block['representative'];
 			
-			$this->raw_signature   = [];
-			$this->raw_signature[] = NanoTools::preamble;
-			$this->raw_signature[] = $this->public_key;
-			$this->raw_signature[] = $this->prev_hash;
-			$this->raw_signature[] = NanoTools::account2public( $representative );
-			$this->raw_signature[] = $balance;
-			$this->raw_signature[] = $pairing_hash;
+			$this->raw_block_id   = [];
+			$this->raw_block_id[] = NanoTools::preamble;
+			$this->raw_block_id[] = $this->public_key;
+			$this->raw_block_id[] = $this->prev_hash;
+			$this->raw_block_id[] = NanoTools::account2public( $representative );
+			$this->raw_block_id[] = $balance;
+			$this->raw_block_id[] = $pairing_hash;
 			
-			$this->hash      = NanoTools::block_id( $this->raw_signature );
+			$this->hash      = NanoTools::block_id( $this->raw_block_id );
 			$this->signature = NanoTools::sign( $this->private_key, $this->hash );
 			
 			$this->block = 
@@ -169,15 +169,15 @@
 			$balance = str_repeat( '0', ( 32 - strlen( $balance ) ) ) . $balance;
 			if( $representative == null ) $representative = $this->prev_block['representative'];
 			
-			$this->raw_signature   = [];
-			$this->raw_signature[] = NanoTools::preamble;
-			$this->raw_signature[] = $this->public_key;
-			$this->raw_signature[] = $this->prev_hash;
-			$this->raw_signature[] = NanoTools::account2public( $representative );
-			$this->raw_signature[] = $balance;
-			$this->raw_signature[] = NanoTools::account2public( $destination );
+			$this->raw_block_id   = [];
+			$this->raw_block_id[] = NanoTools::preamble;
+			$this->raw_block_id[] = $this->public_key;
+			$this->raw_block_id[] = $this->prev_hash;
+			$this->raw_block_id[] = NanoTools::account2public( $representative );
+			$this->raw_block_id[] = $balance;
+			$this->raw_block_id[] = NanoTools::account2public( $destination );
 			
-			$this->hash      = NanoTools::block_id( $this->raw_signature );
+			$this->hash      = NanoTools::block_id( $this->raw_block_id );
 			$this->signature = NanoTools::sign( $this->private_key, $this->hash );
 			
 			$this->block =
@@ -214,15 +214,15 @@
 			$balance = NanoTools::str_dec2hex( $this->prev_block['balance'] );
 			$balance = str_repeat( '0', ( 32 - strlen( $balance ) ) ) . $balance;
 			
-			$this->raw_signature   = [];
-			$this->raw_signature[] = NanoTools::preamble;
-			$this->raw_signature[] = $this->public_key;
-			$this->raw_signature[] = $this->prev_hash;
-			$this->raw_signature[] = NanoTools::account2public( $representative );
-			$this->raw_signature[] = $balance;
-			$this->raw_signature[] = NanoTools::empty32;
+			$this->raw_block_id   = [];
+			$this->raw_block_id[] = NanoTools::preamble;
+			$this->raw_block_id[] = $this->public_key;
+			$this->raw_block_id[] = $this->prev_hash;
+			$this->raw_block_id[] = NanoTools::account2public( $representative );
+			$this->raw_block_id[] = $balance;
+			$this->raw_block_id[] = NanoTools::empty32;
 			
-			$this->hash      = NanoTools::block_id( $this->raw_signature );
+			$this->hash      = NanoTools::block_id( $this->raw_block_id );
 			$this->signature = NanoTools::sign( $this->private_key, $this->hash );
 			
 			$this->block =
