@@ -475,8 +475,8 @@
 		
 		public static function message( array $inputs, int $size = 64 )
 		{
-			if( $size <1 ) return false;
 			if( count( $inputs ) != 6 ) return false;
+			if( $size <1 ) return false;
 			
 			$b2b = new Blake2b();
 			
