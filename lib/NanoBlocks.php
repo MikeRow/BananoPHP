@@ -31,9 +31,13 @@
 		
 		public function __construct( string $private_key )
 		{
+			if( strlen( $private_key ) != 64 || !hex2bin( $private_key ) ) return false;
+			
 			$this->private_key = $private_key;
 			$this->public_key  = NanoTools::private2public( $private_key );
 			$this->account     = NanoTools::public2account( $this->public_key );
+			
+			return true;
 		}
 		
 		
@@ -42,8 +46,13 @@
 		
 		public function prev_set( string $prev_hash, array $prev_block )
 		{
+			if( strlen( $prev_hash ) != 64 || !hex2bin( $prev_hash ) ) return false;
+			if( count( $prev_block ) < 8 ) return false;
+			
 			$this->prev_hash  = $prev_hash;
 			$this->prev_block = $prev_block;
+			
+			return true;
 		}
 		
 		
@@ -53,6 +62,8 @@
 		public function prev_auto( bool $auto )
 		{
 			$this->prev_auto = $auto;
+			
+			return true;
 		}
 		
 		
@@ -61,7 +72,11 @@
 		
 		public function work_set( string $work )
 		{
+			if( strlen( $work ) != 16 || !hex2bin( $work ) ) return false;
+			
 			$this->work = $work;
+			
+			return true;
 		}
 		
 		
@@ -74,6 +89,10 @@
 		
 		public function open( string $pairing_hash, string $amount, string $representative )
 		{
+			if( strlen( $pairing_hash ) != 64 || !hex2bin( $pairing_hash ) ) return false;
+			if( !ctype_digit( $amount ) ) return false;
+			if( !NanoTools::account2public( $representative, false ) ) return false;
+			
 			$balance = NanoTools::str_dec2hex( $amount );
 			$balance = str_repeat( '0', ( 32 - strlen( $balance ) ) ) . $balance;
 			
@@ -119,6 +138,10 @@
 		
 		public function receive( string $pairing_hash, string $amount, string $representative = null )
 		{
+			if( strlen( $pairing_hash ) != 64 || !hex2bin( $pairing_hash ) ) return false;
+			if( !ctype_digit( $amount ) ) return false;
+			if( !NanoTools::account2public( $representative, false ) ) return false;
+			
 			$balance  = NanoTools::str_dec2hex( gmp_strval( gmp_add( NanoTools::str_hex2dec( $this->prev_block['balance'] ), $amount ) ) );
 			$balance = str_repeat( '0', ( 32 - strlen( $balance ) ) ) . $balance;
 			if( $representative == null ) $representative = $this->prev_block['representative'];
@@ -165,7 +188,12 @@
 		
 		public function send( string $destination, string $amount, string $representative = null )
 		{
+			if( !NanoTools::account2public( $destination, false ) ) return false;
+			if( !ctype_digit( $amount ) ) return false;
+			if( !NanoTools::account2public( $representative, false ) ) return false;
+			
 			$balance  = NanoTools::str_dec2hex( gmp_strval( gmp_sub( NanoTools::str_hex2dec( $this->prev_block['balance'] ), $amount ) ) );
+			if( strpos( $balance, '-' ) !== false ) return false;
 			$balance = str_repeat( '0', ( 32 - strlen( $balance ) ) ) . $balance;
 			if( $representative == null ) $representative = $this->prev_block['representative'];
 			
@@ -211,6 +239,8 @@
 		
 		public function change( string $representative )
 		{
+			if( !NanoTools::account2public( $representative, false ) ) return false;
+			
 			$balance = NanoTools::str_dec2hex( $this->prev_block['balance'] );
 			$balance = str_repeat( '0', ( 32 - strlen( $balance ) ) ) . $balance;
 			
