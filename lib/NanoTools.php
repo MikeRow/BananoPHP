@@ -450,27 +450,6 @@
 		
 		
 		
-		// ****************************************
-		// *** BIP44 get account keys from seed ***
-		// ****************************************
-		
-		
-		
-		public static function BIP44_seed2keys( string $seed, int $index = 0, bool $get_account = false )
-		{
-			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) return false;
-			if( $index < 0 ) return false;
-			
-			$I = hash_hmac( 'sha512', hex2bin( $seed ), 'ed25519 seed' );
-			$IL = substr($I, 0, 64);
-			$IR = substr($I, 64, 64);
-			$HDKey = ['privateKey' => $IL,'chainCode' => $IR];
-			
-			
-		}
-		
-		
-		
 		// ***************************
 		// *** Get block id (hash) ***
 		// ***************************
