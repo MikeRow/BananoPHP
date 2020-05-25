@@ -23,7 +23,11 @@
 		
 		public function __construct( string $path_to_app = '/home/nano/nano_node' )
 		{
+			if( !file_exists( $path_to_app ) ) return false;
+			
 			$this->path_to_app = escapeshellarg( $path_to_app );
+			
+			return true;
 		}
 
 		

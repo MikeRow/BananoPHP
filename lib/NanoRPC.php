@@ -34,16 +34,20 @@
 			$this->url           = $url;
 			$this->proto         = 'http';
 			$this->CACertificate = null;
+			
+			return true;
 		}
 		
 		
 		// *** Set SSL ***
 		
 		 
-		public function setSSL( string $certificate = null )
+		public function SSL_set( string $certificate = null )
 		{
 			$this->proto         = 'https';
 			$this->CACertificate = $certificate;
+			
+			return true;
 		}
 
 		
