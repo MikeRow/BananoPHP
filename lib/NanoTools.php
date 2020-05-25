@@ -377,9 +377,9 @@
 		}
 		
 		
-	
+		
 		// ************************************
-		// *** Get seed from BIP39 mnemonic ***
+		// *** BIP39 get seed from mnemonic ***
 		// ************************************
 		
 		
@@ -390,7 +390,7 @@
 			
 			$BIP39 = json_decode( file_get_contents( __DIR__ . '/BIP39.json' ), true );
 			$bits = [];
-			$sk = [];
+			$seed = [];
 			
 			foreach( $words as $index => $value )
 			{
@@ -405,36 +405,36 @@
 			
 			for( $i = 0; $i < 32; $i++ ) 
 			{
-				$sk[] = bindec( implode( '', array_slice( $bits, $i * 8, 8 ) ) );
+				$seed[] = bindec( implode( '', array_slice( $bits, $i * 8, 8 ) ) );
 			}
 			
-			$sk = Uint::fromUint8Array( $sk )->toHexString();
-			$sk = substr( $sk, 0, 64 );
+			$seed = Uint::fromUint8Array( $seed )->toHexString();
+			$seed = substr( $seed, 0, 64 );
 			
-			return $sk;
+			return $seed;
 		}
 		
 		
 		
 		// ************************************
-		// *** Get BIP39 mnemonic from seed ***
+		// *** BIP39 get mnemonic from seed ***
 		// ************************************
 		
 		
 		
-		public static function BIP39_seed2mnem( string $sk )
+		public static function BIP39_seed2mnem( string $seed )
 		{
-			if( strlen( $sk ) != 64 || !hex2bin( $sk ) ) return false;
+			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) return false;
 			
 			$BIP39 = json_decode( file_get_contents( __DIR__ . '/BIP39.json' ), true );
 			$bits = [];
 			$mnemonic = [];
 			
-			$sk = Uint::fromHex( $sk )->toUint8();
-			$check = hash( 'sha256', self::bin_arr2str( (array) $sk ), true );
-			$sk = array_merge( (array) $sk, self::bin_str2arr( substr( $check, 0, 1 ) ) );
+			$seed = Uint::fromHex( $seed )->toUint8();
+			$check = hash( 'sha256', self::bin_arr2str( (array) $seed ), true );
+			$seed = array_merge( (array) $seed, self::bin_str2arr( substr( $check, 0, 1 ) ) );
 			
-			foreach( $sk as $byte )
+			foreach( $seed as $byte )
 			{
 				$bits_raw = decbin( $byte );
 				$bits = array_merge( $bits, str_split( str_repeat( '0', ( 8 - strlen( $bits_raw ) ) ) . $bits_raw ) );
@@ -450,15 +450,33 @@
 		
 		
 		
-		// ****************************
-		// *** Hash array of values ***
-		// ****************************
+		// ***************************************
+		// *** BIP44 get account deriving seed ***
+		// ***************************************
 		
 		
 		
-		public static function hash_array( array $inputs, int $size = 64 )
+		public static function BIP44_seed2keys( string $seed, int $index = 0, bool $get_account = false )
+		{
+			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) return false;
+			
+			$BIP39 = json_decode( file_get_contents( __DIR__ . '/BIP39.json' ), true );
+			
+			
+		}
+		
+		
+		
+		// ******************************
+		// *** Get message / block id ***
+		// ******************************
+		
+		
+		
+		public static function message( array $inputs, int $size = 64 )
 		{
 			if( $size <1 ) return false;
+			if( count( $inputs ) != 6 ) return false;
 			
 			$b2b = new Blake2b();
 			
