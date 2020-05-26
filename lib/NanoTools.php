@@ -489,7 +489,7 @@
 		public static function BIP44_mseed2keys( string $seed, int $index = 0, bool $get_account = false )
 		{
 			if( strlen( $seed ) != 128 || !hex2bin( $seed ) ) throw new Exception( "Invalid seed: $seed" );
-			if( $index < 0 || $index > 4294967295 ) throw new Exception( "Invalid index: $index" );
+			if( $index < 0 || $index > 0x80000000 ) throw new Exception( "Invalid index: $index" );
 			
 			$path = "44/165/$index";
 			
