@@ -70,7 +70,7 @@
 		
 		public static function str_hex2dec( string $string )
 		{
-			if( !ctype_xdigit( $string ) ) throw new Exception( "Invalid hexadecimal string: $string" );
+			if( !ctype_xdigit( $string ) ) throw new Exception( "Invalid hex_string: $string" );
 			
 			$dec = hexToDec( $string );
 			
@@ -84,7 +84,7 @@
 		
 		public static function str_dec2hex( string $string )
 		{
-			if( !ctype_digit( $string ) ) throw new Exception( "Invalid decimal string: $string" );
+			if( !ctype_digit( $string ) ) throw new Exception( "Invalid dec_string: $string" );
 			
 			$hex = decToHex( $string );
 			
@@ -527,7 +527,7 @@
 		
 		public static function block_id( array $inputs )
 		{
-			if( count( $inputs ) != 6 ) throw new Exception( "Array values count is not 6" );
+			if( count( $inputs ) != 6 ) throw new Exception( "Array block_content values count is not 6" );
 			
 			$b2b = new Blake2b();
 			
@@ -536,7 +536,7 @@
 			
 			foreach( $inputs as $index => $value )
 			{
-				if( !hex2bin( $value ) ) throw new Exception( "Array value is not hex_string: $value" );
+				if( !hex2bin( $value ) ) throw new Exception( "Array block_content value is not hex_string: $value" );
 				
 				$value = Uint::fromHex( $value )->toUint8();
 				$b2b->update( $ctx, $value, count( $value ) );
