@@ -352,7 +352,7 @@
 		
 		
 		
-		public static function seed2keys( string $seed, int $index = 0, bool $get_account = false )
+		public static function BLAKE2_seed2keys( string $seed, int $index = 0, bool $get_account = false )
 		{
 			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) throw new Exception( "Invalid seed: $seed" );
 			if( $index < 0 || $index > 4294967295 ) throw new Exception( "Invalid index: $index" );
