@@ -469,7 +469,7 @@
 		
 		
 		
-		public static function BIP44_seed2keys( string $seed, int $index, bool $get_account = false )
+		public static function BIP44_seed2keys( string $seed, int $index = 0, bool $get_account = false )
 		{
 			//if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) throw new Exception( "Invalid seed: $seed" );
 			if( $index < 0 ) throw new Exception( "Invalid index: $index" );
@@ -486,12 +486,12 @@
 			
 			foreach( $entries as $entry )
 			{	
-				$entry = self::str_dec2hex( (string) $entry );
-				$entry = str_repeat( '0', ( 8 - strlen( $entry ) ) ) . $entry;
-				$entry = '8' . substr( $entry, 1, 7 );
+				$entry = dechex( 0x80000000 + (int) $entry );
 				$entry = hex2bin( $entry );
 				
-				$I  = hash_hmac( 'sha512', $entry, $HDKey[1], true );
+				$data = chr( 0x00 ) . $HDKey[0] . $entry;
+				
+				$I  = hash_hmac( 'sha512', $data, $HDKey[1], true );
 				$IL = substr( $I, 0, 32 );
 				$IR = substr( $I, 32, 32 );
 				
