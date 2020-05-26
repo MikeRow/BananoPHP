@@ -355,7 +355,7 @@
 		public static function seed2keys( string $seed, int $index = 0, bool $get_account = false )
 		{
 			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) throw new Exception( "Invalid seed: $seed" );
-			if( $index < 0 ) throw new Exception( "Invalid index: $index" );
+			if( $index < 0 || $index > 4294967295 ) throw new Exception( "Invalid index: $index" );
 			
 			$seed  = Uint::fromHex( $seed )->toUint8();
 			$index = Uint::fromDec( $index )->toUint8()->toArray();
@@ -463,24 +463,37 @@
 		
 		
 		
-		// ********************************
-		// *** BIP44 get keys from seed ***
-		// ********************************
+		// *******************************************
+		// *** BIP39 get master seed from mnemonic ***
+		// *******************************************
 		
 		
 		
-		public static function BIP44_seed2keys( string $seed, int $index = 0, bool $get_account = false )
+		public static function BIP39_mnem2mseed( array $words, string $passphrase = '' )
 		{
-			//if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) throw new Exception( "Invalid seed: $seed" );
-			if( $index < 0 ) throw new Exception( "Invalid index: $index" );
+			if( !is_array( $words ) || count( $words ) != 24 ) throw new Exception( "Array mnemonic words values count is not 24" );
 			
-			$seed = hex2bin( $seed );
+			$words = implode( ' ', $words );
 			
-			$seed = hash_pbkdf2( 'sha512', 'warrior special congress before venue job provide love budget life crowd rug license used fox sphere left border kick paper fat blur offer balance', 'mnemonic'.'', 2048, 64, true );
+			return strtoupper( bin2hex( hash_pbkdf2( 'sha512', $words, 'mnemonic'.$passphrase, 2048, 64, true ) ) );
+		}
+		
+		
+		
+		// ***************************************
+		// *** BIP44 get keys from master seed ***
+		// ***************************************
+		
+		
+		
+		public static function BIP44_mseed2keys( string $seed, int $index = 0, bool $get_account = false )
+		{
+			if( strlen( $seed ) != 128 || !hex2bin( $seed ) ) throw new Exception( "Invalid seed: $seed" );
+			if( $index < 0 || $index > 4294967295 ) throw new Exception( "Invalid index: $index" );
 			
 			$path = "44/165/$index";
 			
-			$I  = hash_hmac( 'sha512', $seed, 'ed25519 seed', true );
+			$I  = hash_hmac( 'sha512', hex2bin( $seed ), 'ed25519 seed', true );
 			$IL = substr( $I, 0, 32 );
 			$IR = substr( $I, 32, 32 );
 			
