@@ -23,8 +23,6 @@
 		
 		public function __construct( string $path_to_app = '/home/nano/nano_node' )
 		{
-			if( !file_exists( $path_to_app ) ) throw new Exception( "Invalid nano_node path: $path_to_app" );
-			
 			$this->path_to_app = escapeshellarg( $path_to_app );
 		}
 
