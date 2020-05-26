@@ -8,7 +8,7 @@
 
 	class NanoRPCExtension extends NanoRPC
 	{
-		const hash0 = '0000000000000000000000000000000000000000000000000000000000000000';
+		const empty32 = '0000000000000000000000000000000000000000000000000000000000000000';
 
 
 
@@ -123,7 +123,7 @@
 					'amount' => $balances['balance']
 				];
 				
-				if( $send['block'] == self::hash0 )
+				if( $send['block'] == self::empty32 )
 				{
 					$return['balances'][$account] =
 					[
@@ -288,7 +288,7 @@
 					'amount' => $balances['balance']
 				];
 				
-				if( $send['block'] == self::hash0 )
+				if( $send['block'] == self::empty32 )
 				{
 					$return['balances'][$account] =
 					[

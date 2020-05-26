@@ -5,6 +5,7 @@
 	require_once __DIR__ . '/../lib3/RaiBlocksPHP-master/util.php';
 	require_once __DIR__ . '/../lib3/RaiBlocksPHP-master/Salt/autoload.php';
 	
+	use \Exception as Exception;
 	use \Uint as Uint;
 	use \SplFixedArray as SplFixedArray;
 	use \Blake2b as Blake2b;
@@ -46,6 +47,11 @@
 		
 		public static function bin_arr2str( array $array )
 		{
+			foreach( $array as $value )
+			{
+				if( !ctype_digit( $value ) ) throw new Exception( "Invalid decimal array value: $value" );
+			}
+			
 			return implode( array_map( 'chr', $array ) );
 		}
 		
@@ -64,6 +70,8 @@
 		
 		public static function str_hex2dec( string $string )
 		{
+			if( !ctype_xdigit( $string ) ) throw new Exception( "Invalid hexadecimal string: $string" );
+			
 			$dec = hexToDec( $string );
 			
 			if( $dec == '' ) return '0';
@@ -76,6 +84,8 @@
 		
 		public static function str_dec2hex( string $string )
 		{
+			if( !ctype_digit( $string ) ) throw new Exception( "Invalid decimal string: $string" );
+			
 			$hex = decToHex( $string );
 			
 			if( $hex == '' ) return '00';
@@ -92,7 +102,7 @@
 	
 		public static function den2raw( $amount, string $denomination )
 		{
-			if( !array_key_exists( $denomination, self::raw4 ) ) return false;
+			if( !array_key_exists( $denomination, self::raw4 ) ) throw new Exception( "Invalid denomination: $denomination" );
 			
 			$raw2denomination = self::raw4[$denomination];
 			
@@ -130,7 +140,7 @@
 		
 		public static function raw2den( string $amount, string $denomination )
 		{
-			if( !array_key_exists( $denomination, self::raw4 ) ) return false;
+			if( !array_key_exists( $denomination, self::raw4 ) ) throw new Exception( "Invalid denomination: $denomination" );
 			
 			$raw2denomination = self::raw4[$denomination];
 			
@@ -185,8 +195,8 @@
 		
 		public static function den2den( $amount, string $denomination_from, string $denomination_to )
 		{
-			if( !array_key_exists( $denomination_from, self::raw4 ) ) return false;
-			if( !array_key_exists( $denomination_to, self::raw4 ) ) return false;
+			if( !array_key_exists( $denomination_from, self::raw4 ) ) throw new Exception( "Invalid denomination_from: $denomination_from" );
+			if( !array_key_exists( $denomination_to, self::raw4 ) ) throw new Exception( "Invalid denomination_to: $denomination_to" );
 			
 			$raw = self::den2raw( $amount, $denomination_from );
 			
@@ -262,7 +272,7 @@
 		
 		public static function public2account( string $pk )
 		{
-			if( strlen( $pk ) != 64 || !hex2bin( $pk ) ) return false;
+			if( strlen( $pk ) != 64 || !hex2bin( $pk ) ) throw new Exception( "Invalid public_key: $pk" );
 
 			if( !extension_loaded( 'blake2' ) )
 			{
@@ -304,7 +314,7 @@
 		
 		public static function private2public( string $sk )
 		{
-			if( strlen( $sk ) != 64 || !hex2bin( $sk ) ) return false;
+			if( strlen( $sk ) != 64 || !hex2bin( $sk ) ) throw new Exception( "Invalid private_key: $sk" );
 		    
 		    $salt = Salt::instance();
 		    
@@ -344,8 +354,8 @@
 		
 		public static function seed2keys( string $seed, int $index = 0, bool $get_account = false )
 		{
-			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) return false;
-			if( $index < 0 ) return false;
+			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) throw new Exception( "Invalid seed: $seed" );
+			if( $index < 0 ) throw new Exception( "Invalid index: $index" );
 			
 			$seed = Uint::fromHex( $seed )->toUint8();
 			$index = Uint::fromDec( $index )->toUint8()->toArray();
@@ -386,7 +396,7 @@
 		
 		public static function BIP39_mnem2seed( array $words )
 		{
-			if( !is_array( $words ) || count( $words ) != 24 ) return false;
+			if( !is_array( $words ) || count( $words ) != 24 ) throw new Exception( "Invalid words" );
 			
 			$BIP39 = json_decode( file_get_contents( __DIR__ . '/BIP39.json' ), true );
 			$bits = [];
@@ -394,7 +404,10 @@
 			
 			foreach( $words as $index => $value )
 			{
-				$words[$index] = decbin( array_search( $value, $BIP39 ) ) ;
+				$word = array_search( $value, $BIP39 );
+				if( $word === false ) throw new Exception( "Invalid word: $value" );
+				
+				$words[$index] = decbin( $word ) ;
 				$words[$index] = str_split( str_repeat( '0', ( 11 - strlen( $words[$index] ) ) ) . $words[$index] );
 				
 				foreach( $words[$index] as $bit )
@@ -424,7 +437,7 @@
 		
 		public static function BIP39_seed2mnem( string $seed )
 		{
-			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) return false;
+			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) throw new Exception( "Invalid seed: $seed" );
 			
 			$BIP39 = json_decode( file_get_contents( __DIR__ . '/BIP39.json' ), true );
 			$bits = [];
@@ -458,8 +471,8 @@
 		
 		public static function BIP44_seed2keys( string $seed, int $index, bool $get_account = false )
 		{
-			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) return false;
-			if( $index < 0 ) return false;
+			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) throw new Exception( "Invalid seed: $seed" );
+			if( $index < 0 ) throw new Exception( "Invalid index: $index" );
 			
 			$path = "m/44'/165'/$index'";
 			$I = hash_hmac( 'sha512', hex2bin( $seed ), 'ed25519 seed' );
@@ -514,7 +527,7 @@
 		
 		public static function block_id( array $inputs )
 		{
-			if( count( $inputs ) != 6 ) return false;
+			if( count( $inputs ) != 6 ) throw new Exception( "Array values count is not 6" );
 			
 			$b2b = new Blake2b();
 			
@@ -523,7 +536,7 @@
 			
 			foreach( $inputs as $index => $value )
 			{
-				if( !hex2bin( $value ) ) return false;
+				if( !hex2bin( $value ) ) throw new Exception( "Array value is not hex_string: $value" );
 				
 				$value = Uint::fromHex( $value )->toUint8();
 				$b2b->update( $ctx, $value, count( $value ) );
@@ -547,8 +560,8 @@
 		
 		public static function sign( string $sk, string $msg )
 		{
-			if( strlen( $sk ) != 64 || !hex2bin( $sk ) ) return false;
-			if( strlen( $msg ) != 64 || !hex2bin( $msg ) ) return false;
+			if( strlen( $sk ) != 64 || !hex2bin( $sk ) ) throw new Exception( "Invalid private_key: $sk" );
+			if( strlen( $msg ) != 64 || !hex2bin( $msg ) ) throw new Exception( "Invalid block_id: $msg" );
 			
 			$salt = Salt::instance();
 			$sk = FieldElement::fromArray( Uint::fromHex( $sk )->toUint8() );
@@ -574,10 +587,10 @@
 		
 		public static function sign_validate( string $msg, string $sig, string $account )
 		{
-			if( strlen( $msg ) != 64 || !hex2bin( $msg ) ) return false;
-			if( strlen( $sig ) != 128 || !hex2bin( $sig ) ) return false;
+			if( strlen( $msg ) != 64 || !hex2bin( $msg ) ) throw new Exception( "Invalid block_id: $msg" );
+			if( strlen( $sig ) != 128 || !hex2bin( $sig ) ) throw new Exception( "Invalid signature: $sig" );
 			$pk = self::account2public( $account );
-			if( !$pk ) return false;
+			if( !$pk ) throw new Exception( "Invalid account: $account" );
 			
 			$sig = Uint::fromHex( $sig )->toUint8();
 			$msg = Uint::fromHex( $msg )->toUint8();
@@ -601,7 +614,7 @@
 		
 		public static function difficulty_multiply( string $difficulty, float $multiplier )
 		{
-			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) return false;
+			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) throw new Exception( "Invalid difficulty: $difficulty" );
 			
 			return dechex( ceil( hexdec( $difficulty ) * $multiplier ) );
 		}
@@ -616,8 +629,8 @@
 		
 		public static function work( string $hash, string $difficulty )
 		{
-			if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) return false;
-			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) return false;
+			if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) throw new Exception( "Invalid block_id: $hash" );
+			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) throw new Exception( "Invalid difficulty: $difficulty" );
 			
 			$hash = Uint::fromHex( $hash )->toUint8();
 			
@@ -674,9 +687,9 @@
 		
 		public static function work_validate( string $hash, string $work, string $difficulty )
 		{
-			if( strlen( $work ) != 16 || !hex2bin( $work ) ) return false;
-			if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) return false;
-			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) return false;
+			if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) throw new Exception( "Invalid block_id: $hash" );
+			if( strlen( $work ) != 16 || !hex2bin( $work ) ) throw new Exception( "Invalid work: $work" );
+			if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) throw new Exception( "Invalid difficulty: $difficulty" );
 			
 			$hash = Uint::fromHex( $hash )->toUint8();
 			$work = Uint::fromHex( $work )->toUint8();
