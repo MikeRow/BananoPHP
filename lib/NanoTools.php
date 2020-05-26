@@ -357,7 +357,7 @@
 			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) throw new Exception( "Invalid seed: $seed" );
 			if( $index < 0 ) throw new Exception( "Invalid index: $index" );
 			
-			$seed = Uint::fromHex( $seed )->toUint8();
+			$seed  = Uint::fromHex( $seed )->toUint8();
 			$index = Uint::fromDec( $index )->toUint8()->toArray();
 			
 			if( count( $index ) < 4 )
@@ -399,8 +399,8 @@
 			if( !is_array( $words ) || count( $words ) != 24 ) throw new Exception( "Array mnemonic words values count is not 24" );
 			
 			$BIP39 = json_decode( file_get_contents( __DIR__ . '/BIP39_en.json' ), true );
-			$bits = [];
-			$seed = [];
+			$bits  = [];
+			$seed  = [];
 			
 			foreach( $words as $index => $value )
 			{
@@ -439,18 +439,18 @@
 		{
 			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) throw new Exception( "Invalid seed: $seed" );
 			
-			$BIP39 = json_decode( file_get_contents( __DIR__ . '/BIP39_en.json' ), true );
-			$bits = [];
+			$BIP39    = json_decode( file_get_contents( __DIR__ . '/BIP39_en.json' ), true );
+			$bits     = [];
 			$mnemonic = [];
 			
-			$seed = Uint::fromHex( $seed )->toUint8();
+			$seed  = Uint::fromHex( $seed )->toUint8();
 			$check = hash( 'sha256', self::bin_arr2str( (array) $seed ), true );
-			$seed = array_merge( (array) $seed, self::bin_str2arr( substr( $check, 0, 1 ) ) );
+			$seed  = array_merge( (array) $seed, self::bin_str2arr( substr( $check, 0, 1 ) ) );
 			
 			foreach( $seed as $byte )
 			{
 				$bits_raw = decbin( $byte );
-				$bits = array_merge( $bits, str_split( str_repeat( '0', ( 8 - strlen( $bits_raw ) ) ) . $bits_raw ) );
+				$bits     = array_merge( $bits, str_split( str_repeat( '0', ( 8 - strlen( $bits_raw ) ) ) . $bits_raw ) );
 			}
 			
 			for( $i = 0; $i < 24; $i++ )
@@ -474,9 +474,13 @@
 			//if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) throw new Exception( "Invalid seed: $seed" );
 			if( $index < 0 ) throw new Exception( "Invalid index: $index" );
 			
+			$seed = hex2bin( $seed );
+			
+			$seed = hash_pbkdf2( 'sha512', 'warrior special congress before venue job provide love budget life crowd rug license used fox sphere left border kick paper fat blur offer balance', 'mnemonic'.'', 2048, 64, true );
+			
 			$path = "44/165/$index";
 			
-			$I  = hash_hmac( 'sha512', hex2bin( $seed ), 'ed25519 seed', true );
+			$I  = hash_hmac( 'sha512', $seed, 'ed25519 seed', true );
 			$IL = substr( $I, 0, 32 );
 			$IR = substr( $I, 32, 32 );
 			
