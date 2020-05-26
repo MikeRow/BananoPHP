@@ -2,6 +2,8 @@
 
 	namespace php4nano\lib\NanoCLI;
 
+	use \Exception as Exception;
+	
 	class NanoCLI
 	{
 		// *** Configuration options ***

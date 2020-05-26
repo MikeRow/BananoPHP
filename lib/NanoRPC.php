@@ -2,6 +2,8 @@
 
 	namespace php4nano\lib\NanoRPC;
 
+	use \Exception as Exception;
+	
 	class NanoRPC
 	{
 		// *** Configuration options ***
@@ -34,8 +36,6 @@
 			$this->url           = $url;
 			$this->proto         = 'http';
 			$this->CACertificate = null;
-			
-			return true;
 		}
 		
 		
@@ -46,8 +46,6 @@
 		{
 			$this->proto         = 'https';
 			$this->CACertificate = $certificate;
-			
-			return true;
 		}
 
 		
