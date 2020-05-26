@@ -396,16 +396,16 @@
 		
 		public static function BIP39_mnem2seed( array $words )
 		{
-			if( !is_array( $words ) || count( $words ) != 24 ) throw new Exception( "Invalid words" );
+			if( !is_array( $words ) || count( $words ) != 24 ) throw new Exception( "Array mnemonic words values count is not 24" );
 			
-			$BIP39 = json_decode( file_get_contents( __DIR__ . '/BIP39.json' ), true );
+			$BIP39 = json_decode( file_get_contents( __DIR__ . '/BIP39_en.json' ), true );
 			$bits = [];
 			$seed = [];
 			
 			foreach( $words as $index => $value )
 			{
 				$word = array_search( $value, $BIP39 );
-				if( $word === false ) throw new Exception( "Invalid word: $value" );
+				if( $word === false ) throw new Exception( "Invalid menmonic word: $value" );
 				
 				$words[$index] = decbin( $word ) ;
 				$words[$index] = str_split( str_repeat( '0', ( 11 - strlen( $words[$index] ) ) ) . $words[$index] );
@@ -439,7 +439,7 @@
 		{
 			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) throw new Exception( "Invalid seed: $seed" );
 			
-			$BIP39 = json_decode( file_get_contents( __DIR__ . '/BIP39.json' ), true );
+			$BIP39 = json_decode( file_get_contents( __DIR__ . '/BIP39_en.json' ), true );
 			$bits = [];
 			$mnemonic = [];
 			
@@ -467,57 +467,46 @@
 		// *** BIP44 get keys from seed ***
 		// ********************************
 		
-		/*
+		
 		
 		public static function BIP44_seed2keys( string $seed, int $index, bool $get_account = false )
 		{
-			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) throw new Exception( "Invalid seed: $seed" );
+			//if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) throw new Exception( "Invalid seed: $seed" );
 			if( $index < 0 ) throw new Exception( "Invalid index: $index" );
 			
-			$path = "m/44'/165'/$index'";
-			$I = hash_hmac( 'sha512', hex2bin( $seed ), 'ed25519 seed' );
-			$IL = substr( $I, 0, 64 );
-			$IR = substr( $I, 64, 64 );
+			$path = "44/165/$index";
 			
-			$HDKey =
-			[
-				'privateKey' => $IL,
-				'chainCode' => $IR
-			];
+			$I  = hash_hmac( 'sha512', hex2bin( $seed ), 'ed25519 seed', true );
+			$IL = substr( $I, 0, 32 );
+			$IR = substr( $I, 32, 32 );
+			
+			$HDKey = [$IL,$IR];
 			
 			$entries = explode( '/', $path );
 			
-			foreach( $entries as $key => $entry )
-			{
-				if( $key === 0 )
-				{
-					if( $entry !== 'm' )
-					{
-						return false;
-					}
-					
-					continue;
-				}
+			foreach( $entries as $entry )
+			{	
+				$entry = self::str_dec2hex( (string) $entry );
+				$entry = str_repeat( '0', ( 8 - strlen( $entry ) ) ) . $entry;
+				$entry = '8' . substr( $entry, 1, 7 );
+				$entry = hex2bin( $entry );
 				
-				$childIndex = intval( $entry );
-				if( $childIndex > 0x80000000 )
-				{
-					return false;
-				}
+				$I  = hash_hmac( 'sha512', $entry, $HDKey[1], true );
+				$IL = substr( $I, 0, 32 );
+				$IR = substr( $I, 32, 32 );
 				
-				$hardened = ( strlen( $entry ) > 1 ) && ( $entry[strlen( $entry ) - 1] === "'" );
-				if( $hardened )
-				{
-					$childIndex += 0x80000000;
-				}
-				
-				$HDKey = $HDKey->deriveChild($childIndex);
+				$HDKey = [$IL,$IR];
 			}
 			
-			return $HDKey;
+			$sk   = strtoupper( bin2hex( $HDKey[0] ) );
+			$keys = [$sk,self::private2public( $sk )];
+			
+			if( $get_account ) $keys[] = self::public2account( $keys[1] );
+			
+			return $keys;
 		}
 		
-		*/
+		
 		
 		// ***************************
 		// *** Get block id (hash) ***
