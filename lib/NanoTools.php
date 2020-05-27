@@ -389,13 +389,13 @@
 		
 		
 		
-		// ************************************
-		// *** BIP39 get seed from mnemonic ***
-		// ************************************
+		// *******************************************
+		// *** BIP39 get hexadecimal from mnemonic ***
+		// *******************************************
 		
 		
 		
-		public static function BIP39_mnem2seed( array $words )
+		public static function BIP39_mnem2hex( array $words )
 		{
 			if( !is_array( $words ) || count( $words ) != 24 ) throw new Exception( "Array mnemonic words count is not 24" );
 			
@@ -430,13 +430,13 @@
 		
 		
 		
-		// ************************************
-		// *** BIP39 get mnemonic from seed ***
-		// ************************************
+		// *******************************************
+		// *** BIP39 get mnemonic from hexadecimal ***
+		// *******************************************
 		
 		
 		
-		public static function BIP39_seed2mnem( string $seed )
+		public static function BIP39_hex2mnem( string $seed )
 		{
 			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) throw new Exception( "Invalid seed: $seed" );
 			
