@@ -46,7 +46,7 @@
 		public function prev_set( string $prev_hash, array $prev_block )
 		{
 			if( strlen( $prev_hash ) != 64 || !hex2bin( $prev_hash ) ) throw new Exception( "Invalid block_id: $prev_hash" );
-			if( count( $prev_block ) < 8 ) throw new Exception( "Array block_content values count is less than 8" );
+			if( count( $prev_block ) < 8 ) throw new Exception( "Array block_content count is less than 8" );
 			
 			$this->prev_hash  = $prev_hash;
 			$this->prev_block = $prev_block;

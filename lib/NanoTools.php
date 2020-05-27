@@ -32,7 +32,8 @@
 		];	
 		
 		const preamble = '0000000000000000000000000000000000000000000000000000000000000006';
-		const empty32 = '0000000000000000000000000000000000000000000000000000000000000000';
+		const empty32  = '0000000000000000000000000000000000000000000000000000000000000000';
+		const hardened =  0x80000000;
 		
 		
 		
@@ -396,7 +397,7 @@
 		
 		public static function BIP39_mnem2seed( array $words )
 		{
-			if( !is_array( $words ) || count( $words ) != 24 ) throw new Exception( "Array mnemonic words values count is not 24" );
+			if( !is_array( $words ) || count( $words ) != 24 ) throw new Exception( "Array mnemonic words count is not 24" );
 			
 			$BIP39 = json_decode( file_get_contents( __DIR__ . '/BIP39_en.json' ), true );
 			$bits  = [];
@@ -463,56 +464,46 @@
 		
 		
 		
-		// *******************************************
-		// *** BIP39 get master seed from mnemonic ***
-		// *******************************************
+		// **********************************************
+		// *** BIP39/44 get master seed from mnemonic ***
+		// **********************************************
 		
 		
 		
-		public static function BIP39_mnem2mseed( array $words, string $passphrase = '' )
+		public static function BIP3944_mnem2seed( array $words, string $passphrase = '' )
 		{
-			if( !is_array( $words ) || count( $words ) != 24 ) throw new Exception( "Array mnemonic words values count is not 24" );
+			if( !is_array( $words ) || count( $words ) != 24 ) throw new Exception( "Array mnemonic words count is not 24" );
 			
-			$words = implode( ' ', $words );
-			
-			return strtoupper( bin2hex( hash_pbkdf2( 'sha512', $words, 'mnemonic'.$passphrase, 2048, 64, true ) ) );
+			return strtoupper( hash_pbkdf2( 'sha512', implode( ' ', $words ), 'mnemonic' . $passphrase, 2048, 128 ) ) ;
 		}
 		
 		
 		
-		// ***************************************
-		// *** BIP44 get keys from master seed ***
-		// ***************************************
+		// ******************************************************
+		// *** BIP39/44 get keys from mnemonic or master seed ***
+		// ******************************************************
 		
 		
 		
-		public static function BIP44_mseed2keys( string $seed, int $index = 0, bool $get_account = false )
+		public static function BIP3944_seed2keys( string $seed, int $index = 0, bool $get_account = false )
 		{
 			if( strlen( $seed ) != 128 || !hex2bin( $seed ) ) throw new Exception( "Invalid seed: $seed" );
-			if( $index < 0 || $index > 0x80000000 ) throw new Exception( "Invalid index: $index" );
+			if( $index < 0 || $index > 4294967295 ) throw new Exception( "Invalid index: $index" );
 			
-			$path = "44/165/$index";
+			$path = ["44","165","$index"];
 			
 			$I  = hash_hmac( 'sha512', hex2bin( $seed ), 'ed25519 seed', true );
-			$IL = substr( $I, 0, 32 );
-			$IR = substr( $I, 32, 32 );
+			$HDKey = [substr( $I, 0, 32 ),substr( $I, 32, 32 )];
 			
-			$HDKey = [$IL,$IR];
-			
-			$entries = explode( '/', $path );
-			
-			foreach( $entries as $entry )
+			foreach( $path as $entry )
 			{	
-				$entry = dechex( 0x80000000 + (int) $entry );
-				$entry = hex2bin( $entry );
+				$entry = intval( $entry );
+				if( $entry >= self::hardened ) $entry = $entry - self::hardened;
 				
-				$data = chr( 0x00 ) . $HDKey[0] . $entry;
+				$data = chr( 0x00 ) . $HDKey[0] . hex2bin( dechex( self::hardened + (int) $entry ) );
 				
 				$I  = hash_hmac( 'sha512', $data, $HDKey[1], true );
-				$IL = substr( $I, 0, 32 );
-				$IR = substr( $I, 32, 32 );
-				
-				$HDKey = [$IL,$IR];
+				$HDKey = [substr( $I, 0, 32 ),substr( $I, 32, 32 )];
 			}
 			
 			$sk   = strtoupper( bin2hex( $HDKey[0] ) );
@@ -533,7 +524,7 @@
 		
 		public static function block_id( array $inputs )
 		{
-			if( count( $inputs ) != 6 ) throw new Exception( "Array block_content values count is not 6" );
+			if( count( $inputs ) != 6 ) throw new Exception( "Array block_content count is not 6" );
 			
 			$b2b = new Blake2b();
 			
