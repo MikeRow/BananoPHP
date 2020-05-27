@@ -401,7 +401,7 @@
 			
 			$BIP39 = json_decode( file_get_contents( __DIR__ . '/BIP39_en.json' ), true );
 			$bits  = [];
-			$seed  = [];
+			$hex  = [];
 			
 			foreach( $words as $index => $value )
 			{
@@ -419,13 +419,13 @@
 			
 			for( $i = 0; $i < 32; $i++ ) 
 			{
-				$seed[] = bindec( implode( '', array_slice( $bits, $i * 8, 8 ) ) );
+				$hex[] = bindec( implode( '', array_slice( $bits, $i * 8, 8 ) ) );
 			}
 			
-			$seed = Uint::fromUint8Array( $seed )->toHexString();
-			$seed = substr( $seed, 0, 64 );
+			$hex = Uint::fromUint8Array( $hex )->toHexString();
+			$hex = substr( $hex, 0, 64 );
 			
-			return $seed;
+			return $hex;
 		}
 		
 		
@@ -436,19 +436,19 @@
 		
 		
 		
-		public static function BIP39_hex2mnem( string $seed )
+		public static function BIP39_hex2mnem( string $hex )
 		{
-			if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) throw new Exception( "Invalid seed: $seed" );
+			if( strlen( $hex ) != 64 || !hex2bin( $hex ) ) throw new Exception( "Invalid seed: $hex" );
 			
 			$BIP39    = json_decode( file_get_contents( __DIR__ . '/BIP39_en.json' ), true );
 			$bits     = [];
 			$mnemonic = [];
 			
-			$seed  = Uint::fromHex( $seed )->toUint8();
-			$check = hash( 'sha256', self::bin_arr2str( (array) $seed ), true );
-			$seed  = array_merge( (array) $seed, self::bin_str2arr( substr( $check, 0, 1 ) ) );
+			$hex  = Uint::fromHex( $hex )->toUint8();
+			$check = hash( 'sha256', self::bin_arr2str( (array) $hex ), true );
+			$hex  = array_merge( (array) $hex, self::bin_str2arr( substr( $check, 0, 1 ) ) );
 			
-			foreach( $seed as $byte )
+			foreach( $hex as $byte )
 			{
 				$bits_raw = decbin( $byte );
 				$bits     = array_merge( $bits, str_split( str_repeat( '0', ( 8 - strlen( $bits_raw ) ) ) . $bits_raw ) );
