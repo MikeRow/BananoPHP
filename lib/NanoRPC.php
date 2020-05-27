@@ -14,6 +14,8 @@
 		private $port;
 		private $url;
 		private $CACertificate;
+		private $username = null;
+		private $password = null;
 
 		
 		// *** Information and debugging ***
@@ -47,7 +49,17 @@
 			$this->proto         = 'https';
 			$this->CACertificate = $certificate;
 		}
-
+		
+		
+		// *** Set Authentication ***
+		
+		
+		public function auth_set( string $username, string $password = null )
+		{
+			$this->username = $username;
+			$this->password = $password;
+		}
+		
 		
 		// *** Call ***
 		
@@ -84,12 +96,28 @@
 			[
 				CURLOPT_RETURNTRANSFER => true,
 				CURLOPT_FOLLOWLOCATION => true,
-				CURLOPT_USERAGENT      => 'PHP',
+				CURLOPT_USERAGENT      => 'php4nano/lib/NanoRPC.php',
 				CURLOPT_MAXREDIRS      => 10,
 				CURLOPT_HTTPHEADER     => ['Content-type: application/json'],
 				CURLOPT_POST           => true,
 				CURLOPT_POSTFIELDS     => $request
 			];
+			
+			// Auth?
+			
+			if( $this->username != null )
+			{
+				if( $this->password != null )
+				{
+					$auth = base64_encode( $this->username . ':' . $this->password );
+				}
+				else 
+				{
+					$auth = base64_encode( $this->username );
+				}
+				
+				$options[CURLOPT_HTTPHEADER][] = 'Authorization: Basic '. $auth;
+			}
 
 			// This prevents users from getting the following warning when open_basedir is set:
 			// Warning: curl_setopt() [function.curl-setopt]: CURLOPT_FOLLOWLOCATION cannot be activated when in safe_mode or an open_basedir is set
