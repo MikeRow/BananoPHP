@@ -219,7 +219,8 @@
                 strpos($account, 'xrb_3') === 0   ||
                 strpos($account, 'nano_1') === 0  ||
                 strpos($account, 'nano_3') === 0)
-            && (strlen($account) == 64 || strlen($account) == 65)) {
+            && (strlen($account) == 64 ||
+                strlen($account) == 65)) {
                 
                 $crop = explode('_', $account);
                 $crop = $crop[1];
