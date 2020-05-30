@@ -1,6 +1,6 @@
 <?php
 
-    namespace php4nano\NanoTools;
+    namespace php4nano\Nano;
     
     require_once __DIR__ . '/../lib/Salt/autoload.php';
     require_once __DIR__ . '/../lib/Util.php';
@@ -14,7 +14,7 @@
     use \Salt as Salt;
     use \FieldElement as FieldElement;
     
-    class NanoTools
+    class Tools
     {
         // #
         // ## Constants

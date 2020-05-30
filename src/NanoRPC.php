@@ -1,10 +1,10 @@
 <?php
 
-    namespace php4nano\NanoRPC;
+    namespace php4nano\Nano;
 
     use \Exception as Exception;
     
-    class NanoRPC
+    class RPC
     {
         // # Settings
         

@@ -1,10 +1,10 @@
 <?php
 
-    namespace php4nano\NanoCLI;
+    namespace php4nano\Nano;
 
     use \Exception as Exception;
     
-    class NanoCLI
+    class CLI
     {
         // # Settings
         
