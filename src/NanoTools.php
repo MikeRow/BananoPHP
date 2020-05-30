@@ -4,7 +4,6 @@
     
     require_once __DIR__ . '/../lib/Salt/autoload.php';
     require_once __DIR__ . '/../lib/Util.php';
-    require_once __DIR__ . '/../lib/Uint.php';
     
     use \Exception as Exception;
     use \Util as Util;
@@ -13,6 +12,8 @@
     use \Blake2b as Blake2b;
     use \Salt as Salt;
     use \FieldElement as FieldElement;
+    use \hexToDec as hexToDec;
+    use \decToHex as decToHex;
     
     class Tools
     {
@@ -40,11 +41,11 @@
         // ## Hexadecimal string to decimal string
         // #
         
-        public static function hex2dec( string $string )
+        public static function hex2dec( string $string ) : string
         {
             if( !ctype_xdigit( $string ) ) throw new Exception( "Invalid hexadecimal string: $string" );
             
-            $dec = Util::hexToDec( $string );
+            $dec = hexToDec( $string );
             
             if( $dec == '' ) return '0';
             else return $dec;
@@ -55,11 +56,11 @@
         // ## Decimal string to hexadecimal string
         // #
         
-        public static function dec2hex( string $string )
+        public static function dec2hex( string $string ) : string
         {
             if( !ctype_digit( $string ) ) throw new Exception( "Invalid decimal string: $string" );
             
-            $hex = Util::decToHex( $string );
+            $hex = decToHex( $string );
             
             if( $hex == '' ) return '00';
             else return $hex;
@@ -70,11 +71,11 @@
         // ## Integer array to binary string
         // #
         
-        public static function arr2bin( array $array )
+        public static function arr2bin( array $array ) : string
         {
             foreach( $array as $value )
             {
-                if( !ctype_digit( $value ) ) throw new Exception( "Invalid integer array value: $value" );
+                if( !ctype_digit( (string) $value ) ) throw new Exception( "Invalid integer array value: $value" );
                 if( $value > 255 ) throw new Exception( "Invalid integer array value: $value" );
             }
             
@@ -86,17 +87,17 @@
         // ## Binary string to integer array
         // #
         
-        public static function bin2arr( string $string )
+        public static function bin2arr( string $string ) : array
         {
             return array_map( 'ord', str_split( $string ) );
         }
         
         
         // #
-        // ## Denomination to raw conversion
+        // ## Denomination to raw
         // #
         
-        public static function den2raw( $amount, string $denomination )
+        public static function den2raw( $amount, string $denomination ) : string
         {
             if( !array_key_exists( $denomination, self::RAWS ) ) throw new Exception( "Invalid denomination: $denomination" );
             
@@ -128,10 +129,10 @@
     
     
         // #
-        // ## Raw to denomination conversion
+        // ## Raw to denomination
         // #
         
-        public static function raw2den( string $amount, string $denomination )
+        public static function raw2den( string $amount, string $denomination ) : string
         {
             if( !array_key_exists( $denomination, self::RAWS ) ) throw new Exception( "Invalid denomination: $denomination" );
             
@@ -180,10 +181,10 @@
         
         
         // #
-        // ## Denomination to denomination conversion
+        // ## Denomination to denomination
         // #
         
-        public static function den2den( $amount, string $denomination_from, string $denomination_to )
+        public static function den2den( $amount, string $denomination_from, string $denomination_to ) : string
         {
             if( !array_key_exists( $denomination_from, self::RAWS ) ) throw new Exception( "Invalid source denomination: $denomination_from" );
             if( !array_key_exists( $denomination_to, self::RAWS ) ) throw new Exception( "Invalid target denomination: $denomination_to" );
@@ -195,7 +196,7 @@
         
         
         // #
-        // ## Account to public key conversion
+        // ## Account to public key
         // #
         
         public static function account2public( string $account, bool $get_public_key = true )
@@ -251,10 +252,10 @@
         
         
         // #
-        // ## Public key to account conversion
+        // ## Public key to account
         // #
         
-        public static function public2account( string $public_key )
+        public static function public2account( string $public_key ) : string
         {
             if( strlen( $public_key ) != 64 || !hex2bin( $public_key ) ) throw new Exception( "Invalid public key: $public_key" );
 
@@ -290,10 +291,10 @@
         
         
         // #
-        // ## Private key to public key conversion
+        // ## Private key to public key
         // #
         
-        public static function private2public( string $private_key )
+        public static function private2public( string $private_key ) : string
         {
             if( strlen( $private_key ) != 64 || !hex2bin( $private_key ) ) throw new Exception( "Invalid private key: $private_key" );
             
@@ -310,7 +311,7 @@
         // ## Get random keypair
         // #
         
-        public static function keys( bool $get_account = false )
+        public static function keys( bool $get_account = false ) : array
         {
             $salt = Salt::instance();
             $keys = $salt->crypto_sign_keypair();
@@ -325,10 +326,10 @@
         
         
         // #
-        // ## BLAKE2: seed to keypair conversion
+        // ## BLAKE2: seed to keypair
         // #
         
-        public static function blake2seed2keys( string $seed, int $index = 0, bool $get_account = false )
+        public static function seed2keys( string $seed, int $index = 0, bool $get_account = false ) : array
         {
             if( strlen( $seed ) != 64 || !hex2bin( $seed ) ) throw new Exception( "Invalid seed: $seed" );
             if( $index < 0 || $index > 4294967295 ) throw new Exception( "Invalid index: $index" );
@@ -364,10 +365,10 @@
         
         
         // #
-        // ## BIP39: mnemonic seed to hexadecimal seed conversion
+        // ## BIP39: mnemonic seed to hexadecimal seed
         // #
         
-        public static function bip39mnem2hex( array $words )
+        public static function mnem2hex( array $words ) : string
         {
             if( !is_array( $words ) || count( $words ) != 24 ) throw new Exception( "Words array count is not 24" );
             
@@ -402,10 +403,10 @@
         
         
         // #
-        // ## BIP39: hexadecimal seed to mnemonic seed conversion
+        // ## BIP39: hexadecimal seed to mnemonic seed
         // #
         
-        public static function bip39hex2mnem( string $hex )
+        public static function hex2mnem( string $hex ) : array
         {
             if( strlen( $hex ) != 64 || !hex2bin( $hex ) ) throw new Exception( "Invalid seed: $hex" );
             
@@ -433,10 +434,10 @@
         
         
         // #
-        // ## BIP39/44: mnemonic words to master seed conversion
+        // ## BIP39/44: mnemonic words to master seed
         // #
         
-        public static function bip3944mnem2seed( array $words, string $passphrase = '' )
+        public static function mnem2mseed( array $words, string $passphrase = '' ) : string
         {
             if( !is_array( $words ) || count( $words ) != 24 ) throw new Exception( "Words array count is not 24" );
             
@@ -445,10 +446,10 @@
         
         
         // #
-        // ## BIP39/44: master seed to keypair conversion
+        // ## BIP39/44: master seed to keypair
         // #
         
-        public static function bip3944seed2keys( string $seed, int $index = 0, bool $get_account = false )
+        public static function mseed2keys( string $seed, int $index = 0, bool $get_account = false ) : array
         {
             if( strlen( $seed ) != 128 || !hex2bin( $seed ) ) throw new Exception( "Invalid seed: $seed" );
             if( $index < 0 || $index > 4294967295 ) throw new Exception( "Invalid index: $index" );
@@ -481,7 +482,7 @@
         // ## Get block ID
         // #
         
-        public static function getBlockID( array $hexs )
+        public static function getBlockId( array $hexs ) : string
         {
             if( count( $hexs ) != 6 ) throw new Exception( "Hexadecimals array count is not 6" );
             
@@ -511,7 +512,7 @@
         // ## Sign message
         // #
         
-        public static function signMsg( string $private_key, string $msg )
+        public static function signMsg( string $private_key, string $msg ) : string
         {
             if( strlen( $private_key ) != 64 || !hex2bin( $private_key ) ) throw new Exception( "Invalid private key: $private_key" );
             if( !hex2bin( $msg ) ) throw new Exception( "Invalid block ID: $msg" );
@@ -553,7 +554,13 @@
             for( $i = 0; $i < 64; $i++ ) $sm[$i] = $sig[$i];
             for( $i = 0; $i < count( $msg ); $i++ ) $sm[$i+64] = $msg[$i];
             
-            return Salt::crypto_sign_open2( $m, $sm, count( $sm ), $public_key );
+            $open2 = Salt::crypto_sign_open2( $m, $sm, count( $sm ), $public_key );
+            
+            if( $open2 == null ) return false;
+            
+            $open2 = Uint::fromUint8Array( $open2 )->toHexString();
+            
+            return $open2;
         }
         
         
@@ -561,7 +568,7 @@
         // ## Multiply difficulty
         // #
         
-        public static function multDiff( string $difficulty, float $multiplier )
+        public static function multDiff( string $difficulty, float $multiplier ) : string
         {
             if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) throw new Exception( "Invalid difficulty: $difficulty" );
             
@@ -573,7 +580,7 @@
         // ## Generate work
         // #  
         
-        public static function getWork( string $hash, string $difficulty )
+        public static function getWork( string $hash, string $difficulty ) : string
         {
             if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) throw new Exception( "Invalid block ID: $hash" );
             if( strlen( $difficulty ) != 16 || !hex2bin( $difficulty ) ) throw new Exception( "Invalid difficulty: $difficulty" );
@@ -628,7 +635,7 @@
         // ## Validate work
         // #
         
-        public static function validWork( string $hash, string $work, string $difficulty )
+        public static function validWork( string $hash, string $work, string $difficulty ) : bool
         {
             if( strlen( $hash ) != 64 || !hex2bin( $hash ) ) throw new Exception( "Invalid block ID: $hash" );
             if( strlen( $work ) != 16 || !hex2bin( $work ) ) throw new Exception( "Invalid work: $work" );

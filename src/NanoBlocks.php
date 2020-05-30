@@ -19,7 +19,7 @@
         // # Block data
         
         private $prevAuto    = false;
-        private $prevBlockID = null;
+        private $prevBlockId = null;
         private $prevBlock   = [];
         private $rawBlockID  = [];
         private $signature   = null;
@@ -28,7 +28,7 @@
         
         // # Results and debug
         
-        public $blockID = null;
+        public $blockId = null;
         public $block   = [];
 
 
@@ -55,7 +55,7 @@
             if( strlen( $prev_block_id ) != 64 || !hex2bin( $prev_block_id ) ) throw new Exception( "Invalid block ID: $prev_block_id" );
             if( count( $prev_block ) < 8 ) throw new Exception( "Block array count is less than 8" );
             
-            $this->prevBlockID  = $prev_block_id;
+            $this->prevBlockId  = $prev_block_id;
             $this->prevBlock = $prev_block;
         }
         
@@ -86,7 +86,7 @@
         // ## Build open block
         // #
         
-        public function open( string $pairing_block_id, string $amount, string $representative )
+        public function open( string $pairing_block_id, string $amount, string $representative ) : array
         {
             if( strlen( $pairing_block_id ) != 64 || !hex2bin( $pairing_block_id ) ) throw new Exception( "Invalid previous block ID: $pairing_block_id" );
             if( !ctype_digit( $amount ) ) throw new Exception( "Invalid raw amount: $amount" );
@@ -103,8 +103,8 @@
             $this->rawBlockID[] = $balance;
             $this->rawBlockID[] = $pairing_block_id;
             
-            $this->blockID   = NanoTools::getBlockID( $this->rawBlockID );
-            $this->signature = NanoTools::signMessage( $this->privateKey, $this->blockID );
+            $this->blockId   = NanoTools::getBlockID( $this->rawBlockID );
+            $this->signature = NanoTools::signMessage( $this->privateKey, $this->blockId );
             
             $this->block = 
             [
@@ -120,7 +120,7 @@
             
             if( $this->prevAuto )
             {
-                $this->prevBlockID = $this->blockID;
+                $this->prevBlockId = $this->blockId;
                 $this->prevBlock   = $this->block;
             }
             
@@ -132,7 +132,7 @@
         // ## Build receive block
         // #
         
-        public function receive( string $pairing_block_id, string $amount, string $representative = null )
+        public function receive( string $pairing_block_id, string $amount, string $representative = null ) : array
         {
             if( strlen( $pairing_block_id ) != 64 || !hex2bin( $pairing_block_id ) ) throw new Exception( "Invalid previous block ID: $pairing_block_id" );
             if( !ctype_digit( $amount ) ) throw new Exception( "Invalid raw amount: $amount" );
@@ -145,19 +145,19 @@
             $this->rawBlockID   = [];
             $this->rawBlockID[] = NanoTools::PREAMBLE;
             $this->rawBlockID[] = $this->publicKey;
-            $this->rawBlockID[] = $this->prevBlockID;
+            $this->rawBlockID[] = $this->prevBlockId;
             $this->rawBlockID[] = NanoTools::account2public( $representative );
             $this->rawBlockID[] = $balance;
             $this->rawBlockID[] = $pairing_block_id;
             
-            $this->blockID   = NanoTools::getBlockID( $this->rawBlockID );
-            $this->signature = NanoTools::signMessage( $this->privateKey, $this->blockID );
+            $this->blockId   = NanoTools::getBlockID( $this->rawBlockID );
+            $this->signature = NanoTools::signMessage( $this->privateKey, $this->blockId );
             
             $this->block = 
             [
                 'type'           => 'state',
                 'account'        => $this->account,
-                'previous'       => $this->prevBlockID,
+                'previous'       => $this->prevBlockId,
                 'representative' => $representative,
                 'balance'        => NanoTools::hex2dec( $balance ),
                 'link'           => $pairing_block_id,
@@ -167,7 +167,7 @@
             
             if( $this->prevAuto )
             {
-                $this->prevBlockID = $this->blockID;
+                $this->prevBlockId = $this->blockId;
                 $this->prevBlock   = $this->block;
             }
             
@@ -179,7 +179,7 @@
         // ## Build send block
         // #
         
-        public function send( string $destination, string $amount, string $representative = null )
+        public function send( string $destination, string $amount, string $representative = null ) : array
         {
             if( !NanoTools::account2public( $destination, false ) ) throw new Exception( "Invalid destination account: $representative" );
             if( !ctype_digit( $amount ) ) throw new Exception( "Invalid raw amount: $amount" );
@@ -193,19 +193,19 @@
             $this->rawBlockID   = [];
             $this->rawBlockID[] = NanoTools::PREAMBLE;
             $this->rawBlockID[] = $this->publicKey;
-            $this->rawBlockID[] = $this->prevBlockID;
+            $this->rawBlockID[] = $this->prevBlockId;
             $this->rawBlockID[] = NanoTools::account2public( $representative );
             $this->rawBlockID[] = $balance;
             $this->rawBlockID[] = NanoTools::account2public( $destination );
             
-            $this->blockID   = NanoTools::getBlockID( $this->rawBlockID );
-            $this->signature = NanoTools::signMessage( $this->privateKey, $this->blockID );
+            $this->blockId   = NanoTools::getBlockID( $this->rawBlockID );
+            $this->signature = NanoTools::signMessage( $this->privateKey, $this->blockId );
             
             $this->block =
             [
                 'type'           => 'state',
                 'account'        => $this->account,
-                'previous'       => $this->prevBlockID,
+                'previous'       => $this->prevBlockId,
                 'representative' => $representative,
                 'balance'        => NanoTools::hex2dec( $balance ),
                 'link'           => $destination,
@@ -215,7 +215,7 @@
             
             if( $this->prevAuto )
             {
-                $this->prevBlockID = $this->blockID;
+                $this->prevBlockId = $this->blockId;
                 $this->prevBlock   = $this->block;
             }
             
@@ -227,7 +227,7 @@
         // ## Build change block
         // #
         
-        public function change( string $representative )
+        public function change( string $representative ) : array
         {
             if( !NanoTools::account2public( $representative, false ) ) throw new Exception( "Invalid representative account: $representative" );
             
@@ -237,19 +237,19 @@
             $this->rawBlockID   = [];
             $this->rawBlockID[] = NanoTools::PREAMBLE;
             $this->rawBlockID[] = $this->publicKey;
-            $this->rawBlockID[] = $this->prevBlockID;
+            $this->rawBlockID[] = $this->prevBlockId;
             $this->rawBlockID[] = NanoTools::account2public( $representative );
             $this->rawBlockID[] = $balance;
             $this->rawBlockID[] = NanoTools::EMPTY32;
             
-            $this->blockID   = NanoTools::getBlockID( $this->rawBlockID );
-            $this->signature = NanoTools::signMessage( $this->privateKey, $this->blockID );
+            $this->blockId   = NanoTools::getBlockID( $this->rawBlockID );
+            $this->signature = NanoTools::signMessage( $this->privateKey, $this->blockId );
             
             $this->block =
             [
                 'type'           => 'state',
                 'account'        => $this->account,
-                'previous'       => $this->prevBlockID,
+                'previous'       => $this->prevBlockId,
                 'representative' => $representative,
                 'balance'        => NanoTools::hex2dec( $balance ),
                 'link'           => NanoTools::EMPTY32,
@@ -259,7 +259,7 @@
             
             if( $this->prevAuto )
             {
-                $this->prevBlockID = $this->blockID;
+                $this->prevBlockId = $this->blockId;
                 $this->prevBlock   = $this->block;
             }
             

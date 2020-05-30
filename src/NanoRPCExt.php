@@ -12,7 +12,7 @@
         // ## Wallet wipe
         // #
 
-        public function wallet_wipe( array $args )
+        public function wallet_wipe( array $args ) 
         {
             // Check args
             
