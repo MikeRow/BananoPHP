@@ -41,14 +41,17 @@
         // ## Hexadecimal string to decimal string
         // #
         
-        public static function hex2dec( string $string ) : string
+        public static function hex2dec(string $string): string
         {
-            if( !ctype_xdigit( $string ) ) throw new Exception( "Invalid hexadecimal string: $string" );
+            if (!ctype_xdigit($string))
+                throw new Exception("Invalid hexadecimal string: $string");
             
-            $dec = hexToDec( $string );
+            $dec = hexToDec($string);
             
-            if( $dec == '' ) return '0';
-            else return $dec;
+            if ($dec == '')
+                return '0';
+            else
+                return $dec;
         }
         
         
@@ -56,14 +59,17 @@
         // ## Decimal string to hexadecimal string
         // #
         
-        public static function dec2hex( string $string ) : string
+        public static function dec2hex(string $string): string
         {
-            if( !ctype_digit( $string ) ) throw new Exception( "Invalid decimal string: $string" );
+            if (!ctype_digit($string))
+                throw new Exception("Invalid decimal string: $string");
             
-            $hex = decToHex( $string );
+            $hex = decToHex($string);
             
-            if( $hex == '' ) return '00';
-            else return $hex;
+            if ($hex == '')
+                return '00';
+            else
+                return $hex;
         }
         
         
@@ -71,15 +77,16 @@
         // ## Integer array to binary string
         // #
         
-        public static function arr2bin( array $array ) : string
+        public static function arr2bin(array $array): string
         {
-            foreach( $array as $value )
-            {
-                if( !ctype_digit( (string) $value ) ) throw new Exception( "Invalid integer array value: $value" );
-                if( $value > 255 ) throw new Exception( "Invalid integer array value: $value" );
+            foreach ($array as $value) {
+                if (!ctype_digit((string) $value))
+                    throw new Exception("Invalid integer array value: $value");
+                if ($value > 255)
+                    throw new Exception("Invalid integer array value: $value");
             }
             
-            return implode( array_map( 'chr', $array ) );
+            return implode(array_map('chr', $array));
         }
         
         
@@ -87,9 +94,9 @@
         // ## Binary string to integer array
         // #
         
-        public static function bin2arr( string $string ) : array
+        public static function bin2arr(string $string): array
         {
-            return array_map( 'ord', str_split( $string ) );
+            return array_map('ord', str_split($string));
         }
         
         
@@ -97,32 +104,28 @@
         // ## Denomination to raw
         // #
         
-        public static function den2raw( $amount, string $denomination ) : string
+        public static function den2raw($amount, string $denomination): string
         {
-            if( !array_key_exists( $denomination, self::RAWS ) ) throw new Exception( "Invalid denomination: $denomination" );
+            if (!array_key_exists($denomination, self::RAWS))
+                throw new Exception("Invalid denomination: $denomination");
             
             $raw_to_denomination = self::RAWS[$denomination];
             
-            if( $amount == 0 )
-            {
+            if ($amount == 0)
                 return '0';
+            
+            if (strpos($amount, '.')) {
+                $dot_pos             = strpos($amount, '.');
+                $number_len          = strlen($amount) - 1;
+                $raw_to_denomination = substr($raw_to_denomination, 0, -($number_len - $dot_pos));
             }
             
-            if( strpos( $amount, '.' ) )
-            {
-                $dot_pos             = strpos( $amount, '.' );
-                $number_len          = strlen( $amount ) - 1;
-                $raw_to_denomination = substr(  $raw_to_denomination, 0, - ( $number_len - $dot_pos ) );
-            }
-            
-            $amount = str_replace( '.', '', $amount ) . str_replace( '1', '',  $raw_to_denomination );
+            $amount = str_replace('.', '', $amount) . str_replace('1', '',  $raw_to_denomination);
             
             // Remove useless zeros from left
             
-            while( substr( $amount, 0, 1 ) == '0' )
-            {
-                $amount = substr( $amount, 1 );    
-            }
+            while (substr($amount, 0, 1) == '0')
+                $amount = substr($amount, 1);    
             
             return $amount;
         }
@@ -132,7 +135,7 @@
         // ## Raw to denomination
         // #
         
-        public static function raw2den( string $amount, string $denomination ) : string
+        public static function raw2den (string $amount, string $denomination) : string
         {
             if( !array_key_exists( $denomination, self::RAWS ) ) throw new Exception( "Invalid denomination: $denomination" );
             
