@@ -1,12 +1,12 @@
 <?php
 
-    namespace php4nano\Nano;
+    namespace php4nano;
     
-    require_once __DIR__ . '/NanoRPC.php';
+    require_once __DIR__ . '/RPC.php';
     
     use \Exception as Exception;
 
-    class RPCExt extends php4nano\Nano\RPC
+    class RPCExt extends php4nano\RPC
     {
         // #
         // ## Wallet wipe

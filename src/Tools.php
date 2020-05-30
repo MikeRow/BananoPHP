@@ -1,6 +1,6 @@
 <?php
 
-    namespace php4nano\Nano;
+    namespace php4nano;
     
     require_once __DIR__ . '/../lib/Salt/autoload.php';
     require_once __DIR__ . '/../lib/Util.php';

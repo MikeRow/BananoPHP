@@ -1,11 +1,11 @@
 <?php
 
-    namespace php4nano\Nano;
+    namespace php4nano;
     
-    require_once __DIR__ . '/NanoTools.php';
+    require_once __DIR__ . '/Tools.php';
     
     use \Exception as Exception;
-    use php4nano\Nano\Tools as NanoTools;
+    use php4nano\Tools as NanoTools;
     
     class Blocks
     {

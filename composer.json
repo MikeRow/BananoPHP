@@ -1,5 +1,5 @@
 {
-	"name" : "php4nano",
+	"name" : "mikerow/php4nano",
 	"description" : "PHP libraries and tools for the Nano currency",
 	"keywords" : [
 		"nano",
@@ -26,8 +26,11 @@
 	"minimum-stability" : "stable",
 	"autoload" : {
 		"psr-4" : {
-			"php4nano\\Nano\\" : "src/"
+			"php4nano\\" : "src/"
 		}
 	},
+	"require": {
+		"php": ">=7.2"
+    },
 	"homepage" : "https://github.com/mikerow/php4nano"
 }
