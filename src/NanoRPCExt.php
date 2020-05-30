@@ -6,7 +6,7 @@
     
     use \Exception as Exception;
 
-    class RPCExtension extends php4nano\Nano\RPC
+    class RPCExt extends php4nano\Nano\RPC
     {
         // #
         // ## Wallet wipe
