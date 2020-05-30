@@ -3,7 +3,7 @@
     require_once __DIR__ . '/../../src/Tools.php';
     
     use php4nano\Tools as NanoTools;
-    
+
     $mnem =
     [
         'turkey',
@@ -32,4 +32,4 @@
         'dash'
     ];
     
-    echo NanoTools::mnem2mseed( $mnem );
+    echo NanoTools::mnem2mseed($mnem);

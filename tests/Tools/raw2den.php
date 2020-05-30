@@ -4,4 +4,4 @@
     
     use php4nano\Tools as NanoTools;
 
-    echo NanoTools::den2den('5', 'NANO', 'nano');
+    echo NanoTools::raw2den('50000000000000000000000000000000000000', 'NANO');

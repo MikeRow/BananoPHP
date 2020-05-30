@@ -1,7 +1,7 @@
 <?php
 
     namespace php4nano;
-    
+
     require_once __DIR__ . '/RPC.php';
     
     use \Exception as Exception;
@@ -12,12 +12,11 @@
         // ## Wallet wipe
         // #
 
-        public function wallet_wipe( array $args ) 
+        public function wallet_wipe(array $args)
         {
             // Check args
             
-            if( !isset( $args['wallet'] ) || !isset( $args['destination'] ) )
-            {
+            if (!isset($args['wallet']) || !isset($args['destination'])) {
                 $this->error = 'Unable to parse Array';
                 return false;
             }
@@ -27,35 +26,32 @@
             
             // Wallet ok?
             
-            $wallet_info = $this->wallet_info( ['wallet' => $wallet] );
+            $wallet_info = $this->wallet_info(['wallet' => $wallet]);
             
-            if( $this->error != null )
-            {
+            if ($this->error != null) {
                 $this->error = 'Bad wallet number';
                 return false;
             }
             
             // Balance ok?
             
-            if( gmp_cmp( $wallet_info['balance'], 1 ) < 0 )
-            {
+            if (gmp_cmp($wallet_info['balance'], 1) < 0) {
                 $this->error = 'Insufficient balance';
                 return false;
             }
             
             // Destination ok?
             
-            $check_destination = $this->validate_account_number( ['account'=>$destination] );
+            $check_destination = $this->validate_account_number(['account'=>$destination]);
             
-            if( $check_destination['valid'] != 1 )
-            {
+            if ($check_destination['valid'] != 1) {
                 $this->error = 'Bad destination';
                 return false;
             }
 
             // Any sort?
             
-            $sort = isset( $args['sort'] ) ? $args['sort'] : 'list';
+            $sort = isset($args['sort']) ? $args['sort'] : 'list';
             
             //
             
@@ -69,34 +65,28 @@
                 'threshold' => 1
             ];
             
-            $wallet_balances = $this->wallet_balances( $args );
+            $wallet_balances = $this->wallet_balances($args);
             
             // Sort balances
             
-            if( $sort == 'asc' )
-            {
-                uasort( $wallet_balances['balances'], function( $a, $b )
-                {
-                    return gmp_cmp( $a['balance'], $b['balance'] );
+            if ($sort == 'asc') {
+                uasort($wallet_balances['balances'], function ($a, $b) {
+                    return gmp_cmp($a['balance'], $b['balance']);
                 });
-            }
-            elseif( $sort == 'desc' )
-            {
-                uasort( $wallet_balances['balances'], function( $a, $b )
-                {
-                    return gmp_cmp( $b['balance'], $a['balance'] );
+            } elseif ($sort == 'desc') {
+                uasort($wallet_balances['balances'], function ($a, $b) {
+                    return gmp_cmp($b['balance'], $a['balance']);
                 });
-            }
-            else
-            {
+            } else {
                 // Do nothing
             }
             
             // Wipe wallet
             
-            foreach( $wallet_balances['balances'] as $account => $balances )
-            {
-                if( $account == $destination ) continue;
+            foreach ($wallet_balances['balances'] as $account => $balances) {
+                if ($account == $destination) {
+                    continue;
+                }
                 
                 $args =
                 [
@@ -117,8 +107,7 @@
                     'amount' => $balances['balance']
                 ];
                 
-                if( $send['block'] == self::EMPTY32 )
-                {
+                if ($send['block'] == self::EMPTY32) {
                     $return['balances'][$account] =
                     [
                         'error' => 'Bad send'
@@ -126,11 +115,10 @@
                 }
             }
             
-            $this->responseRaw = json_encode( $return );
+            $this->responseRaw = json_encode($return);
             $this->response    = $return;
             
             return $this->response;
-        
         }
         
         
@@ -138,12 +126,11 @@
         // ## Wallet send
         // #
         
-        public function wallet_send( array $args )
+        public function wallet_send(array $args)
         {
             // Check args
             
-            if( !isset( $args['wallet'] ) || !isset( $args['destination'] ) || !isset( $args['amount'] ) )
-            {
+            if (!isset($args['wallet']) || !isset($args['destination']) || !isset($args['amount'])) {
                 $this->error = 'Unable to parse Array';
                 return false;
             }
@@ -154,47 +141,42 @@
             
             // Wallet ok?
             
-            $wallet_info = $this->wallet_info( ['wallet' => $wallet] );
+            $wallet_info = $this->wallet_info(['wallet' => $wallet]);
             
-            if( $this->error != null )
-            {
+            if ($this->error != null) {
                 $this->error = 'Bad wallet number';
                 return false;
             }
         
             // Destination ok?
         
-            $check_destination = $this->validate_account_number( ['account'=>$destination] );
+            $check_destination = $this->validate_account_number(['account'=>$destination]);
             
-            if( $check_destination['valid'] != 1 )
-            {
+            if ($check_destination['valid'] != 1) {
                 $this->error = 'Bad destination';
                 return false;
             }
             
             // Amount ok?
             
-            if( !ctype_digit( $amount ) )
-            {
+            if (!ctype_digit($amount)) {
                 $this->error = 'Bad amount';
                 return false;
             }
             
-            if( gmp_cmp( $amount, 1 ) < 0 )
-            {
+            if (gmp_cmp($amount, 1) < 0) {
                 $this->error = 'Bad amount';
                 return false;
             }
             
-            if( gmp_cmp( $wallet_info['balance'], $amount ) < 0 )
-            {
+            if (gmp_cmp($wallet_info['balance'], $amount) < 0) {
                 $this->error = 'Insufficient balance';
                 return false;
             }
             
             // Any sort?
             
-            $sort = isset( $args['sort'] ) ? $args['sort'] : 'list';
+            $sort = isset($args['sort']) ? $args['sort'] : 'list';
             
             //
             
@@ -210,55 +192,44 @@
                 'threshold' => 1
             ];
             
-            $wallet_balances = $this->wallet_balances( $args );
+            $wallet_balances = $this->wallet_balances($args);
                 
             // Sort balances
             
-            if( $sort == 'asc' )
-            {
-                uasort( $wallet_balances['balances'], function( $a, $b )
-                {
-                    return gmp_cmp( $a['balance'], $b['balance'] );
+            if ($sort == 'asc') {
+                uasort($wallet_balances['balances'], function ($a, $b) {
+                    return gmp_cmp($a['balance'], $b['balance']);
                 });
-            }
-            elseif( $sort == 'desc' )
-            {
-                uasort( $wallet_balances['balances'], function( $a, $b )
-                {
-                    return gmp_cmp( $b['balance'], $a['balance'] );
+            } elseif ($sort == 'desc') {
+                uasort($wallet_balances['balances'], function ($a, $b) {
+                    return gmp_cmp($b['balance'], $a['balance']);
                 });
-            }
-            else
-            {
+            } else {
                 // Do nothing
             }
             
             // Select accounts
             
-            foreach( $wallet_balances['balances'] as $account => $balances )
-            {
-                if( gmp_cmp( $balances['balance'], $amount_left ) >= 0 )
-                {
+            foreach ($wallet_balances['balances'] as $account => $balances) {
+                if (gmp_cmp($balances['balance'], $amount_left) >= 0) {
                     $selected_accounts[$account] = $amount_left;
                     $amount_left                 = '0';
-                }
-                else
-                {
+                } else {
                     $selected_accounts[$account] = $balances['balance'];
-                    $amount_left                 = gmp_strval( gmp_sub( $amount_left, $balances['balance'] ) );
+                    $amount_left                 = gmp_strval(gmp_sub($amount_left, $balances['balance']));
                 }
                 
-                if( gmp_cmp( $amount_left, '0' ) <= 0 )
-                {
+                if (gmp_cmp($amount_left, '0') <= 0) {
                     break; // Amount reached
                 }
             }
 
             // Send from selected accounts
             
-            foreach( $selected_accounts as $account => $balance )
-            {
-                if( $account == $destination ) continue;
+            foreach ($selected_accounts as $account => $balance) {
+                if ($account == $destination) {
+                    continue;
+                }
                 
                 $args =
                 [
@@ -269,7 +240,7 @@
                     'id'          => uniqid()
                 ];
                 
-                $send = $this->send( $args );
+                $send = $this->send($args);
 
                 // Send
                 
@@ -279,8 +250,7 @@
                     'amount' => $balances['balance']
                 ];
                 
-                if ( $send['block'] == self::EMPTY32 )
-                {
+                if ($send['block'] == self::EMPTY32) {
                     $return['balances'][$account] =
                     [
                         'error' => 'Bad send'
@@ -288,11 +258,10 @@
                 }
             }
             
-            $this->responseRaw = json_encode ( $return );
+            $this->responseRaw = json_encode($return);
             $this->response    = $return;
             
             return $this->response;
-            
         }
         
          
@@ -300,12 +269,11 @@
         // ## Wallet weight
         // #
         
-        public function wallet_weight( array $args )
+        public function wallet_weight(array $args)
         {
             // Check args
             
-            if( !isset( $args['wallet'] ) )
-            {
+            if (!isset($args['wallet'])) {
                 $this->error = 'Unable to parse Array';
                 return false;
             }
@@ -314,17 +282,16 @@
             
             // Wallet ok?
             
-            $wallet_info = $this->wallet_info( ['wallet' => $wallet] );
+            $wallet_info = $this->wallet_info(['wallet' => $wallet]);
             
-            if( $this->error != null )
-            {
+            if ($this->error != null) {
                 $this->error = 'Bad wallet number';
                 return false;
             }
             
             // Any sort?
             
-            $sort = isset( $args['sort'] ) ? $args['sort'] : 'list';
+            $sort = isset($args['sort']) ? $args['sort'] : 'list';
             
             //
             
@@ -338,44 +305,35 @@
                 'wallet' => $wallet
             ];
             
-            $wallet_accounts = $this->account_list( $args );
+            $wallet_accounts = $this->account_list($args);
             
             // Check every weight and sum them
             
-            foreach( $wallet_accounts['accounts'] as $account )
-            {
-                $account_weight              = $this->account_weight( ['account'=>$account] );
-                $wallet_weight               = gmp_add( $wallet_weight, $account_weight['weight'] );
-                $return['weights'][$account] = gmp_strval( $account_weight['weight'] );
+            foreach ($wallet_accounts['accounts'] as $account) {
+                $account_weight              = $this->account_weight(['account'=>$account]);
+                $wallet_weight               = gmp_add($wallet_weight, $account_weight['weight']);
+                $return['weights'][$account] = gmp_strval($account_weight['weight']);
             }
             
-            $return['weight'] = gmp_strval( $wallet_weight );
+            $return['weight'] = gmp_strval($wallet_weight);
             
             // Sort weights
             
-            if( $sort == 'asc' )
-            {
-                uasort( $return['weights'], function( $a, $b )
-                {
-                    return gmp_cmp( $a, $b );
+            if ($sort == 'asc') {
+                uasort($return['weights'], function ($a, $b) {
+                    return gmp_cmp($a, $b);
                 });
-            }
-            elseif( $sort == 'desc' )
-            {
-                uasort( $return['weights'], function( $a, $b )
-                {
-                    return gmp_cmp( $b, $a );
+            } elseif ($sort == 'desc') {
+                uasort($return['weights'], function ($a, $b) {
+                    return gmp_cmp($b, $a);
                 });
-            }
-            else
-            {
+            } else {
                 // Do nothing
             }
             
-            $this->responseRaw = json_encode( $return );
+            $this->responseRaw = json_encode($return);
             $this->response    = $return;
             
             return $this->response;
         }
     }
-    

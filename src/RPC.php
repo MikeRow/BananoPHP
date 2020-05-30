@@ -3,7 +3,7 @@
     namespace php4nano;
 
     use \Exception as Exception;
-    
+
     class RPC
     {
         // # Settings
@@ -32,7 +32,7 @@
         // ## Initialization
         // #
         
-        public function __construct( string $host = 'localhost', string $port = '7076', string $url = null )
+        public function __construct(string $host = 'localhost', string $port = '7076', string $url = null)
         {
             $this->host          = $host;
             $this->port          = $port;
@@ -46,7 +46,7 @@
         // ## Set SSL
         // #
          
-        public function SSL_set( string $certificate = null )
+        public function SSL_set(string $certificate = null)
         {
             $this->proto         = 'https';
             $this->CACertificate = $certificate;
@@ -57,7 +57,7 @@
         // ## Set authentication
         // #
         
-        public function auth_set( string $username, string $password = null )
+        public function auth_set(string $username, string $password = null)
         {
             $this->username = $username;
             $this->password = $password;
@@ -68,7 +68,7 @@
         // ## Call
         // #
         
-        public function __call( $method, array $params )
+        public function __call($method, array $params)
         {
             $this->status       = null;
             $this->error        = null;
@@ -82,19 +82,17 @@
                 'action' => $method
             ];
             
-            if( isset( $params[0] ) )
-            {
-                foreach( $params[0] as $key => $value )
-                {
+            if (isset($params[0])) {
+                foreach ($params[0] as $key => $value) {
                     $request[$key] = $value;
                 }
             }
             
-            $request = json_encode( $request );
+            $request = json_encode($request);
 
             // Build the cURL session
             
-            $curl = curl_init( "{$this->proto}://{$this->host}:{$this->port}/{$this->url}" );
+            $curl = curl_init("{$this->proto}://{$this->host}:{$this->port}/{$this->url}");
             
             $options =
             [
@@ -109,15 +107,11 @@
             
             // Auth?
             
-            if( $this->username != null )
-            {
-                if( $this->password != null )
-                {
-                    $auth = base64_encode( $this->username . ':' . $this->password );
-                }
-                else 
-                {
-                    $auth = base64_encode( $this->username );
+            if ($this->username != null) {
+                if ($this->password != null) {
+                    $auth = base64_encode($this->username . ':' . $this->password);
+                } else {
+                    $auth = base64_encode($this->username);
                 }
                 
                 $options[CURLOPT_HTTPHEADER][] = 'Authorization: Basic '. $auth;
@@ -126,60 +120,51 @@
             // This prevents users from getting the following warning when open_basedir is set:
             // Warning: curl_setopt() [function.curl-setopt]: CURLOPT_FOLLOWLOCATION cannot be activated when in safe_mode or an open_basedir is set
             
-            if( ini_get('open_basedir') )
-            {        
-                unset( $options[CURLOPT_FOLLOWLOCATION] );    
+            if (ini_get('open_basedir')) {
+                unset($options[CURLOPT_FOLLOWLOCATION]);
             }
 
-            if( $this->proto == 'https' )
-            {
+            if ($this->proto == 'https') {
                 // If the CA Certificate was specified we change CURL to look for it
                 
-                if( $this->CACertificate != null )
-                {
+                if ($this->CACertificate != null) {
                     $options[CURLOPT_CAINFO] = $this->CACertificate;
-                    $options[CURLOPT_CAPATH] = DIRNAME( $this->CACertificate );
-                }
-                else
-                {
+                    $options[CURLOPT_CAPATH] = DIRNAME($this->CACertificate);
+                } else {
                     // If not we need to assume the SSL cannot be verified so we set this flag to FALSE to allow the connection
                     $options[CURLOPT_SSL_VERIFYPEER] = false;
                 }
             }
 
-            curl_setopt_array( $curl, $options );
+            curl_setopt_array($curl, $options);
 
             // Execute the request and decode to an array
             
-            $this->responseRaw = curl_exec( $curl );
-            $this->response    = json_decode( $this->responseRaw, true );
+            $this->responseRaw = curl_exec($curl);
+            $this->response    = json_decode($this->responseRaw, true);
 
             // If the status is not 200, something is wrong
             
-            $this->status = curl_getinfo( $curl, CURLINFO_HTTP_CODE );
+            $this->status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             
             // If there was no error, this will be an empty string
             
-            $curl_error = curl_error( $curl );
+            $curl_error = curl_error($curl);
 
-            curl_close( $curl );
+            curl_close($curl);
             
-            if( isset( $this->response['error'] ) )
-            {
+            if (isset($this->response['error'])) {
                 $this->error = $this->response['error'];
             }
 
-            if( !empty( $curl_error ) )
-            {
+            if (!empty($curl_error)) {
                 $this->error = $curl_error;
             }
 
-            if( $this->status != 200 )
-            {
+            if ($this->status != 200) {
                 // If node didn't return a nice error message, we need to make our own
                 
-                switch( $this->status )
-                {
+                switch ($this->status) {
                     case 400:
                     
                         $this->error = 'HTTP_BAD_REQUEST';
@@ -198,12 +183,11 @@
                     case 404:
                     
                         $this->error = 'HTTP_NOT_FOUND';
-                        break;    
-                }    
+                        break;
+                }
             }
 
-            if( $this->error )
-            {
+            if ($this->error) {
                 return false;
             }
                 
