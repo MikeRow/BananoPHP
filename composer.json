@@ -26,7 +26,7 @@
 	"minimum-stability" : "stable",
 	"autoload" : {
 		"psr-4" : {
-			"mikerow\\php4nano\\" : "src/"
+			"php4nano\\Nano\\" : "src/"
 		}
 	},
 	"homepage" : "https://github.com/mikerow/php4nano"

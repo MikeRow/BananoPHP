@@ -36,12 +36,12 @@
         // ## Initialization
         // #
         
-        public function __construct( string $sk )
+        public function __construct( string $private_key )
         {
-            if( strlen( $sk ) != 64 || !hex2bin( $sk ) ) throw new Exception( "Invalid private key: $sk" );
+            if( strlen( $private_key ) != 64 || !hex2bin( $private_key ) ) throw new Exception( "Invalid private key: $private_key" );
             
             $this->privateKey = $private_key;
-            $this->publicKey  = NanoTools::private2public( $sk );
+            $this->publicKey  = NanoTools::private2public( $private_key );
             $this->account    = NanoTools::public2account( $this->publicKey );
         }
         

@@ -198,7 +198,7 @@
         // ## Account to public key conversion
         // #
         
-        public static function account2public( string $account, bool $get_pk = true )
+        public static function account2public( string $account, bool $get_public_key = true )
         {
             if( ( strpos( $account, 'xrb_1' ) === 0 || strpos( $account, 'xrb_3' ) === 0 || strpos( $account, 'nano_1' ) === 0 || strpos( $account, 'nano_3' ) === 0 ) && ( strlen( $account ) == 64 || strlen( $account ) == 65 ) )
             {
@@ -234,7 +234,7 @@
                     
                     if( $hash_uint8 == $key_hash )
                     {
-                        if( $get_pk )
+                        if( $get_public_key )
                         {
                             return Uint::fromUint4Array( $key_uint4 )->toHexString();
                         }
@@ -254,13 +254,13 @@
         // ## Public key to account conversion
         // #
         
-        public static function public2account( string $pk )
+        public static function public2account( string $public_key )
         {
-            if( strlen( $pk ) != 64 || !hex2bin( $pk ) ) throw new Exception( "Invalid public key: $pk" );
+            if( strlen( $public_key ) != 64 || !hex2bin( $public_key ) ) throw new Exception( "Invalid public key: $public_key" );
 
             if( !extension_loaded( 'blake2' ) )
             {
-                $key = Uint::fromHex( $pk );
+                $key = Uint::fromHex( $public_key );
                 $checksum;
                 $hash = new SplFixedArray( 64 );
                 
@@ -274,7 +274,7 @@
             }
             else
             {
-                $key = Uint::fromHex( $pk )->toUint8();
+                $key = Uint::fromHex( $public_key )->toUint8();
                 $key = self::arr2bin( (array) $key );
                 
                 $hash = blake2( $key, 5, null, true );
@@ -283,7 +283,7 @@
                 $checksum = Uint::fromUint8Array( $hash )->toString();
             }
             
-            $c_account = Uint::fromHex( '0' . $pk )->toString();
+            $c_account = Uint::fromHex( '0' . $public_key )->toString();
             
             return 'nano_' . $c_account . $checksum;
         }
@@ -293,16 +293,16 @@
         // ## Private key to public key conversion
         // #
         
-        public static function private2public( string $sk )
+        public static function private2public( string $private_key )
         {
-            if( strlen( $sk ) != 64 || !hex2bin( $sk ) ) throw new Exception( "Invalid private key: $sk" );
+            if( strlen( $private_key ) != 64 || !hex2bin( $private_key ) ) throw new Exception( "Invalid private key: $private_key" );
             
             $salt = Salt::instance();
             
-            $sk = Uint::fromHex( $sk )->toUint8();
-            $pk = $salt::crypto_sign_public_from_secret_key( $sk );
+            $private_key = Uint::fromHex( $private_key )->toUint8();
+            $public_key = $salt::crypto_sign_public_from_secret_key( $private_key );
             
-            return Uint::fromUint8Array( $pk )->toHexString();
+            return Uint::fromUint8Array( $public_key )->toHexString();
         }
         
         
@@ -344,20 +344,20 @@
             }
             
             $index = Uint::fromUint8Array( $index )->toUint8();
-            $sk    = new SplFixedArray( 64 );
+            $private_key    = new SplFixedArray( 64 );
             
             $b2b = new Blake2b();
             $ctx = $b2b->init( null, 32 );
             $b2b->update( $ctx, $seed, 32 );
             $b2b->update( $ctx, $index, 4 );
-            $b2b->finish( $ctx, $sk );
+            $b2b->finish( $ctx, $private_key );
             
-            $sk = Uint::fromUint8Array( array_slice( $sk->toArray(), 0, 32 ) )->toHexString();
-            $pk = self::private2public( $sk );
+            $private_key = Uint::fromUint8Array( array_slice( $private_key->toArray(), 0, 32 ) )->toHexString();
+            $public_key = self::private2public( $private_key );
             
-            $keys = [$sk,$pk];
+            $keys = [$private_key,$public_key];
             
-            if( $get_account ) $keys[] = self::public2account( $pk );
+            if( $get_account ) $keys[] = self::public2account( $public_key );
             
             return $keys;
         }
@@ -468,8 +468,8 @@
                 $HDKey = [substr( $I, 0, 32 ),substr( $I, 32, 32 )];
             }
             
-            $sk   = strtoupper( bin2hex( $HDKey[0] ) );
-            $keys = [$sk,self::private2public( $sk )];
+            $private_key   = strtoupper( bin2hex( $HDKey[0] ) );
+            $keys = [$private_key,self::private2public( $private_key )];
             
             if( $get_account ) $keys[] = self::public2account( $keys[1] );
             
@@ -511,20 +511,20 @@
         // ## Sign message
         // #
         
-        public static function signMsg( string $sk, string $msg )
+        public static function signMsg( string $private_key, string $msg )
         {
-            if( strlen( $sk ) != 64 || !hex2bin( $sk ) ) throw new Exception( "Invalid private key: $sk" );
+            if( strlen( $private_key ) != 64 || !hex2bin( $private_key ) ) throw new Exception( "Invalid private key: $private_key" );
             if( !hex2bin( $msg ) ) throw new Exception( "Invalid block ID: $msg" );
             
             $salt = Salt::instance();
-            $sk   = FieldElement::fromArray( Uint::fromHex( $sk )->toUint8() );
-            $pk   = Salt::crypto_sign_public_from_secret_key( $sk );
+            $private_key   = FieldElement::fromArray( Uint::fromHex( $private_key )->toUint8() );
+            $public_key   = Salt::crypto_sign_public_from_secret_key( $private_key );
             
-            $sk->setSize( 64 );
-            $sk->copy( $pk, 32, 32 );
+            $private_key->setSize( 64 );
+            $private_key->copy( $public_key, 32, 32 );
             
             $msg = Uint::fromHex( $msg )->toUint8();
-            $sm  = $salt->crypto_sign( $msg, count( $msg ), $sk );
+            $sm  = $salt->crypto_sign( $msg, count( $msg ), $private_key );
             
             $signature = [];
             for( $i = 0; $i < 64; $i++ ) $signature[$i] = $sm[$i];
@@ -541,19 +541,19 @@
         {
             if( strlen( $msg ) != 64 || !hex2bin( $msg ) ) throw new Exception( "Invalid block ID: $msg" );
             if( strlen( $sig ) != 128 || !hex2bin( $sig ) ) throw new Exception( "Invalid signature: $sig" );
-            $pk = self::account2public( $account );
-            if( !$pk ) throw new Exception( "Invalid account: $account" );
+            $public_key = self::account2public( $account );
+            if( !$public_key ) throw new Exception( "Invalid account: $account" );
             
             $sig = Uint::fromHex( $sig )->toUint8();
             $msg = Uint::fromHex( $msg )->toUint8();
-            $pk  = Uint::fromHex( $pk )->toUint8();
+            $public_key  = Uint::fromHex( $public_key )->toUint8();
             
             $sm = new SplFixedArray( 64 + count( $msg) );
             $m  = new SplFixedArray( 64 + count( $msg) );
             for( $i = 0; $i < 64; $i++ ) $sm[$i] = $sig[$i];
             for( $i = 0; $i < count( $msg ); $i++ ) $sm[$i+64] = $msg[$i];
             
-            return Salt::crypto_sign_open2( $m, $sm, count( $sm ), $pk );
+            return Salt::crypto_sign_open2( $m, $sm, count( $sm ), $public_key );
         }
         
         
