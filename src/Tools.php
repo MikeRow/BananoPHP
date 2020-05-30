@@ -459,7 +459,8 @@
                 throw new Exception("Words array count is not 24");
             }
             
-            return strtoupper(hash_pbkdf2('sha512', implode(' ', $words), 'mnemonic' . $passphrase, 2048, 128)) ;
+            return strtoupper(
+                    hash_pbkdf2('sha512', implode(' ', $words), 'mnemonic' . $passphrase, 2048, 128));
         }
         
         
@@ -492,7 +493,7 @@
                 $HDKey = [substr($I, 0, 32),substr($I, 32, 32)];
             }
             
-            $private_key   = strtoupper(bin2hex($HDKey[0]));
+            $private_key = strtoupper(bin2hex($HDKey[0]));
             $keys = [$private_key,self::private2public($private_key)];
             
             if ($get_account) {

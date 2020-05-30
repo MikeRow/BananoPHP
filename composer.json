@@ -29,8 +29,8 @@
 			"php4nano\\" : "src/"
 		}
 	},
-	"require": {
-		"php": ">=7.2"
-    },
+	"require" : {
+		"php" : ">=7.2"
+	},
 	"homepage" : "https://github.com/mikerow/php4nano"
 }
