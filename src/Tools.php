@@ -372,7 +372,7 @@
         {
             if( !is_array( $words ) || count( $words ) != 24 ) throw new Exception( "Words array count is not 24" );
             
-            $bip39_words = json_decode( file_get_contents( __DIR__ . '/../lib/BIP39_en.json' ), true );
+            $bip39_words = json_decode( file_get_contents( __DIR__ . '/../lib/BIP/BIP39_en.json' ), true );
             $bits = [];
             $hex  = [];
             
@@ -410,7 +410,7 @@
         {
             if( strlen( $hex ) != 64 || !hex2bin( $hex ) ) throw new Exception( "Invalid seed: $hex" );
             
-            $bip39_words = json_decode( file_get_contents( __DIR__ . '/../lib/BIP39_en.json' ), true );
+            $bip39_words = json_decode( file_get_contents( __DIR__ . '/../lib/BIP/BIP39_en.json' ), true );
             $bits     = [];
             $mnemonic = [];
             
