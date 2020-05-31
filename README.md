@@ -8,6 +8,8 @@ PHP libraries and tools for the Nano currency
 
 Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
+<br/>
+
 ## Introduction
 
 php4nano is the evolution of the now archived [mikerow/easyraikitphp](https://github.com/mikerow/easyraikitphp) repository.<br/>
