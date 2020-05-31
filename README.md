@@ -38,13 +38,13 @@ Full documentation is located at https://github.com/mikerow/php4nano/wiki
 		  <li><a href="https://github.com/aceat64/EasyBitcoin-PHP">aceat64/EasyBitcoin-PHP</a></li>
         </ul>
 	  </td>
-      <td align="center">
+      <td>
 		<ul>
 		  <li><a href="https://www.coingecko.com/en/api">coingecko.com/API</a></li>
 		  <li><a href="https://mynano.ninja/api">mynano.ninja/API</a></li>
 	    </ul>
 	  </td>
-      <td align="right">
+      <td>
 	    <ul>
 		   <li><a href="https://github.com/SergiySW">Sergey Kroshnin</a></li>
 		</ul>
