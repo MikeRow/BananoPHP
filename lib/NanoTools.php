@@ -15,7 +15,7 @@ use \FieldElement as FieldElement;
 use \hexToDec as hexToDec;
 use \decToHex as decToHex;
 
-class Tools
+class NanoTools
 {
     // #
     // ## Constants

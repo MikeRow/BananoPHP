@@ -7,7 +7,7 @@ require_once __DIR__ . '/NanoTools.php';
 use \Exception as Exception;
 use php4nano\NanoTools as NanoTools;
 
-class Blocks
+class NanoBlocks
 {
     // # Owner informations
     
