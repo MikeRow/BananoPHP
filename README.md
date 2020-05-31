@@ -32,7 +32,7 @@ Full documentation is located at https://github.com/mikerow/php4nano/wiki
 
 - **NanoRPC**
 
-  Class for interfacing to Nano RPC
+  Class for interfacing to Nano node RPC
 
 - **NanoRPCExt**
 
