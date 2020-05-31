@@ -216,7 +216,7 @@ function eleborate_output(array $array)
             ];
             
             if (in_array($key, $check_words) && is_numeric($value)) {
-                if (!array_key_exists($C['nano']['denomination'], NanoTools::RAW4)) {
+                if (!array_key_exists($C['nano']['denomination'], NanoTools::RAWS)) {
                     $array[$key] = $value . ' ' . 'raw';
                 } else {
                     $array[$key] = custom_number(NanoTools::raw2den($value, $C['nano']['denomination']), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand']) . ' ' . $C['nano']['denomination'];
@@ -226,7 +226,7 @@ function eleborate_output(array $array)
                 if ($C['ticker']['enable']) {
                     $array[$key] = [];
                     
-                    if (!array_key_exists($C['nano']['denomination'], NanoTools::RAW4)) {
+                    if (!array_key_exists($C['nano']['denomination'], NanoTools::RAWS)) {
                         $array[$key][] = $value . ' ' . 'raw';
                     } else {
                         $array[$key][] = custom_number(NanoTools::raw2den($value, $C['nano']['denomination']), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand']) . ' ' . $C['nano']['denomination'];

@@ -6,7 +6,7 @@ require_once __DIR__ . '/NanoRPC.php';
 
 use \Exception as Exception;
 
-class NanoRPCExt extends php4nano\NanoRPC
+class NanoRPCExt extends NanoRPC
 {
     // #
     // ## Wallet wipe
