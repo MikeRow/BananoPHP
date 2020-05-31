@@ -12,13 +12,7 @@ PHP libraries and tools for the Nano currency
 
 ### lib
 
-A library that contains useful classes for interfacing with the Nano node or for carrying out operations related to the Nano sphere without directly using the node
-
-- NanoBlock
-- NanoCLI
-- NanoRPC
-- NanoRPCExt
-- NanoTools
+A library that contains useful classes for interfacing with the Nano node or for carrying out operations related to the Nano sphere without directly using the node: NanoBlock, NanoCLI, NanoRPC, NanoRPCExt, NanoTools
 
 ### ncm
 
