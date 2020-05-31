@@ -8,6 +8,30 @@ PHP libraries and tools for the Nano currency
 
 <br/>
 
+## Contents
+
+### lib
+
+A library that contains useful classes for interfacing with the Nano node or for carrying out operations related to the Nano sphere without directly using the node
+
+- NanoBlock
+- NanoCLI
+- NanoRPC
+- NanoRPCExt
+- NanoTools
+
+### ncm
+
+Nano node CLI manager, a tool developed to fully manage a node via CLI, it simplifies node maintenance and management operations with a specially designed interface
+
+### nco
+
+Nano nodes CLI observer, a tool developed to monitor multiple nodes via CLI, it simplifies maintenance and management of multiple nodes by providing real-time information from all nodes
+
+### tutorial
+
+A collection of guides to facilitate the integration of Nano in PHP
+
 ## Origins
 
 php4nano is the evolution of the now archived [easyraikitphp](https://github.com/mikerow/easyraikitphp) repository, which was used between 2016 and 2017 for the official RaiBlocks block explorer and faucet hosted on [raiblockscommunity.net](https://raiblockscommunity.net)
