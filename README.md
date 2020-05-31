@@ -18,7 +18,7 @@ The code has been rewritten from 0 in order to make it easier and faster for dev
 
 Full documentation is located at https://github.com/mikerow/php4nano/wiki
 
-## Features
+## Features list
 
 - **lib**
 
