@@ -20,35 +20,35 @@ Full documentation is located at https://github.com/mikerow/php4nano/wiki
 
 ## Features
 
-### lib
+- lib
 
-- **NanoBlocks**
+  - **NanoBlocks**
 
   Class for building Nano blocks
 
-- **NanoCLI**
+  - **NanoCLI**
 
   Class for interfacing to Nano node command line interface
 
-- **NanoRPC**
+  - **NanoRPC**
 
   Class for interfacing to Nano node RPC
 
-- **NanoRPCExt**
+  - **NanoRPCExt**
 
   Class extension with more functions for interfacing to Nano node RPC
 
-- **NanoTools**
+  - **NanoTools**
 
   Class containing Nano node-independent tools
 
-### ncm
+- ncm
 
-Node CLI manager, a tool developed to fully manage a Nano node via CLI, it simplifies node maintenance and management operations with a specially designed interface
+  Node CLI manager, a tool developed to fully manage a Nano node via CLI, it simplifies node maintenance and management operations with a specially designed interface
 
-### nco
+- nco
 
-Nodes CLI observer, a tool developed to monitor multiple Nano nodes via CLI, it simplifies maintenance and management of multiple nodes by providing real-time information from all nodes
+  Nodes CLI observer, a tool developed to monitor multiple Nano nodes via CLI, it simplifies maintenance and management of multiple nodes by providing real-time information from all nodes
 
 ## Credits
 
