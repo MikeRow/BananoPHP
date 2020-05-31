@@ -26,9 +26,9 @@ Full documentation is located at https://github.com/mikerow/php4nano/wiki
 - [jc21/clitable](https://github.com/jc21/clitable)
 - [jaimehgb/RaiBlocksPHP](https://github.com/jaimehgb/RaiBlocksPHP)
 - [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
-
 - [coingecko.com/API](https://www.coingecko.com/en/api)
 - [mynano.ninja/API](https://mynano.ninja/api)
+
 
 Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the given support
 
