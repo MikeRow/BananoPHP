@@ -27,7 +27,7 @@ Full documentation is located at https://github.com/mikerow/php4nano/wiki
       <th align="left">APIs</th>
       <th align="left">People</th>
     </tr>
-    <tr>
+    <tr style="background-color:transparent">
       <td style="background-color:transparent">
         <ul>
           <li><a href="https://github.com/devi/Salt">devi/Salt</a></li>
