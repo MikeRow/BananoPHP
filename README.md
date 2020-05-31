@@ -28,7 +28,7 @@ Full documentation is located at https://github.com/mikerow/php4nano/wiki
       <th align="left">People</th>
     </tr>
     <tr>
-      <td>
+      <td style="background-color:transparent">
         <ul>
           <li><a href="https://github.com/devi/Salt">devi/Salt</a></li>
           <li><a href="https://github.com/strawbrary/php-blake2">strawbrary/php-blake2</a></li>
@@ -38,13 +38,13 @@ Full documentation is located at https://github.com/mikerow/php4nano/wiki
 		  <li><a href="https://github.com/aceat64/EasyBitcoin-PHP">aceat64/EasyBitcoin-PHP</a></li>
         </ul>
 	  </td>
-      <td>
+      <td style="background-color:transparent">
 		<ul>
 		  <li><a href="https://www.coingecko.com/en/api">coingecko.com/API</a></li>
 		  <li><a href="https://mynano.ninja/api">mynano.ninja/API</a></li>
 	    </ul>
 	  </td>
-      <td>
+      <td style="background-color:transparent">
 	    <ul>
 		   <li><a href="https://github.com/SergiySW">Sergey Kroshnin</a></li>
 		</ul>
