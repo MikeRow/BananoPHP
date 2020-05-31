@@ -8,16 +8,12 @@ PHP libraries and tools for the Nano currency
 
 Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
-<br/>
-
 ## Introduction
 
 php4nano is the evolution of the now archived [mikerow/easyraikitphp](https://github.com/mikerow/easyraikitphp) repository.<br/>
 The latter has been used between 2016-2017 for the RaiBlocks explorer and faucet at [raiblockscommunity.net](https://raiblockscommunity.net).
 
 The code has been rewritten from 0 in order to make it easier for developers to use it.
-
-<br/>
 
 ## Features
 
@@ -49,8 +45,6 @@ The code has been rewritten from 0 in order to make it easier for developers to 
 
   Nodes CLI observer, monitor multiple Nano nodes via command line interface
   
-<br/>
-
 ## Credits
 
 - [devi/Salt](https://github.com/devi/Salt)
@@ -64,8 +58,6 @@ The code has been rewritten from 0 in order to make it easier for developers to 
 
 
 Thanks also to [Sergey Kroshnin](https://github.com/SergiySW)
-
-<br/>
 
 ## Support
 
