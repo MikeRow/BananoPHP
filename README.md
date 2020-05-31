@@ -23,14 +23,14 @@ Full documentation is located at https://github.com/mikerow/php4nano/wiki
 <table>
   <tbody>
     <tr>
-      <th align="center">Repositories</th>
-      <th align="center">APIs</th>
-      <th align="center">People</th>
+      <th align="left">Repositories</th>
+      <th align="left">APIs</th>
+      <th align="left">People</th>
     </tr>
     <tr>
       <td>
         <ul>
-          <li>[devi/Salt](https://github.com/devi/Salt)</li>
+          <li><a href="https://github.com/devi/Salt">devi/Salt</a></li>
           <li>[strawbrary/php-blake2](https://github.com/strawbrary/php-blake2)</li>
 		  <li>[phpseclib/phpseclib](https://github.com/phpseclib/phpseclib)</li>
 		  <li>[jc21/clitable](https://github.com/jc21/clitable)</li>
