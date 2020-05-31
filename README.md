@@ -20,23 +20,23 @@ Full documentation is located at https://github.com/mikerow/php4nano/wiki
 
 ## Contents
 
-- **NanoBlock**
+- **lib: NanoBlock**
 
 Class for building Nano blocks
 
-- **NanoCLI**
+- **lib: NanoCLI**
 
-Class for Nano CLI
+Class for interfacing to Nano node command line interface
 
-- **NanoRPC**
+- **lib: NanoRPC**
 
 Class for Nano RPC
 
-- **NanoRPCExt**
+- **lib: NanoRPCExt**
 
 Class extension for NanoRPC with more functions
 
-- **NanoTools**
+- **lib: NanoTools**
 
 Class containing node-independent tools
 
