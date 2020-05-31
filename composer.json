@@ -30,7 +30,7 @@
 		}
 	},
 	"require" : {
-		"php" : ">=7.2"
+		"php-64bit" : "^7.2"
 	},
 	"homepage" : "https://github.com/mikerow/php4nano"
 }
