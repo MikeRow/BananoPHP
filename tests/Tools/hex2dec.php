@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../../src/Tools.php';
+require_once __DIR__ . '/../../lib/Tools.php';
 
 use php4nano\Tools as NanoTools;
 

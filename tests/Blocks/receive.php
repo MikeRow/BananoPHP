@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../../src/Tools.php';
-require_once __DIR__ . '/../../src/Blocks.php';
-require_once __DIR__ . '/../../src/RPCExt.php';
+require_once __DIR__ . '/../../lib/Tools.php';
+require_once __DIR__ . '/../../lib/Blocks.php';
+require_once __DIR__ . '/../../lib/RPCExt.php';
 
 use php4nano\Tools as NanoTools;
 

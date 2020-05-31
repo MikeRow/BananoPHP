@@ -1,6 +1,6 @@
 <?php 
 
-require_once __DIR__ . '/../../src/RPCExt.php';
+require_once __DIR__ . '/../../lib/RPCExt.php';
 
 $nanorpc = new php4nano\RPCExt();
 

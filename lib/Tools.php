@@ -2,8 +2,8 @@
 
 namespace php4nano;
 
-require_once __DIR__ . '/../lib/Salt/autoload.php';
-require_once __DIR__ . '/../lib/Util.php';
+require_once __DIR__ . '/../lib3/Salt/autoload.php';
+require_once __DIR__ . '/../lib3/Util.php';
 
 use \Exception as Exception;
 use \Util as Util;
@@ -388,7 +388,7 @@ class Tools
             throw new Exception("Words array count is not 24");
         }
         
-        $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib/BIP/BIP39_en.json'), true);
+        $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib/BIP39/BIP39_en.json'), true);
         $bits = [];
         $hex  = [];
         
@@ -427,7 +427,7 @@ class Tools
             throw new Exception("Invalid seed: $hex");
         }
         
-        $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib/BIP/BIP39_en.json'), true);
+        $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib/BIP39/BIP39_en.json'), true);
         $bits     = [];
         $mnemonic = [];
         
