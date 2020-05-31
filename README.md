@@ -20,32 +20,21 @@ Full documentation is located at https://github.com/mikerow/php4nano/wiki
 
 ## Credits
 
-<table bgcolor="white">
-  <tbody>
-    <tr>
-      <th align="left">Repositories</th>
-      <th align="left">APIs</th>
-      <th align="left">People</th>
-    </tr>
-    <tr style="background-color:transparent">
-      <td style="background-color:transparent">
-        <a href="https://github.com/devi/Salt">devi/Salt</a><br/>
-        <a href="https://github.com/strawbrary/php-blake2">strawbrary/php-blake2</a><br/>
-		<a href="https://github.com/phpseclib/phpseclib">phpseclib/phpseclib</a><br/>
-		<a href="https://github.com/jc21/clitable">jc21/clitable</a><br/>
-		<a href="https://github.com/jaimehgb/RaiBlocksPHP">jaimehgb/RaiBlocksPHP</a><br/>
-		<a href="https://github.com/aceat64/EasyBitcoin-PHP">aceat64/EasyBitcoin-PHP</a>
-	  </td>
-      <td style="background-color:transparent">
-		<a href="https://www.coingecko.com/en/api">coingecko.com/API</a><br/>
-		<a href="https://mynano.ninja/api">mynano.ninja/API</a>
-	  </td>
-      <td style="background-color:transparent">
-       <a href="https://github.com/SergiySW">Sergey Kroshnin</a>
-	  </td>
-    </tr>
-  </tbody>
-</table>
+Repositories
+
+[devi/Salt](https://github.com/devi/Salt)
+[strawbrary/php-blake2](https://github.com/strawbrary/php-blake2)
+[phpseclib/phpseclib](https://github.com/phpseclib/phpseclib)
+[jc21/clitable](https://github.com/jc21/clitable)
+[jaimehgb/RaiBlocksPHP](https://github.com/jaimehgb/RaiBlocksPHP)
+[aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
+
+APIs
+
+[coingecko.com/API](https://www.coingecko.com/en/api)
+[mynano.ninja/API](https://mynano.ninja/api)
+
+Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the given support
 
 ## Support
 
