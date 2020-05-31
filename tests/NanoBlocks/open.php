@@ -29,4 +29,4 @@ if ($nanorpc->error) {
     echo $nanorpc->error . PHP_EOL;
 }
 
-print_r($open);
+var_dump($open);

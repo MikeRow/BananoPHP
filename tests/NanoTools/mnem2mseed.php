@@ -31,4 +31,4 @@ $mnem = [
 	'dash'
 ];
 
-echo NanoTools::mnem2mseed($mnem);
+var_dump(NanoTools::mnem2mseed($mnem));

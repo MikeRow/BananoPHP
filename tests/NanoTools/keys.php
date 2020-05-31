@@ -4,6 +4,6 @@ require_once __DIR__ . '/../../lib/NanoTools.php';
 
 use php4nano\NanoTools as NanoTools;
 
-print_r(NanoTools::keys());
+var_dump(NanoTools::keys());
 
-print_r(NanoTools::keys(true));
+var_dump(NanoTools::keys(true));

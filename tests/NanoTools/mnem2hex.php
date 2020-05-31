@@ -31,4 +31,4 @@ $mnem = [
 	'dash'
 ];
 
-echo NanoTools::mnem2hex($mnem);
+var_dump(NanoTools::mnem2hex($mnem));

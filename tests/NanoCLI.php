@@ -8,4 +8,4 @@ $account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
 $nanocli->account_key(['account' => $account]);
 
-print_r($nanocli);
+var_dump($nanocli);

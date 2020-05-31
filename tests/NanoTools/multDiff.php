@@ -7,4 +7,4 @@ use php4nano\NanoTools as NanoTools;
 $difficulty = 'ffffffc000000000';
 $multiplier = 1.3;
 
-echo NanoTools::multDiff($difficulty, $multiplier);
+var_dump(NanoTools::multDiff($difficulty, $multiplier));
