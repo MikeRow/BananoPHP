@@ -20,8 +20,6 @@ Full documentation is located at https://github.com/mikerow/php4nano/wiki
 
 ## Credits
 
-Repositories
-
 - [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
 - [strawbrary/php-blake2](https://github.com/strawbrary/php-blake2)
 - [devi/Salt](https://github.com/devi/Salt)
@@ -31,4 +29,4 @@ Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the support gi
 
 ## Support
 
-- Send funds or delegate your weight to [my representative](https://mynano.ninja/account/mikerow)
+Send funds or delegate your weight to [my representative](https://mynano.ninja/account/mikerow)
