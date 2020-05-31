@@ -19,7 +19,7 @@ The code has been rewritten from 0 in order to make it easier for developers to 
 
 Full documentation is located at https://github.com/mikerow/php4nano/wiki
 
-## Main features
+## Features
 
 - **NanoBlocks**
 
