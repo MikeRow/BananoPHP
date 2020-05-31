@@ -20,7 +20,7 @@ Full documentation is located at https://github.com/mikerow/php4nano/wiki
 
 ## Contents
 
-### - lib
+### > lib
 
 A library that contains useful classes for interfacing with the Nano node or for performing functions related to the Nano sphere without directly using the node
 
@@ -30,15 +30,15 @@ A library that contains useful classes for interfacing with the Nano node or for
 - NanoRPCExt
 - NanoTools
 
-### - ncm
+### > ncm
 
 Nano node CLI manager, a tool developed to fully manage a Nano node via CLI, it simplifies node maintenance and management operations with a specially designed interface
 
-### - nco
+### > nco
 
 Nano nodes CLI observer, a tool developed to monitor multiple Nano nodes via CLI, it simplifies maintenance and management of multiple nodes by providing real-time information from all nodes
 
-### - tutorial
+### > tutorial
 
 A collection of guides to facilitate the integration of Nano in PHP
 
