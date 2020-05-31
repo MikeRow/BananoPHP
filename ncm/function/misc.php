@@ -128,18 +128,32 @@ function value2tag($value)
         return array_search($value, $C2['tags']['wallet']) . $C['tags']['separator'] . $value;
     } elseif (isset($key_check[1]) && ($key_check[0] == 'xrb' || $key_check[0] == 'nano')) { // Find an account tag
         if (array_search('xrb_' . $key_check[1], $C2['tags']['account'])) {
-            return array_search('xrb_' . $key_check[1], $C2['tags']['account']) . $C['tags']['separator'] . $value;
+            return array_search(
+                'xrb_' . $key_check[1],
+                 $C2['tags']['account']
+            ) . $C['tags']['separator'] . $value;
         } elseif (array_search('nano_' . $key_check[1], $C2['tags']['account'])) {
-            return array_search('nano_' . $key_check[1], $C2['tags']['account']) . $C['tags']['separator'] . $value;
+            return array_search(
+                'nano_' . $key_check[1],
+                $C2['tags']['account']
+            ) . $C['tags']['separator'] . $value;
         } elseif ($C['tags3']['enable'] && array_search('xrb_' . $key_check[1], $C2['tags3']['account'])) {
-            return array_search('xrb_' . $key_check[1], $C2['tags3']['account']) . $C['tags']['separator'] . $value;
+            return array_search(
+                'xrb_' . $key_check[1],
+                $C2['tags3']['account']
+            ) . $C['tags']['separator'] . $value;
         } elseif ($C['tags3']['enable'] && array_search('nano_' . $key_check[1], $C2['tags3']['account'])) {
-            return array_search('nano_' . $key_check[1], $C2['tags3']['account']) . $C['tags']['separator'] . $value;
+            return array_search(
+                'nano_' . $key_check[1],
+                $C2['tags3']['account']
+            ) . $C['tags']['separator'] . $value;
         } else {
             return $value;
         }
     } elseif (array_search($value, $C2['tags']['block'])) { // Find a block tag
-        return array_search($value, $C2['tags']['block']) . $C['tags']['separator'] . $value;
+        return array_search(
+            $value, $C2['tags']['block']
+        ) . $C['tags']['separator'] . $value;
     } else {
         return $value;
     }
@@ -196,30 +210,34 @@ function eleborate_output(array $array)
         else {
             // Amount format
             
-            $check_words =
-            [
-                    'amount',
-                    'available',
-                    'balance',
-                    'balance_cumulative',
-                    'online_stake_total',
-                    'online_weight_minimum',
-                    'peers_stake_required',
-                    'peers_stake_total',
-                    'pending',
-                    'quorum_delta',
-                    'receive_minimum',
-                    'vote_minimum',
-                    'weight',
-                    'weight_cumulative',
-                    'weight_online'
+            $check_words = [
+                'amount',
+                'available',
+                'balance',
+                'balance_cumulative',
+                'online_stake_total',
+                'online_weight_minimum',
+                'peers_stake_required',
+                'peers_stake_total',
+                'pending',
+                'quorum_delta',
+                'receive_minimum',
+                'vote_minimum',
+                'weight',
+                'weight_cumulative',
+                'weight_online'
             ];
             
             if (in_array($key, $check_words) && is_numeric($value)) {
                 if (!array_key_exists($C['nano']['denomination'], NanoTools::RAWS)) {
                     $array[$key] = $value . ' ' . 'raw';
                 } else {
-                    $array[$key] = custom_number(NanoTools::raw2den($value, $C['nano']['denomination']), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand']) . ' ' . $C['nano']['denomination'];
+                    $array[$key] = custom_number(
+                        NanoTools::raw2den($value, $C['nano']['denomination']),
+                        $C['nano']['decimals'],
+                        $C['format']['decimal'],
+                        $C['format']['thousand']
+                    ) . ' ' . $C['nano']['denomination'];
                 }
                 // If ticker is enabled shows amounts in favourite vs currencies
                 
@@ -229,14 +247,27 @@ function eleborate_output(array $array)
                     if (!array_key_exists($C['nano']['denomination'], NanoTools::RAWS)) {
                         $array[$key][] = $value . ' ' . 'raw';
                     } else {
-                        $array[$key][] = custom_number(NanoTools::raw2den($value, $C['nano']['denomination']), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand']) . ' ' . $C['nano']['denomination'];
+                        $array[$key][] = custom_number(
+                            NanoTools::raw2den($value, $C['nano']['denomination']),
+                            $C['nano']['decimals'],
+                            $C['format']['decimal'], $C['format']['thousand']
+                        ) . ' ' . $C['nano']['denomination'];
                     }
                     
                     $fav_vs_currencies = explode(',', $C['ticker']['fav_vs_currencies']);
                     
                     foreach ($fav_vs_currencies as $fav_vs_currency) {
                         if (isset($C2['vs_currencies'][strtoupper($fav_vs_currency)])) {
-                            $array[$key][] = custom_number(number_format(NanoTools::raw2den($value, 'NANO') * $C2['vs_currencies'][strtoupper($fav_vs_currency)], 8, '.', ''), -1, $C['format']['decimal'], $C['format']['thousand']) . ' ' . strtoupper($fav_vs_currency);
+                            $array[$key][] = custom_number(
+                                number_format(
+                                    NanoTools::raw2den($value, 'NANO') * $C2['vs_currencies'][strtoupper($fav_vs_currency)],
+                                    8,
+                                    '.',
+                                    ''
+                                ),
+                                -1,
+                                $C['format']['decimal'], $C['format']['thousand']
+                            ) . ' ' . strtoupper($fav_vs_currency);
                         }
                     }
                 }
@@ -244,12 +275,11 @@ function eleborate_output(array $array)
             
             // Date format
             
-            $check_words =
-            [
-                    'local_timestamp',
-                    'modified_timestamp',
-                    'time',
-                    'timestamp'
+            $check_words = [
+                'local_timestamp',
+                'modified_timestamp',
+                'time',
+                'timestamp'
             ];
             
             if (in_array($key, $check_words) && is_numeric($value)) {
@@ -265,15 +295,30 @@ function eleborate_output(array $array)
             ];
             
             if (in_array($key, $check_words) && is_numeric($value)) {
-                $array[$key] = custom_number($value, 0, $C['format']['decimal'], $C['format']['thousand']) . ' s';
+                $array[$key] = custom_number(
+                    $value,
+                    0,
+                    $C['format']['decimal'],
+                    $C['format']['thousand']
+                ) . ' s';
             }
             
             if ($key == 'duration' && is_numeric($value)) {
-                $array[$key] = custom_number($value, 0, $C['format']['decimal'], $C['format']['thousand']) . ' ms';
+                $array[$key] = custom_number(
+                    $value,
+                    0,
+                    $C['format']['decimal'],
+                    $C['format']['thousand']
+                ) . ' ms';
             }
             
             if ($key == 'uptime'   && is_numeric($value)) {
-                $array[$key] = custom_number($value / 3600, 2, $C['format']['decimal'], $C['format']['thousand']) . ' h';
+                $array[$key] = custom_number(
+                    $value / 3600,
+                    2,
+                    $C['format']['decimal'],
+                    $C['format']['thousand']
+                ) . ' h';
             }
             
             // Duration exceptions
@@ -284,102 +329,123 @@ function eleborate_output(array $array)
             ];
             
             if (in_array($command, $check_words)) {
-                $array['duration'] = custom_number($value, 0, $C['format']['decimal'], $C['format']['thousand']) . ' s';
+                $array['duration'] = custom_number(
+                    $value,
+                    0,
+                    $C['format']['decimal'],
+                    $C['format']['thousand']
+                ) . ' s';
             }
             
             // Default numeric format
             
-            $check_words =
-            [
-                    'accounts',
-                    'accounts_count',
-                    'adhoc_count',
-                    'aps',
-                    'average',
-                    'blocks',
-                    'block_count',
-                    'block_processor_batch_max_time',
-                    'bootstrap_connections',
-                    'bootstrap_connections_max',
-                    'bootstrap_fraction_numerator',
-                    'cemented',
-                    'chain_request_limit',
-                    'change',
-                    'clients',
-                    'confirmation_height',
-                    'connections',
-                    'count',
-                    'deterministic_count',
-                    'deterministic_index',
-                    'difference',
-                    'frontier_request_limit',
-                    'height',
-                    'idle',
-                    'io_threads',
-                    'io_timeout',
-                    'lazy_state_unknown',
-                    'lazy_balances',
-                    'lazy_pulls',
-                    'lazy_stopped',
-                    'lazy_keys',
-                    'lmdb_max_dbs',
-                    'max_json_depth',
-                    'network_threads',
-                    'number',
-                    'online_weight_quorum',
-                    'open',
-                    'password_fanout',
-                    'peers',
-                    'pulls',
-                    'pulling',
-                    'receive',
-                    'reference',
-                    'restored_count',
-                    'send',
-                    'signature_checker_threads',
-                    'size',
-                    'state',
-                    'target_connections',
-                    'threads',
-                    'total_blocks',
-                    'work_threads',
-                    'unchecked',
-                    'unchecked_cutoff_time'
+            $check_words = [
+                'accounts',
+                'accounts_count',
+                'adhoc_count',
+                'aps',
+                'average',
+                'blocks',
+                'block_count',
+                'block_processor_batch_max_time',
+                'bootstrap_connections',
+                'bootstrap_connections_max',
+                'bootstrap_fraction_numerator',
+                'cemented',
+                'chain_request_limit',
+                'change',
+                'clients',
+                'confirmation_height',
+                'connections',
+                'count',
+                'deterministic_count',
+                'deterministic_index',
+                'difference',
+                'frontier_request_limit',
+                'height',
+                'idle',
+                'io_threads',
+                'io_timeout',
+                'lazy_state_unknown',
+                'lazy_balances',
+                'lazy_pulls',
+                'lazy_stopped',
+                'lazy_keys',
+                'lmdb_max_dbs',
+                'max_json_depth',
+                'network_threads',
+                'number',
+                'online_weight_quorum',
+                'open',
+                'password_fanout',
+                'peers',
+                'pulls',
+                'pulling',
+                'receive',
+                'reference',
+                'restored_count',
+                'send',
+                'signature_checker_threads',
+                'size',
+                'state',
+                'target_connections',
+                'threads',
+                'total_blocks',
+                'work_threads',
+                'unchecked',
+                'unchecked_cutoff_time'
             ];
             
             if (in_array($key, $check_words) && is_numeric($value)) {
-                $array[$key] = custom_number($value, 0, $C['format']['decimal'], $C['format']['thousand']);
+                $array[$key] = custom_number(
+                    $value,
+                    0,
+                    $C['format']['decimal'],
+                    $C['format']['thousand']
+                );
             }
             
             // Size format
             
-            $check_words =
-            [
-                    'max_size',
-                    'rotation_size',
-                    'size'
+            $check_words = [
+                'max_size',
+                'rotation_size',
+                'size'
             ];
             
             if (in_array($key, $check_words) && is_numeric($value)) {
-                $array[$key] = custom_number($value/1000000, 0, $C['format']['decimal'], $C['format']['thousand']) . ' MiB';
+                $array[$key] = custom_number(
+                    $value/1000000,
+                    0,
+                    $C['format']['decimal'],
+                    $C['format']['thousand']
+                ) . ' MiB';
             }
             
-            $check_words =
-            [
-                    'blockchain'
+            $check_words = [
+                'blockchain'
             ];
             
             if (in_array($key, $check_words) && is_numeric($value)) {
-                $array[$key] = custom_number($value/1000000, 0, $C['format']['decimal'], $C['format']['thousand']) . ' MB';
+                $array[$key] = custom_number(
+                    $value/1000000,
+                    0,
+                    $C['format']['decimal'],
+                    $C['format']['thousand']
+                ) . ' MB';
             }
             
-            $check_words =
-            [
-                    'block_average'
+            $check_words = [
+                'block_average'
             ];
             
             if (in_array($key, $check_words) && is_numeric($value)) {
-                $array[$key] = custom_number($value, 0, $C['format']['decimal'], $C['format']['thousand']) . ' B';
+                $array[$key] = custom_number(
+                    $value,
+                    0,
+                    $C['format']['decimal'],
+                    $C['format']['thousand']
+                ) . ' B';
             }
             
             // Error format

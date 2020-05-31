@@ -340,14 +340,25 @@ if (!$flags['raw_in']) {
                 
                 // denomination input
                 
-                elseif (is_numeric($input_currency[0]) && isset($input_currency[1]) && isset(NanoTools::RAWS[$input_currency[1]])) {
+                elseif (
+                        is_numeric($input_currency[0]) &&
+                        isset($input_currency[1]) &&
+                        isset(NanoTools::RAWS[$input_currency[1]])
+                ) {
                     $arguments[$argument0] = NanoTools::den2raw($input_currency[0], $input_currency[1]);
                 }
                 
                 // ticker input
                 
-                elseif (is_numeric($input_currency[0]) && isset($input_currency[1]) && $C['ticker']['enable'] && isset($C2['vs_currencies'][strtoupper($input_currency[1])])) {
-                    $arguments[$argument0] = NanoTools::den2raw($input_currency[0] / $C2['vs_currencies'][strtoupper($input_currency[1])], 'NANO');
+                elseif (
+                        is_numeric($input_currency[0]) &&
+                        isset($input_currency[1]) &&
+                        $C['ticker']['enable'] &&
+                        isset($C2['vs_currencies'][strtoupper($input_currency[1])])
+                ) {
+                    $arguments[$argument0] = NanoTools::den2raw(
+                        $input_currency[0] / $C2['vs_currencies'][strtoupper($input_currency[1])], 'NANO'
+                    );
                 }
                 
                 // unknown input
@@ -398,7 +409,12 @@ if (!$flags['no_confirm']) {
         // send call
     
         if ($command == 'send') {
-            if (isset($arguments['wallet']) && isset($arguments['source']) && isset($arguments['destination']) && isset($arguments['amount'])) {
+            if (
+                isset($arguments['wallet']) &&
+                isset($arguments['source']) &&
+                isset($arguments['destination']) &&
+                isset($arguments['amount'])
+            ) {
                 $confirmation_amount = $arguments['amount'];
             } else {
                 $confirmation_amount = 0;
@@ -408,7 +424,11 @@ if (!$flags['no_confirm']) {
         // wallet_send call
         
         elseif ($command == 'wallet_send') {
-            if (isset($arguments['wallet']) && isset($arguments['destination']) && isset($arguments['amount'])) {
+            if (
+                isset($arguments['wallet']) && 
+                isset($arguments['destination']) &&
+                isset($arguments['amount'])
+            ) {
                 $wallet_info = $nanocall->wallet_info(['wallet'=>$arguments['wallet']]);
                 
                 if ($nanocall->error != null) {
@@ -446,7 +466,12 @@ if (!$flags['no_confirm']) {
         // Confirmation
         
         if ($confirmation_amount != 0) {
-            $confirmation_amount = custom_number(NanoTools::raw2den($confirmation_amount, $C['nano']['denomination']), -1, $C['format']['decimal'], $C['format']['thousand']) . ' ' . $C['nano']['denomination'];
+            $confirmation_amount = custom_number(
+                NanoTools::raw2den($confirmation_amount, $C['nano']['denomination']),
+                -1,
+                $C['format']['decimal'],
+                $C['format']['thousand']
+            ) . ' ' . $C['nano']['denomination'];
             
             echo PHP_EOL . 'Sending ' . $confirmation_amount . PHP_EOL;
             echo 'Do you want to proceed? Type \'confirm\' to proceed: ';
@@ -528,8 +553,7 @@ else {
             
             $last_update = microtime(true);
             
-            $tableChars =
-            [
+            $tableChars = [
                     'top'          => ' ',
                     'top-mid'      => ' ',
                     'top-left'     => ' ',
@@ -585,7 +609,11 @@ else {
                     }
                     
                     $call_return['network']['weight_online'] = $weight_cumulative;
-                    $call_return['network']['weight_online_percent'] = strval(gmp_strval(gmp_div_q(gmp_mul($weight_cumulative, '10000'), available_supply)) / 100);
+                    $call_return['network']['weight_online_percent'] = strval(
+                        gmp_strval(
+                            gmp_div_q(gmp_mul($weight_cumulative, '10000'), available_supply)
+                        ) / 100
+                    );
                 } else {
                     $call_return['network']['representatives_online'] = 0;
                     $call_return['network']['weight_online'] = '0';
@@ -603,7 +631,10 @@ else {
                 $call_return['block']['count'] = $block_count['count'];
                 $call_return['block']['unchecked'] = $block_count['unchecked'];
                 $call_return['block']['cemented'] = $block_count['cemented'];
-                $call_return['node']['block_average'] = round(filesize($C['nano']['data_dir'] . '/data.ldb') / $block_count["count"]);
+                $call_return['node']['block_average'] = round(
+                    filesize($C['nano']['data_dir'] . '/data.ldb') /
+                    $block_count["count"]
+                );
                 
                 // Summary wallets info
                 
@@ -693,13 +724,48 @@ else {
                     $table_data1 = [];
                     
                     $table_data1[0]['type'] = 'Sync    ';
-                    $table_data1[0]['block_count'] = custom_number($call_return['block']['count'], -1, $C['format']['decimal'], $C['format']['thousand']);
-                    $table_data1[0]['block_unchecked'] = custom_number($call_return['block']['unchecked'], -1, $C['format']['decimal'], $C['format']['thousand']);
-                    $table_data1[0]['block_cemented'] = custom_number($call_return['block']['cemented'], -1, $C['format']['decimal'], $C['format']['thousand']);
-                    $table_data1[0]['network_peers'] = custom_number($call_return['network']['peers'], -1, $C['format']['decimal'], $C['format']['thousand']);
-                    $table_data1[0]['network_representatives_online'] = custom_number($call_return['network']['representatives_online'], -1, $C['format']['decimal'], $C['format']['thousand']);
-                    $table_data1[0]['network_weight_online'] = custom_number(NanoTools::raw2den($call_return['network']['weight_online'], 'NANO'), 6, $C['format']['decimal'], $C['format']['thousand']);
-                    $table_data1[0]['network_weight_online_percent'] = custom_number($call_return['network']['weight_online_percent'], 2, $C['format']['decimal'], $C['format']['thousand']);
+                    $table_data1[0]['block_count'] = custom_number(
+                        $call_return['block']['count'],
+                        -1,
+                        $C['format']['decimal'],
+                        $C['format']['thousand']
+                    );
+                    $table_data1[0]['block_unchecked'] = custom_number(
+                        $call_return['block']['unchecked'],
+                        -1,
+                        $C['format']['decimal'],
+                        $C['format']['thousand']
+                    );
+                    $table_data1[0]['block_cemented'] = custom_number(
+                        $call_return['block']['cemented'],
+                        -1,
+                        $C['format']['decimal'],
+                        $C['format']['thousand']
+                    );
+                    $table_data1[0]['network_peers'] = custom_number(
+                        $call_return['network']['peers'],
+                        -1,
+                        $C['format']['decimal'],
+                        $C['format']['thousand']
+                    );
+                    $table_data1[0]['network_representatives_online'] = custom_number(
+                        $call_return['network']['representatives_online'],
+                        -1,
+                        $C['format']['decimal'],
+                        $C['format']['thousand']
+                    );
+                    $table_data1[0]['network_weight_online'] = custom_number(
+                        NanoTools::raw2den($call_return['network']['weight_online'], 'NANO'),
+                        6,
+                        $C['format']['decimal'],
+                        $C['format']['thousand']
+                    );
+                    $table_data1[0]['network_weight_online_percent'] = custom_number(
+                        $call_return['network']['weight_online_percent'],
+                        2,
+                        $C['format']['decimal'],
+                        $C['format']['thousand']
+                    );
                     
                     $table_data1[1]['type'] = '';
                     $table_data1[1]['block_count'] = '            ';
@@ -713,11 +779,36 @@ else {
                     $table_data2 = [];
                     
                     $table_data2[0]['type'] = 'Wallets ';
-                    $table_data2[0]['wallets_balance'] = custom_number(NanoTools::raw2den($call_return['wallets']['balance'], 'NANO'), 6, $C['format']['decimal'], $C['format']['thousand']);
-                    $table_data2[0]['wallets_pending'] = custom_number(NanoTools::raw2den($call_return['wallets']['pending'], 'NANO'), 6, $C['format']['decimal'], $C['format']['thousand']);
-                    $table_data2[0]['wallets_weight'] = custom_number(NanoTools::raw2den($call_return['wallets']['weight'], 'NANO'), 6, $C['format']['decimal'], $C['format']['thousand']);
-                    $table_data2[0]['wallets_count'] = custom_number($call_return['wallets']['count'], -1, $C['format']['decimal'], $C['format']['thousand']);
-                    $table_data2[0]['wallets_accounts_count'] = custom_number($call_return['wallets']['accounts_count'], -1, $C['format']['decimal'], $C['format']['thousand']);
+                    $table_data2[0]['wallets_balance'] = custom_number(
+                        NanoTools::raw2den($call_return['wallets']['balance'], 'NANO'),
+                        6,
+                        $C['format']['decimal'],
+                        $C['format']['thousand']
+                    );
+                    $table_data2[0]['wallets_pending'] = custom_number(
+                        NanoTools::raw2den($call_return['wallets']['pending'], 'NANO'),
+                        6,
+                        $C['format']['decimal'],
+                        $C['format']['thousand']
+                    );
+                    $table_data2[0]['wallets_weight'] = custom_number(
+                        NanoTools::raw2den($call_return['wallets']['weight'], 'NANO'),
+                        6,
+                        $C['format']['decimal'],
+                        $C['format']['thousand']
+                    );
+                    $table_data2[0]['wallets_count'] = custom_number(
+                        $call_return['wallets']['count'],
+                        -1,
+                        $C['format']['decimal'],
+                        $C['format']['thousand']
+                    );
+                    $table_data2[0]['wallets_accounts_count'] = custom_number(
+                        $call_return['wallets']['accounts_count'],
+                        -1,
+                        $C['format']['decimal'],
+                        $C['format']['thousand']
+                    );
                     
                     $table_data2[1]['type'] = '';
                     $table_data2[1]['wallets_balance'] = '                  ';
@@ -730,9 +821,24 @@ else {
                     
                     $table_data3[0]['type'] = 'Node    ';
                     $table_data3[0]['node_version'] = $call_return['node']['version'];
-                    $table_data3[0]['node_uptime'] = custom_number($call_return['node']['uptime']/60/60, 2, $C['format']['decimal'], $C['format']['thousand']) . ' h';
-                    $table_data3[0]['node_blockchain'] = custom_number($call_return['node']['blockchain']/1000000, 0, $C['format']['decimal'], $C['format']['thousand']) . ' MB';
-                    $table_data3[0]['node_block_average'] = custom_number($call_return['node']['block_average'], 0, $C['format']['decimal'], $C['format']['thousand']) . ' B';
+                    $table_data3[0]['node_uptime'] = custom_number(
+                        $call_return['node']['uptime']/60/60,
+                        2,
+                        $C['format']['decimal'],
+                        $C['format']['thousand']
+                    ) . ' h';
+                    $table_data3[0]['node_blockchain'] = custom_number(
+                        $call_return['node']['blockchain']/1000000,
+                        0,
+                        $C['format']['decimal'],
+                        $C['format']['thousand']
+                    ) . ' MB';
+                    $table_data3[0]['node_block_average'] = custom_number(
+                        $call_return['node']['block_average'],
+                        0,
+                        $C['format']['decimal'],
+                        $C['format']['thousand']
+                    ) . ' B';
                     
                     $table_data3[1]['type'] = '';
                     $table_data3[1]['node_version'] = '           ';
@@ -761,7 +867,12 @@ else {
                         $first_table_display = false;
                     } else {
                         // Clear only last table
-                        echo "\033[" . strval(100 + count($table_data1) + count($table_data2) + count($table_data3)) . "A";
+                        echo "\033[" . strval(
+                            100 +
+                            count($table_data1) +
+                            count($table_data2) +
+                            count($table_data3)
+                         ) . "A";
                     }
                     
                     // Print table
@@ -854,7 +965,9 @@ else {
             $call_return[$arguments['wallet']]['balance'] = $wallet_info['balance'];
             $call_return[$arguments['wallet']]['pending'] = $wallet_info['pending'];
             $call_return[$arguments['wallet']]['weight'] = $wallet_weight['weight'];
-            // $call_return[$arguments['wallet']]['weight_percent'] = gmp_strval( gmp_div_q( gmp_mul( $wallet_weight['weight'], '100' ), available_supply ) );
+            // $call_return[$arguments['wallet']]['weight_percent'] = gmp_strval( 
+            //     gmp_div_q( gmp_mul( $wallet_weight['weight'], '100' ), available_supply )
+            // );
             $call_return[$arguments['wallet']]['accounts_count'] = $wallet_info['accounts_count'];
             $call_return[$arguments['wallet']]['adhoc_count'] = $wallet_info['adhoc_count'];
             $call_return[$arguments['wallet']]['deterministic_count'] = $wallet_info['deterministic_count'];
@@ -893,7 +1006,9 @@ else {
                 $call_return['weights'][$account]['weight'] = $weight;
                 
                 if (gmp_cmp($weight, '0') > 0) {
-                    $call_return['weights'][$account]['wallet_percent'] = gmp_strval(gmp_div_q(gmp_mul($weight, '100'), $wallet_weight['weight']));
+                    $call_return['weights'][$account]['wallet_percent'] = gmp_strval(
+                        gmp_div_q(gmp_mul($weight, '100'), $wallet_weight['weight'])
+                    );
                 } else {
                     $call_return['weights'][$account]['wallet_percent'] = '0';
                 }
@@ -919,14 +1034,18 @@ else {
                 break;
             }
             
-            $account_info = $nanocall->account_info(['account'=>$arguments['account'],'pending'=>true,'weight'=>true,'representative'=>true]);
+            $account_info = $nanocall->account_info(
+                ['account'=>$arguments['account'],'pending'=>true,'weight'=>true,'representative'=>true]
+            );
             
             if ($nanocall->error) {
                 $call_return['error'] = 'Account not found';
                 break;
             }
             
-            $account_info['weight_percent'] = gmp_strval(gmp_div_q(gmp_mul($account_info['weight'], '100'), available_supply));
+            $account_info['weight_percent'] = gmp_strval(
+                gmp_div_q(gmp_mul($account_info['weight'], '100'), available_supply)
+            );
             
             $call_return[$arguments['account']]['frontier'] = $account_info['frontier'];
             $call_return[$arguments['account']]['open_block'] = $account_info['open_block'];
@@ -1044,13 +1163,17 @@ else {
                 $delegators_array[$delegator]['balance_cumulative'] = $balance_cumulative;
                 
                 if (gmp_cmp($balance, '0') > 0) {
-                    $delegators_array[$delegator]['percent'] = strval(gmp_strval(gmp_div_q(gmp_mul($balance, '10000'), $account_weight['weight'])) / 100);
+                    $delegators_array[$delegator]['percent'] = strval(
+                        gmp_strval(gmp_div_q(gmp_mul($balance, '10000'), $account_weight['weight'])) / 100
+                    );
                 } else {
                     $delegators_array[$delegator]['percent'] = '0';
                 }
                 
                 if (gmp_cmp($balance_cumulative, '0') > 0) {
-                    $delegators_array[$delegator]['percent_cumulative'] = strval(gmp_strval(gmp_div_q(gmp_mul($balance_cumulative, '10000'), $account_weight['weight'])) / 100);
+                    $delegators_array[$delegator]['percent_cumulative'] = strval(
+                        gmp_strval(gmp_div_q(gmp_mul($balance_cumulative, '10000'), $account_weight['weight'])) / 100
+                    );
                 } else {
                     $delegators_array[$delegator]['percent_cumulative'] = '0';
                 }
@@ -1128,12 +1251,16 @@ else {
                 $representatives_array[$representative]['weight_cumulative'] = $weight_cumulative;
                 
                 if (gmp_cmp($weight, '0') > 0) {
-                    $representatives_array[$representative]['percent'] = strval(gmp_strval(gmp_div_q(gmp_mul($weight, '10000'), available_supply)) / 100);
+                    $representatives_array[$representative]['percent'] = strval(
+                        gmp_strval(gmp_div_q(gmp_mul($weight, '10000'), available_supply)) / 100
+                    );
                 } else {
                     $representatives_array[$representative]['percent'] = '0';
                 }
                 
-                $representatives_array[$representative]['percent_cumulative'] = strval(gmp_strval(gmp_div_q(gmp_mul($weight_cumulative, '10000'), available_supply)) / 100);
+                $representatives_array[$representative]['percent_cumulative'] = strval(
+                    gmp_strval(gmp_div_q(gmp_mul($weight_cumulative, '10000'), available_supply)) / 100
+                );
                 
                 if (isset($arguments['percent_limit'])) {
                     if ($representatives_array[$representative]['percent_cumulative'] >= $percent_limit) {
@@ -1144,7 +1271,9 @@ else {
             
             // $call_return['count'] = count( $representatives['representatives'] );
             $call_return['weight'] = gmp_strval($weight_cumulative);
-            $call_return['weight_percent'] = strval(gmp_strval(gmp_div_q(gmp_mul($weight_cumulative, '10000'), available_supply)) / 100);
+            $call_return['weight_percent'] = strval(
+                gmp_strval(gmp_div_q(gmp_mul($weight_cumulative, '10000'), available_supply)) / 100
+            );
             $call_return['count'] = $i;
             $call_return['representatives'] = $representatives_array;
             
@@ -1225,12 +1354,16 @@ else {
                 $representatives_array[$representative]['weight_cumulative'] = $weight_cumulative;
                 
                 if (gmp_cmp($data['weight'], '0') > 0) {
-                    $representatives_array[$representative]['percent'] = strval(gmp_strval(gmp_div_q(gmp_mul($data['weight'], '10000'), available_supply)) / 100);
+                    $representatives_array[$representative]['percent'] = strval(
+                        gmp_strval(gmp_div_q(gmp_mul($data['weight'], '10000'), available_supply)) / 100
+                    );
                 } else {
                     $representatives_array[$representative]['percent'] = '0';
                 }
                 
-                $representatives_array[$representative]['percent_cumulative'] = strval(gmp_strval(gmp_div_q(gmp_mul($weight_cumulative, '10000'), available_supply)) / 100);
+                $representatives_array[$representative]['percent_cumulative'] = strval(
+                    gmp_strval(gmp_div_q(gmp_mul($weight_cumulative, '10000'), available_supply)) / 100
+                );
                 
                 if (isset($arguments['percent_limit'])) {
                     if ($representatives_array[$representative]['percent_cumulative'] >= $percent_limit) {
@@ -1242,7 +1375,9 @@ else {
             // $call_return['weight_cumulative'] = $weight_cumulative;
             // $call_return['count'] = count( $representatives_online['representatives'] );
             $call_return['weight'] = gmp_strval($weight_cumulative);
-            $call_return['weight_percent'] = strval(gmp_strval(gmp_div_q(gmp_mul($weight_cumulative, '10000'), available_supply)) / 100);
+            $call_return['weight_percent'] = strval(
+                gmp_strval(gmp_div_q(gmp_mul($weight_cumulative, '10000'), available_supply)) / 100
+            );
             $call_return['count'] = $i;
             $call_return['representatives_online'] = $representatives_array;
             
@@ -1292,7 +1427,9 @@ else {
                     
                 $call_return['block3']['reference'] = $sync_blocks_array['count'];
                 $call_return['block3']['difference'] = gmp_strval(gmp_sub($sync_blocks_array['count'], $block_count['count']));
-                $call_return['block3']['percent'] = strval(gmp_strval(gmp_div_q(gmp_mul($block_count['count'], '10000'), $sync_blocks_array['count'])) / 100);
+                $call_return['block3']['percent'] = strval(
+                    gmp_strval(gmp_div_q(gmp_mul($block_count['count'], '10000'), $sync_blocks_array['count'])) / 100
+                );
             }
             
             break;
@@ -1327,7 +1464,11 @@ else {
 
                 $context = stream_context_create($options);
 
-                $nano_node_json = file_get_contents('https://api.github.com/repos/nanocurrency/nano-node/releases/latest', false, $context);
+                $nano_node_json = file_get_contents(
+                    'https://api.github.com/repos/nanocurrency/nano-node/releases/latest',
+                    false,
+                    $context
+                );
                 $nano_node_array = json_decode($nano_node_json, true);
                 
                 if (!$nano_node_json || !is_array($nano_node_array) || !isset($nano_node_array['tag_name'])) {
@@ -1335,7 +1476,10 @@ else {
                     break;
                 }
                     
-                if (version_compare(str_replace('Nano V', '', $version['node_vendor']), str_replace('V', '', $nano_node_array['tag_name'])) >= 0) {
+                if (version_compare(
+                        str_replace('Nano V', '', $version['node_vendor']),
+                        str_replace('V', '', $nano_node_array['tag_name'])
+                    ) >= 0) {
                     $call_return['updates']['node_vendor'] = false;
                 } else {
                     $call_return['updates']['node_vendor'] = $nano_node_array['tag_name'];
@@ -1382,7 +1526,11 @@ else {
             
             $vs_currencies_string = implode(',', $vs_currencies_array);
             
-            $nano_vs_currency_json = file_get_contents('https://api.coingecko.com/api/v3/simple/price?ids=nano&vs_currencies=' . $vs_currencies_string . '&include_last_updated_at=true');
+            $nano_vs_currency_json = file_get_contents(
+                'https://api.coingecko.com/api/v3/simple/price?ids=nano&vs_currencies=' .
+                $vs_currencies_string .
+                '&include_last_updated_at=true'
+            );
             $nano_vs_currencies_array = json_decode($nano_vs_currency_json, true);
             
             if (!$nano_vs_currency_json || !is_array($nano_vs_currencies_array) || !isset($nano_vs_currencies_array['nano'])) {
@@ -1430,7 +1578,10 @@ else {
             $third_party_tags_json = file_get_contents('https://mynano.ninja/api/accounts/aliases');
             $third_party_tags_array = json_decode($third_party_tags_json, true);
             
-            if (!$third_party_tags_json || !is_array($third_party_tags_array) || !isset($third_party_tags_array[0]['alias'])) {
+            if (!$third_party_tags_json || 
+                !is_array($third_party_tags_array) ||
+                !isset($third_party_tags_array[0]['alias'])
+            ) {
                 $call_return['error'] = 'Failed API #1';
                 break;
             }
@@ -1543,7 +1694,7 @@ else {
             
             // Check account
 
-            if ($arguments['cat'] == 'account' && (($account_check[0] != 'xrb' && $account_check[0] != 'nano') || !isset($account_check[1]) || strlen($account_check[1]) != 60 || !preg_match("/^[abcdefghijkmnopqrstuwxyz13456789]*$/", $account_check[1]))) {
+            if ($arguments['cat'] == 'account' && !NanoTools::account2public($arguments['value'], false)) {
                 $call_return['error'] = 'Bad account';
                 break;
             }
@@ -1571,7 +1722,10 @@ else {
             
             // Check if value is already used
             
-            if (in_array($arguments['value'], $C['tags']['wallet']) || in_array($arguments['value'], $C['tags']['account']) || in_array($arguments['value'], $C['tags']['block'])) {
+            if (in_array($arguments['value'], $C['tags']['wallet']) ||
+                in_array($arguments['value'], $C['tags']['account']) ||
+                in_array($arguments['value'], $C['tags']['block'])
+            ) {
                 $call_return['error'] = 'Tag value already used';
                 break;
             }
@@ -1631,7 +1785,7 @@ else {
             
             // Check account
             
-            if ($arguments['cat'] == 'account' && (($account_check[0] != 'xrb' && $account_check[0] != 'nano') || !isset($account_check[1]) || strlen($account_check[1]) != 60 || !preg_match("/^[abcdefghijkmnopqrstuwxyz13456789]*$/", $account_check[1]))) {
+            if ($arguments['cat'] == 'account' && !NanoTools::account2public($arguments['value'], false)) {
                 $call_return['error'] = 'Bad account';
                 break;
             }
@@ -1659,7 +1813,10 @@ else {
             
             // Check if value is already used
             
-            if (in_array($arguments['value'], $C['tags']['wallet']) || in_array($arguments['value'], $C['tags']['account']) || in_array($arguments['value'], $C['tags']['block'])) {
+            if (in_array($arguments['value'], $C['tags']['wallet']) ||
+                in_array($arguments['value'], $C['tags']['account']) ||
+                in_array($arguments['value'], $C['tags']['block'])
+            ) {
                 $call_return['error'] = 'Tag value already used';
                 break;
             }
@@ -1844,6 +2001,21 @@ if (!$flags['no_log']) {
             $newline = PHP_EOL;
         }
         
-        file_put_contents($log_file, $newline . date('m/d/Y H:i:s', time()) . ' ' . $callerID . ' ' . $command . ' ' . json_encode($arguments) . ' ' . $log_flags . ' ' . json_encode($call_return), FILE_APPEND);
+        file_put_contents(
+            $log_file,
+            $newline .
+                date('m/d/Y H:i:s', time()) . 
+                ' ' . 
+                $callerID . 
+                ' ' . 
+                $command . 
+                ' ' . 
+                json_encode($arguments) . 
+                ' ' . 
+                $log_flags . 
+                ' ' . 
+                json_encode($call_return), 
+            FILE_APPEND
+        );
     }
 }

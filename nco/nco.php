@@ -197,8 +197,7 @@ if ($command == 'init') {
         // # Get info from nodes
     
         foreach ($C2['nodes'] as $tag => $node_data) {
-            $table_data[$tag] =
-            [
+            $table_data[$tag] = [
                 'tag'                            => $tag,
                 'notice'                         => null,
                 'node_version'                   => null,
@@ -442,8 +441,7 @@ if ($command == 'init') {
             
             $table = new CliTable;
         
-            $table->setChars(
-                [
+            $table->setChars([
                 'top'          => ' ',
                 'top-mid'      => ' ',
                 'top-left'     => ' ',
@@ -459,8 +457,7 @@ if ($command == 'init') {
                 'right'        => ' ',
                 'right-mid'    => ' ',
                 'middle'       => ' '
-            ]
-            );
+            ]);
         
             $table->setHeaderColor('cyan');
             

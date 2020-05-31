@@ -22,9 +22,23 @@ function custom_number($number, int $decimals = -1, $decimal = null, $thousand =
                 return number_format($amount_array[0], 0, '', $thousand);
             } else {
                 if ($decimals < 0) {
-                    return number_format($amount_array[0], 0, '', $thousand) . '.' . $amount_array[1];
+                    return number_format(
+                               $amount_array[0],
+                               0,
+                               '',
+                               $thousand
+                           ) . 
+                           '.' .
+                           $amount_array[1];
                 } else {
-                    return number_format($amount_array[0], 0, '', $thousand) . '.' . substr($amount_array[1], 0, $decimals);
+                    return number_format(
+                               $amount_array[0],
+                               0,
+                               '',
+                               $thousand
+                           ) .
+                           '.' .
+                           substr($amount_array[1], 0, $decimals);
                 }
             }
         } else {
