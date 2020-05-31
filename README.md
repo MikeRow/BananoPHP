@@ -63,7 +63,7 @@ The code has been rewritten from 0 in order to make it easier for developers to 
 - [mynano.ninja/API](https://mynano.ninja/api)
 
 
-Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the given support
+Thanks also to [Sergey Kroshnin](https://github.com/SergiySW)
 
 <br/>
 
