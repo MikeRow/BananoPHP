@@ -3,10 +3,10 @@
 $version = file_get_contents(__DIR__ . '/VERSION.txt');
 
 $options = [
-	'http' => [
-		'method' => "GET",
-		'header' => "User-Agent: php4nano/update.php\r\n"
-	]
+    'http' => [
+        'method' => "GET",
+        'header' => "User-Agent: php4nano/update.php\r\n"
+    ]
 ];
 
 $context = stream_context_create($options);
@@ -16,16 +16,16 @@ $php4nano_array = json_decode($php4nano_json, true);
 
 if(!$php4nano_json || !is_array($php4nano_array) || !isset($php4nano_array['tag_name']))
 {
-	echo 'Can\'t retrieve latest release' . "\n"; exit;
+    echo 'Can\'t retrieve latest release' . "\n"; exit;
 }
 
 if( version_compare(str_replace('v', '', $version), str_replace('v', '', $php4nano_array['tag_name'])) >= 0)
 {
-	echo 'Latest realease already installed: ' . $php4nano_array['tag_name'] . "\n";
+    echo 'Latest realease already installed: ' . $php4nano_array['tag_name'] . "\n";
 }
 else
 {
-	echo 'New release found: ' . $php4nano_array['tag_name'] . "\n";
-	echo 'Updating...' . "\n";
-	shell_exec('git checkout ' . $php4nano_array['tag_name'] . ' &');
+    echo 'New release found: ' . $php4nano_array['tag_name'] . "\n";
+    echo 'Updating...' . "\n";
+    shell_exec('git checkout ' . $php4nano_array['tag_name'] . ' &');
 }

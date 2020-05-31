@@ -1,75 +1,61 @@
 <?php
 
-// *****************
-// *** Libraries ***
-// *****************
+// #
+// ## Libraries
+// #
 
-
-
-require_once __DIR__ . '/../lib/Tools.php';
+require_once __DIR__ . '/../lib/NanoTools.php';
 require_once __DIR__ . '/../lib3/phpseclib_loader.php';
 require_once __DIR__ . '/../lib3/clitable_loader.php';
 
-use php4nano\Tools as NanoTools;
+use php4nano\NanoTools as NanoTools;
 use phpseclib\Crypt\RSA;
 use phpseclib\Net\SSH2;
 use jc21\CliTable;
 use jc21\CliTableManipulator;
 
 
-
-// *****************
-// *** Functions ***
-// *****************
-
-
+// #
+// ## Functions
+// #
 
 require_once __DIR__ . '/../ncm/function/ksort_recursive.php';
 require_once __DIR__ . '/../ncm/function/array_merge_new_recursive.php';
 require_once __DIR__ . '/../ncm/function/custom_number.php';
-require_once __DIR__ . '/function/ncmCall.php';
+require_once __DIR__ . '/function/ncm_call.php';
 require_once __DIR__ . '/function/misc.php';
 
 
-    
-// *********************
-// *** Configuration ***
-// *********************
+// #
+// ## Configuration
+// #
 
+define('data_dir'   , __DIR__  . '/../../nco');
+define('config_file', data_dir . '/config.json');
+define('nodes_file' , data_dir . '/nodes.json');
 
-
-define( 'data_dir'              , __DIR__  . '/../../nco' );
-define( 'config_file'           , data_dir . '/config.json' );
-define( 'nodes_file'            , data_dir . '/nodes.json' );
-
-$C = []; // Configuration
-$C2 = []; // Secondary configuration
+$C         = []; // Configuration
+$C2        = []; // Secondary configuration
 $arguments = []; // Arguments
 
 
-// *** Create data folder if not exsist ***
+// # Create data folder if not exsist
 
-
-if( !is_dir( data_dir ) )
-{
-    mkdir( data_dir, 0777, true );
+if (!is_dir(data_dir)) {
+    mkdir(data_dir, 0777, true);
 }
 
 
-// *** config.json model ***
+// # config.json model
 
-
-$C_model =
-[
-    'nano' =>
-    [
+$C_model = [
+    'nano' => [
         'denomination' => 'NANO',
         'decimals'     => 3
     ],
     'wait' => 100,
     'timezone' => 'UTC',
-    'format' =>
-    [
+    'format' => [
         'timestamp' => 'm/d/Y H:i:s',
         'decimal'   => '.',
         'thousand'  => ','
@@ -77,11 +63,9 @@ $C_model =
 ];
 
 
-// *** nodes.json model ***
+// # nodes.json model
 
-
-$node_model =
-[
+$node_model = [
     'hostname'  => '',
     'username'  => '',
     'password'  => '',
@@ -91,37 +75,26 @@ $node_model =
 ];
 
 
-// *** Load config.json ***
+// # Load config.json
 
-
-if( !file_exists( config_file ) )
-{
+if (!file_exists(config_file)) {
     $C = $C_model;
-}
-else
-{
-    $C = json_decode( file_get_contents( config_file ), true );
-    $C = array_merge_new_recursive( $C, $C_model );
+} else {
+    $C = json_decode(file_get_contents(config_file), true);
+    $C = array_merge_new_recursive($C, $C_model);
 }
 
 
-// *** Load nodes.json ***
+// # Load nodes.json
 
-
-if( !file_exists( nodes_file ) )
-{
+if (!file_exists(nodes_file)) {
     $C2['nodes']['tag'] = $node_model;
-}
-else
-{
-    $C2['nodes'] = json_decode( file_get_contents( nodes_file ), true );
+} else {
+    $C2['nodes'] = json_decode(file_get_contents(nodes_file), true);
     
-    foreach( $C2['nodes'] as $tag => $node_data )
-    {
-        foreach( $node_model as $key => $value )
-        {
-            if( !array_key_exists( $key, $node_data ) )
-            {
+    foreach ($C2['nodes'] as $tag => $node_data) {
+        foreach ($node_model as $key => $value) {
+            if (!array_key_exists($key, $node_data)) {
                 $C2['nodes'][$tag][$key] = $value;
             }
         }
@@ -129,25 +102,20 @@ else
 }
 
 
-// *** Set timezone ***
+// # Set timezone
+
+date_default_timezone_set($C['timezone']);
 
 
-date_default_timezone_set( $C['timezone'] );
+// # Save config.json, nodes.json
+
+file_put_contents(config_file, json_encode($C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+file_put_contents(nodes_file, json_encode($C2['nodes'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
 
-// *** Save config.json, nodes.json ***
-
-
-file_put_contents( config_file, json_encode( $C, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
-file_put_contents( nodes_file, json_encode( $C2['nodes'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
-
-
-
-// *******************
-// *** Build input ***
-// *******************
-
-
+// #
+// ## Build input
+// #
 
 $flags =
 [
@@ -156,53 +124,46 @@ $flags =
 ];
 
 
-// *** Search for flags ***
+// # Search for flags
 
-
-foreach( $argv as $index => $arg )
-{
-    $arguments_row = explode( '=', $arg, 2 );
+foreach ($argv as $index => $arg) {
+    $arguments_row = explode('=', $arg, 2);
     
-    if( $arguments_row[0] == 'flags' )
-    {
-        $input_flags = explode( ',', $arguments_row[1] );
+    if ($arguments_row[0] == 'flags') {
+        $input_flags = explode(',', $arguments_row[1]);
         
-        foreach( $input_flags as $input_flag )
-        {
-            if( array_key_exists( $input_flag, $flags ) )
-            {
+        foreach ($input_flags as $input_flag) {
+            if (array_key_exists($input_flag, $flags)) {
                 $flags[$input_flag] = true;
             }
         }
         
-        unset( $argv[$index] );
+        unset($argv[$index]);
     }
 }
 
 
-// *** Command and arguments ***
+// # Command and arguments
 
-
-if( count( $argv ) < 2 ) exit;
+if (count($argv) < 2) {
+    exit;
+}
 
 $command = $argv[1];
 
-unset( $argv[0] );
-unset( $argv[1] );
+unset($argv[0]);
+unset($argv[1]);
 
-$argv = array_values( $argv );
-
-
-// *** Arguments ***
+$argv = array_values($argv);
 
 
-foreach( $argv as $arg )
-{
+// # Arguments
+
+foreach ($argv as $arg) {
     $arguments_row = [];
-    $arguments_row = explode( '=', $arg, 2 );
+    $arguments_row = explode('=', $arg, 2);
     
-    if( !isset( $arguments_row[1] ) )
-    {
+    if (!isset($arguments_row[1])) {
         $arguments_row[1] = '';
     }
     
@@ -210,41 +171,32 @@ foreach( $argv as $arg )
 }
 
 
+// #
+// ## Execution
+// #
 
-// *****************
-// *** Execution ***
-// *****************
-
-
-
-if( $command == 'init' )
-{
+if ($command == 'init') {
     echo 'Init completed' . PHP_EOL;
-}
-elseif( in_array( $command, ['sync','wallets','node'] ) )
-{
+} elseif (in_array($command, ['sync','wallets','node'])) {
     $first_table_display = true;
     
-    $last_update = microtime( true );
+    $last_update = microtime(true);
     
-    $ncm_flags = 'raw_in,raw_out,no_log'; // ncmCall default flags
+    $ncm_flags = 'raw_in,raw_out,no_log'; // ncm_call default flags
 
-    $ncm_callerID = 'nco'; // ncmCall default callerID
+    $ncm_callerID = 'nco'; // ncm_call default callerID
     
     //
     
     echo 'Calling nodes...' . PHP_EOL;
     
-    while( true )
-    {
+    while (true) {
         $table_data = [];
         
         
-        // *** Get info from nodes ***
+        // # Get info from nodes
     
-    
-        foreach( $C2['nodes'] as $tag => $node_data )
-        {
+        foreach ($C2['nodes'] as $tag => $node_data) {
             $table_data[$tag] =
             [
                 'tag'                            => $tag,
@@ -268,29 +220,22 @@ elseif( in_array( $command, ['sync','wallets','node'] ) )
             ];
             
             
-            // *** SSH connection ***
+            // # SSH connection
             
+            $ssh = new SSH2($node_data['hostname']);
             
-            $ssh = new SSH2( $node_data['hostname'] );
-            
-            if( $node_data['auth_type'] == 'key' )
-            {
+            if ($node_data['auth_type'] == 'key') {
                 $key = new RSA();
-                $key->loadKey( file_get_contents( $node_data['key_path'] ) );
-            }
-            elseif( $node_data['auth_type'] == 'protected-key' )
-            {
+                $key->loadKey(file_get_contents($node_data['key_path']));
+            } elseif ($node_data['auth_type'] == 'protected-key') {
                 $key = new Crypt_RSA();
-                $key->setPassword( $node_data['password'] );
-                $key->loadKey( file_get_contents( $node_data['key_path'] ) );
-            }
-            else
-            {
+                $key->setPassword($node_data['password']);
+                $key->loadKey(file_get_contents($node_data['key_path']));
+            } else {
                 $key = $node_data['password'];
             }
             
-            if( @!$ssh->login( $node_data['username'], $key ) )
-            {
+            if (@!$ssh->login($node_data['username'], $key)) {
                 $table_data[$tag]['notice'] = '!SSH            ';
                 
                 $ssh->disconnect();
@@ -299,76 +244,100 @@ elseif( in_array( $command, ['sync','wallets','node'] ) )
             }
             
             
-            // *** Call configuration ***
+            // # Call configuration
             
-            
-            $ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'version', [], $ncm_flags, $ncm_callerID );
+            $ncm_call = ncm_call($ssh, $node_data['ncm_path'], 'version', [], $ncm_flags, $ncm_callerID);
 
             // Check for errors
 
-            if( isset( $ncmCall['error'] ) )
-            {
-                $table_data[$tag]['notice'] = $ncmCall['error']; continue;
+            if (isset($ncm_call['error'])) {
+                $table_data[$tag]['notice'] = $ncm_call['error'];
+                continue;
             }
             
-            if( !isset( $ncmCall['node_vendor'] ) )
-            {
-                $table_data[$tag]['notice'] = '!ncm           '; continue;
+            if (!isset($ncm_call['node_vendor'])) {
+                $table_data[$tag]['notice'] = '!ncm           ';
+                continue;
             }
             
             // Check for alerts
             
-            if( isset( $ncmCall['alert'] ) )
-            {
+            if (isset($ncm_call['alert'])) {
                 $table_data[$tag]['notice'] = 'Alerts         ';
-            }
-            else
-            {
+            } else {
                 $table_data[$tag]['notice'] = 'OK             ';
-            }    
+            }
             
             
-            // *** Call to node ***
+            // # Call to node
             
-            
-            if( $command == 'sync' )
-            {
+            if ($command == 'sync') {
                 // Blocks
                 
-                $ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'block_count', [], $ncm_flags, $ncm_callerID );
+                $ncm_call = ncm_call($ssh, $node_data['ncm_path'], 'block_count', [], $ncm_flags, $ncm_callerID);
                 
-                if( !isset( $ncmCall['count'] ) || $ncmCall['count'] == null ) $ncmCall['count'] = 0;
-                if( !isset( $ncmCall['unchecked'] ) || $ncmCall['unchecked'] == null ) $ncmCall['unchecked'] = 0;
-                if( !isset( $ncmCall['cemented'] ) || $ncmCall['cemented'] == null ) $ncmCall['cemented'] = 0;
+                if (!isset($ncm_call['count']) || $ncm_call['count'] == null) {
+                    $ncm_call['count'] = 0;
+                }
+                if (!isset($ncm_call['unchecked']) || $ncm_call['unchecked'] == null) {
+                    $ncm_call['unchecked'] = 0;
+                }
+                if (!isset($ncm_call['cemented']) || $ncm_call['cemented'] == null) {
+                    $ncm_call['cemented'] = 0;
+                }
                 
-                $table_data[$tag]['block_count']     = custom_number( $ncmCall['count'], 0, $C['format']['decimal'], $C['format']['thousand'] );
-                $table_data[$tag]['block_unchecked'] = custom_number( $ncmCall['unchecked'], 0, $C['format']['decimal'], $C['format']['thousand'] );
-                $table_data[$tag]['block_cemented']  = custom_number( $ncmCall['cemented'], 0, $C['format']['decimal'], $C['format']['thousand'] );
+                $table_data[$tag]['block_count'] = custom_number(
+                    $ncm_call['count'], 0, $C['format']['decimal'], $C['format']['thousand']
+                );
+                $table_data[$tag]['block_unchecked'] = custom_number(
+                    $ncm_call['unchecked'], 0, $C['format']['decimal'], $C['format']['thousand']
+                );
+                $table_data[$tag]['block_cemented'] = custom_number(
+                    $ncm_call['cemented'], 0, $C['format']['decimal'], $C['format']['thousand']
+                );
                 
                 // Peers
                 
-                $ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'peers', [], $ncm_flags, $ncm_callerID );
+                $ncm_call = ncm_call($ssh, $node_data['ncm_path'], 'peers', [], $ncm_flags, $ncm_callerID);
                 
-                if( !isset( $ncmCall['peers'] ) || !is_array( $ncmCall['peers'] ) ) $ncmCall['peers'] = [];
+                if (!isset($ncm_call['peers']) || !is_array($ncm_call['peers'])) {
+                    $ncm_call['peers'] = [];
+                }
                 
-                $table_data[$tag]['network_peers'] = custom_number( count( $ncmCall['peers'] ), 0, $C['format']['decimal'], $C['format']['thousand'] );    
+                $table_data[$tag]['network_peers'] = custom_number(
+                    count($ncm_call['peers']), 0, $C['format']['decimal'], $C['format']['thousand']
+                );
                 
                 // Representatives
                 
-                $ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'representatives_online', [], $ncm_flags, $ncm_callerID );
+                $ncm_call = ncm_call($ssh, $node_data['ncm_path'], 'representatives_online', [], $ncm_flags, $ncm_callerID);
                 
-                if( !isset( $ncmCall['count'] ) || $ncmCall['count'] == null ) $ncmCall['count'] = 0;
-                if( !isset( $ncmCall['weight'] ) || $ncmCall['weight'] == null ) $ncmCall['weight'] = 0;
-                if( !isset( $ncmCall['weight_percent'] ) || $ncmCall['weight_percent'] == null ) $ncmCall['weight_percent'] = 0;
+                if (!isset($ncm_call['count']) || $ncm_call['count'] == null) {
+                    $ncm_call['count'] = 0;
+                }
+                if (!isset($ncm_call['weight']) || $ncm_call['weight'] == null) {
+                    $ncm_call['weight'] = 0;
+                }
+                if (!isset($ncm_call['weight_percent']) || $ncm_call['weight_percent'] == null) {
+                    $ncm_call['weight_percent'] = 0;
+                }
                 
-                $table_data[$tag]['network_representatives_online'] = custom_number( $ncmCall['count'], 0, $C['format']['decimal'], $C['format']['thousand'] );
-                $table_data[$tag]['network_weight_online']          = custom_number( NanoTools::raw2den( $ncmCall['weight'], $C['nano']['denomination'] ), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand'] );
-                $table_data[$tag]['network_weight_online_percent']  = custom_number( $ncmCall['weight_percent'], 2, $C['format']['decimal'], $C['format']['thousand'] );    
+                $table_data[$tag]['network_representatives_online'] = custom_number(
+                    $ncm_call['count'], 0, $C['format']['decimal'], $C['format']['thousand']
+                );
+                $table_data[$tag]['network_weight_online'] = custom_number(
+                    NanoTools::raw2den(
+                        $ncm_call['weight'], $C['nano']['denomination']
+                    ),
+                    $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand']
+                );
+                $table_data[$tag]['network_weight_online_percent'] = custom_number(
+                    $ncm_call['weight_percent'], 2, $C['format']['decimal'], $C['format']['thousand']
+                );
             }
             
-            if( $command == 'wallets' )
-            {
-                $ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'wallet_list', [], $ncm_flags, $ncm_callerID );
+            if ($command == 'wallets') {
+                $ncm_call = ncm_call($ssh, $node_data['ncm_path'], 'wallet_list', [], $ncm_flags, $ncm_callerID);
                 
                 $wallets_balance = '0';
                 $wallets_pending = '0';
@@ -376,81 +345,105 @@ elseif( in_array( $command, ['sync','wallets','node'] ) )
                 $wallets_count = 0;
                 $wallets_accounts_count = 0;
         
-                if( is_array( $ncmCall ) )
-                {
-                    foreach( $ncmCall as $wallet_id => $wallet_info )
-                    {
-                        if( is_array( $wallet_info ) )
-                        {
+                if (is_array($ncm_call)) {
+                    foreach ($ncm_call as $wallet_id => $wallet_info) {
+                        if (is_array($wallet_info)) {
                             $wallets_count++;
-                            $wallets_balance         = gmp_add( $wallets_balance, $wallet_info['balance'] );
-                            $wallets_pending         = gmp_add( $wallets_pending, $wallet_info['pending'] );
-                            $wallets_weight          = gmp_add( $wallets_weight, $wallet_info['weight'] );
+                            $wallets_balance         = gmp_add($wallets_balance, $wallet_info['balance']);
+                            $wallets_pending         = gmp_add($wallets_pending, $wallet_info['pending']);
+                            $wallets_weight          = gmp_add($wallets_weight, $wallet_info['weight']);
                             $wallets_accounts_count += $wallet_info['accounts_count'];
                         }
                     }
                 }
                 
-                $table_data[$tag]['wallets_balance']        = custom_number( NanoTools::raw2den( gmp_strval( $wallets_balance ), $C['nano']['denomination'] ), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand'] );
-                $table_data[$tag]['wallets_pending']        = custom_number( NanoTools::raw2den( gmp_strval( $wallets_pending ), $C['nano']['denomination'] ), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand'] );
-                $table_data[$tag]['wallets_weight']         = custom_number( NanoTools::raw2den( gmp_strval( $wallets_weight ), $C['nano']['denomination'] ), $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand'] );
-                $table_data[$tag]['wallets_count']          = custom_number( $wallets_count, 0, $C['format']['decimal'], $C['format']['thousand'] );
-                $table_data[$tag]['wallets_accounts_count'] = custom_number( $wallets_accounts_count, 0, $C['format']['decimal'], $C['format']['thousand'] );
+                $table_data[$tag]['wallets_balance'] = custom_number(
+                    NanoTools::raw2den(
+                        gmp_strval($wallets_balance), $C['nano']['denomination']
+                    ),
+                    $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand']
+                );
+                $table_data[$tag]['wallets_pending'] = custom_number(
+                    NanoTools::raw2den(
+                        gmp_strval($wallets_pending), $C['nano']['denomination']
+                    ),
+                    $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand']
+                );
+                $table_data[$tag]['wallets_weight'] = custom_number(
+                    NanoTools::raw2den(gmp_strval($wallets_weight), $C['nano']['denomination']
+                    ),
+                    $C['nano']['decimals'], $C['format']['decimal'], $C['format']['thousand']
+                );
+                $table_data[$tag]['wallets_count'] = custom_number(
+                    $wallets_count, 0, $C['format']['decimal'],
+                    $C['format']['thousand']
+                );
+                $table_data[$tag]['wallets_accounts_count'] = custom_number(
+                    $wallets_accounts_count, 0, $C['format']['decimal'],
+                    $C['format']['thousand']
+                );
             }
             
-            if( $command == 'node' )
-            {
+            if ($command == 'node') {
                 // Version
                 
-                $ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'version', [], $ncm_flags, $ncm_callerID );
+                $ncm_call = ncm_call($ssh, $node_data['ncm_path'], 'version', [], $ncm_flags, $ncm_callerID);
                 
-                if( !isset( $ncmCall['node_vendor'] ) || $ncmCall['node_vendor'] == null ) $ncmCall['node_vendor'] = '0';
+                if (!isset($ncm_call['node_vendor']) || $ncm_call['node_vendor'] == null) {
+                    $ncm_call['node_vendor'] = '0';
+                }
                 
-                $table_data[$tag]['node_version'] = $ncmCall['node_vendor'];
+                $table_data[$tag]['node_version'] = $ncm_call['node_vendor'];
                 
                 // Uptime
                 
-                $ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'uptime', [], $ncm_flags, $ncm_callerID );
+                $ncm_call = ncm_call($ssh, $node_data['ncm_path'], 'uptime', [], $ncm_flags, $ncm_callerID);
                                     
-                if( !isset( $ncmCall['seconds'] ) || $ncmCall['seconds'] == null ) $ncmCall['seconds'] = 0;
+                if (!isset($ncm_call['seconds']) || $ncm_call['seconds'] == null) {
+                    $ncm_call['seconds'] = 0;
+                }
                 
-                $table_data[$tag]['node_uptime'] = custom_number( $ncmCall['seconds']/60/60, 2, $C['format']['decimal'], $C['format']['thousand'] ) . ' h';
+                $table_data[$tag]['node_uptime'] = custom_number(
+                    $ncm_call['seconds']/60/60, 2, $C['format']['decimal'], $C['format']['thousand']
+                ) . ' h';
                 
                 // Blockchain
                 
-                $ncmCall = ncmCall( $ssh, $node_data['ncm_path'], 'blockchain', [], $ncm_flags, $ncm_callerID );
+                $ncm_call = ncm_call($ssh, $node_data['ncm_path'], 'blockchain', [], $ncm_flags, $ncm_callerID);
                     
-                if( !isset( $ncmCall['blockchain'] ) || $ncmCall['blockchain'] == null ) $ncmCall['blockchain'] = 0;
-                if( !isset( $ncmCall['block_average'] ) || $ncmCall['block_average'] == null ) $ncmCall['block_average'] = 0;
+                if (!isset($ncm_call['blockchain']) || $ncm_call['blockchain'] == null) {
+                    $ncm_call['blockchain'] = 0;
+                }
+                if (!isset($ncm_call['block_average']) || $ncm_call['block_average'] == null) {
+                    $ncm_call['block_average'] = 0;
+                }
                 
-                $table_data[$tag]['node_blockchain']    = custom_number( $ncmCall['blockchain']/1000000, 0, $C['format']['decimal'], $C['format']['thousand'] ) . ' MB';
-                $table_data[$tag]['node_block_average'] = custom_number( $ncmCall['block_average'], 0, $C['format']['decimal'], $C['format']['thousand'] ) . ' B';
+                $table_data[$tag]['node_blockchain'] = custom_number(
+                    $ncm_call['blockchain']/1000000, 0, $C['format']['decimal'], $C['format']['thousand']
+                ) . ' MB';
+                $table_data[$tag]['node_block_average'] = custom_number(
+                    $ncm_call['block_average'], 0, $C['format']['decimal'], $C['format']['thousand']
+                ) . ' B';
             }
         
         
-            // *** SSH disconnection ***
-        
+            // # SSH disconnection
         
             $ssh->disconnect();
         }
         
         
-        // *** Output ***
+        // # Output
         
-        
-        if( $flags['json_out'] )
-        {
-            echo json_encode( $table_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) . PHP_EOL;
-        }
-        else
-        {
-            // *** Create table ***
-            
+        if ($flags['json_out']) {
+            echo json_encode($table_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL;
+        } else {
+            // # Create table
             
             $table = new CliTable;
         
             $table->setChars(
-            [
+                [
                 'top'          => ' ',
                 'top-mid'      => ' ',
                 'top-left'     => ' ',
@@ -466,25 +459,24 @@ elseif( in_array( $command, ['sync','wallets','node'] ) )
                 'right'        => ' ',
                 'right-mid'    => ' ',
                 'middle'       => ' '
-            ]);
+            ]
+            );
         
             $table->setHeaderColor('cyan');
             
             
-            // *** Set table fields ***
+            // # Set table fields
             
+            $table->addField('Tag', 'tag', false);
             
-            $table->addField( 'Tag', 'tag', false );
-            
-            if( $command == 'sync' )
-            {
-                $table->addField( 'Blocks', 'block_count', false );
-                $table->addField( 'Unchecked', 'block_unchecked', false );
-                $table->addField( 'Cemented', 'block_cemented', false );
-                $table->addField( 'Peers', 'network_peers', false );
-                $table->addField( 'Reps.', 'network_representatives_online', false );
-                $table->addField( 'Weight Online', 'network_weight_online', false );
-                $table->addField( '%', 'network_weight_online_percent', false );
+            if ($command == 'sync') {
+                $table->addField('Blocks', 'block_count', false);
+                $table->addField('Unchecked', 'block_unchecked', false);
+                $table->addField('Cemented', 'block_cemented', false);
+                $table->addField('Peers', 'network_peers', false);
+                $table->addField('Reps.', 'network_representatives_online', false);
+                $table->addField('Weight Online', 'network_weight_online', false);
+                $table->addField('%', 'network_weight_online_percent', false);
                 
                 $table_data[9999]['tag'] = '';
                 $table_data[9999]['block_count'] = '            ';
@@ -497,13 +489,12 @@ elseif( in_array( $command, ['sync','wallets','node'] ) )
                 $table_data[9999]['notice'] = '';
             }
             
-            if( $command == 'wallets' )
-            {
-                $table->addField( 'Balance', 'wallets_balance', false );
-                $table->addField( 'Pending', 'wallets_pending', false );
-                $table->addField( 'Weight', 'wallets_weight', false );
-                $table->addField( 'Count', 'wallets_count', false );
-                $table->addField( 'Accounts', 'wallets_accounts_count', false );
+            if ($command == 'wallets') {
+                $table->addField('Balance', 'wallets_balance', false);
+                $table->addField('Pending', 'wallets_pending', false);
+                $table->addField('Weight', 'wallets_weight', false);
+                $table->addField('Count', 'wallets_count', false);
+                $table->addField('Accounts', 'wallets_accounts_count', false);
                 
                 $table_data[9999]['tag'] = '';
                 $table_data[9999]['wallets_balance'] = '                  ';
@@ -514,12 +505,11 @@ elseif( in_array( $command, ['sync','wallets','node'] ) )
                 $table_data[9999]['notice'] = '';
             }
             
-            if( $command == 'node' )
-            {
-                $table->addField( 'Version', 'node_version', false );
-                $table->addField( 'Uptime', 'node_uptime', false );
-                $table->addField( 'Blockchain', 'node_blockchain', false );
-                $table->addField( 'Block', 'node_block_average', false );
+            if ($command == 'node') {
+                $table->addField('Version', 'node_version', false);
+                $table->addField('Uptime', 'node_uptime', false);
+                $table->addField('Blockchain', 'node_blockchain', false);
+                $table->addField('Block', 'node_block_average', false);
                 
                 $table_data[9999]['tag'] = '';
                 $table_data[9999]['node_version'] = '           ';
@@ -529,36 +519,32 @@ elseif( in_array( $command, ['sync','wallets','node'] ) )
                 $table_data[9999]['notice'] = '';
             }
             
-            $table->addField( 'Notice', 'notice', false );
+            $table->addField('Notice', 'notice', false);
             
             
-            // *** Set table data ***
+            // # Set table data
+            
+            $table->injectData($table_data);
             
             
-            $table->injectData( $table_data );
-            
-            
-            // *** Output adjustments ***
-            
+            // # Output adjustments
             
             // Hide cursor
             
-            fprintf( STDOUT, "\033[?25l" );
+            fprintf(STDOUT, "\033[?25l");
             
             // Clear screen
             
-            if( $first_table_display )
-            {
+            if ($first_table_display) {
                 // Clear all screen
                 
                 echo "\033[2J\033[;H";
                 
                 $first_table_display = false;
-            }
-            else
-            {
+            } else {
                 // Clear only last table
-                echo "\033[" . strval( 100 + count( $table_data ) ) . "A";
+                
+                echo "\033[" . strval(100 + count($table_data)) . "A";
             }
             
             // Print table
@@ -567,32 +553,32 @@ elseif( in_array( $command, ['sync','wallets','node'] ) )
             
             // Print other info
             
-            $delay = number_format( microtime( true ) - $last_update - $C['wait']/1000, 3 );
-            if( $delay < 0 ) $delay = '0.000';
+            $delay = number_format(microtime(true) - $last_update - $C['wait']/1000, 3);
+            if ($delay < 0) {
+                $delay = '0.000';
+            }
         
             echo ' '                 . $command;
             echo ' | denomination: ' . $C['nano']['denomination'];
-            echo ' | nodes: '        . ( count( $table_data ) - 1 );
-            echo ' | wait: '         . number_format( $C['wait']/1000, 3 );
+            echo ' | nodes: '        . (count($table_data) - 1);
+            echo ' | wait: '         . number_format($C['wait']/1000, 3);
             echo ' | delay: '        . $delay;
             echo PHP_EOL . PHP_EOL;
             
             // Show cursor
             
-            fprintf( STDOUT, " \033[?25h" );
+            fprintf(STDOUT, " \033[?25h");
         }
         
-        if( $flags['no_refresh'] )
-        {
+        if ($flags['no_refresh']) {
             break;
         }
         
-        $last_update = microtime( true );
+        $last_update = microtime(true);
         
-        usleep( (int) $C['wait'] * 1000 );
+        usleep((int) $C['wait'] * 1000);
     }
-}
-else
-{
-    echo 'Unknown command' . PHP_EOL;  exit;
+} else {
+    echo 'Unknown command' . PHP_EOL;
+    exit;
 }
