@@ -22,7 +22,7 @@ Full documentation is located at https://github.com/mikerow/php4nano/wiki
 
 ### lib
 
-A library that contains useful classes for interfacing with the Nano node or for carrying out operations related to the Nano sphere without directly using the node
+A library that contains useful classes for interfacing with the Nano node or for performing functions related to the Nano sphere without directly using the node
 
 - NanoBlock
 - NanoCLI
@@ -32,11 +32,11 @@ A library that contains useful classes for interfacing with the Nano node or for
 
 ### ncm
 
-Nano node CLI manager, a tool developed to fully manage a node via CLI, it simplifies node maintenance and management operations with a specially designed interface
+Nano node CLI manager, a tool developed to fully manage a Nano node via CLI, it simplifies node maintenance and management operations with a specially designed interface
 
 ### nco
 
-Nano nodes CLI observer, a tool developed to monitor multiple nodes via CLI, it simplifies maintenance and management of multiple nodes by providing real-time information from all nodes
+Nano nodes CLI observer, a tool developed to monitor multiple Nano nodes via CLI, it simplifies maintenance and management of multiple nodes by providing real-time information from all nodes
 
 ### tutorial
 
