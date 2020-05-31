@@ -20,21 +20,38 @@ Full documentation is located at https://github.com/mikerow/php4nano/wiki
 
 ## Credits
 
-Repositories
-
-- [devi/Salt](https://github.com/devi/Salt)
-- [strawbrary/php-blake2](https://github.com/strawbrary/php-blake2)
-- [phpseclib/phpseclib](https://github.com/phpseclib/phpseclib)
-- [jc21/clitable](https://github.com/jc21/clitable)
-- [jaimehgb/RaiBlocksPHP](https://github.com/jaimehgb/RaiBlocksPHP)
-- [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
-
-APIs
-
-- [coingecko.com/API](https://www.coingecko.com/en/api)
-- [mynano.ninja/API](https://mynano.ninja/api)
-
-Thanks also to [Sergey Kroshnin](https://github.com/SergiySW) for the support given
+<table>
+  <tbody>
+    <tr>
+      <th align="center">Repositories</th>
+      <th align="center">APIs</th>
+      <th align="center">People</th>
+    </tr>
+    <tr>
+      <td>
+        <ul>
+          <li>[devi/Salt](https://github.com/devi/Salt)</li>
+          <li>[strawbrary/php-blake2](https://github.com/strawbrary/php-blake2)</li>
+		  <li>[phpseclib/phpseclib](https://github.com/phpseclib/phpseclib)</li>
+		  <li>[jc21/clitable](https://github.com/jc21/clitable)</li>
+		  <li>[jaimehgb/RaiBlocksPHP](https://github.com/jaimehgb/RaiBlocksPHP)</li>
+		  <li>[aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)</li>
+        </ul>
+	  </td>
+      <td align="center">
+		<ul>
+		  <li>[coingecko.com/API](https://www.coingecko.com/en/api)</li>
+		  <li>[mynano.ninja/API](https://mynano.ninja/api)</li>
+	    </ul>
+	  </td>
+      <td align="right">
+	    <ul>
+		   <li>[Sergey Kroshnin](https://github.com/SergiySW)</li>
+		</ul>
+	  </td>
+    </tr>
+  </tbody>
+</table>
 
 ## Support
 
