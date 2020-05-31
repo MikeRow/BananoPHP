@@ -29,25 +29,19 @@ Full documentation is located at https://github.com/mikerow/php4nano/wiki
     </tr>
     <tr style="background-color:transparent">
       <td style="background-color:transparent">
-        <ul>
-          <li><a href="https://github.com/devi/Salt">devi/Salt</a></li>
-          <li><a href="https://github.com/strawbrary/php-blake2">strawbrary/php-blake2</a></li>
-		  <li><a href="https://github.com/phpseclib/phpseclib">phpseclib/phpseclib</a></li>
-		  <li><a href="https://github.com/jc21/clitable">jc21/clitable</a></li>
-		  <li><a href="https://github.com/jaimehgb/RaiBlocksPHP">jaimehgb/RaiBlocksPHP</a></li>
-		  <li><a href="https://github.com/aceat64/EasyBitcoin-PHP">aceat64/EasyBitcoin-PHP</a></li>
-        </ul>
+        <a href="https://github.com/devi/Salt">devi/Salt</a><br/>
+        <a href="https://github.com/strawbrary/php-blake2">strawbrary/php-blake2</a><br/>
+		<a href="https://github.com/phpseclib/phpseclib">phpseclib/phpseclib</a><br/>
+		<a href="https://github.com/jc21/clitable">jc21/clitable</a><br/>
+		<a href="https://github.com/jaimehgb/RaiBlocksPHP">jaimehgb/RaiBlocksPHP</a><br/>
+		<a href="https://github.com/aceat64/EasyBitcoin-PHP">aceat64/EasyBitcoin-PHP</a>
 	  </td>
       <td style="background-color:transparent">
-		<ul>
-		  <li><a href="https://www.coingecko.com/en/api">coingecko.com/API</a></li>
-		  <li><a href="https://mynano.ninja/api">mynano.ninja/API</a></li>
-	    </ul>
+		<a href="https://www.coingecko.com/en/api">coingecko.com/API</a><br/>
+		<a href="https://mynano.ninja/api">mynano.ninja/API</a>
 	  </td>
       <td style="background-color:transparent">
-	    <ul>
-		   <li><a href="https://github.com/SergiySW">Sergey Kroshnin</a></li>
-		</ul>
+       <a href="https://github.com/SergiySW">Sergey Kroshnin</a>
 	  </td>
     </tr>
   </tbody>
