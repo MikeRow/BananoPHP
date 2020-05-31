@@ -20,7 +20,7 @@ Full documentation is located at https://github.com/mikerow/php4nano/wiki
 
 ## Credits
 
-<table style="width:100%">
+<table bgcolor="white">
   <tbody>
     <tr>
       <th align="left">Repositories</th>
