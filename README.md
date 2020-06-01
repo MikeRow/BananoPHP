@@ -8,7 +8,8 @@ PHP libraries and tools for the Nano currency
 
 ## Introduction
 
-php4nano is the evolution of the now archived [mikerow/easyraikitphp](https://github.com/mikerow/easyraikitphp) repository, which has been used between 2016-2017 for the RaiBlocks's block explorer and faucet at [raiblockscommunity.net](https://raiblockscommunity.net).
+php4nano is the evolution of the now archived [mikerow/easyraikitphp](https://github.com/mikerow/easyraikitphp) repository.<br/>
+The latter has been used between 2016-2017 in [raiblockscommunity.net](https://raiblockscommunity.net).
 
 The repository has been redesigned from 0, in order to facilitate its integration by third-party developers.
 
@@ -32,11 +33,11 @@ Full documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
 - **NanoRPCExt**
 
-  Class for interfacing to additional Nano node RPC
+  Class for interfacing to Nano node RPC, with additional functions
 
 - **NanoTools**
 
-  Class for performing functions related to Nano environment
+  Class for performing Nano node-independent functions related to Nano environment
 
 - **ncm**
 
