@@ -4,9 +4,7 @@
 
 # php4nano
 
-PHP libraries and tools for the Nano currency
-
-Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
+PHP libraries and tools for the Nano currency, documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
 ## Introduction
 
@@ -31,11 +29,11 @@ The code has been rewritten from 0 in order to make it easier for developers to 
 
 - **NanoRPCExt**
 
-  Class for interfacing to custom Nano node RPC extension
+  Class for interfacing to additional Nano node RPC
 
 - **NanoTools**
 
-  Class for performing functions related to the Nano environment
+  Class for performing functions related to Nano environment
 
 - **ncm**
 
