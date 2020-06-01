@@ -30,11 +30,11 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
   Class for performing node-independent Nano functions
 
-- ncm - node CLI manager
+- ncm: node CLI manager
 
   Fully manage Nano node via command line interface
 
-- nco - nodes CLI observer
+- nco: nodes CLI observer
 
   Monitor multiple Nano nodes via command line interface
   
