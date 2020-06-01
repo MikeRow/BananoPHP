@@ -1,5 +1,5 @@
 <p align="center">
-	<img width="420" alt="php4nano logo" src="https://raw.githubusercontent.com/mikerow/php4nano/master/media/social-preview.png">
+	<img width="420" alt="php4nano logo" src="https://raw.githubusercontent.com/mikerow/php4nano/master/media/logo.png">
 </p>
 
 # php4nano
@@ -26,11 +26,11 @@ Full documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
 - **NanoRPCExt**
 
-  Class for interfacing to Nano node RPC, with additional functions
+  Class for interfacing to Nano node RPC with additional functions
 
 - **NanoTools**
 
-  Class for performing Nano node-independent functions related to Nano environment
+  Class for performing node-independent Nano functions
 
 - **ncm**
 
