@@ -8,8 +8,6 @@ PHP libraries and tools for the Nano currency
 
 Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
-<br/>
-
 ## Features
 
 - **NanoBlocks**
