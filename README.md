@@ -34,11 +34,11 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
   
 ### ncm
 
-Node CLI manager: Fully manage Nano node via command line interface
+Node CLI manager, fully manage Nano node via command line interface
 
 ### nco
 
-Nodes CLI observer: Monitor multiple Nano nodes via command line interface
+Nodes CLI observer, monitor multiple Nano nodes via command line interface
   
 ## Credits
 
