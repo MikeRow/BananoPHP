@@ -10,8 +10,6 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
 ## Features
 
-### lib
-
 - NanoBlocks
 
   Class for building Nano blocks
@@ -32,13 +30,13 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
   Class for performing node-independent Nano functions
   
-### ncm
+- ncm
 
-Node CLI manager, fully manage Nano node via command line interface
+  Node CLI manager, fully manage Nano node via command line interface
 
-### nco
+- nco
 
-Nodes CLI observer, monitor multiple Nano nodes via command line interface
+  Nodes CLI observer, monitor multiple Nano nodes via command line interface
   
 ## Credits
 
