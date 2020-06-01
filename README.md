@@ -18,7 +18,7 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
   Class for interfacing to Nano node command line interface
 
--*NanoRPC
+- NanoRPC
 
   Class for interfacing to Nano node RPC
 
