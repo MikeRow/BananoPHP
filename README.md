@@ -1,5 +1,5 @@
 <p align="center">
-	<img width="420" alt="php4nano logo" src="https://raw.githubusercontent.com/mikerow/php4nano/master/media/social-preview.png">
+	<img width="420" alt="php4nano logo" src="https://raw.githubusercontent.com/mikerow/php4nano/master/media/logo.png">
 </p>
 
 # php4nano
@@ -7,8 +7,6 @@
 PHP libraries and tools for the Nano currency
 
 Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
-
-<br/>
 
 ## Introduction
 
@@ -33,15 +31,15 @@ The code has been rewritten from 0 in order to make it easier for developers to 
 
 - **NanoRPCExt**
 
-  Class extension with more functions for interfacing to Nano node RPC
+  Class for interfacing to custom Nano node RPC extension
 
 - **NanoTools**
 
-  Class containing Nano node-independent tools
+  Class for performing functions related to the Nano environment
 
 - **ncm**
 
-  Node CLI manager, fully manage a Nano node via command line interface
+  Node CLI manager, fully manage Nano node via command line interface
 
 - **nco**
 
