@@ -12,31 +12,31 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
 - NanoBlocks
 
-  Class for building Nano blocks
+  class for building Nano blocks
 
 - NanoCLI
 
-  Class for interfacing to Nano node command line interface
+  class for interfacing to Nano node command line interface
 
 - NanoRPC
 
-  Class for interfacing to Nano node RPC
+  class for interfacing to Nano node RPC
 
 - NanoRPCExt
 
-  Class for interfacing to Nano node RPC additional functions
+  class for interfacing to Nano node RPC additional functions
 
 - NanoTools
 
-  Class for performing node-independent Nano functions
+  class for performing node-independent Nano functions
   
-- ncm
+- Node CLI manager (ncm)
 
-  Node CLI manager, fully manage Nano node via command line interface
+  fully manage Nano node via command line interface
 
-- nco
+- Nodes CLI observer (nco)
 
-  Nodes CLI observer, monitor multiple Nano nodes via command line interface
+  monitor multiple Nano nodes via command line interface
   
 ## Credits
 
