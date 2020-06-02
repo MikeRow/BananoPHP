@@ -40,7 +40,7 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
   
 ## Credits
 
-Thank you so much for the work and commitment of
+Thank you so much for the work and effort of
 
 - [devi/Salt](https://github.com/devi/Salt)
 - [strawbrary/php-blake2](https://github.com/strawbrary/php-blake2)
