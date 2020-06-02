@@ -384,11 +384,12 @@ class NanoTools
     
     public static function mnem2hex(array $words): string
     {
-        if (!is_array($words) || count($words) != 24) {
-            throw new Exception("Words array count is not 24");
+        if (count($words) != 24 && count($words) != 12) {
+            throw new Exception("Words array count is not 12 or 24");
         }
         
-        $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib/BIP39/BIP39_en.json'), true);
+        $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib3/BIP39/BIP39_en.json'), true);
+        $mnem_count = count($words);
         $bits = [];
         $hex  = [];
         
@@ -406,12 +407,12 @@ class NanoTools
             }
         }
         
-        for ($i = 0; $i < 32; $i++) {
+        for ($i = 0; $i < ceil($mnem_count*2.66); $i++) {
             $hex[] = bindec(implode('', array_slice($bits, $i * 8, 8)));
         }
         
         $hex = Uint::fromUint8Array($hex)->toHexString();
-        $hex = substr($hex, 0, 64);
+        $hex = substr($hex, 0, ceil($mnem_count*2.66));
         
         return $hex;
     }
@@ -423,11 +424,15 @@ class NanoTools
     
     public static function hex2mnem(string $hex): array
     {
-        if (strlen($hex) != 64 || !hex2bin($hex)) {
-            throw new Exception("Invalid seed: $hex");
+        if ((strlen($hex) != 32 &&
+             strlen($hex) != 64) ||
+            !hex2bin($hex)
+        ) {
+            throw new Exception("Invalid hexadecimal: $hex");
         }
         
-        $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib/BIP39/BIP39_en.json'), true);
+        $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib3/BIP39/BIP39_en.json'), true);
+        $hex_lenght = strlen($hex);
         $bits     = [];
         $mnemonic = [];
         
@@ -440,7 +445,7 @@ class NanoTools
             $bits     = array_merge($bits, str_split(str_repeat('0', (8 - strlen($bits_raw))) . $bits_raw));
         }
         
-        for ($i = 0; $i < 24; $i++) {
+        for ($i = 0; $i < floor($hex_lenght/2.66); $i++) {
             $mnemonic[] = $bip39_words[bindec(implode('', array_slice($bits, $i * 11, 11)))];
         }
         
@@ -454,8 +459,17 @@ class NanoTools
     
     public static function mnem2mseed(array $words, string $passphrase = ''): string
     {
-        if (!is_array($words) || count($words) != 24) {
-            throw new Exception("Words array count is not 24");
+        if (count($words) < 1) {
+            throw new Exception("Words array count is less than 1");
+        }
+        
+        $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib3/BIP39/BIP39_en.json'), true);
+        
+        foreach ($words as $index => $value) {
+            $word = array_search($value, $bip39_words);
+            if ($word === false) {
+                throw new Exception("Invalid menmonic word: $value");
+            }
         }
         
         return strtoupper(
