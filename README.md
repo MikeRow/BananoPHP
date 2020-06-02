@@ -51,19 +51,16 @@ The publication of this repository was possible thanks also to the work of
 - [jaimehgb/RaiBlocksPHP](https://github.com/jaimehgb/RaiBlocksPHP)
 - [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
 
-**Tools**
 
 - [FriendsOfPHP/PHP-CS-Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
 - [squizlabs/PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer)
 
-**APIs**
 
 - [coingecko.com/API](https://www.coingecko.com/en/api)
 - [mynano.ninja/API](https://mynano.ninja/api)
 
-**Tips**
 
-[Sergey Kroshnin](https://github.com/SergiySW)
+- [Sergey Kroshnin](https://github.com/SergiySW)
 
 ## Support
 
