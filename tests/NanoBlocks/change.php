@@ -12,7 +12,7 @@ $public_key     = ''; // Owner account public key
 $account        = ''; // Owner account
 
 // Block data
-$difficulty     = 'ffffffc000000000'; // Receive difficulty
+$difficulty     = 'ffffffc000000000'; // Change difficulty
 $representative = ''; // New representative
 
 // Initialize NanoRPC and NanoBlocks
