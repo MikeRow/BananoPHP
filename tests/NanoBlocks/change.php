@@ -6,28 +6,41 @@ require_once __DIR__ . '/../../lib/NanoRPCExt.php';
 
 use php4nano\NanoTools as NanoTools;
 
-$nanorpc = new php4nano\NanoRPCExt();
-
+// Owner data
 $private_key    = ''; // Owner account secret key
 $public_key     = ''; // Owner account public key
 $account        = ''; // Owner account
 
-$difficulty   = 'ffffffc000000000'; // Current receive difficulty
-$account_info = $nanorpc->account_info(['account' => $account]);
-$block_info   = $nanorpc->block_info(['json_block' => true, 'hash' => $account_info['frontier']]);
+// Block data
+$difficulty     = 'ffffffc000000000'; // Receive difficulty
+$representative = ''; // New representative
 
-$work = NanoTools::getWork($account_info['frontier'], $difficulty);
-
+// Initialize NanoRPC and NanoBlocks
+$nanorpc    = new php4nano\NanoRPCExt();
 $nanoblocks = new php4nano\NanoBlocks($private_key);
 
+// Get external block data
+$account_info = $nanorpc->account_info(['account' => $account]);
+$block_info   = $nanorpc->block_info([
+                    'json_block' => true,
+                    'hash'       => $account_info['frontier']
+                ]);
+$work         = NanoTools::getWork($account_info['frontier'], $difficulty);
+
+// Build block
 $nanoblocks->setPrev($account_info['frontier'], $block_info['contents']);
 $nanoblocks->setWork($work);
-$nanoblocks->change('');
+$nanoblocks->change($representative);
 
-$open = $nanorpc->process(['json_block' => 'true', 'block' => $nanoblocks->block]);
+// Publish block
+$process = $nanorpc->process([
+               'json_block' => 'true',
+               'block' => $nanoblocks->block
+           ]);
 
+// Results and debug
 if ($nanorpc->error) {
     echo $nanorpc->error . PHP_EOL;
 }
 
-var_dump($open);
+var_dump($process);
