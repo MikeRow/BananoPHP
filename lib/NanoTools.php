@@ -384,7 +384,7 @@ class NanoTools
     
     public static function mnem2hex(array $words): string
     {
-        if (count($words) != 24 && count($words) != 12) {
+        if (count($words) != 12 && count($words) != 24) {
             throw new Exception("Words array count is not 12 or 24");
         }
         
