@@ -40,6 +40,8 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
   
 ## Credits
 
+The publication of this repository was possible thanks also to the work of
+
 - [devi/Salt](https://github.com/devi/Salt)
 - [strawbrary/php-blake2](https://github.com/strawbrary/php-blake2)
 - [phpseclib/phpseclib](https://github.com/phpseclib/phpseclib)
