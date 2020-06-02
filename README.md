@@ -42,8 +42,6 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
 The publication of this repository was possible thanks also to the work of
 
-**Repositories**
-
 - [devi/Salt](https://github.com/devi/Salt)
 - [strawbrary/php-blake2](https://github.com/strawbrary/php-blake2)
 - [phpseclib/phpseclib](https://github.com/phpseclib/phpseclib)
@@ -52,12 +50,15 @@ The publication of this repository was possible thanks also to the work of
 - [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
 
 
+
 - [FriendsOfPHP/PHP-CS-Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
 - [squizlabs/PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer)
 
 
+
 - [coingecko.com/API](https://www.coingecko.com/en/api)
 - [mynano.ninja/API](https://mynano.ninja/api)
+
 
 
 - [Sergey Kroshnin](https://github.com/SergiySW)
