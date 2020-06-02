@@ -428,7 +428,7 @@ class NanoTools
              strlen($hex) != 64) ||
             !hex2bin($hex)
         ) {
-            throw new Exception("Invalid hexadecimal: $hex");
+            throw new Exception("Invalid hexadecimal string: $hex");
         }
         
         $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib3/BIP39/BIP39_en.json'), true);
