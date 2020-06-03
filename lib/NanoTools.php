@@ -485,7 +485,7 @@ class NanoTools
     public static function mseed2keys(string $seed, int $index = 0, bool $get_account = false): array
     {
         if (strlen($seed) != 128 || !hex2bin($seed)) {
-            throw new Exception("Invalid seed: $seed");
+            throw new Exception("Invalid master seed: $seed");
         }
         if ($index < 0 || $index > 4294967295) {
             throw new Exception("Invalid index: $index");
@@ -525,7 +525,7 @@ class NanoTools
     public static function getBlockId(array $hexs): string
     {
         if (count($hexs) != 6) {
-            throw new Exception("Hexadecimals array count is not 6");
+            throw new Exception("Hexadecimal array count is not 6");
         }
         
         $b2b = new Blake2b();
@@ -561,7 +561,7 @@ class NanoTools
             throw new Exception("Invalid private key: $private_key");
         }
         if (!hex2bin($msg)) {
-            throw new Exception("Invalid block ID: $msg");
+            throw new Exception("Invalid message: $msg");
         }
         
         $salt = Salt::instance();
@@ -590,12 +590,12 @@ class NanoTools
     public static function validSign(string $msg, string $sig, string $account)
     {
         if (strlen($msg) != 64 || !hex2bin($msg)) {
-            throw new Exception("Invalid block ID: $msg");
+            throw new Exception("Invalid message: $msg");
         }
         if (strlen($sig) != 128 || !hex2bin($sig)) {
             throw new Exception("Invalid signature: $sig");
         }
-        $public_key = self::account2public($account);
+        $public_key = self::account2public($account, false);
         if (!$public_key) {
             throw new Exception("Invalid account: $account");
         }
@@ -635,6 +635,9 @@ class NanoTools
         if (strlen($difficulty) != 16 || !hex2bin($difficulty)) {
             throw new Exception("Invalid difficulty: $difficulty");
         }
+        if ($multiplier <= 0) {
+            throw new Exception("Invalid multiplier: $multiplier");
+        }
         
         return dechex(ceil(hexdec($difficulty) * $multiplier));
     }
@@ -647,7 +650,7 @@ class NanoTools
     public static function getWork(string $hash, string $difficulty): string
     {
         if (strlen($hash) != 64 || !hex2bin($hash)) {
-            throw new Exception("Invalid block ID: $hash");
+            throw new Exception("Invalid hash: $hash");
         }
         if (strlen($difficulty) != 16 || !hex2bin($difficulty)) {
             throw new Exception("Invalid difficulty: $difficulty");
@@ -707,7 +710,7 @@ class NanoTools
     public static function validWork(string $hash, string $work, string $difficulty): bool
     {
         if (strlen($hash) != 64 || !hex2bin($hash)) {
-            throw new Exception("Invalid block ID: $hash");
+            throw new Exception("Invalid hash: $hash");
         }
         if (strlen($work) != 16 || !hex2bin($work)) {
             throw new Exception("Invalid work: $work");
