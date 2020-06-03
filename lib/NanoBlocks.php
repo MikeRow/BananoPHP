@@ -21,7 +21,7 @@ class NanoBlocks
     private $prevAuto    = false;
     private $prevBlockId = null;
     private $prevBlock   = [];
-    private $rawBlockID  = [];
+    private $rawBlockId  = [];
     private $signature   = null;
     private $work        = null;
     
@@ -109,16 +109,16 @@ class NanoBlocks
         $balance = NanoTools::dec2hex($amount);
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
-        $this->rawBlockID   = [];
-        $this->rawBlockID[] = NanoTools::PREAMBLE;
-        $this->rawBlockID[] = $this->publicKey;
-        $this->rawBlockID[] = NanoTools::EMPTY32;
-        $this->rawBlockID[] = NanoTools::account2public($representative);
-        $this->rawBlockID[] = $balance;
-        $this->rawBlockID[] = $pairing_block_id;
+        $this->rawBlockId   = [];
+        $this->rawBlockId[] = NanoTools::PREAMBLE;
+        $this->rawBlockId[] = $this->publicKey;
+        $this->rawBlockId[] = NanoTools::EMPTY32;
+        $this->rawBlockId[] = NanoTools::account2public($representative);
+        $this->rawBlockId[] = $balance;
+        $this->rawBlockId[] = $pairing_block_id;
         
-        $this->blockId   = NanoTools::getBlockID($this->rawBlockID);
-        $this->signature = NanoTools::signMessage($this->privateKey, $this->blockId);
+        $this->blockId   = NanoTools::getBlockId($this->rawBlockId);
+        $this->signature = NanoTools::signMsg($this->privateKey, $this->blockId);
         
         $this->block = [
             'type'           => 'state',
@@ -162,16 +162,16 @@ class NanoBlocks
         $balance  = NanoTools::dec2hex(gmp_strval(gmp_add(NanoTools::hex2dec($this->prevBlock['balance']), $amount)));
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
-        $this->rawBlockID   = [];
-        $this->rawBlockID[] = NanoTools::PREAMBLE;
-        $this->rawBlockID[] = $this->publicKey;
-        $this->rawBlockID[] = $this->prevBlockId;
-        $this->rawBlockID[] = NanoTools::account2public($representative);
-        $this->rawBlockID[] = $balance;
-        $this->rawBlockID[] = $pairing_block_id;
+        $this->rawBlockId   = [];
+        $this->rawBlockId[] = NanoTools::PREAMBLE;
+        $this->rawBlockId[] = $this->publicKey;
+        $this->rawBlockId[] = $this->prevBlockId;
+        $this->rawBlockId[] = NanoTools::account2public($representative);
+        $this->rawBlockId[] = $balance;
+        $this->rawBlockId[] = $pairing_block_id;
         
-        $this->blockId   = NanoTools::getBlockID($this->rawBlockID);
-        $this->signature = NanoTools::signMessage($this->privateKey, $this->blockId);
+        $this->blockId   = NanoTools::getBlockId($this->rawBlockId);
+        $this->signature = NanoTools::signMsg($this->privateKey, $this->blockId);
         
         $this->block = [
             'type'           => 'state',
@@ -218,16 +218,16 @@ class NanoBlocks
         }
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
-        $this->rawBlockID   = [];
-        $this->rawBlockID[] = NanoTools::PREAMBLE;
-        $this->rawBlockID[] = $this->publicKey;
-        $this->rawBlockID[] = $this->prevBlockId;
-        $this->rawBlockID[] = NanoTools::account2public($representative);
-        $this->rawBlockID[] = $balance;
-        $this->rawBlockID[] = NanoTools::account2public($destination);
+        $this->rawBlockId   = [];
+        $this->rawBlockId[] = NanoTools::PREAMBLE;
+        $this->rawBlockId[] = $this->publicKey;
+        $this->rawBlockId[] = $this->prevBlockId;
+        $this->rawBlockId[] = NanoTools::account2public($representative);
+        $this->rawBlockId[] = $balance;
+        $this->rawBlockId[] = NanoTools::account2public($destination);
         
-        $this->blockId   = NanoTools::getBlockID($this->rawBlockID);
-        $this->signature = NanoTools::signMessage($this->privateKey, $this->blockId);
+        $this->blockId   = NanoTools::getBlockId($this->rawBlockId);
+        $this->signature = NanoTools::signMsg($this->privateKey, $this->blockId);
         
         $this->block = [
             'type'           => 'state',
@@ -262,16 +262,16 @@ class NanoBlocks
         $balance = NanoTools::dec2hex($this->prevBlock['balance']);
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
-        $this->rawBlockID   = [];
-        $this->rawBlockID[] = NanoTools::PREAMBLE;
-        $this->rawBlockID[] = $this->publicKey;
-        $this->rawBlockID[] = $this->prevBlockId;
-        $this->rawBlockID[] = NanoTools::account2public($representative);
-        $this->rawBlockID[] = $balance;
-        $this->rawBlockID[] = NanoTools::EMPTY32;
+        $this->rawBlockId   = [];
+        $this->rawBlockId[] = NanoTools::PREAMBLE;
+        $this->rawBlockId[] = $this->publicKey;
+        $this->rawBlockId[] = $this->prevBlockId;
+        $this->rawBlockId[] = NanoTools::account2public($representative);
+        $this->rawBlockId[] = $balance;
+        $this->rawBlockId[] = NanoTools::EMPTY32;
         
-        $this->blockId   = NanoTools::getBlockID($this->rawBlockID);
-        $this->signature = NanoTools::signMessage($this->privateKey, $this->blockId);
+        $this->blockId   = NanoTools::getBlockId($this->rawBlockId);
+        $this->signature = NanoTools::signMsg($this->privateKey, $this->blockId);
         
         $this->block = [
             'type'           => 'state',
