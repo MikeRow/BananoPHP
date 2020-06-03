@@ -54,12 +54,15 @@ class NanoTools
             return $dec;
         }
     }
-    
-    
-    // #
-    // ## Decimal string to hexadecimal string
-    // #
-    
+
+
+    /**
+     * Decimal string to hexadecimal string
+     *
+     * @param string $string
+     * @return string
+     * @throws Exception
+     */
     public static function dec2hex(string $string): string
     {
         if (!ctype_digit($string)) {
@@ -68,11 +71,11 @@ class NanoTools
         
         $hex = decToHex($string);
         
-        if ($hex == '') {
+        if ($hex === '') {
             return '00';
-        } else {
-            return $hex;
         }
+
+        return $hex;
     }
     
     
