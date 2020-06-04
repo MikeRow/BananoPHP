@@ -38,8 +38,6 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
   monitor multiple nodes via CLI
 
-<br/>
-
 ## Credits
 
 Thank you so much for the work and effort of
