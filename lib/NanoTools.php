@@ -42,10 +42,10 @@ class NanoTools
     {
         foreach ($array as $value) {
             if (!ctype_digit((string) $value)) {
-                throw new Exception("Invalid integer array value: $value");
+                throw new Exception("Invalid integer: $value");
             }
-            if ($value > 255) {
-                throw new Exception("Invalid integer array value: $value");
+            if ($value < 0 || $value > 255) {
+                throw new Exception("Invalid byte: $value");
             }
         }
         
