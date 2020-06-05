@@ -1458,7 +1458,7 @@ else {
                     'http' =>
                     [
                         'method' => "GET",
-                        'header' => "User-Agent: php4nano/ncm/ncm.php\r\n"
+                        'header' => "User-Agent: ncm\r\n"
                     ]
                 ];
 

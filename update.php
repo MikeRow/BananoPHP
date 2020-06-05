@@ -5,7 +5,7 @@ $version = file_get_contents(__DIR__ . '/VERSION.txt');
 $options = [
     'http' => [
         'method' => "GET",
-        'header' => "User-Agent: php4nano/update.php\r\n"
+        'header' => "User-Agent: update\r\n"
     ]
 ];
 
