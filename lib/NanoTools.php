@@ -80,8 +80,8 @@ class NanoTools
         }
         
         if (strpos($amount, '.')) {
-            $dot_pos             = strpos($amount, '.');
-            $number_len          = strlen($amount) - 1;
+            $dot_pos = strpos($amount, '.');
+            $number_len = strlen($amount) - 1;
             $raw_to_denomination = substr($raw_to_denomination, 0, -($number_len - $dot_pos));
         }
         

@@ -1,14 +1,14 @@
 {
-    "name": "mikerow/php4nano",
-    "description": "PHP libraries and tools for the Nano currency",
-    "type": "library",
-    "license": "MIT",
-    "require": {
-        "php": "^7.0.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "php4nano\\": "lib/"
-        }
-    }
+	"name" : "mikerow/php4nano",
+	"description" : "PHP libraries and tools for the Nano currency",
+	"type" : "library",
+	"license" : "MIT",
+	"require" : {
+		"php-64bit" : "^7.0.0"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"php4nano\\" : "lib/"
+		}
+	}
 }
