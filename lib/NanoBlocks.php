@@ -106,7 +106,7 @@ class NanoBlocks
             throw new Exception("Invalid representative account: $representative");
         }
         
-        $balance = NanoTools::dec2hex($amount);
+        $balance = NanoTools::dechex($amount);
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
         $this->rawBlockId   = [];
@@ -125,7 +125,7 @@ class NanoBlocks
             'account'        => $this->account,
             'previous'       => NanoTools::EMPTY32,
             'representative' => $representative,
-            'balance'        => NanoTools::hex2dec($balance),
+            'balance'        => NanoTools::hexdec($balance),
             'link'           => $pairing_block_id,
             'signature'      => $this->signature,
             'work'           => $this->work
@@ -159,7 +159,7 @@ class NanoBlocks
             throw new Exception("Invalid representative account: $representative");
         }
         
-        $balance  = NanoTools::dec2hex(gmp_strval(gmp_add(NanoTools::hex2dec($this->prevBlock['balance']), $amount)));
+        $balance  = NanoTools::dechex(gmp_strval(gmp_add(NanoTools::hexdec($this->prevBlock['balance']), $amount)));
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
         $this->rawBlockId   = [];
@@ -178,7 +178,7 @@ class NanoBlocks
             'account'        => $this->account,
             'previous'       => $this->prevBlockId,
             'representative' => $representative,
-            'balance'        => NanoTools::hex2dec($balance),
+            'balance'        => NanoTools::hexdec($balance),
             'link'           => $pairing_block_id,
             'signature'      => $this->signature,
             'work'           => $this->work
@@ -212,7 +212,7 @@ class NanoBlocks
             throw new Exception("Invalid representative account: $representative");
         }
         
-        $balance  = NanoTools::dec2hex(gmp_strval(gmp_sub(NanoTools::hex2dec($this->prev_block['balance']), $amount)));
+        $balance  = NanoTools::dechex(gmp_strval(gmp_sub(NanoTools::hexdec($this->prev_block['balance']), $amount)));
         if (strpos($balance, '-') !== false) {
             throw new Exception("Insufficient balance: $balance");
         }
@@ -234,7 +234,7 @@ class NanoBlocks
             'account'        => $this->account,
             'previous'       => $this->prevBlockId,
             'representative' => $representative,
-            'balance'        => NanoTools::hex2dec($balance),
+            'balance'        => NanoTools::hexdec($balance),
             'link'           => $destination,
             'signature'      => $this->signature,
             'work'           => $this->work
@@ -259,7 +259,7 @@ class NanoBlocks
             throw new Exception("Invalid representative account: $representative");
         }
         
-        $balance = NanoTools::dec2hex($this->prevBlock['balance']);
+        $balance = NanoTools::dechex($this->prevBlock['balance']);
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
         $this->rawBlockId   = [];
@@ -278,7 +278,7 @@ class NanoBlocks
             'account'        => $this->account,
             'previous'       => $this->prevBlockId,
             'representative' => $representative,
-            'balance'        => NanoTools::hex2dec($balance),
+            'balance'        => NanoTools::hexdec($balance),
             'link'           => NanoTools::EMPTY32,
             'signature'      => $this->signature,
             'work'           => $this->work

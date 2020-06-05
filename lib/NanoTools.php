@@ -37,46 +37,6 @@ class NanoTools
     
     
     // #
-    // ## Hexadecimal string to decimal string
-    // #
-    
-    public static function hex2dec(string $string): string
-    {
-        if (!ctype_xdigit($string)) {
-            throw new Exception("Invalid hexadecimal string: $string");
-        }
-        
-        $dec = hexToDec($string);
-        
-        if ($dec == '') {
-            return '0';
-        } else {
-            return $dec;
-        }
-    }
-    
-    
-    // #
-    // ## Decimal string to hexadecimal string
-    // #
-    
-    public static function dec2hex(string $string): string
-    {
-        if (!ctype_digit($string)) {
-            throw new Exception("Invalid decimal string: $string");
-        }
-        
-        $hex = decToHex($string);
-        
-        if ($hex == '') {
-            return '00';
-        } else {
-            return $hex;
-        }
-    }
-    
-    
-    // #
     // ## Integer array to binary string
     // #
     
@@ -737,7 +697,7 @@ class NanoTools
         $res = array_reverse($res);
         $res = Uint::fromUint8Array($res)->toHexString();
         
-        if (self::hex2dec($res) >= self::hex2dec($difficulty)) {
+        if (self::hexdec($res) >= self::hexdec($difficulty)) {
             return true;
         }
         
