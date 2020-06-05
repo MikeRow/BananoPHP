@@ -379,7 +379,7 @@ class NanoTools
     
     
     // #
-    // ## BIP39: mnemonic seed to hexadecimal seed
+    // ## Mnemonic seed to hexadecimal string
     // #
     
     public static function mnem2hex(array $words): string
@@ -419,7 +419,7 @@ class NanoTools
     
     
     // #
-    // ## BIP39: hexadecimal seed to mnemonic seed
+    // ## Hexadecimal string to mnemonic words
     // #
     
     public static function hex2mnem(string $hex): array
@@ -454,7 +454,7 @@ class NanoTools
     
     
     // #
-    // ## BIP39/44: mnemonic words to master seed
+    // ## Mnemonic words to master seed
     // #
     
     public static function mnem2mseed(array $words, string $passphrase = ''): string
@@ -479,7 +479,7 @@ class NanoTools
     
     
     // #
-    // ## BIP39/44: master seed to keypair
+    // ## Master seed to keypair
     // #
     
     public static function mseed2keys(string $seed, int $index = 0, bool $get_account = false): array
