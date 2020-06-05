@@ -12,8 +12,6 @@ use \SplFixedArray as SplFixedArray;
 use \Blake2b as Blake2b;
 use \Salt as Salt;
 use \FieldElement as FieldElement;
-use \hexToDec as hexToDec;
-use \decToHex as decToHex;
 
 class NanoTools
 {
@@ -697,7 +695,7 @@ class NanoTools
         $res = array_reverse($res);
         $res = Uint::fromUint8Array($res)->toHexString();
         
-        if (self::hexdec($res) >= self::hexdec($difficulty)) {
+        if (hexdec($res) >= hexdec($difficulty)) {
             return true;
         }
         
