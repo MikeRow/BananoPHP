@@ -16,11 +16,11 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
 - NanoCLI
 
-  class for interfacing to node CLI
+  class for interfacing to Nano node CLI
 
 - NanoRPC
 
-  class for interfacing to node RPC
+  class for interfacing to Nano node RPC
 
 - NanoRPCExt
 

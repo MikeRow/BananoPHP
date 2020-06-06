@@ -4,7 +4,14 @@
 	"type" : "library",
 	"license" : "MIT",
 	"require" : {
-		"php-64bit" : "^7.0.0"
+		"php-64bit" : "^7.0.0",
+		"ext-curl" : "*",
+		"ext-gmp" : "*",
+		"ext-mbstring" : "*",
+		"ext-openssl" : "*"
+	},
+	"suggest" : {
+		"ext-blake2" : "https://github.com/strawbrary/php-blake2"
 	},
 	"autoload" : {
 		"psr-4" : {
