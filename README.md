@@ -24,7 +24,7 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
 - NanoTools
 
-  class for node-independent functions
+  class for node-independent Nano functions
 
 ## Credits
 
