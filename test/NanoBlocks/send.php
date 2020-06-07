@@ -1,10 +1,10 @@
 <?php
 
-require_once __DIR__ . '/../../lib/NanoTools.php';
-require_once __DIR__ . '/../../lib/NanoBlocks.php';
+require_once __DIR__ . '/../../lib/NanoTool.php';
+require_once __DIR__ . '/../../lib/NanoBlock.php';
 require_once __DIR__ . '/../../lib/NanoRPCExt.php';
 
-use php4nano\NanoTools as NanoTools;
+use php4nano\NanoTool as NanoTool;
 
 // Owner data
 $private_key    = ''; // Owner account secret key
@@ -19,7 +19,7 @@ $representative = ''; // New representative (optional)
 
 // Initialize NanoRPC and NanoBlocks
 $nanorpc    = new php4nano\NanoRPCExt();
-$nanoblocks = new php4nano\NanoBlocks($private_key);
+$nanoblocks = new php4nano\NanoBlock($private_key);
 
 // Get external block data
 $account_info = $nanorpc->account_info(['account' => $account]);
@@ -27,7 +27,7 @@ $block_info   = $nanorpc->block_info([
                     'json_block' => true,
                     'hash'       => $account_info['frontier']
                 ]);
-$work         = NanoTools::getWork($account_info['frontier'], $difficulty);
+$work         = NanoTool::getWork($account_info['frontier'], $difficulty);
 
 // Build block
 $nanoblocks->setPrev($account_info['frontier'], $block_info['contents']);

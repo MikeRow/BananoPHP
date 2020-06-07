@@ -1,11 +1,11 @@
 <?php
 
-require_once __DIR__ . '/../../lib/NanoTools.php';
+require_once __DIR__ . '/../../lib/NanoTool.php';
 
-use php4nano\NanoTools as NanoTools;
+use php4nano\NanoTool as NanoTool;
 
-list($seed) = NanoTools::keys();
+list($seed) = NanoTool::keys();
 
-var_dump(NanoTools::seed2keys($seed, 0));
+var_dump(NanoTool::seed2keys($seed, 0));
 
-var_dump(NanoTools::seed2keys($seed, 0, true));
+var_dump(NanoTool::seed2keys($seed, 0, true));

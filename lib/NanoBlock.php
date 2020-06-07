@@ -2,12 +2,12 @@
 
 namespace php4nano;
 
-require_once __DIR__ . '/NanoTools.php';
+require_once __DIR__ . '/NanoTool.php';
 
 use \Exception as Exception;
-use php4nano\NanoTools as NanoTools;
+use php4nano\NanoTool as NanoTool;
 
-class NanoBlocks
+class NanoBlock
 {
     // # Owner informations
     
@@ -43,8 +43,8 @@ class NanoBlocks
         }
         
         $this->privateKey = $private_key;
-        $this->publicKey  = NanoTools::private2public($private_key);
-        $this->account    = NanoTools::public2account($this->publicKey);
+        $this->publicKey  = NanoTool::private2public($private_key);
+        $this->account    = NanoTool::public2account($this->publicKey);
     }
     
     
@@ -100,30 +100,30 @@ class NanoBlocks
             throw new Exception("Invalid previous block ID: $pairing_block_id");
         }
         if (!ctype_digit($amount)) {
-            throw new Exception("Invalid raw amount: $amount");
+            throw new Exception("Invalid amount: $amount");
         }
-        if (!NanoTools::account2public($representative, false)) {
-            throw new Exception("Invalid representative account: $representative");
+        if (!NanoTool::account2public($representative, false)) {
+            throw new Exception("Invalid representative: $representative");
         }
         
         $balance = dechex($amount);
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
         $this->rawBlockId   = [];
-        $this->rawBlockId[] = NanoTools::PREAMBLE;
+        $this->rawBlockId[] = NanoTool::PREAMBLE;
         $this->rawBlockId[] = $this->publicKey;
-        $this->rawBlockId[] = NanoTools::EMPTY32;
-        $this->rawBlockId[] = NanoTools::account2public($representative);
+        $this->rawBlockId[] = NanoTool::EMPTY32;
+        $this->rawBlockId[] = NanoTool::account2public($representative);
         $this->rawBlockId[] = $balance;
         $this->rawBlockId[] = $pairing_block_id;
         
-        $this->blockId   = NanoTools::getBlockId($this->rawBlockId);
-        $this->signature = NanoTools::signMsg($this->privateKey, $this->blockId);
+        $this->blockId   = NanoTool::getBlockId($this->rawBlockId);
+        $this->signature = NanoTool::signMsg($this->privateKey, $this->blockId);
         
         $this->block = [
             'type'           => 'state',
             'account'        => $this->account,
-            'previous'       => NanoTools::EMPTY32,
+            'previous'       => NanoTool::EMPTY32,
             'representative' => $representative,
             'balance'        => hexdec($balance),
             'link'           => $pairing_block_id,
@@ -150,28 +150,28 @@ class NanoBlocks
             throw new Exception("Invalid previous block ID: $pairing_block_id");
         }
         if (!ctype_digit($amount)) {
-            throw new Exception("Invalid raw amount: $amount");
+            throw new Exception("Invalid amount: $amount");
         }
         if ($representative == null) {
             $representative = $this->prevBlock['representative'];
         }
-        if (!NanoTools::account2public($representative, false)) {
-            throw new Exception("Invalid representative account: $representative");
+        if (!NanoTool::account2public($representative, false)) {
+            throw new Exception("Invalid representative: $representative");
         }
         
         $balance = dechex(gmp_strval(gmp_add(hexdec($this->prevBlock['balance']), $amount)));
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
         $this->rawBlockId   = [];
-        $this->rawBlockId[] = NanoTools::PREAMBLE;
+        $this->rawBlockId[] = NanoTool::PREAMBLE;
         $this->rawBlockId[] = $this->publicKey;
         $this->rawBlockId[] = $this->prevBlockId;
-        $this->rawBlockId[] = NanoTools::account2public($representative);
+        $this->rawBlockId[] = NanoTool::account2public($representative);
         $this->rawBlockId[] = $balance;
         $this->rawBlockId[] = $pairing_block_id;
         
-        $this->blockId   = NanoTools::getBlockId($this->rawBlockId);
-        $this->signature = NanoTools::signMsg($this->privateKey, $this->blockId);
+        $this->blockId   = NanoTool::getBlockId($this->rawBlockId);
+        $this->signature = NanoTool::signMsg($this->privateKey, $this->blockId);
         
         $this->block = [
             'type'           => 'state',
@@ -199,17 +199,17 @@ class NanoBlocks
     
     public function send(string $destination, string $amount, string $representative = null) : array
     {
-        if (!NanoTools::account2public($destination, false)) {
-            throw new Exception("Invalid destination account: $representative");
+        if (!NanoTool::account2public($destination, false)) {
+            throw new Exception("Invalid destination: $representative");
         }
         if (!ctype_digit($amount)) {
-            throw new Exception("Invalid raw amount: $amount");
+            throw new Exception("Invalid amount: $amount");
         }
         if ($representative == null) {
             $representative = $this->prevBlock['representative'];
         }
-        if (!NanoTools::account2public($representative, false)) {
-            throw new Exception("Invalid representative account: $representative");
+        if (!NanoTool::account2public($representative, false)) {
+            throw new Exception("Invalid representative: $representative");
         }
         
         $balance  = dechex(gmp_strval(gmp_sub(hexdec($this->prev_block['balance']), $amount)));
@@ -219,15 +219,15 @@ class NanoBlocks
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
         $this->rawBlockId   = [];
-        $this->rawBlockId[] = NanoTools::PREAMBLE;
+        $this->rawBlockId[] = NanoTool::PREAMBLE;
         $this->rawBlockId[] = $this->publicKey;
         $this->rawBlockId[] = $this->prevBlockId;
-        $this->rawBlockId[] = NanoTools::account2public($representative);
+        $this->rawBlockId[] = NanoTool::account2public($representative);
         $this->rawBlockId[] = $balance;
-        $this->rawBlockId[] = NanoTools::account2public($destination);
+        $this->rawBlockId[] = NanoTool::account2public($destination);
         
-        $this->blockId   = NanoTools::getBlockId($this->rawBlockId);
-        $this->signature = NanoTools::signMsg($this->privateKey, $this->blockId);
+        $this->blockId   = NanoTool::getBlockId($this->rawBlockId);
+        $this->signature = NanoTool::signMsg($this->privateKey, $this->blockId);
         
         $this->block = [
             'type'           => 'state',
@@ -255,23 +255,23 @@ class NanoBlocks
     
     public function change(string $representative) : array
     {
-        if (!NanoTools::account2public($representative, false)) {
-            throw new Exception("Invalid representative account: $representative");
+        if (!NanoTool::account2public($representative, false)) {
+            throw new Exception("Invalid representative: $representative");
         }
         
         $balance = dechex($this->prevBlock['balance']);
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
         $this->rawBlockId   = [];
-        $this->rawBlockId[] = NanoTools::PREAMBLE;
+        $this->rawBlockId[] = NanoTool::PREAMBLE;
         $this->rawBlockId[] = $this->publicKey;
         $this->rawBlockId[] = $this->prevBlockId;
-        $this->rawBlockId[] = NanoTools::account2public($representative);
+        $this->rawBlockId[] = NanoTool::account2public($representative);
         $this->rawBlockId[] = $balance;
-        $this->rawBlockId[] = NanoTools::EMPTY32;
+        $this->rawBlockId[] = NanoTool::EMPTY32;
         
-        $this->blockId   = NanoTools::getBlockId($this->rawBlockId);
-        $this->signature = NanoTools::signMsg($this->privateKey, $this->blockId);
+        $this->blockId   = NanoTool::getBlockId($this->rawBlockId);
+        $this->signature = NanoTool::signMsg($this->privateKey, $this->blockId);
         
         $this->block = [
             'type'           => 'state',
@@ -279,7 +279,7 @@ class NanoBlocks
             'previous'       => $this->prevBlockId,
             'representative' => $representative,
             'balance'        => hexdec($balance),
-            'link'           => NanoTools::EMPTY32,
+            'link'           => NanoTool::EMPTY32,
             'signature'      => $this->signature,
             'work'           => $this->work
         ];

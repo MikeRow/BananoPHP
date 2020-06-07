@@ -1,10 +1,10 @@
 <?php
 
-require_once __DIR__ . '/../../lib/NanoTools.php';
+require_once __DIR__ . '/../../lib/NanoTool.php';
 
-use php4nano\NanoTools as NanoTools;
+use php4nano\NanoTool as NanoTool;
 
 $difficulty = 'ffffffc000000000';
 $multiplier = 1.3;
 
-var_dump(NanoTools::multDiff($difficulty, $multiplier));
+var_dump(NanoTool::multDiff($difficulty, $multiplier));

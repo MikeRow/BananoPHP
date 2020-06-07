@@ -1,9 +1,9 @@
 <?php
 
-require_once __DIR__ . '/../../lib/NanoTools.php';
+require_once __DIR__ . '/../../lib/NanoTool.php';
 
-use php4nano\NanoTools as NanoTools;
+use php4nano\NanoTool as NanoTool;
 
 $array = [34, 83, 255, 255, 90, 39, 02, 98];
 
-var_dump(NanoTools::arr2bin($array));
+var_dump(NanoTool::arr2bin($array));

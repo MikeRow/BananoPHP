@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../../lib/NanoTools.php';
+require_once __DIR__ . '/../../lib/NanoTool.php';
 
-use php4nano\NanoTools as NanoTools;
+use php4nano\NanoTool as NanoTool;
 
 $hexs = [
 	'9C5F967FB821CD48BA545547B32150008D356DC9C876894D14AA4959DE4818B6',
@@ -13,4 +13,4 @@ $hexs = [
 	'9C5F967FB821CD48BA545547B32150008D356DC9C876894D14AA4959DE4818B6'
 ];
 
-var_dump(NanoTools::getBlockId($hexs));
+var_dump(NanoTool::getBlockId($hexs));

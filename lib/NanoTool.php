@@ -13,7 +13,7 @@ use \Blake2b as Blake2b;
 use \Salt as Salt;
 use \FieldElement as FieldElement;
 
-class NanoTools
+class NanoTool
 {
     // #
     // ## Constants
