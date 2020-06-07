@@ -6,7 +6,7 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
 ## Features
 
-- NanoBlocks
+- NanoBlock
 
   class for building Nano blocks
 
@@ -22,7 +22,7 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
   additional functions for NanoRPC
 
-- NanoTools
+- NanoTool
 
   class for node-independent Nano functions
 
