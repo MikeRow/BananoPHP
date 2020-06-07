@@ -235,8 +235,7 @@ class NanoTool
             $ctx = $b2b->init(null, 5);
             $b2b->update($ctx, $key->toUint8(), 32);
             $b2b->finish($ctx, $hash);
-            
-            $hash     = Uint::fromUint8Array(array_slice($hash->toArray(), 0, 5))->reverse();
+            $hash = Uint::fromUint8Array(array_slice($hash->toArray(), 0, 5))->reverse();
             $checksum = $hash->toString();
         } else {
             $key = Uint::fromHex($public_key)->toUint8();
