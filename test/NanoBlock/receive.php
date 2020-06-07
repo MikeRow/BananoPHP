@@ -18,8 +18,8 @@ $received_amount  = ''; // Received amount
 $representative   = ''; // New representative (optional)
 
 // Initialize NanoRPC and NanoBlocks
-$nanorpc    = new php4nano\NanoRPCExt();
-$nanoblocks = new php4nano\NanoBlock($private_key);
+$nanorpc   = new php4nano\NanoRPCExt();
+$nanoblock = new php4nano\NanoBlock($private_key);
 
 // Get external block data
 $account_info = $nanorpc->account_info(['account' => $account]);
@@ -27,17 +27,17 @@ $block_info   = $nanorpc->block_info([
                     'json_block' => true,
                     'hash'       => $account_info['frontier']
                 ]);
-$work         = NanoTool::getWork($account_info['frontier'], $difficulty);
+$work = NanoTool::getWork($account_info['frontier'], $difficulty);
 
 // Build block
-$nanoblocks->setPrev($account_info['frontier'], $block_info['contents']);
-$nanoblocks->setWork($work);
-$nanoblocks->receive($pairing_block_id, $received_amount, $representative);
+$nanoblock->setPrev($account_info['frontier'], $block_info['contents']);
+$nanoblock->setWork($work);
+$nanoblock->receive($pairing_block_id, $received_amount, $representative);
 
 // Publish block
 $process = $nanorpc->process([
                'json_block' => 'true',
-               'block' => $nanoblocks->block
+               'block' => $nanoblock->block
            ]);
 
 // Results and debug
