@@ -1,6 +1,6 @@
 <?php 
 
-require_once __DIR__ . '/../../lib/NanoCLI.php';
+require_once __DIR__ . '/../lib/NanoCLI.php';
 
 $nanocli = new php4nano\NanoCLI('/home/nano/nano_node');
 
