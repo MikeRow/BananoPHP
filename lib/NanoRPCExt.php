@@ -9,10 +9,10 @@ use \Exception as Exception;
 class NanoRPCExt extends NanoRPC
 {
     // #
-    // ## Wallet wipe
+    // ## Wallet sweep
     // #
-
-    public function wallet_wipe(array $args)
+    
+    public function wallet_sweep(array $args)
     {
         // Check args
         
@@ -115,6 +115,11 @@ class NanoRPCExt extends NanoRPC
         $this->response    = $return;
         
         return $this->response;
+    }
+    
+    public function wallet_wipe(array $args)
+    {
+        $this->wallet_sweep($args);
     }
     
     
