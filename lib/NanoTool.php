@@ -240,6 +240,7 @@ class NanoTool
         } else {
             $key = Uint::fromHex($public_key)->toUint8();
             $key = self::arr2bin((array) $key);
+            
             $hash = blake2($key, 5, null, true);
             $hash = self::bin2arr(strrev($hash));
             $checksum = Uint::fromUint8Array($hash)->toString();
