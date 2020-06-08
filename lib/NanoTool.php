@@ -88,7 +88,6 @@ class NanoTool
         $amount = str_replace('.', '', $amount) . str_replace('1', '', $raw_to_denomination);
         
         // Remove useless zeros from left
-        
         while (substr($amount, 0, 1) == '0') {
             $amount = substr($amount, 1);
         }
@@ -125,19 +124,16 @@ class NanoTool
         $amount = substr_replace($amount, '.', -(strlen($raw_to_denomination)-1), 0);
     
         // Remove useless zeroes from left
-    
         while (substr($amount, 0, 1) == '0' && substr($amount, 1, 1) != '.') {
             $amount = substr($amount, 1);
         }
     
         // Remove useless decimals
-    
         while (substr($amount, -1) == '0') {
             $amount = substr($amount, 0, -1);
         }
         
         // Remove dot if all decimals are zeros
-        
         if (substr($amount, -1) == '.') {
             $amount = substr($amount, 0, -1);
         }

@@ -15,7 +15,6 @@ class NanoRPCExt extends NanoRPC
     public function wallet_sweep(array $args)
     {
         // Check args
-        
         if (!isset($args['wallet']) || !isset($args['destination'])) {
             $this->error = 'Unable to parse Array';
             return false;
@@ -25,7 +24,6 @@ class NanoRPCExt extends NanoRPC
         $destination = $args['destination'];
         
         // Wallet ok?
-        
         $wallet_info = $this->wallet_info(['wallet' => $wallet]);
         
         if ($this->error != null) {
@@ -34,14 +32,12 @@ class NanoRPCExt extends NanoRPC
         }
         
         // Balance ok?
-        
         if (gmp_cmp($wallet_info['balance'], 1) < 0) {
             $this->error = 'Insufficient balance';
             return false;
         }
         
         // Destination ok?
-        
         $check_destination = $this->validate_account_number(['account'=>$destination]);
         
         if ($check_destination['valid'] != 1) {
@@ -50,7 +46,6 @@ class NanoRPCExt extends NanoRPC
         }
 
         // Any sort?
-        
         $sort = isset($args['sort']) ? $args['sort'] : 'list';
         
         //
@@ -58,7 +53,6 @@ class NanoRPCExt extends NanoRPC
         $return = ['balances' => []];
         
         // Get wallet balances
-        
         $args = [
             'wallet'    => $wallet,
             'threshold' => 1
@@ -67,7 +61,6 @@ class NanoRPCExt extends NanoRPC
         $wallet_balances = $this->wallet_balances($args);
         
         // Sort balances
-        
         if ($sort == 'asc') {
             uasort($wallet_balances['balances'], function ($a, $b) {
                 return gmp_cmp($a['balance'], $b['balance']);
@@ -81,7 +74,6 @@ class NanoRPCExt extends NanoRPC
         }
         
         // Wipe wallet
-        
         foreach ($wallet_balances['balances'] as $account => $balances) {
             if ($account == $destination) {
                 continue;
@@ -98,7 +90,6 @@ class NanoRPCExt extends NanoRPC
             $send = $this->send($args);
             
             // Send
-            
             $return['balances'][$account] = [
                 'block'  => $send['block'],
                 'amount' => $balances['balance']
@@ -130,7 +121,6 @@ class NanoRPCExt extends NanoRPC
     public function wallet_send(array $args)
     {
         // Check args
-        
         if (!isset($args['wallet']) || !isset($args['destination']) || !isset($args['amount'])) {
             $this->error = 'Unable to parse Array';
             return false;
@@ -141,7 +131,6 @@ class NanoRPCExt extends NanoRPC
         $amount      = $args['amount'];
         
         // Wallet ok?
-        
         $wallet_info = $this->wallet_info(['wallet' => $wallet]);
         
         if ($this->error != null) {
@@ -150,7 +139,6 @@ class NanoRPCExt extends NanoRPC
         }
     
         // Destination ok?
-    
         $check_destination = $this->validate_account_number(['account'=>$destination]);
         
         if ($check_destination['valid'] != 1) {
@@ -159,7 +147,6 @@ class NanoRPCExt extends NanoRPC
         }
         
         // Amount ok?
-        
         if (!ctype_digit($amount)) {
             $this->error = 'Bad amount';
             return false;
@@ -176,7 +163,6 @@ class NanoRPCExt extends NanoRPC
         }
         
         // Any sort?
-        
         $sort = isset($args['sort']) ? $args['sort'] : 'list';
         
         //
@@ -186,7 +172,6 @@ class NanoRPCExt extends NanoRPC
         $amount_left       = $amount;
         
         // Get wallet balances
-        
         $args = [
             'wallet'    => $wallet,
             'threshold' => 1
@@ -195,7 +180,6 @@ class NanoRPCExt extends NanoRPC
         $wallet_balances = $this->wallet_balances($args);
             
         // Sort balances
-        
         if ($sort == 'asc') {
             uasort($wallet_balances['balances'], function ($a, $b) {
                 return gmp_cmp($a['balance'], $b['balance']);
@@ -209,7 +193,6 @@ class NanoRPCExt extends NanoRPC
         }
         
         // Select accounts
-        
         foreach ($wallet_balances['balances'] as $account => $balances) {
             if (gmp_cmp($balances['balance'], $amount_left) >= 0) {
                 $selected_accounts[$account] = $amount_left;
@@ -225,7 +208,6 @@ class NanoRPCExt extends NanoRPC
         }
 
         // Send from selected accounts
-        
         foreach ($selected_accounts as $account => $balance) {
             if ($account == $destination) {
                 continue;
@@ -242,7 +224,6 @@ class NanoRPCExt extends NanoRPC
             $send = $this->send($args);
 
             // Send
-            
             $return['balances'][$account] = [
                 'block'  => $send['block'],
                 'amount' => $balances['balance']
@@ -269,7 +250,6 @@ class NanoRPCExt extends NanoRPC
     public function wallet_weight(array $args)
     {
         // Check args
-        
         if (!isset($args['wallet'])) {
             $this->error = 'Unable to parse Array';
             return false;
@@ -278,7 +258,6 @@ class NanoRPCExt extends NanoRPC
         $wallet = $args['wallet'];
         
         // Wallet ok?
-        
         $wallet_info = $this->wallet_info(['wallet' => $wallet]);
         
         if ($this->error != null) {
@@ -296,7 +275,6 @@ class NanoRPCExt extends NanoRPC
         $wallet_weight = '0';
         
         // Get wallet balances
-        
         $args = [
             'wallet' => $wallet
         ];
@@ -304,7 +282,6 @@ class NanoRPCExt extends NanoRPC
         $wallet_accounts = $this->account_list($args);
         
         // Check every weight and sum them
-        
         foreach ($wallet_accounts['accounts'] as $account) {
             $account_weight              = $this->account_weight(['account'=>$account]);
             $wallet_weight               = gmp_add($wallet_weight, $account_weight['weight']);
@@ -314,7 +291,6 @@ class NanoRPCExt extends NanoRPC
         $return['weight'] = gmp_strval($wallet_weight);
         
         // Sort weights
-        
         if ($sort == 'asc') {
             uasort($return['weights'], function ($a, $b) {
                 return gmp_cmp($a, $b);
