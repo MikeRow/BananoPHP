@@ -113,7 +113,7 @@ class NanoRPCExt extends NanoRPC
     
     public function wallet_wipe(array $args)
     {
-        $this->wallet_sweep($args);
+        return $this->wallet_sweep($args);
     }
     
     
