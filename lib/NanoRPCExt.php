@@ -6,7 +6,6 @@ require_once __DIR__ . '/NanoTool.php';
 require_once __DIR__ . '/NanoRPC.php';
 
 use \Exception as Exception;
-use php4nano\NanoTool as NanoTool;
 
 class NanoRPCExt extends NanoRPC
 {
