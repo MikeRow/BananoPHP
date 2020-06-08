@@ -97,7 +97,7 @@ class NanoRPC
         [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_USERAGENT      => 'php4nano/NanoRPC.php',
+            CURLOPT_USERAGENT      => 'php4nano/NanoRPC',
             CURLOPT_MAXREDIRS      => 10,
             CURLOPT_HTTPHEADER     => ['Content-type: application/json'],
             CURLOPT_POST           => true,
