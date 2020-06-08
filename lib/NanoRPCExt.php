@@ -73,9 +73,12 @@ class NanoRPCExt extends NanoRPC
             // Do nothing
         }
         
-        // Wipe wallet
+        // Sweep wallet
         foreach ($wallet_balances['balances'] as $account => $balances) {
             if ($account == $destination) {
+                $return['balances'][$account] = [
+                        'warning' => 'Skipped self send'
+                ];
                 continue;
             }
             
@@ -210,6 +213,9 @@ class NanoRPCExt extends NanoRPC
         // Send from selected accounts
         foreach ($selected_accounts as $account => $balance) {
             if ($account == $destination) {
+                $return['balances'][$account] = [
+                        'warning' => 'Skipped self send'
+                ];
                 continue;
             }
             
