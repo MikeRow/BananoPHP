@@ -54,13 +54,35 @@ class NanoRPC
     
     
     // #
-    // ## Set authentication
+    // ## Unset SSL
     // #
     
-    public function setAuth(string $username, string $password = null)
+    public function unsetSSL()
+    {
+        $this->proto         = 'http';
+        $this->CACertificate = null;
+    }
+    
+    
+    // #
+    // ## Set basic authentication
+    // #
+    
+    public function setBasicAuth(string $username, string $password = null)
     {
         $this->username = $username;
         $this->password = $password;
+    }
+    
+    
+    // #
+    // ## Unset basic authentication
+    // #
+    
+    public function unsetBasicAuth()
+    {
+        $this->username = null;
+        $this->password = null;
     }
     
     
