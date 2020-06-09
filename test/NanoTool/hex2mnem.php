@@ -4,4 +4,4 @@ require_once __DIR__ . '/../../autoload.php';
 
 use php4nano\NanoTool as NanoTool;
 
-var_dump(NanoTool::hex2mnem('EAAAAFF273DB5C0002565474B46639A776180BD65F820E733A86EBD95D37D961'));
+var_dump(NanoTool::hex2mnem('59B1E39BB400D59B9EFD1C263DE634448751D0CAB90665E6894EB391CE158853'));
