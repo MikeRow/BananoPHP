@@ -2,10 +2,7 @@
 
 namespace php4nano;
 
-require_once __DIR__ . '/NanoTool.php';
-
 use \Exception as Exception;
-use php4nano\NanoTool as NanoTool;
 
 class NanoBlock
 {

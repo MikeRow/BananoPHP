@@ -2,11 +2,10 @@
 
 namespace php4nano;
 
-require_once __DIR__ . '/../lib3/Salt/autoload.php';
-require_once __DIR__ . '/../lib3/Util.php';
+require_once __DIR__ . '/../lib/Salt/autoload.php';
+require_once __DIR__ . '/../lib/Util.php';
 
 use \Exception as Exception;
-use \Util as Util;
 use \Uint as Uint;
 use \SplFixedArray as SplFixedArray;
 use \Blake2b as Blake2b;
@@ -342,7 +341,7 @@ class NanoTool
             throw new Exception("Words array count is not 12 or 24");
         }
         
-        $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib3/BIP39/BIP39_en.json'), true);
+        $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib/BIP39/BIP39_en.json'), true);
         $mnem_count = count($words);
         $bits = [];
         $hex  = [];
@@ -385,7 +384,7 @@ class NanoTool
             throw new Exception("Invalid hexadecimal string: $hex");
         }
         
-        $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib3/BIP39/BIP39_en.json'), true);
+        $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib/BIP39/BIP39_en.json'), true);
         $hex_lenght = strlen($hex);
         $bits     = [];
         $mnemonic = [];
@@ -417,7 +416,7 @@ class NanoTool
             throw new Exception("Words array count is less than 1");
         }
         
-        $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib3/BIP39/BIP39_en.json'), true);
+        $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib/BIP39/BIP39_en.json'), true);
         
         foreach ($words as $index => $value) {
             $word = array_search($value, $bip39_words);

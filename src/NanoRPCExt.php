@@ -2,9 +2,6 @@
 
 namespace php4nano;
 
-require_once __DIR__ . '/NanoTool.php';
-require_once __DIR__ . '/NanoRPC.php';
-
 use \Exception as Exception;
 
 class NanoRPCExt extends NanoRPC
@@ -76,7 +73,8 @@ class NanoRPCExt extends NanoRPC
         foreach ($wallet_balances['balances'] as $account => $balances) {
             if ($account == $destination) {
                 $return['balances'][$account] = [
-                        'warning' => 'Skipped self send'
+                    'notice' => 'Skipped self send',
+                    'amount' => $balances['balance']
                 ];
                 continue;
             }
@@ -99,7 +97,8 @@ class NanoRPCExt extends NanoRPC
             
             if ($send['block'] == self::EMPTY32) {
                 $return['balances'][$account] = [
-                    'error' => 'Bad send'
+                    'error'  => 'Bad send',
+                    'amount' => $balances['balance']
                 ];
             }
         }
@@ -211,7 +210,8 @@ class NanoRPCExt extends NanoRPC
         foreach ($selected_accounts as $account => $balance) {
             if ($account == $destination) {
                 $return['balances'][$account] = [
-                        'warning' => 'Skipped self send'
+                    'notice' => 'Skipped self send',
+                    'amount' => $balances['balance']
                 ];
                 continue;
             }
@@ -234,7 +234,8 @@ class NanoRPCExt extends NanoRPC
             
             if ($send['block'] == self::EMPTY32) {
                 $return['balances'][$account] = [
-                    'error' => 'Bad send'
+                    'error'  => 'Bad send',
+                    'amount' => $balances['balance']
                 ];
             }
         }

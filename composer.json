@@ -1,8 +1,33 @@
 {
 	"name" : "mikerow/php4nano",
-	"description" : "PHP libraries and tools for the Nano currency",
 	"type" : "library",
+	"description" : "PHP libraries and tools for the Nano currency",
+	"keywords" : [
+		"nano",
+		"raiblocks",
+		"raiblockscommunity",
+		"node",
+		"crypto",
+		"currency",
+		"coin",
+		"protocol",
+		"RPC",
+		"CLI",
+		"tools",
+		"blocks",
+		"library",
+		"libraries",
+		"class",
+		"classes"
+	],
+	"homepage" : "https://github.com/mikerow/php4nano",
 	"license" : "MIT",
+	"authors" : [{
+			"name" : "Mike Row",
+			"nano" : "nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m",
+			"role" : "Developer"
+		}
+	],
 	"require" : {
 		"php-64bit" : "^7.0.0",
 		"ext-curl" : "*",
@@ -11,11 +36,11 @@
 		"ext-openssl" : "*"
 	},
 	"suggest" : {
-		"ext-blake2" : "https://github.com/strawbrary/php-blake2"
+		"ext-blake2" : "Install the blake2 extension in order to speed up some functions, https://github.com/strawbrary/php-blake2"
 	},
 	"autoload" : {
 		"psr-4" : {
-			"php4nano\\" : "lib/"
+			"php4nano\\" : "src/"
 		}
 	}
 }
