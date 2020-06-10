@@ -23,7 +23,7 @@ $nanoblock  = new php4nano\NanoBlock($private_key);
 $account_info = $nanorpc->account_info(['account' => $account]);
 $block_info   = $nanorpc->block_info([
     'json_block' => true,
-    'hash'       => $account_info['frontier']
+    'hash' => $account_info['frontier']
 ]);
 
 // Generate work
