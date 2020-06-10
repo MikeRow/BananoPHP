@@ -29,7 +29,7 @@
 		}
 	],
 	"require" : {
-		"php-64bit" : "^7.0.0",
+		"php-64bit" : "^7.2.0",
 		"ext-curl" : "*",
 		"ext-gmp" : "*",
 		"ext-mbstring" : "*",
