@@ -286,7 +286,7 @@ class NanoTool
     
     
     // #
-    // ## BLAKE2: seed to keypair
+    // ## Seed to keypair
     // #
     
     public static function seed2keys(string $seed, int $index = 0, bool $get_account = false): array
