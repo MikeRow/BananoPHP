@@ -36,7 +36,7 @@
 		"ext-openssl" : "*"
 	},
 	"suggest" : {
-		"ext-blake2" : "Install the blake2 extension in order to speed up some functions, https://github.com/strawbrary/php-blake2"
+		"ext-blake2" : "Install blake2 extension in order to speed up some functions, https://github.com/strawbrary/php-blake2"
 	},
 	"autoload" : {
 		"psr-4" : {
