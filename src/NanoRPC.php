@@ -8,8 +8,6 @@ class NanoRPC
 {
     // # Settings
     
-    const EMPTY32 = '0000000000000000000000000000000000000000000000000000000000000000';
-    
     private $proto;
     private $host;
     private $port;
