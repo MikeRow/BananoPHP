@@ -33,10 +33,11 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
 ## FAQ
 
-<details><summary>#### How perform math operations with Nano raws?</summary>
+#### How perform math operations with Nano raws?
+
+<details><summary>Nano uses huge integers to represent even tiny value, for example</summary>
 <p>
 
-Nano uses huge integers to represent even tiny value, for example
 <pre>
 1 NANO = 1 Mnano = 1,000,000 nano = 10^30 raw
 </pre>
