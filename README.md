@@ -33,7 +33,7 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
 ## FAQ
 
-### How perform math operations with Nano raws?
+#### How perform math operations with Nano raws?
 
 Nano uses huge integers to represent even tiny value, for example
 <pre>
@@ -43,7 +43,7 @@ Since PHP doesn't support mathematical operations with such huge integers, you n
 
 [GNU Multiple Precision](https://www.php.net/manual/en/book.gmp.php) (GMP) is a default PHP extension that fits the job
 
-### Why not use libsodium extension?
+#### Why not use libsodium extension?
 
 There are two problems that prevent the use of this extension
 - `sodium_crypto_sign_*` use SHA-2 instead Blake2
