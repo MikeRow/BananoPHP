@@ -35,7 +35,7 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
 #### How perform math operations with Nano raws?
 
-<details><summary>Nano uses huge integers to represent even tiny value, for example</summary>
+<details><summary>Nano deals with huge integers when using raws, for example</summary>
 <p>
 
 <pre>
