@@ -26,7 +26,7 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
   class for node-independent Nano functions
   
-## Roadmap
+## To do ...
 
 - additional library class to call node using RPC 2.0
 - additional library class to call node using IPC
