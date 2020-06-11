@@ -31,7 +31,7 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 - additional library class to call node using RPC 2.0
 - additional library class to call node using IPC
 
-## Questions and answers
+## FAQ
 
 #### How perform math operations with Nano raws?
 
