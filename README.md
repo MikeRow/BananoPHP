@@ -33,7 +33,8 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
 ## FAQ
 
-#### How perform math operations with Nano raws?
+<details><summary>#### How perform math operations with Nano raws?</summary>
+<p>
 
 Nano uses huge integers to represent even tiny value, for example
 <pre>
@@ -42,6 +43,9 @@ Nano uses huge integers to represent even tiny value, for example
 Since PHP doesn't support mathematical operations with such huge integers, you need an alternative
 
 [GNU Multiple Precision](https://www.php.net/manual/en/book.gmp.php) (GMP) is a default PHP extension that fits the job
+
+</p>
+</details>
 
 #### Why not use libsodium extension?
 
