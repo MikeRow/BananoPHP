@@ -31,7 +31,7 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 - additional library class to call node using RPC 2.0
 - additional library class to call node using IPC
 
-## FAQ
+## Questions and answers
 
 #### How perform math operations with Nano raws?
 
@@ -50,9 +50,14 @@ Since PHP doesn't support mathematical operations with such huge integers, you n
 
 #### Why not use libsodium extension?
 
-There are two problems that prevent the use of this extension
+<details><summary>There are two problems that prevent the use of this extension</summary>
+<p>
+
 - `sodium_crypto_sign_*` use SHA-2 instead Blake2
 - `sodium_crypto_generichash_*` don't allow output smaller than 16 bytes
+
+</p>
+</details>
 
 ## Credits
 
