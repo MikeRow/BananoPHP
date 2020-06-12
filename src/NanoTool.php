@@ -610,16 +610,15 @@ class NanoTool
         }
         
         $hash = Uint::fromHex($hash)->toUint8();
+        $difficulty = hex2bin($difficulty);
         
         if (!extension_loaded('blake2')) {
-            $difficulty = hexdec($difficulty);
-            
             $b2b = new Blake2b();
+            $rng = [];
             
             while (true) {
-                $rng = [];
                 for ($i = 0; $i < 8; $i++) {
-                    $rng[] = mt_rand(0, 255);
+                    $rng[$i] = rand()&255;
                 }
                 
                 $output = new SplFixedArray(64);
@@ -632,21 +631,22 @@ class NanoTool
                 $output = $output->toArray();
                 $output = array_slice($output, 0, 8);
                 $output = array_reverse($output);
-                $output = Uint::fromUint8Array($output)->toHexString();
+                //$output = Uint::fromUint8Array($output)->toHexString();
                 
-                if (hexdec($output) >= $difficulty) {
+                if (strcasecmp(self::arr2bin($output), $difficulty) >= 0) {
                     return Uint::fromUint8Array(array_reverse($rng))->toHexString();
                 }
             }
         } else {
             $hash = self::arr2bin((array) $hash);
-            $difficulty = hex2bin($difficulty);
-            
+
             while (true) {
-                $rng = random_bytes(8);
-                
-                $output = blake2($rng . $hash, 8, null, true);
-                $output = strrev($output);
+                $rng = '';
+                for ($i = 0; $i < 8; $i++) {
+                    $rng .= chr(rand()&255);
+                }
+
+                $output = strrev(blake2($rng . $hash, 8, null, true));
                 
                 if (strcasecmp($output, $difficulty) >= 0) {
                     return Uint::fromUint8Array(array_reverse(self::bin2arr($rng)))->toHexString();
