@@ -3,7 +3,9 @@
 namespace php4nano;
 
 require_once __DIR__ . '/../lib/Salt/autoload.php';
-require_once __DIR__ . '/../lib/Util.php';
+require_once __DIR__ . '/../lib/util/Uint.php';
+require_once __DIR__ . '/../lib/util/base.php';
+require_once __DIR__ . '/../lib/util/bin.php';
 
 use \Exception as Exception;
 use \Uint as Uint;
@@ -11,6 +13,8 @@ use \SplFixedArray as SplFixedArray;
 use \Blake2b as Blake2b;
 use \Salt as Salt;
 use \FieldElement as FieldElement;
+use \arr2bin as arr2bin;
+use \bin2arr as bin2arr;
 
 class NanoTool
 {
@@ -31,36 +35,7 @@ class NanoTool
     const PREAMBLE = '0000000000000000000000000000000000000000000000000000000000000006';
     const EMPTY32  = '0000000000000000000000000000000000000000000000000000000000000000';
     const HARDENED =  0x80000000;
-    
-    
-    // #
-    // ## Integer array to binary string
-    // #
-    
-    public static function arr2bin(array $array): string
-    {
-        foreach ($array as $value) {
-            if (!ctype_digit((string) $value)) {
-                throw new Exception("Invalid integer: $value");
-            }
-            if ($value < 0 || $value > 255) {
-                throw new Exception("Invalid byte: $value");
-            }
-        }
-        
-        return implode(array_map('chr', $array));
-    }
-    
-    
-    // #
-    // ## Binary string to integer array
-    // #
-    
-    public static function bin2arr(string $string): array
-    {
-        return array_map('ord', str_split($string));
-    }
-    
+       
     
     // #
     // ## Denomination to raw
@@ -192,9 +167,9 @@ class NanoTool
                     $b2b->finish($ctx, $key_hash);
                     $key_hash = array_reverse(array_slice($key_hash->toArray(), 0, 5));
                 } else {
-                    $key_uint8 = self::arr2bin((array) $key_uint8);
+                    $key_uint8 = arr2bin((array) $key_uint8);
                     $key_hash = blake2($key_uint8, 5, null, true);
-                    $key_hash = self::bin2arr(strrev($key_hash));
+                    $key_hash = bin2arr(strrev($key_hash));
                 }
                 
                 if ($hash_uint8 == $key_hash) {
@@ -234,10 +209,10 @@ class NanoTool
             $checksum = $hash->toString();
         } else {
             $key = Uint::fromHex($public_key)->toUint8();
-            $key = self::arr2bin((array) $key);
+            $key = arr2bin((array) $key);
             
             $hash = blake2($key, 5, null, true);
-            $hash = self::bin2arr(strrev($hash));
+            $hash = bin2arr(strrev($hash));
             $checksum = Uint::fromUint8Array($hash)->toString();
         }
         
@@ -338,7 +313,7 @@ class NanoTool
     public static function mnem2hex(array $words): string
     {
         if (count($words) != 12 && count($words) != 24) {
-            throw new Exception("Words array count is not 12 or 24");
+            throw new Exception("Invalid words array count: not 12 or 24");
         }
         
         $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib/BIP39/BIP39_en.json'), true);
@@ -390,8 +365,8 @@ class NanoTool
         $mnemonic = [];
         
         $hex  = Uint::fromHex($hex)->toUint8();
-        $check = hash('sha256', self::arr2bin((array) $hex), true);
-        $hex  = array_merge((array) $hex, self::bin2arr(substr($check, 0, 1)));
+        $check = hash('sha256', arr2bin((array) $hex), true);
+        $hex  = array_merge((array) $hex, bin2arr(substr($check, 0, 1)));
         
         foreach ($hex as $byte) {
             $bits_raw = decbin($byte);
@@ -413,7 +388,7 @@ class NanoTool
     public static function mnem2mseed(array $words, string $passphrase = ''): string
     {
         if (count($words) < 1) {
-            throw new Exception("Words array count is less than 1");
+            throw new Exception("Invalid words array count: less than 1");
         }
         
         $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib/BIP39/BIP39_en.json'), true);
@@ -472,18 +447,18 @@ class NanoTool
     
     
     // #
-    // ## Get block ID
+    // ## Hash array of hexadecimals
     // #
     
-    public static function getBlockId(array $hexs): string
+    public static function hashHexs(array $hexs, int $size = 32): string
     {
-        if (count($hexs) != 6) {
-            throw new Exception("Hexadecimal array count is not 6");
+        if (count($hexs) < 1) {
+            throw new Exception("Invalid hexadecimals array count: less than 1");
         }
         
         $b2b = new Blake2b();
         
-        $ctx  = $b2b->init(null, 32);
+        $ctx  = $b2b->init(null, $size);
         $hash = new SplFixedArray(64);
         
         foreach ($hexs as $index => $value) {
@@ -497,7 +472,7 @@ class NanoTool
 
         $b2b->finish($ctx, $hash);
         $hash = $hash->toArray();
-        $hash = array_slice($hash, 0, 32);
+        $hash = array_slice($hash, 0, $size);
         $hash = Uint::fromUint8Array($hash)->toHexString();
         
         return $hash;
@@ -508,7 +483,7 @@ class NanoTool
     // ## Sign message
     // #
     
-    public static function signMsg(string $private_key, string $msg): string
+    public static function sign(string $msg, string $private_key): string
     {
         if (strlen($private_key) != 64 || !hex2bin($private_key)) {
             throw new Exception("Invalid private key: $private_key");
@@ -518,8 +493,8 @@ class NanoTool
         }
         
         $salt = Salt::instance();
-        $private_key  = FieldElement::fromArray(Uint::fromHex($private_key)->toUint8());
-        $public_key   = Salt::crypto_sign_public_from_secret_key($private_key);
+        $private_key = FieldElement::fromArray(Uint::fromHex($private_key)->toUint8());
+        $public_key  = Salt::crypto_sign_public_from_secret_key($private_key);
         
         $private_key->setSize(64);
         $private_key->copy($public_key, 32, 32);
@@ -542,13 +517,13 @@ class NanoTool
     
     public static function validSign(string $msg, string $sig, string $account)
     {
-        if (strlen($msg) != 64 || !hex2bin($msg)) {
+        if (!hex2bin($msg)) {
             throw new Exception("Invalid message: $msg");
         }
         if (strlen($sig) != 128 || !hex2bin($sig)) {
             throw new Exception("Invalid signature: $sig");
         }
-        $public_key = self::account2public($account, false);
+        $public_key = self::account2public($account);
         if (!$public_key) {
             throw new Exception("Invalid account: $account");
         }
@@ -580,10 +555,10 @@ class NanoTool
     
     
     // #
-    // ## Multiply difficulty
+    // ## Multiplier to difficulty
     // #
     
-    public static function multDiff(string $difficulty, float $multiplier): string
+    public static function mult2diff(string $difficulty, float $multiplier): string
     {
         if (strlen($difficulty) != 16 || !hex2bin($difficulty)) {
             throw new Exception("Invalid difficulty: $difficulty");
@@ -592,7 +567,31 @@ class NanoTool
             throw new Exception("Invalid multiplier: $multiplier");
         }
         
-        return dechex(ceil(hexdec($difficulty) * $multiplier));
+        $ref = (float) 18446744073709551616;
+        $difficulty = hexdec($difficulty);
+        
+        return dechex(($difficulty - $ref) / $multiplier + $ref);
+    }
+    
+    
+    // #
+    // ## Difficulty to muliplier
+    // #
+    
+    public static function diff2mult(string $base_difficulty, string $difficulty): float
+    {
+        if (strlen($base_difficulty) != 16 || !hex2bin($base_difficulty)) {
+            throw new Exception("Invalid base difficulty: $base_difficulty");
+        }
+        if (strlen($difficulty) != 16 || !hex2bin($difficulty)) {
+            throw new Exception("Invalid difficulty: $difficulty");
+        }
+
+        $ref = (float) 18446744073709551616;
+        $base_difficulty = hexdec($base_difficulty);
+        $difficulty = hexdec($difficulty);
+        
+        return (float) ($ref - $base_difficulty) / (float) ($ref - $difficulty);
     }
     
     
@@ -600,7 +599,7 @@ class NanoTool
     // ## Generate work
     // #
     
-    public static function getWork(string $hash, string $difficulty): string
+    public static function work(string $hash, string $difficulty): string
     {
         if (strlen($hash) != 64 || !hex2bin($hash)) {
             throw new Exception("Invalid hash: $hash");
@@ -633,12 +632,12 @@ class NanoTool
                 $output = array_reverse($output);
                 //$output = Uint::fromUint8Array($output)->toHexString();
                 
-                if (strcasecmp(self::arr2bin($output), $difficulty) >= 0) {
+                if (strcasecmp(arr2bin($output), $difficulty) >= 0) {
                     return Uint::fromUint8Array(array_reverse($rng))->toHexString();
                 }
             }
         } else {
-            $hash = self::arr2bin((array) $hash);
+            $hash = arr2bin((array) $hash);
 
             while (true) {
                 $rng = '';
@@ -649,7 +648,7 @@ class NanoTool
                 $output = strrev(blake2($rng . $hash, 8, null, true));
                 
                 if (strcasecmp($output, $difficulty) >= 0) {
-                    return Uint::fromUint8Array(array_reverse(self::bin2arr($rng)))->toHexString();
+                    return Uint::fromUint8Array(array_reverse(bin2arr($rng)))->toHexString();
                 }
             }
         }
@@ -660,7 +659,7 @@ class NanoTool
     // ## Validate work
     // #
     
-    public static function validWork(string $hash, string $work, string $difficulty): bool
+    public static function validWork(string $hash, string $difficulty, string $work): bool
     {
         if (strlen($hash) != 64 || !hex2bin($hash)) {
             throw new Exception("Invalid hash: $hash");

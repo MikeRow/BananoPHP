@@ -10,7 +10,7 @@ $public_key  = '';
 $account     = '';
 
 // Block data
-$receive_difficulty = 'ffffffc000000000';
+$receive_difficulty = 'fffffe0000000000';
 $pairing_block_id   = '';
 $received_amount    = '';
 $representative     = '';
@@ -27,7 +27,7 @@ $block_info   = $nanorpc->block_info([
 ]);
 
 // Generate work
-$work = NanoTool::getWork($account_info['frontier'], $receive_difficulty);
+$work = NanoTool::work($account_info['frontier'], $receive_difficulty);
 
 // Build block
 $nanoblock->setPrev($account_info['frontier'], $block_info['contents']);

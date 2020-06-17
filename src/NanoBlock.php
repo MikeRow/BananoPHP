@@ -52,10 +52,10 @@ class NanoBlock
     public function setPrev(string $prev_block_id, array $prev_block)
     {
         if (strlen($prev_block_id) != 64 || !hex2bin($prev_block_id)) {
-            throw new Exception("Invalid block ID: $prev_block_id");
+            throw new Exception("Invalid previous block ID: $prev_block_id");
         }
         if (count($prev_block) < 8) {
-            throw new Exception("Block array count is less than 8");
+            throw new Exception("Invalid previous block array count: less than 8");
         }
         
         $this->prevBlockId  = $prev_block_id;
@@ -114,8 +114,8 @@ class NanoBlock
         $this->rawBlockId[] = $balance;
         $this->rawBlockId[] = $pairing_block_id;
         
-        $this->blockId   = NanoTool::getBlockId($this->rawBlockId);
-        $this->signature = NanoTool::signMsg($this->privateKey, $this->blockId);
+        $this->blockId   = NanoTool::hashHexs($this->rawBlockId);
+        $this->signature = NanoTool::sign($this->blockId, $this->privateKey);
         
         $this->block = [
             'type'           => 'state',
@@ -167,8 +167,8 @@ class NanoBlock
         $this->rawBlockId[] = $balance;
         $this->rawBlockId[] = $pairing_block_id;
         
-        $this->blockId   = NanoTool::getBlockId($this->rawBlockId);
-        $this->signature = NanoTool::signMsg($this->privateKey, $this->blockId);
+        $this->blockId   = NanoTool::hashHexs($this->rawBlockId);
+        $this->signature = NanoTool::sign($this->blockId, $this->privateKey);
         
         $this->block = [
             'type'           => 'state',
@@ -197,7 +197,7 @@ class NanoBlock
     public function send(string $destination, string $amount, string $representative = null) : array
     {
         if (!NanoTool::account2public($destination, false)) {
-            throw new Exception("Invalid destination: $representative");
+            throw new Exception("Invalid destination: $destination");
         }
         if (!ctype_digit($amount)) {
             throw new Exception("Invalid amount: $amount");
@@ -209,7 +209,11 @@ class NanoBlock
             throw new Exception("Invalid representative: $representative");
         }
         
-        $balance  = dechex(gmp_strval(gmp_sub(hexdec($this->prev_block['balance']), $amount)));
+        $balance = dechex(
+            gmp_strval(
+                gmp_sub(hexdec($this->prev_block['balance']), $amount)
+            )
+        );
         if (strpos($balance, '-') !== false) {
             throw new Exception("Insufficient balance: $balance");
         }
@@ -223,8 +227,8 @@ class NanoBlock
         $this->rawBlockId[] = $balance;
         $this->rawBlockId[] = NanoTool::account2public($destination);
         
-        $this->blockId   = NanoTool::getBlockId($this->rawBlockId);
-        $this->signature = NanoTool::signMsg($this->privateKey, $this->blockId);
+        $this->blockId   = NanoTool::hashHexs($this->rawBlockId);
+        $this->signature = NanoTool::sign($this->blockId, $this->privateKey);
         
         $this->block = [
             'type'           => 'state',
@@ -267,8 +271,8 @@ class NanoBlock
         $this->rawBlockId[] = $balance;
         $this->rawBlockId[] = NanoTool::EMPTY32;
         
-        $this->blockId   = NanoTool::getBlockId($this->rawBlockId);
-        $this->signature = NanoTool::signMsg($this->privateKey, $this->blockId);
+        $this->blockId   = NanoTool::hashHexs($this->rawBlockId);
+        $this->signature = NanoTool::sign($this->blockId, $this->privateKey);
         
         $this->block = [
             'type'           => 'state',

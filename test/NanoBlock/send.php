@@ -10,7 +10,7 @@ $public_key  = '';
 $account     = '';
 
 // Block data
-$send_difficulty = 'ffffffc000000000';
+$send_difficulty = 'fffffff800000000';
 $destination     = '';
 $sending_amount  = '';
 $representative  = '';
@@ -27,7 +27,7 @@ $block_info   = $nanorpc->block_info([
 ]);
 
 // Generate work
-$work = NanoTool::getWork($account_info['frontier'], $send_difficulty);
+$work = NanoTool::work($account_info['frontier'], $send_difficulty);
 
 // Build block
 $nanoblock->setPrev($account_info['frontier'], $block_info['contents']);

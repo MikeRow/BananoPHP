@@ -10,7 +10,7 @@ $public_key  = '';
 $account     = '';
 
 // Block data
-$change_difficulty = 'ffffffc000000000';
+$change_difficulty = 'fffffff800000000';
 $representative    = '';
 
 // Initialize NanoRPC and NanoBlock
@@ -25,7 +25,7 @@ $block_info   = $nanorpc->block_info([
 ]);
 
 // Generate work
-$work = NanoTool::getWork($account_info['frontier'], $change_difficulty);
+$work = NanoTool::work($account_info['frontier'], $change_difficulty);
 
 // Build block
 $nanoblock->setPrev($account_info['frontier'], $block_info['contents']);

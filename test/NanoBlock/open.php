@@ -10,7 +10,7 @@ $public_key  = '';
 $account     = '';
 
 // Block data
-$open_difficulty  = 'ffffffc000000000';
+$open_difficulty  = 'fffffe0000000000';
 $pairing_block_id = '';
 $received_amount  = '';
 $representative   = '';
@@ -20,7 +20,7 @@ $nanorpc    = new php4nano\NanoRPC();
 $nanoblock  = new php4nano\NanoBlock($private_key);
 
 // Generate work
-$work = NanoTool::getWork($public_key, $open_difficulty);
+$work = NanoTool::work($public_key, $open_difficulty);
 
 // Build block
 $nanoblock->setWork($work);

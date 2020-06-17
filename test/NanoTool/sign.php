@@ -9,7 +9,7 @@ $msg         = '36E778DEDF4094AD9424C28F3198150328FD33B9A08BEA88C177A11B898E156B
 
 $t0 = microtime(true);
 
-var_dump(NanoTool::signMsg($private_key, $msg));
+var_dump(NanoTool::sign($msg, $private_key));
 
 $t1 = microtime(true);
 echo ($t1 - $t0) . PHP_EOL;

@@ -11,13 +11,13 @@ $i = 1;
 $t0 = microtime(true);
 
 while (true) {
-    $work = NanoTool::getWork($hash, $difficulty);
+    $work = NanoTool::work($hash, $difficulty);
     
     var_dump($work);
     
     echo 'Average: ' . (microtime(true) - $t0) / $i . PHP_EOL;
     
-    echo 'Valid: ' . NanoTool::validWork($hash, $work, $difficulty);
+    echo 'Valid: ' . NanoTool::validWork($hash, $difficulty, $work);
     
     $i++;
 }
