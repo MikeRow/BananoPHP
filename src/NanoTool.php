@@ -455,6 +455,9 @@ class NanoTool
         if (count($hexs) < 1) {
             throw new Exception("Invalid hexadecimals array count: less than 1");
         }
+        if ($size < 1) {
+            throw new Exception("Invalid size: $size");
+        }
         
         $b2b = new Blake2b();
         
@@ -485,11 +488,11 @@ class NanoTool
     
     public static function sign(string $msg, string $private_key): string
     {
-        if (strlen($private_key) != 64 || !hex2bin($private_key)) {
-            throw new Exception("Invalid private key: $private_key");
-        }
         if (!hex2bin($msg)) {
             throw new Exception("Invalid message: $msg");
+        }
+        if (strlen($private_key) != 64 || !hex2bin($private_key)) {
+            throw new Exception("Invalid private key: $private_key");
         }
         
         $salt = Salt::instance();
@@ -613,13 +616,10 @@ class NanoTool
         
         if (!extension_loaded('blake2')) {
             $b2b = new Blake2b();
-            $rng = [];
+            $rng = random_bytes(8);
+            $rng = bin2arr($rng);
             
             while (true) {
-                for ($i = 0; $i < 8; $i++) {
-                    $rng[$i] = rand()&255;
-                }
-                
                 $output = new SplFixedArray(64);
                 
                 $ctx = $b2b->init(null, 8);
@@ -635,21 +635,21 @@ class NanoTool
                 if (strcasecmp(arr2bin($output), $difficulty) >= 0) {
                     return Uint::fromUint8Array(array_reverse($rng))->toHexString();
                 }
+
+                $rng = $output;
             }
         } else {
             $hash = arr2bin((array) $hash);
-
+            $rng = random_bytes(8);
+            
             while (true) {
-                $rng = '';
-                for ($i = 0; $i < 8; $i++) {
-                    $rng .= chr(rand()&255);
-                }
-
                 $output = strrev(blake2($rng . $hash, 8, null, true));
                 
                 if (strcasecmp($output, $difficulty) >= 0) {
                     return Uint::fromUint8Array(array_reverse(bin2arr($rng)))->toHexString();
                 }
+                
+                $rng = $output;
             }
         }
     }
@@ -664,11 +664,11 @@ class NanoTool
         if (strlen($hash) != 64 || !hex2bin($hash)) {
             throw new Exception("Invalid hash: $hash");
         }
-        if (strlen($work) != 16 || !hex2bin($work)) {
-            throw new Exception("Invalid work: $work");
-        }
         if (strlen($difficulty) != 16 || !hex2bin($difficulty)) {
             throw new Exception("Invalid difficulty: $difficulty");
+        }
+        if (strlen($work) != 16 || !hex2bin($work)) {
+            throw new Exception("Invalid work: $work");
         }
         
         $hash = Uint::fromHex($hash)->toUint8();
