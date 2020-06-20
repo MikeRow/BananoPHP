@@ -48,6 +48,18 @@ Since PHP doesn't support mathematical operations with such huge integers, you n
 </p>
 </details>
 
+#### How perform precise math operations with Nano denominations?
+
+<details><summary>PHP floats aren't very precise, the ideal choice is to do math with raws</summary>
+<p>
+
+When the denomination amount reaches deep decimals value, just convert it to raw and then do some math with the proper tool
+
+[GNU Multiple Precision](https://www.php.net/manual/en/book.gmp.php) (GMP) is a default PHP extension that fits the job
+
+</p>
+</details>
+
 #### Why not use libsodium extension?
 
 <details><summary>There are two problems that prevent the use of this extension</summary>
