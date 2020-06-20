@@ -141,14 +141,13 @@ class NanoTool
     
     public static function account2public(string $account, bool $get_public_key = true)
     {
-        if ((strpos($account, 'xrb_1') === 0 ||  
-             strpos($account, 'xrb_3') === 0 ||  
-             strpos($account, 'nano_1') === 0 ||  
-             strpos($account, 'nano_3') === 0) &&
-            (strlen($account) == 64 ||
+        if (((strpos($account, 'xrb_1') === 0  ||  
+              strpos($account, 'xrb_3') === 0) &&
+             strlen($account) == 64) ||
+            ((strpos($account, 'nano_1') === 0  ||  
+              strpos($account, 'nano_3') === 0) &&
              strlen($account) == 65)
         ) {
-            
             $crop = explode('_', $account);
             $crop = $crop[1];
             

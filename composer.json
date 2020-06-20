@@ -24,8 +24,12 @@
 	"license" : "MIT",
 	"authors" : [{
 			"name" : "Mike Row",
-			"nano" : "nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m",
 			"role" : "Developer"
+		}
+	],
+	"funding" : [{
+			"type" : "Nano",
+			"account" : "nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m"
 		}
 	],
 	"require" : {
@@ -36,11 +40,14 @@
 		"ext-openssl" : "*"
 	},
 	"suggest" : {
-		"ext-blake2" : "Install blake2 extension in order to speed up some functions, https://github.com/strawbrary/php-blake2"
+		"ext-blake2" : "Install blake2 extension in order to speed up some functions: https://github.com/strawbrary/php-blake2"
 	},
 	"autoload" : {
 		"psr-4" : {
 			"php4nano\\" : "src/"
 		}
+	},
+	"support" : {
+		"wiki" : "https://github.com/mikerow/php4nano/wiki"
 	}
 }
