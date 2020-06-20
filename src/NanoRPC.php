@@ -8,11 +8,13 @@ class NanoRPC
 {
     // # Settings
     
-    private $proto;
-    private $host;
+    private $hostname;
     private $port;
     private $url;
-    private $CACertificate;
+    private $proto = 'http';
+    private $path_to_certificate = null;
+    private $insecure = true;
+    private $authType = null;
     private $username = null;
     private $password = null;
 
@@ -30,13 +32,21 @@ class NanoRPC
     // ## Initialization
     // #
     
-    public function __construct(string $host = 'localhost', string $port = '7076', string $url = null)
+    public function __construct(string $hostname = 'localhost', string $port = '7076', string $url = null)
     {
-        $this->host          = $host;
-        $this->port          = $port;
-        $this->url           = $url;
-        $this->proto         = 'http';
-        $this->CACertificate = null;
+        if (strpos($hostname, 'http://') === 0) {
+            $hostname = substr($hostname, 7);
+        }
+        if (strpos($hostname, 'https://') === 0) {
+            $hostname = substr($hostname, 8);
+        }
+        if (strpos($url, '/') === 0) {
+            $url = substr($url, 1);
+        }
+        
+        $this->hostname = $hostname;
+        $this->port     = $port;
+        $this->url      = $url;
     }
     
     
@@ -44,10 +54,11 @@ class NanoRPC
     // ## Set SSL
     // #
      
-    public function setSSL(string $certificate = null)
+    public function setSSL(string $path_to_certificate = null, bool $insecure = true)
     {
-        $this->proto         = 'https';
-        $this->CACertificate = $certificate;
+        $this->proto               = 'https';
+        $this->path_to_certificate = $path_to_certificate;
+        $this->insecure            = $insecure;
     }
     
     
@@ -57,8 +68,9 @@ class NanoRPC
     
     public function unsetSSL()
     {
-        $this->proto         = 'http';
-        $this->CACertificate = null;
+        $this->proto               = 'http';
+        $this->path_to_certificate = null;
+        $this->insecure            = true;
     }
     
     
@@ -68,6 +80,7 @@ class NanoRPC
     
     public function setBasicAuth(string $username, string $password = null)
     {
+        $this->authType = 'Basic';
         $this->username = $username;
         $this->password = $password;
     }
@@ -79,6 +92,7 @@ class NanoRPC
     
     public function unsetBasicAuth()
     {
+        $this->authType = null;
         $this->username = null;
         $this->password = null;
     }
@@ -97,6 +111,9 @@ class NanoRPC
         $this->response     = null;
         $this->id++;
         
+        
+        // # Action
+        
         $request = [
             'action' => $method
         ];
@@ -109,8 +126,10 @@ class NanoRPC
         
         $request = json_encode($request);
 
-        // Build the cURL session
-        $curl = curl_init("{$this->proto}://{$this->host}:{$this->port}/{$this->url}");
+        
+        // # Build the cURL session
+        
+        $curl = curl_init("{$this->proto}://{$this->hostname}:{$this->port}/{$this->url}");
         
         $options =
         [
@@ -123,34 +142,46 @@ class NanoRPC
             CURLOPT_POSTFIELDS     => $request
         ];
         
-        // Auth?
-        if ($this->username != null) {
-            if ($this->password != null) {
-                $auth = base64_encode($this->username . ':' . $this->password);
-            } else {
-                $auth = base64_encode($this->username);
-            }
+        
+        // # Auth type
+        
+        if ($this->authType == 'Basic') {
+            $options[CURLOPT_HTTPAUTH] = CURLAUTH_BASIC;
             
-            $options[CURLOPT_HTTPHEADER][] = 'Authorization: Basic '. $auth;
+            if ($this->username != null) {
+                if ($this->password != null) {
+                    $options[CURLOPT_USERPWD] = $this->username . ':' . $this->password;
+                } else {
+                    $options[CURLOPT_USERPWD] = $this->username;
+                }
+            }
+        } else {
+            
         }
 
+        
+        // # HTTPS
+        
+        if ($this->proto == 'https') {
+            // If the CA Certificate was specified we change CURL to look for it
+            if ($this->path_to_certificate != null) {
+                $options[CURLOPT_CAINFO] = $this->path_to_certificate;
+                $options[CURLOPT_CAPATH] = DIRNAME($this->path_to_certificate);
+            }
+        } 
+        if ($this->insecure) {
+            $options[CURLOPT_SSL_VERIFYPEER] = false;
+        }
+
+        
+        // # Call
+        
         // This prevents users from getting the following warning when open_basedir is set:
         // Warning: curl_setopt() [function.curl-setopt]: CURLOPT_FOLLOWLOCATION cannot be activated when in safe_mode or an open_basedir is set
         if (ini_get('open_basedir')) {
             unset($options[CURLOPT_FOLLOWLOCATION]);
         }
-
-        if ($this->proto == 'https') {
-            // If the CA Certificate was specified we change CURL to look for it
-            if ($this->CACertificate != null) {
-                $options[CURLOPT_CAINFO] = $this->CACertificate;
-                $options[CURLOPT_CAPATH] = DIRNAME($this->CACertificate);
-            } else {
-                // If not we need to assume the SSL cannot be verified so we set this flag to FALSE to allow the connection
-                $options[CURLOPT_SSL_VERIFYPEER] = false;
-            }
-        }
-
+        
         curl_setopt_array($curl, $options);
 
         // Execute the request and decode to an array
@@ -164,6 +195,9 @@ class NanoRPC
         $curl_error = curl_error($curl);
 
         curl_close($curl);
+        
+        
+        // # Errors
         
         if (isset($this->response['error'])) {
             $this->error = $this->response['error'];
@@ -198,6 +232,9 @@ class NanoRPC
             return false;
         }
             
+        
+        // # Return
+        
         return $this->response;
     }
 }
