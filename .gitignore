@@ -1,3 +1,4 @@
 .project
 /vendor
+/src/experimental
 /test/NanoTool/experimental

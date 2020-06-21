@@ -42,6 +42,9 @@ class NanoRPC
         if (strpos($url, '/') === 0) {
             $url = substr($url, 1);
         }
+        if (strpos($url, '/') === -1) {
+            $url = substr($url, 0, -1);
+        }
         
         $this->hostname = $hostname;
         $this->port     = $port;
