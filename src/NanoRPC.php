@@ -12,8 +12,7 @@ class NanoRPC
     private $port;
     private $url;
     private $proto = 'http';
-    private $path_to_certificate = null;
-    private $insecure = true;
+    private $path_to_CACertificate = null;
     private $authType = null;
     private $username = null;
     private $password = null;
@@ -54,11 +53,10 @@ class NanoRPC
     // ## Set SSL
     // #
      
-    public function setSSL(string $path_to_certificate = null, bool $insecure = true)
+    public function setSSL(string $path_to_CACertificate = null)
     {
-        $this->proto               = 'https';
-        $this->path_to_certificate = $path_to_certificate;
-        $this->insecure            = $insecure;
+        $this->proto                 = 'https';
+        $this->path_to_CACertificate = $path_to_CACertificate;
     }
     
     
@@ -68,9 +66,8 @@ class NanoRPC
     
     public function unsetSSL()
     {
-        $this->proto               = 'http';
-        $this->path_to_certificate = null;
-        $this->insecure            = true;
+        $this->proto                 = 'http';
+        $this->path_to_CACertificate = null;
     }
     
     
@@ -155,8 +152,6 @@ class NanoRPC
                     $options[CURLOPT_USERPWD] = $this->username;
                 }
             }
-        } else {
-            
         }
 
         
@@ -164,13 +159,12 @@ class NanoRPC
         
         if ($this->proto == 'https') {
             // If the CA Certificate was specified we change CURL to look for it
-            if ($this->path_to_certificate != null) {
-                $options[CURLOPT_CAINFO] = $this->path_to_certificate;
-                $options[CURLOPT_CAPATH] = DIRNAME($this->path_to_certificate);
+            if ($this->path_to_CACertificate != null) {
+                $options[CURLOPT_CAINFO] = $this->path_to_CACertificate;
+                $options[CURLOPT_CAPATH] = DIRNAME($this->path_to_CACertificate);
+            } else {
+                $options[CURLOPT_SSL_VERIFYPEER] = false;
             }
-        } 
-        if ($this->insecure) {
-            $options[CURLOPT_SSL_VERIFYPEER] = false;
         }
 
         

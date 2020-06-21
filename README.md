@@ -53,7 +53,7 @@ Since PHP doesn't support mathematical operations with such huge integers, you n
 <details><summary>PHP floats aren't very precise, the ideal choice is to do math with raws</summary>
 <p>
 
-When the denomination amount reaches deep decimals value, just convert it to raw and then do some math with the proper tool
+When the denomination amount reaches deep decimal value, just convert it to raw and then do some math with the proper tool
 
 [GNU Multiple Precision](https://www.php.net/manual/en/book.gmp.php) (GMP) is a default PHP extension that fits the job
 
