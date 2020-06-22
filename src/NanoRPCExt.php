@@ -4,6 +4,8 @@ namespace php4nano;
 
 use \Exception as Exception;
 
+class NanoRPCExtException extends Exception{}
+
 class NanoRPCExt extends NanoRPC
 {
     // #

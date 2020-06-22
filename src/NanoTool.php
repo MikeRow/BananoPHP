@@ -16,6 +16,8 @@ use \FieldElement as FieldElement;
 use \arr2bin as arr2bin;
 use \bin2arr as bin2arr;
 
+class NanoToolException extends Exception{}
+
 class NanoTool
 {
     // #
@@ -44,7 +46,7 @@ class NanoTool
     public static function den2raw($amount, string $denomination): string
     {
         if (!array_key_exists($denomination, self::RAWS)) {
-            throw new Exception("Invalid denomination: $denomination");
+            throw new NanoToolException("Invalid denomination: $denomination");
         }
         
         $raw_to_denomination = self::RAWS[$denomination];
@@ -77,7 +79,7 @@ class NanoTool
     public static function raw2den(string $amount, string $denomination): string
     {
         if (!array_key_exists($denomination, self::RAWS)) {
-            throw new Exception("Invalid denomination: $denomination");
+            throw new NanoToolException("Invalid denomination: $denomination");
         }
         
         $raw_to_denomination = self::RAWS[$denomination];
@@ -123,10 +125,10 @@ class NanoTool
     public static function den2den($amount, string $denomination_from, string $denomination_to): string
     {
         if (!array_key_exists($denomination_from, self::RAWS)) {
-            throw new Exception("Invalid source denomination: $denomination_from");
+            throw new NanoToolException("Invalid source denomination: $denomination_from");
         }
         if (!array_key_exists($denomination_to, self::RAWS)) {
-            throw new Exception("Invalid target denomination: $denomination_to");
+            throw new NanoToolException("Invalid target denomination: $denomination_to");
         }
         
         $raw = self::den2raw($amount, $denomination_from);
@@ -192,7 +194,7 @@ class NanoTool
     public static function public2account(string $public_key): string
     {
         if (strlen($public_key) != 64 || !hex2bin($public_key)) {
-            throw new Exception("Invalid public key: $public_key");
+            throw new NanoToolException("Invalid public key: $public_key");
         }
 
         if (!extension_loaded('blake2')) {
@@ -228,7 +230,7 @@ class NanoTool
     public static function private2public(string $private_key): string
     {
         if (strlen($private_key) != 64 || !hex2bin($private_key)) {
-            throw new Exception("Invalid private key: $private_key");
+            throw new NanoToolException("Invalid private key: $private_key");
         }
         
         $salt = Salt::instance();
@@ -266,10 +268,10 @@ class NanoTool
     public static function seed2keys(string $seed, int $index = 0, bool $get_account = false): array
     {
         if (strlen($seed) != 64 || !hex2bin($seed)) {
-            throw new Exception("Invalid seed: $seed");
+            throw new NanoToolException("Invalid seed: $seed");
         }
         if ($index < 0 || $index > 4294967295) {
-            throw new Exception("Invalid index: $index");
+            throw new NanoToolException("Invalid index: $index");
         }
         
         $seed  = Uint::fromHex($seed)->toUint8();
@@ -312,7 +314,7 @@ class NanoTool
     public static function mnem2hex(array $words): string
     {
         if (count($words) != 12 && count($words) != 24) {
-            throw new Exception("Invalid words array count: not 12 or 24");
+            throw new NanoToolException("Invalid words array count: not 12 or 24");
         }
         
         $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib/BIP39/words_en.json'), true);
@@ -323,7 +325,7 @@ class NanoTool
         foreach ($words as $index => $value) {
             $word = array_search($value, $bip39_words);
             if ($word === false) {
-                throw new Exception("Invalid menmonic word: $value");
+                throw new NanoToolException("Invalid menmonic word: $value");
             }
             
             $words[$index] = decbin($word);
@@ -355,7 +357,7 @@ class NanoTool
              strlen($hex) != 64) ||
             !hex2bin($hex)
         ) {
-            throw new Exception("Invalid hexadecimal string: $hex");
+            throw new NanoToolException("Invalid hexadecimal string: $hex");
         }
         
         $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib/BIP39/words_en.json'), true);
@@ -387,7 +389,7 @@ class NanoTool
     public static function mnem2mseed(array $words, string $passphrase = ''): string
     {
         if (count($words) < 1) {
-            throw new Exception("Invalid words array count: less than 1");
+            throw new NanoToolException("Invalid words array count: less than 1");
         }
         
         $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib/BIP39/words_en.json'), true);
@@ -395,7 +397,7 @@ class NanoTool
         foreach ($words as $index => $value) {
             $word = array_search($value, $bip39_words);
             if ($word === false) {
-                throw new Exception("Invalid menmonic word: $value");
+                throw new NanoToolException("Invalid menmonic word: $value");
             }
         }
         
@@ -412,10 +414,10 @@ class NanoTool
     public static function mseed2keys(string $seed, int $index = 0, bool $get_account = false): array
     {
         if (strlen($seed) != 128 || !hex2bin($seed)) {
-            throw new Exception("Invalid master seed: $seed");
+            throw new NanoToolException("Invalid master seed: $seed");
         }
         if ($index < 0 || $index > 4294967295) {
-            throw new Exception("Invalid index: $index");
+            throw new NanoToolException("Invalid index: $index");
         }
         
         $path = ["44","165","$index"];
@@ -452,10 +454,10 @@ class NanoTool
     public static function hashHexs(array $hexs, int $size = 32): string
     {
         if (count($hexs) < 1) {
-            throw new Exception("Invalid hexadecimals array count: less than 1");
+            throw new NanoToolException("Invalid hexadecimals array count: less than 1");
         }
         if ($size < 1) {
-            throw new Exception("Invalid size: $size");
+            throw new NanoToolException("Invalid size: $size");
         }
         
         $b2b = new Blake2b();
@@ -465,7 +467,7 @@ class NanoTool
         
         foreach ($hexs as $index => $value) {
             if (!hex2bin($value)) {
-                throw new Exception("Invalid hexadecimal string: $value");
+                throw new NanoToolException("Invalid hexadecimal string: $value");
             }
             
             $value = Uint::fromHex($value)->toUint8();
@@ -488,10 +490,10 @@ class NanoTool
     public static function sign(string $msg, string $private_key): string
     {
         if (!hex2bin($msg)) {
-            throw new Exception("Invalid message: $msg");
+            throw new NanoToolException("Invalid message: $msg");
         }
         if (strlen($private_key) != 64 || !hex2bin($private_key)) {
-            throw new Exception("Invalid private key: $private_key");
+            throw new NanoToolException("Invalid private key: $private_key");
         }
         
         $salt = Salt::instance();
@@ -520,14 +522,14 @@ class NanoTool
     public static function validSign(string $msg, string $sig, string $account)
     {
         if (!hex2bin($msg)) {
-            throw new Exception("Invalid message: $msg");
+            throw new NanoToolException("Invalid message: $msg");
         }
         if (strlen($sig) != 128 || !hex2bin($sig)) {
-            throw new Exception("Invalid signature: $sig");
+            throw new NanoToolException("Invalid signature: $sig");
         }
         $public_key = self::account2public($account);
         if (!$public_key) {
-            throw new Exception("Invalid account: $account");
+            throw new NanoToolException("Invalid account: $account");
         }
         
         $sig = Uint::fromHex($sig)->toUint8();
@@ -563,10 +565,10 @@ class NanoTool
     public static function mult2diff(string $difficulty, float $multiplier): string
     {
         if (strlen($difficulty) != 16 || !hex2bin($difficulty)) {
-            throw new Exception("Invalid difficulty: $difficulty");
+            throw new NanoToolException("Invalid difficulty: $difficulty");
         }
         if ($multiplier <= 0) {
-            throw new Exception("Invalid multiplier: $multiplier");
+            throw new NanoToolException("Invalid multiplier: $multiplier");
         }
         
         $ref = (float) 18446744073709551616;
@@ -583,10 +585,10 @@ class NanoTool
     public static function diff2mult(string $base_difficulty, string $difficulty): float
     {
         if (strlen($base_difficulty) != 16 || !hex2bin($base_difficulty)) {
-            throw new Exception("Invalid base difficulty: $base_difficulty");
+            throw new NanoToolException("Invalid base difficulty: $base_difficulty");
         }
         if (strlen($difficulty) != 16 || !hex2bin($difficulty)) {
-            throw new Exception("Invalid difficulty: $difficulty");
+            throw new NanoToolException("Invalid difficulty: $difficulty");
         }
 
         $ref = (float) 18446744073709551616;
@@ -604,10 +606,10 @@ class NanoTool
     public static function work(string $hash, string $difficulty): string
     {
         if (strlen($hash) != 64 || !hex2bin($hash)) {
-            throw new Exception("Invalid hash: $hash");
+            throw new NanoToolException("Invalid hash: $hash");
         }
         if (strlen($difficulty) != 16 || !hex2bin($difficulty)) {
-            throw new Exception("Invalid difficulty: $difficulty");
+            throw new NanoToolException("Invalid difficulty: $difficulty");
         }
         
         $hash = Uint::fromHex($hash)->toUint8();
@@ -661,13 +663,13 @@ class NanoTool
     public static function validWork(string $hash, string $difficulty, string $work): bool
     {
         if (strlen($hash) != 64 || !hex2bin($hash)) {
-            throw new Exception("Invalid hash: $hash");
+            throw new NanoToolException("Invalid hash: $hash");
         }
         if (strlen($difficulty) != 16 || !hex2bin($difficulty)) {
-            throw new Exception("Invalid difficulty: $difficulty");
+            throw new NanoToolException("Invalid difficulty: $difficulty");
         }
         if (strlen($work) != 16 || !hex2bin($work)) {
-            throw new Exception("Invalid work: $work");
+            throw new NanoToolException("Invalid work: $work");
         }
         
         $hash = Uint::fromHex($hash)->toUint8();

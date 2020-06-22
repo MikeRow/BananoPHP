@@ -28,7 +28,6 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
   
 ## To do ...
 
-- additional library class to call node using RPC 2.0
 - additional library class to call node using IPC
 
 ## FAQ

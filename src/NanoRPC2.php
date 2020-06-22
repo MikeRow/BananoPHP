@@ -4,9 +4,9 @@ namespace php4nano;
 
 use \Exception as Exception;
 
-class NanoRPCException extends Exception{}
+class NanoRPC2Exception extends Exception{}
 
-class NanoRPC
+class NanoRPC2
 {
     // # Settings
     
@@ -18,12 +18,15 @@ class NanoRPC
     private $authType;
     private $username;
     private $password;
+    private $nanoAPIKey;
 
     
     // # Results and debug
     
     public  $status;
     public  $error;
+    public  $responseCode;
+    public  $responseTime;
     public  $responseRaw;
     public  $response;
     private $id = 0;
@@ -33,7 +36,7 @@ class NanoRPC
     // ## Initialization
     // #
     
-    public function __construct(string $hostname = 'localhost', string $port = '7076', string $url = null)
+    public function __construct(string $hostname = 'localhost', string $port = '7076', string $url = 'api/v2')
     {
         if (strpos($hostname, 'http://') === 0) {
             $hostname = substr($hostname, 7);
@@ -83,12 +86,27 @@ class NanoRPC
     public function setBasicAuth(string $username, string $password = null)
     {
         if (empty($username)){
-            throw new NanoRPCException("Invalid username: $username");
+            throw new NanoRPC2Exception("Invalid username: $username");
         }
         
         $this->authType = 'Basic';
         $this->username = $username;
         $this->password = $password;
+    }
+    
+    
+    // #
+    // ## Set Nano authentication
+    // #
+    
+    public function setNanoAuth(string $nano_api_key = null)
+    {
+        if (empty($nano_api_key)){
+            throw new NanoRPC2Exception("Invalid Nano API key: $nano_api_key");
+        }
+        
+        $this->authType   = 'Nano';
+        $this->nanoAPIKey = $nano_api_key;
     }
     
     
@@ -113,17 +131,25 @@ class NanoRPC
         
         // # Request
         
-        $request = [
-            'action' => $method
-        ];
+        $arguments = [];
         
         if (isset($params[0])) {
             foreach ($params[0] as $key => $value) {
-                $request[$key] = $value;
+                $arguments[$key] = $value;
             }
         }
         
-        $request = json_encode($request);
+        $envelope = [
+            'message_type' => $method,
+            'message'      => $arguments
+        ];
+        
+        // Nano auth type
+        if ($this->authType == 'Nano') {
+            $envelope['credentials'] = $this->nanoAPIkey;
+        }
+
+        $envelope = json_encode($envelope);
 
         
         // # Build the cURL session
@@ -134,11 +160,11 @@ class NanoRPC
         [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_USERAGENT      => 'php4nano/NanoRPC',
+            CURLOPT_USERAGENT      => 'php4nano/NanoRPC2',
             CURLOPT_MAXREDIRS      => 10,
             CURLOPT_HTTPHEADER     => ['Content-type: application/json'],
             CURLOPT_POST           => true,
-            CURLOPT_POSTFIELDS     => $request
+            CURLOPT_POSTFIELDS     => $envelope
         ];
         
         
@@ -184,8 +210,14 @@ class NanoRPC
 
         // Execute the request and decode to an array
         $this->responseRaw = curl_exec($curl);
-        $this->response    = json_decode($this->responseRaw, true);
+        
+        $response = json_decode($this->responseRaw, true);
+        $this->response = $response['message'];
 
+        if (isset($response['time'])) {
+            $this->responseTime = $response['time'];
+        }
+        
         // If the status is not 200, something is wrong
         $this->status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         
@@ -197,8 +229,9 @@ class NanoRPC
         
         // # Errors
         
-        if (isset($this->response['error'])) {
-            $this->error = $this->response['error'];
+        if ($response['message_type'] == 'Error') {
+            $this->error = $this->response['message'];
+            $this->responseCode = $this->response['code'];
         }
 
         if (!empty($curl_error)) {

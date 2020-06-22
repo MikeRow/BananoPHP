@@ -4,29 +4,31 @@ namespace php4nano;
 
 use \Exception as Exception;
 
+class NanoBlockException extends Exception{}
+
 class NanoBlock
 {
     // # Owner informations
     
-    private $privateKey = null;
-    private $publicKey  = null;
-    private $account    = null;
+    private $privateKey;
+    private $publicKey;
+    private $account;
     
     
     // # Block data
     
-    private $prevAuto    = false;
-    private $prevBlockId = null;
-    private $prevBlock   = [];
-    private $rawBlockId  = [];
-    private $signature   = null;
-    private $work        = null;
+    private $prevAuto;
+    private $prevBlockId;
+    private $prevBlock = [];
+    private $rawBlockId = [];
+    private $signature;
+    private $work;
     
     
     // # Results and debug
     
-    public $blockId = null;
-    public $block   = [];
+    public $blockId;
+    public $block = [];
 
 
     // #
@@ -36,7 +38,7 @@ class NanoBlock
     public function __construct(string $private_key)
     {
         if (strlen($private_key) != 64 || !hex2bin($private_key)) {
-            throw new Exception("Invalid private key: $private_key");
+            throw new NanoBlockException("Invalid private key: $private_key");
         }
         
         $this->privateKey = $private_key;
@@ -52,10 +54,10 @@ class NanoBlock
     public function setPrev(string $prev_block_id, array $prev_block)
     {
         if (strlen($prev_block_id) != 64 || !hex2bin($prev_block_id)) {
-            throw new Exception("Invalid previous block ID: $prev_block_id");
+            throw new NanoBlockException("Invalid previous block ID: $prev_block_id");
         }
         if (count($prev_block) < 8) {
-            throw new Exception("Invalid previous block array count: less than 8");
+            throw new NanoBlockException("Invalid previous block array count: less than 8");
         }
         
         $this->prevBlockId  = $prev_block_id;
@@ -80,7 +82,7 @@ class NanoBlock
     public function setWork(string $work)
     {
         if (strlen($work) != 16 || !hex2bin($work)) {
-            throw new Exception("Invalid work: $work");
+            throw new NanoBlockException("Invalid work: $work");
         }
         
         $this->work = $work;
@@ -94,13 +96,13 @@ class NanoBlock
     public function open(string $pairing_block_id, string $amount, string $representative) : array
     {
         if (strlen($pairing_block_id) != 64 || !hex2bin($pairing_block_id)) {
-            throw new Exception("Invalid previous block ID: $pairing_block_id");
+            throw new NanoBlockException("Invalid previous block ID: $pairing_block_id");
         }
         if (!ctype_digit($amount)) {
-            throw new Exception("Invalid amount: $amount");
+            throw new NanoBlockException("Invalid amount: $amount");
         }
         if (!NanoTool::account2public($representative, false)) {
-            throw new Exception("Invalid representative: $representative");
+            throw new NanoBlockException("Invalid representative: $representative");
         }
         
         $balance = dechex($amount);
@@ -144,16 +146,16 @@ class NanoBlock
     public function receive(string $pairing_block_id, string $amount, string $representative = null) : array
     {
         if (strlen($pairing_block_id) != 64 || !hex2bin($pairing_block_id)) {
-            throw new Exception("Invalid previous block ID: $pairing_block_id");
+            throw new NanoBlockException("Invalid previous block ID: $pairing_block_id");
         }
         if (!ctype_digit($amount)) {
-            throw new Exception("Invalid amount: $amount");
+            throw new NanoBlockException("Invalid amount: $amount");
         }
         if ($representative == null) {
             $representative = $this->prevBlock['representative'];
         }
         if (!NanoTool::account2public($representative, false)) {
-            throw new Exception("Invalid representative: $representative");
+            throw new NanoBlockException("Invalid representative: $representative");
         }
         
         $balance = dechex(gmp_strval(gmp_add(hexdec($this->prevBlock['balance']), $amount)));
@@ -197,16 +199,16 @@ class NanoBlock
     public function send(string $destination, string $amount, string $representative = null) : array
     {
         if (!NanoTool::account2public($destination, false)) {
-            throw new Exception("Invalid destination: $destination");
+            throw new NanoBlockException("Invalid destination: $destination");
         }
         if (!ctype_digit($amount)) {
-            throw new Exception("Invalid amount: $amount");
+            throw new NanoBlockException("Invalid amount: $amount");
         }
         if ($representative == null) {
             $representative = $this->prevBlock['representative'];
         }
         if (!NanoTool::account2public($representative, false)) {
-            throw new Exception("Invalid representative: $representative");
+            throw new NanoBlockException("Invalid representative: $representative");
         }
         
         $balance = dechex(
@@ -215,7 +217,7 @@ class NanoBlock
             )
         );
         if (strpos($balance, '-') !== false) {
-            throw new Exception("Insufficient balance: $balance");
+            throw new NanoBlockException("Insufficient balance: $balance");
         }
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
@@ -257,7 +259,7 @@ class NanoBlock
     public function change(string $representative) : array
     {
         if (!NanoTool::account2public($representative, false)) {
-            throw new Exception("Invalid representative: $representative");
+            throw new NanoBlockException("Invalid representative: $representative");
         }
         
         $balance = dechex($this->prevBlock['balance']);

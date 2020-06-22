@@ -4,6 +4,8 @@ namespace php4nano;
 
 use \Exception as Exception;
 
+class NanoCLIException extends Exception{}
+
 class NanoCLI
 {
     // # Settings
