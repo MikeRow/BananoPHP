@@ -17,6 +17,10 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 - NanoRPC
 
   class for interfacing to Nano node RPC
+  
+- NanoRPC2
+
+  class for interfacing to Nano node RPC 2.0
 
 - NanoRPCExt
 
