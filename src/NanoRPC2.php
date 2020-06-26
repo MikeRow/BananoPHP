@@ -25,7 +25,7 @@ class NanoRPC2
     
     public  $status;
     public  $error;
-    public  $responseCode;
+    public  $errorCode;
     public  $responseTime;
     public  $responseRaw;
     public  $response;
@@ -231,7 +231,7 @@ class NanoRPC2
         
         if ($response['message_type'] == 'Error') {
             $this->error = $this->response['message'];
-            $this->responseCode = $this->response['code'];
+            $this->errorCode = $this->response['code'];
         }
 
         if (!empty($curl_error)) {

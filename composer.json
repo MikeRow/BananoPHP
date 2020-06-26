@@ -35,12 +35,14 @@
 			"url" : "https://mynano.ninja/account/mikerow"
 		}
 	],
+	"minimum-stability": "stable",
 	"require" : {
 		"php-64bit" : "^7.2.0",
 		"ext-curl" : "*",
 		"ext-gmp" : "*",
 		"ext-mbstring" : "*",
-		"ext-openssl" : "*"
+		"ext-openssl" : "*",
+		"google/flatbuffers" : "*"
 	},
 	"suggest" : {
 		"ext-blake2" : "Install blake2 extension in order to speed up some functions: https://github.com/strawbrary/php-blake2"

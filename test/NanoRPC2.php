@@ -1,6 +1,6 @@
 <?php 
 
-require_once __DIR__ . '/../autoload.php';
+require_once __DIR__ . '/autoload.php';
 
 $nanorpc2 = new php4nano\NanoRPC2('localhost', '7076', 'api/v2');
 
