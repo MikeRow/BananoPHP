@@ -15,6 +15,7 @@ class NanoRPC2
     private $url;
     private $proto;
     private $pathToCACertificate;
+    private $requestType;
     private $authType;
     private $username;
     private $password;
@@ -50,12 +51,32 @@ class NanoRPC2
             }
         }
         
-        $this->hostname = $hostname;
-        $this->port     = $port;
-        $this->url      = $url;
-        $this->proto    = 'http';
+        $this->hostname    = $hostname;
+        $this->port        = $port;
+        $this->url         = $url;
+        $this->proto       = 'http';
+        $this->requestType = 'JSON';
     }
     
+    
+    // #
+    // ## Set request type
+    // #
+    /*
+    public function setRequestType(string $request_type)
+    {
+        $request_types = [
+            'JSON',
+            'Flatbuffers'
+        ];
+        
+        if (in_array($request_type, $request_types)) {
+            $this->requestType = $request_type;
+        } else {
+            throw new NanoRPC2Exception("Invalid request type: $request_type");
+        }
+    }
+    */
     
     // #
     // ## Set SSL
