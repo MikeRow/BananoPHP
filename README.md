@@ -64,7 +64,7 @@ Just convert denomination to raw and then do some math with the proper tool
 
 #### Why not NanoHTTPCallback and NanoWebSocket classes?
 
-<details><summary>HTTP Callback is replaced by WebSocket, which implementation vary depending on the puropose</summary>
+<details><summary>HTTP Callback is replaced by WebSocket, which implementation vary depending on the purpose</summary>
 <p>
 
 Since WebSocket implementation is quite personalized I decided to don't develop any NanoWebSocket class
