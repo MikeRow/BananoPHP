@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/autoload.php';
 
-$nanoipc_unix = new php4nano\NanoIPC('unix_domain_socket', ['path' => '/tmp/nano']);
+$nanoipc_unix = new php4nano\NanoIPC('unix_domain_socket', ['path_to_socket' => '/tmp/nano']);
 
 $account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
