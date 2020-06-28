@@ -11,11 +11,11 @@ class NanoCLI
     // # Settings
     
     private $path_to_app;
+    private $id = 0;
     
     
     // # Results and debug
     
-    private $id = 0;
     public  $responseRaw;
     public  $response;
     
@@ -36,9 +36,10 @@ class NanoCLI
     
     public function __call($method, array $params)
     {
+        $this->id++;
         $this->responseRaw = null;
         $this->response    = null;
-        $this->id++;
+        
         $request = ' --' . $method;
         
         if (isset($params[0])) {

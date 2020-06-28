@@ -12,10 +12,11 @@
 		"cryptocurrency",
 		"coin",
 		"protocol",
+		"CLI",
+		"IPC",
 		"RPC",
 		"RPC2",
-		"IPC",
-		"CLI",
+		"RPCExt",
 		"tools",
 		"blocks",
 		"library",
@@ -35,10 +36,11 @@
 			"url" : "https://mynano.ninja/account/mikerow"
 		}
 	],
-	"minimum-stability": "stable",
+	"minimum-stability" : "stable",
 	"require" : {
 		"php-64bit" : "^7.2.0",
 		"ext-curl" : "*",
+		"ext-sockets" : "*",
 		"ext-gmp" : "*",
 		"ext-mbstring" : "*",
 		"ext-openssl" : "*",

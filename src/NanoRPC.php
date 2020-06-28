@@ -18,6 +18,7 @@ class NanoRPC
     private $authType;
     private $username;
     private $password;
+    private $id = 0;
 
     
     // # Results and debug
@@ -26,14 +27,13 @@ class NanoRPC
     public  $error;
     public  $responseRaw;
     public  $response;
-    private $id = 0;
     
     
     // #
     // ## Initialization
     // #
     
-    public function __construct(string $hostname = 'localhost', string $port = '7076', string $url = null)
+    public function __construct(string $hostname = 'localhost', int $port = 7076, string $url = null)
     {
         if (strpos($hostname, 'http://') === 0) {
             $hostname = substr($hostname, 7);
@@ -109,6 +109,10 @@ class NanoRPC
     public function __call($method, array $params)
     {
         $this->id++;
+        $this->status      = null;
+        $this->error       = null;
+        $this->responseRaw = null;
+        $this->response    = null;
         
         
         // # Request
@@ -195,7 +199,7 @@ class NanoRPC
         curl_close($curl);
         
         
-        // # Errors
+        // # Return and errors
         
         if (isset($this->response['error'])) {
             $this->error = $this->response['error'];

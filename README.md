@@ -13,6 +13,10 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 - NanoCLI
 
   class for interfacing to Nano node CLI
+  
+- NanoIPC
+
+  class for interfacing to Nano node IPC
 
 - NanoRPC
 
@@ -32,19 +36,14 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
   
 ## To do ...
 
-- additional library class to call node using IPC
+(nothing planned)
 
 ## FAQ
 
 #### How perform math operations with Nano raws?
 
-<details><summary>Nano deals with huge integers when using raws, for example</summary>
+<details><summary>Nano deals with huge integers when using raws, so you need an alternative like GMP</summary>
 <p>
-
-<pre>
-1 NANO = 1 Mnano = 1,000,000 nano = 10^30 raw
-</pre>
-Since PHP doesn't support mathematical operations with such huge integers, you need an alternative
 
 [GNU Multiple Precision](https://www.php.net/manual/en/book.gmp.php) (GMP) is a default PHP extension that fits the job
 
@@ -53,12 +52,24 @@ Since PHP doesn't support mathematical operations with such huge integers, you n
 
 #### How perform precise math operations with Nano denominations?
 
-<details><summary>PHP floats aren't very precise, the ideal choice is to do math with raws</summary>
+<details><summary>PHP floats aren't very precise at certain decimal depths, the ideal is to do math with raws</summary>
 <p>
 
-When the denomination amount reaches deep decimal value, just convert it to raw and then do some math with the proper tool
+Just convert denomination to raw and then do some math with the proper tool
 
 [GNU Multiple Precision](https://www.php.net/manual/en/book.gmp.php) (GMP) is a default PHP extension that fits the job
+
+</p>
+</details>
+
+#### Why not NanoHTTPCallback and NanoWebSocket classes?
+
+<details><summary>HTTP Callback is replaced by WebSocket, which implementation vary depending on the puropose</summary>
+<p>
+
+Since WebSocket implementation is quite personalized I decided to don't develop any NanoWebSocket class
+
+I suggest [Textalk/websocket-php](https://github.com/Textalk/websocket-php) repository for implementation
 
 </p>
 </details>
@@ -88,4 +99,4 @@ Thanks a lot for the work and effort of
 
 ## Support
 
-Send funds or delegate your weight to [my representative](https://mynano.ninja/account/mikerow)
+Send funds to [my representative](https://mynano.ninja/account/mikerow)

@@ -20,6 +20,7 @@ class NanoRPC2
     private $username;
     private $password;
     private $nanoAPIKey;
+    private $id = 0;
 
     
     // # Results and debug
@@ -30,14 +31,13 @@ class NanoRPC2
     public  $responseTime;
     public  $responseRaw;
     public  $response;
-    private $id = 0;
     
     
     // #
     // ## Initialization
     // #
     
-    public function __construct(string $hostname = 'localhost', string $port = '7076', string $url = 'api/v2')
+    public function __construct(string $hostname = 'localhost', int $port = 7076, string $url = 'api/v2')
     {
         if (strpos($hostname, 'http://') === 0) {
             $hostname = substr($hostname, 7);
@@ -148,6 +148,12 @@ class NanoRPC2
     public function __call($method, array $params)
     {
         $this->id++;
+        $this->status       = null;
+        $this->error        = null;
+        $this->errorCode    = null;
+        $this->responseTime = null;
+        $this->responseRaw  = null;
+        $this->response     = null;
         
         
         // # Request
@@ -248,7 +254,7 @@ class NanoRPC2
         curl_close($curl);
         
         
-        // # Errors
+        // # Return and errors
         
         if ($response['message_type'] == 'Error') {
             $this->error = $this->response['message'];
