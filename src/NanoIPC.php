@@ -95,7 +95,7 @@ class NanoIPC
     public function setNanoAuth(string $nano_api_key = null)
     {
         if (empty($nano_api_key)){
-            throw new NanoRPC2Exception("Invalid Nano API key: $nano_api_key");
+            throw new NanoIPCException("Invalid Nano API key: $nano_api_key");
         }
         
         $this->authType   = 'Nano';
