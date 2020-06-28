@@ -13,7 +13,7 @@ class NanoIPC
     private $transportType;
     private $transport;
     private $transportPreamble;
-    private $transportPath;
+    private $transportPathToSocket;
     private $transportHostname;
     private $transportPort;
     private $authType;
@@ -39,13 +39,13 @@ class NanoIPC
         // # Unix domain Socket
         
         if ($transport_type == 'unix_domain_socket') { 
-            if (!isset($params['path']) || !is_string($params['path'])) {
-                throw new NanoIPCException("Invalid transport path: " . $params['path']);
+            if (!isset($params['path_to_socket']) || !is_string($params['path_to_socket'])) {
+                throw new NanoIPCException("Invalid path to socket: " . $params['path_to_socket']);
             }
             
-            $this->transportPath = $params['path'];
+            $this->transportPathToSocket = $params['path_to_socket'];
             $this->transport     = stream_socket_client(
-                "unix://{$this->transportPath}",
+                "unix://{$this->transportPathToSocket}",
                 $this->errorCode,
                 $this->error
             );
@@ -58,10 +58,10 @@ class NanoIPC
         
         } elseif ($transport_type == 'TCP') {
             if (!isset($params['hostname']) || !is_string($params['hostname'])) {
-                throw new NanoIPCException("Invalid transport hostname: " . $params['hostname']);
+                throw new NanoIPCException("Invalid hostname: " . $params['hostname']);
             }
             if (!isset($params['port']) || !is_int((int) $params['port'])) {
-                throw new NanoIPCException("Invalid transport port: " . $params['port']);
+                throw new NanoIPCException("Invalid port: " . $params['port']);
             }
             
             $this->transportHostname = $params['hostname'];
