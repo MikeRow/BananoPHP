@@ -196,6 +196,10 @@ class NanoIPC
         $response = json_decode($this->responseRaw, true);
         $this->response = $response['message'];
         
+        if (isset($response['time'])) {
+            $this->responseTime = $response['time'];
+        }
+        
         if ($response['message_type'] == 'Error') {
             $this->error = $this->response['message'];
             $this->errorCode = $this->response['code'];
