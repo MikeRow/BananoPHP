@@ -12,10 +12,10 @@ class NanoIPC
     
     private $transportType;
     private $transport;
-    private $transportPreamble;
-    private $transportPathToSocket;
-    private $transportHostname;
-    private $transportPort;
+    private $preamble;
+    private $pathToSocket;
+    private $hostname;
+    private $port;
     private $authType;
     private $nanoAPIKey;
     private $id = 0;
@@ -43,9 +43,9 @@ class NanoIPC
                 throw new NanoIPCException("Invalid path to socket: " . $params['path_to_socket']);
             }
             
-            $this->transportPathToSocket = $params['path_to_socket'];
+            $this->pathToSocket = $params['path_to_socket'];
             $this->transport     = stream_socket_client(
-                "unix://{$this->transportPathToSocket}",
+                "unix://{$this->pathToSocket}",
                 $this->errorCode,
                 $this->error
             );
@@ -64,10 +64,10 @@ class NanoIPC
                 throw new NanoIPCException("Invalid port: " . $params['port']);
             }
             
-            $this->transportHostname = $params['hostname'];
-            $this->transportPort     = (int) $params['port'];
+            $this->hostname = $params['hostname'];
+            $this->port     = (int) $params['port'];
             $this->transport         = stream_socket_client(
-                "tcp://{$this->transportHostname}:{$this->transportPort}",
+                "tcp://{$this->hostname}:{$this->port}",
                 $this->errorCode,
                 $this->error,
                 30
@@ -83,8 +83,8 @@ class NanoIPC
             throw new NanoIPCException("Invalid transport type: $transport_type");
         }
         
-        $this->transportType     = $transport_type;
-        $this->transportPreamble = 'N' . chr(4) . chr(0) . chr(0);
+        $this->transportType = $transport_type;
+        $this->preamble      = 'N' . chr(4) . chr(0) . chr(0);
     }
 
     
@@ -148,7 +148,7 @@ class NanoIPC
         }
 
         $envelope = json_encode($envelope);
-        $buffer   = $this->transportPreamble . pack("N", strlen($envelope)) . $envelope;
+        $buffer   = $this->preamble . pack("N", strlen($envelope)) . $envelope;
         
         
         // # Unix domain socket, TCP
