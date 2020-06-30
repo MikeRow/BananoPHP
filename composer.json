@@ -17,6 +17,7 @@
 		"RPC",
 		"RPC2",
 		"RPCExt",
+		"WebSocket",
 		"tools",
 		"blocks",
 		"library",
@@ -44,7 +45,8 @@
 		"ext-gmp" : "*",
 		"ext-mbstring" : "*",
 		"ext-openssl" : "*",
-		"google/flatbuffers" : "*"
+		"google/flatbuffers" : "*",
+		"textalk/websocket" : "*"
 	},
 	"suggest" : {
 		"ext-blake2" : "Install blake2 extension in order to speed up some functions: https://github.com/strawbrary/php-blake2"

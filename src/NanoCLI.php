@@ -2,7 +2,7 @@
 
 namespace php4nano;
 
-use \Exception as Exception;
+use \Exception;
 
 class NanoCLIException extends Exception{}
 
@@ -16,8 +16,8 @@ class NanoCLI
     
     // # Results and debug
     
-    public  $responseRaw;
-    public  $response;
+    public $responseRaw;
+    public $response;
     
     
     // #

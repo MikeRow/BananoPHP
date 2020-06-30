@@ -2,7 +2,7 @@
 
 namespace php4nano;
 
-use \Exception as Exception;
+use \Exception;
 
 class NanoIPCException extends Exception{}
 
@@ -23,11 +23,12 @@ class NanoIPC
     
     // # Results and debug
     
-    public  $error;
-    public  $errorCode;
-    public  $responseTime;
-    public  $responseRaw;
-    public  $response;
+    public $error;
+    public $errorCode;
+    public $responseType;
+    public $responseTime;
+    public $responseRaw;
+    public $response;
     
     
     // #
@@ -44,7 +45,7 @@ class NanoIPC
             }
             
             $this->pathToSocket = $params['path_to_socket'];
-            $this->transport     = stream_socket_client(
+            $this->transport    = stream_socket_client(
                 "unix://{$this->pathToSocket}",
                 $this->errorCode,
                 $this->error
@@ -64,13 +65,20 @@ class NanoIPC
                 throw new NanoIPCException("Invalid port: " . $params['port']);
             }
             
-            $this->hostname = $params['hostname'];
-            $this->port     = (int) $params['port'];
-            $this->transport         = stream_socket_client(
+            if (strpos($params['hostname'], 'http://') === 0) {
+                $params['hostname'] = substr($params['hostname'], 7);
+            }
+            if (strpos($params['hostname'], 'https://') === 0) {
+                $params['hostname'] = substr($params['hostname'], 8);
+            }
+            
+            $this->hostname  = $params['hostname'];
+            $this->port      = (int) $params['port'];
+            $this->transport = stream_socket_client(
                 "tcp://{$this->hostname}:{$this->port}",
                 $this->errorCode,
                 $this->error,
-                30
+                15
             );
             if ($this->transport === false) {
                 return false;
@@ -166,11 +174,11 @@ class NanoIPC
             // Response size
             $size = fread($this->transport, 4);
             if ($size === false) {
-                $this->error = 'Unable to read response lenght';
+                $this->error = 'Unable to receive response lenght';
                 return false;
             }
             if (strlen($size) == 0) {
-                $this->error = 'Unable to read response lenght';
+                $this->error = 'Unable to receive response lenght';
                 return false;
             }
             
@@ -179,7 +187,7 @@ class NanoIPC
             // Response
             $this->responseRaw = fread($this->transport, $size[1]);
             if ($this->responseRaw === false) {
-                $this->error = 'Unable to read response';
+                $this->error = 'Unable to receive response';
                 return false;
             }
           
@@ -194,15 +202,16 @@ class NanoIPC
         // # Return and errors
         
         $response = json_decode($this->responseRaw, true);
-        $this->response = $response['message'];
+        $this->response     = $response['message'];
+        $this->responseType = $response['message_type'];
         
         if (isset($response['time'])) {
-            $this->responseTime = $response['time'];
+            $this->responseTime = (int) $response['time'];
         }
         
         if ($response['message_type'] == 'Error') {
-            $this->error = $this->response['message'];
-            $this->errorCode = $this->response['code'];
+            $this->error     = $this->response['message'];
+            $this->errorCode = (int) $this->response['code'];
         }
         
         if ($this->error) {

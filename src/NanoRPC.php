@@ -2,7 +2,7 @@
 
 namespace php4nano;
 
-use \Exception as Exception;
+use \Exception;
 
 class NanoRPCException extends Exception{}
 
@@ -23,10 +23,10 @@ class NanoRPC
     
     // # Results and debug
     
-    public  $status;
-    public  $error;
-    public  $responseRaw;
-    public  $response;
+    public $status;
+    public $error;
+    public $responseRaw;
+    public $response;
     
     
     // #
@@ -188,7 +188,11 @@ class NanoRPC
 
         // Execute the request and decode to an array
         $this->responseRaw = curl_exec($curl);
-        $this->response    = json_decode($this->responseRaw, true);
+        
+        
+        // # Return and errors
+        
+        $this->response = json_decode($this->responseRaw, true);
 
         // If the status is not 200, something is wrong
         $this->status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
@@ -197,9 +201,6 @@ class NanoRPC
         $curl_error = curl_error($curl);
 
         curl_close($curl);
-        
-        
-        // # Return and errors
         
         if (isset($this->response['error'])) {
             $this->error = $this->response['error'];

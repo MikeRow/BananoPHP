@@ -2,7 +2,7 @@
 
 namespace php4nano;
 
-use \Exception as Exception;
+use \Exception;
 
 class NanoRPCExtException extends Exception{}
 

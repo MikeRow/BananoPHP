@@ -7,14 +7,14 @@ require_once __DIR__ . '/../lib/util/Uint.php';
 require_once __DIR__ . '/../lib/util/base.php';
 require_once __DIR__ . '/../lib/util/bin.php';
 
-use \Exception as Exception;
-use \Uint as Uint;
-use \SplFixedArray as SplFixedArray;
-use \Blake2b as Blake2b;
-use \Salt as Salt;
-use \FieldElement as FieldElement;
-use \arr2bin as arr2bin;
-use \bin2arr as bin2arr;
+use \Exception;
+use \Uint;
+use \SplFixedArray;
+use \Blake2b;
+use \Salt;
+use \FieldElement;
+use \arr2bin;
+use \bin2arr;
 
 class NanoToolException extends Exception{}
 
