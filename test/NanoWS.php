@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/autoload.php';
 
-$nanows = new php4nano\NanoWS();
+$nanows = new php4nano\NanoWS('localhost', 7078);
 
 $nanows->subscribe('confirmation');
 //$nanows->keepalive();

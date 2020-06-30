@@ -13,11 +13,13 @@ class NanoRPC
     private $hostname;
     private $port;
     private $url;
+    private $version;
     private $proto;
     private $pathToCACertificate;
     private $authType;
     private $username;
     private $password;
+    private $nanoAPIKey;
     private $id = 0;
 
     
@@ -25,7 +27,11 @@ class NanoRPC
     
     public $status;
     public $error;
+    public $errorCode;
+    public $responseType;
+    public $responseTime;
     public $responseRaw;
+    public $responseId;
     public $response;
     
     
@@ -51,6 +57,23 @@ class NanoRPC
         $this->port     = $port;
         $this->url      = $url;
         $this->proto    = 'http';
+        $this->version  = 1;
+    }
+    
+    
+    // #
+    // ## Set version
+    // #
+    
+    public function setVersion(int $version)
+    {
+        if ($version != 1 &&
+            $version != 2
+        ) {
+            throw new NanoRPCException("Invalid version: $version");
+        }
+        
+        $this->version = $version;
     }
     
     
@@ -93,6 +116,21 @@ class NanoRPC
     
     
     // #
+    // ## Set Nano authentication
+    // #
+    
+    public function setNanoAuth(string $nano_api_key = null)
+    {
+        if (empty($nano_api_key)){
+            throw new NanoRPCException("Invalid Nano API key: $nano_api_key");
+        }
+        
+        $this->authType   = 'Nano';
+        $this->nanoAPIKey = $nano_api_key;
+    }
+    
+    
+    // #
     // ## Unset authentication
     // #
     
@@ -109,22 +147,45 @@ class NanoRPC
     public function __call($method, array $params)
     {
         $this->id++;
-        $this->status      = null;
-        $this->error       = null;
-        $this->responseRaw = null;
-        $this->response    = null;
+        $this->status       = null;
+        $this->error        = null;
+        $this->errorCode    = null;
+        $this->responseType = null;
+        $this->responseTime = null;
+        $this->responseRaw  = null;
+        $this->responseId   = null;
+        $this->response     = null;
         
         
         // # Request
         
-        $request = [
-            'action' => $method
-        ];
-        
         if (isset($params[0])) {
             foreach ($params[0] as $key => $value) {
-                $request[$key] = $value;
+                $arguments[$key] = $value;
             }
+        }
+        
+        
+        // # Version switch
+        
+        // v1
+        if ($this->version == 1) {
+            $request = $arguments;
+            $request['action'] = $method;   
+        // v2
+        } elseif ($this->version == 2) {
+            $request = [
+                'id'           => $this->id,
+                'message_type' => $method,
+                'message'      => $arguments
+            ];
+            
+            // Nano auth type
+            if ($this->authType == 'Nano') {
+                $request['credentials'] = $this->nanoAPIkey;
+            }
+        } else {
+            //
         }
         
         $request = json_encode($request);
@@ -187,13 +248,40 @@ class NanoRPC
         curl_setopt_array($curl, $options);
 
         // Execute the request and decode to an array
-        $this->responseRaw = curl_exec($curl);
+        $this->responseRaw = curl_exec($curl); 
+        $this->response    = json_decode($this->responseRaw, true);
         
         
-        // # Return and errors
+        // # Version switch
         
-        $this->response = json_decode($this->responseRaw, true);
+        // v1
+        if ($this->version == 1) {
+            if (isset($this->response['error'])) {
+                $this->error = $this->response['error'];
+            }
+        // v2
+        } elseif ($this->version == 2) {
+            $this->responseType = $this->response['message_type'];
+            
+            if (isset($this->response['time'])) {
+                $this->responseTime = (int) $this->response['time'];
+            }
+            
+            if (isset($this->response['id'])) {
+                $this->responseId = (int) $this->response['id'];
+            }
+            
+            if ($this->response['message_type'] == 'Error') {
+                $this->error     = $this->response['message'];
+                $this->errorCode = (int) $this->response['code'];
+            }
+        } else {
+            //
+        }
 
+        
+        // # cURL errors check
+        
         // If the status is not 200, something is wrong
         $this->status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         
@@ -202,10 +290,6 @@ class NanoRPC
 
         curl_close($curl);
         
-        if (isset($this->response['error'])) {
-            $this->error = $this->response['error'];
-        }
-
         if (!empty($curl_error)) {
             $this->error = $curl_error;
         }
@@ -231,6 +315,9 @@ class NanoRPC
             }
         }
 
+        
+        // # Return
+        
         if ($this->error) {
             return false;
         } else {

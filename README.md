@@ -21,10 +21,6 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 - [NanoRPC](https://github.com/mikerow/php4nano/wiki/NanoRPC)
 
   class for interfacing to Nano node RPC
-  
-- [NanoRPC2](https://github.com/mikerow/php4nano/wiki/NanoRPC2)
-
-  class for interfacing to Nano node RPC 2.0
 
 - [NanoRPCExt](https://github.com/mikerow/php4nano/wiki/NanoRPCExt)
 
@@ -49,11 +45,11 @@ Nothing planned
 <details><summary>PHP faces troubles when dealing with Nano amounts ...</summary>
 <p>
 
-- Floats aren't very precise at certain decimal depths
+- floats aren't very precise at certain decimal depths
 
   Depending on denomination, you may have more than 30 decimals
   
-- Integers can't be bigger than 64bit
+- integers can't be bigger than 64bit
   
   Nano uses 128bit for balances/amounts/weights
 
@@ -66,7 +62,7 @@ I suggest to perform calculations in raws using a proper tool
 
 #### Why not use libsodium instead of Salt or php-blake2?
 
-<details><summary>Two limitations prevent the use of libsodium ...</summary>
+<details><summary>Some limitations prevent the use of libsodium ...</summary>
 <p>
 
 - `sodium_crypto_sign_*` use SHA-2 instead Blake2
