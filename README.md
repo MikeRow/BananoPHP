@@ -49,11 +49,11 @@ Nothing planned
 <details><summary>PHP faces troubles when dealing with Nano amounts ...</summary>
 <p>
 
-- PHP floats aren't very precise at certain decimal depths
+- Floats aren't very precise at certain decimal depths
 
   Depending on denomination, you may have more than 30 decimals
   
-- PHP integers can't be bigger than 64bit
+- Integers can't be bigger than 64bit
   
   Nano uses 128bit for balances/amounts/weights
 
