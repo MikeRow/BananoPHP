@@ -159,6 +159,8 @@ class NanoRPC
         
         // # Request
         
+        $arguments = [];
+        
         if (isset($params[0])) {
             foreach ($params[0] as $key => $value) {
                 $arguments[$key] = $value;

@@ -41,11 +41,11 @@ class NanoIPC
         // # Unix domain Socket
         
         if ($transport_type == 'unix_domain_socket') { 
-            if (!isset($parameters['path_to_socket']) || !is_string($parameters['path_to_socket'])) {
-                throw new NanoIPCException("Invalid path to socket: " . $parameters['path_to_socket']);
+            if (!isset($params['path_to_socket']) || !is_string($params['path_to_socket'])) {
+                throw new NanoIPCException("Invalid path to socket: " . $params['path_to_socket']);
             }
             
-            $this->pathToSocket = $parameters['path_to_socket'];
+            $this->pathToSocket = $params['path_to_socket'];
             $this->transport    = stream_socket_client(
                 "unix://{$this->pathToSocket}",
                 $this->errorCode,
@@ -59,22 +59,22 @@ class NanoIPC
         // # TCP
         
         } elseif ($transport_type == 'TCP') {
-            if (!isset($parameters['hostname']) || !is_string($parameters['hostname'])) {
-                throw new NanoIPCException("Invalid hostname: " . $parameters['hostname']);
+            if (!isset($params['hostname']) || !is_string($params['hostname'])) {
+                throw new NanoIPCException("Invalid hostname: " . $params['hostname']);
             }
-            if (!isset($parameters['port']) || !is_int((int) $parameters['port'])) {
-                throw new NanoIPCException("Invalid port: " . $parameters['port']);
-            }
-            
-            if (strpos($parameters['hostname'], 'http://') === 0) {
-                $parameters['hostname'] = substr($parameters['hostname'], 7);
-            }
-            if (strpos($parameters['hostname'], 'https://') === 0) {
-                $parameters['hostname'] = substr($parameters['hostname'], 8);
+            if (!isset($params['port']) || !is_int((int) $params['port'])) {
+                throw new NanoIPCException("Invalid port: " . $params['port']);
             }
             
-            $this->hostname  = $parameters['hostname'];
-            $this->port      = (int) $parameters['port'];
+            if (strpos($params['hostname'], 'http://') === 0) {
+                $params['hostname'] = substr($params['hostname'], 7);
+            }
+            if (strpos($params['hostname'], 'https://') === 0) {
+                $params['hostname'] = substr($params['hostname'], 8);
+            }
+            
+            $this->hostname  = $params['hostname'];
+            $this->port      = (int) $params['port'];
             $this->transport = stream_socket_client(
                 "tcp://{$this->hostname}:{$this->port}",
                 $this->errorCode,
