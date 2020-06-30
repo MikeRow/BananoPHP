@@ -12,6 +12,7 @@ class NanoIPC
     
     private $transportType;
     private $transport;
+    private $encoding;
     private $preamble;
     private $pathToSocket;
     private $hostname;
@@ -36,7 +37,7 @@ class NanoIPC
     // ## Initialization
     // #
     
-    public function __construct(string $transport_type, array $parameters)
+    public function __construct(string $transport_type, array $params)
     {
         // # Unix domain Socket
         
@@ -81,9 +82,6 @@ class NanoIPC
                 $this->error,
                 15
             );
-            if ($this->transport === false) {
-                return false;
-            }
             
             
         // #
@@ -93,9 +91,27 @@ class NanoIPC
         }
         
         $this->transportType = $transport_type;
-        $this->preamble      = 'N' . chr(4) . chr(0) . chr(0);
+        $this->preamble      = 'N' . chr(1) . chr(0) . chr(0);
     }
 
+    
+    // #
+    // ## Set encoding
+    // #
+    
+    public function setEncoding(int $encoding)
+    {
+        if ($encoding != 1 &&
+            $encoding != 2 &&
+            $encoding != 4
+        ) {
+            throw new NanoIPCException("Invalid encoding: $encoding");
+        }
+        
+        $this->encoding = $encoding;
+        $this->preamble = 'N' . chr($this->encoding) . chr(0) . chr(0);
+    }
+    
     
     // #
     // ## Set Nano authentication
@@ -148,18 +164,33 @@ class NanoIPC
             }
         }
         
-        $envelope = [
-            'message_type' => $method,
-            'message'      => $arguments
-        ];
         
-        // Nano auth type
-        if ($this->authType == 'Nano') {
-            $envelope['credentials'] = $this->nanoAPIkey;
+        // # Encoding switch
+        
+        // 1/2
+        if ($this->encoding == 1 || 
+            $this->encoding == 2
+        ) {
+            $request = $arguments;
+            $request['action'] = $method;
+        // 4
+        } elseif ($this->encoding == 4) {
+            $request = [
+                'id'           => $this->id,
+                'message_type' => $method,
+                'message'      => $arguments
+            ];
+            
+            // Nano auth type
+            if ($this->authType == 'Nano') {
+                $request['credentials'] = $this->nanoAPIkey;
+            }
+        } else {
+            //
         }
-
-        $envelope = json_encode($envelope);
-        $buffer   = $this->preamble . pack("N", strlen($envelope)) . $envelope;
+        
+        $request = json_encode($request);
+        $buffer  = $this->preamble . pack("N", strlen($request)) . $request;
         
         
         // # Transport switch
@@ -198,30 +229,44 @@ class NanoIPC
         // #
         
         } else {
-            return false;
+            
         }
-        
-        
-        // # Return and errors
         
         $this->response = json_decode($this->responseRaw, true);
         
-        $this->responseType = $this->response['message_type'];
         
-        if (isset($this->response['time'])) {
-            $this->responseTime = (int) $this->response['time'];
+        // # Encoding switch
+        
+        // 1/2
+        if ($this->encoding == 1 ||
+            $this->encoding == 2
+        ) {
+            if (isset($this->response['error'])) {
+                $this->error = $this->response['error'];
+            }
+        // 4
+        } elseif ($this->encoding == 4) {
+            $this->responseType = $this->response['message_type'];
+            
+            if (isset($this->response['time'])) {
+                $this->responseTime = (int) $this->response['time'];
+            }
+            
+            if (isset($this->response['id'])) {
+                $this->responseId = (int) $this->response['id'];
+            }
+            
+            if ($this->response['message_type'] == 'Error') {
+                $this->error     = $this->response['message'];
+                $this->errorCode = (int) $this->response['message']['code'];
+            }
+            
+            $this->response = $this->response['message'];
+        } else {
+            //
         }
         
-        if (isset($this->response['id'])) {
-            $this->responseId = (int) $this->response['id'];
-        }
-        
-        if ($this->response['message_type'] == 'Error') {
-            $this->error     = $this->response['message'];
-            $this->errorCode = (int) $this->response['message']['code'];
-        }
-        
-        $this->response = $this->response['message'];
+        // # Return
         
         if ($this->error) {
             return false;

@@ -168,7 +168,7 @@ class NanoRPC
         }
         
         
-        // # Version switch
+        // # API switch
         
         // v1
         if ($this->API == 1) {
@@ -254,7 +254,7 @@ class NanoRPC
         $this->response    = json_decode($this->responseRaw, true);
         
         
-        // # Version switch
+        // # API switch
         
         // v1
         if ($this->API == 1) {

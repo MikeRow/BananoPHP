@@ -45,7 +45,6 @@
 		"ext-gmp" : "*",
 		"ext-mbstring" : "*",
 		"ext-openssl" : "*",
-		"google/flatbuffers" : "*",
 		"textalk/websocket" : "*"
 	},
 	"suggest" : {
