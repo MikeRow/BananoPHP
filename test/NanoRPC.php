@@ -12,7 +12,7 @@ var_dump($nanorpc);
 
 $nanorpc2 = new php4nano\NanoRPC('localhost', 7076, 'api/v2');
 
-$nanorpc2->setVersion(2);
+$nanorpc2->setAPI(2);
 
 $nanorpc2->AccountWeight(['account' => $account]);
 

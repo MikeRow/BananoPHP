@@ -28,6 +28,7 @@ class NanoIPC
     public $responseType;
     public $responseTime;
     public $responseRaw;
+    public $responseId;
     public $response;
     
     
@@ -35,16 +36,16 @@ class NanoIPC
     // ## Initialization
     // #
     
-    public function __construct(string $transport_type, array $params)
+    public function __construct(string $transport_type, array $parameters)
     {
         // # Unix domain Socket
         
         if ($transport_type == 'unix_domain_socket') { 
-            if (!isset($params['path_to_socket']) || !is_string($params['path_to_socket'])) {
-                throw new NanoIPCException("Invalid path to socket: " . $params['path_to_socket']);
+            if (!isset($parameters['path_to_socket']) || !is_string($parameters['path_to_socket'])) {
+                throw new NanoIPCException("Invalid path to socket: " . $parameters['path_to_socket']);
             }
             
-            $this->pathToSocket = $params['path_to_socket'];
+            $this->pathToSocket = $parameters['path_to_socket'];
             $this->transport    = stream_socket_client(
                 "unix://{$this->pathToSocket}",
                 $this->errorCode,
@@ -58,22 +59,22 @@ class NanoIPC
         // # TCP
         
         } elseif ($transport_type == 'TCP') {
-            if (!isset($params['hostname']) || !is_string($params['hostname'])) {
-                throw new NanoIPCException("Invalid hostname: " . $params['hostname']);
+            if (!isset($parameters['hostname']) || !is_string($parameters['hostname'])) {
+                throw new NanoIPCException("Invalid hostname: " . $parameters['hostname']);
             }
-            if (!isset($params['port']) || !is_int((int) $params['port'])) {
-                throw new NanoIPCException("Invalid port: " . $params['port']);
-            }
-            
-            if (strpos($params['hostname'], 'http://') === 0) {
-                $params['hostname'] = substr($params['hostname'], 7);
-            }
-            if (strpos($params['hostname'], 'https://') === 0) {
-                $params['hostname'] = substr($params['hostname'], 8);
+            if (!isset($parameters['port']) || !is_int((int) $parameters['port'])) {
+                throw new NanoIPCException("Invalid port: " . $parameters['port']);
             }
             
-            $this->hostname  = $params['hostname'];
-            $this->port      = (int) $params['port'];
+            if (strpos($parameters['hostname'], 'http://') === 0) {
+                $parameters['hostname'] = substr($parameters['hostname'], 7);
+            }
+            if (strpos($parameters['hostname'], 'https://') === 0) {
+                $parameters['hostname'] = substr($parameters['hostname'], 8);
+            }
+            
+            $this->hostname  = $parameters['hostname'];
+            $this->port      = (int) $parameters['port'];
             $this->transport = stream_socket_client(
                 "tcp://{$this->hostname}:{$this->port}",
                 $this->errorCode,
@@ -130,8 +131,10 @@ class NanoIPC
         $this->id++;
         $this->error        = null;
         $this->errorCode    = null;
+        $this->responseType = null;
         $this->responseTime = null;
         $this->responseRaw  = null;
+        $this->responseId   = null;
         $this->response     = null;
         
         
@@ -159,7 +162,7 @@ class NanoIPC
         $buffer   = $this->preamble . pack("N", strlen($envelope)) . $envelope;
         
         
-        // # Unix domain socket, TCP
+        // # Transport switch
         
         if ($this->transportType == 'unix_domain_socket' ||
             $this->transportType == 'TCP'
@@ -201,18 +204,24 @@ class NanoIPC
         
         // # Return and errors
         
-        $response = json_decode($this->responseRaw, true);
-        $this->response     = $response['message'];
-        $this->responseType = $response['message_type'];
+        $this->response = json_decode($this->responseRaw, true);
         
-        if (isset($response['time'])) {
-            $this->responseTime = (int) $response['time'];
+        $this->responseType = $this->response['message_type'];
+        
+        if (isset($this->response['time'])) {
+            $this->responseTime = (int) $this->response['time'];
         }
         
-        if ($response['message_type'] == 'Error') {
+        if (isset($this->response['id'])) {
+            $this->responseId = (int) $this->response['id'];
+        }
+        
+        if ($this->response['message_type'] == 'Error') {
             $this->error     = $this->response['message'];
-            $this->errorCode = (int) $this->response['code'];
+            $this->errorCode = (int) $this->response['message']['code'];
         }
+        
+        $this->response = $this->response['message'];
         
         if ($this->error) {
             return false;

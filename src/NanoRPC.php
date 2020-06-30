@@ -13,7 +13,7 @@ class NanoRPC
     private $hostname;
     private $port;
     private $url;
-    private $version;
+    private $API;
     private $proto;
     private $pathToCACertificate;
     private $authType;
@@ -57,23 +57,23 @@ class NanoRPC
         $this->port     = $port;
         $this->url      = $url;
         $this->proto    = 'http';
-        $this->version  = 1;
+        $this->API  = 1;
     }
     
     
     // #
-    // ## Set version
+    // ## Set API
     // #
     
-    public function setVersion(int $version)
+    public function setAPI(int $API)
     {
-        if ($version != 1 &&
-            $version != 2
+        if ($API != 1 &&
+            $API != 2
         ) {
-            throw new NanoRPCException("Invalid version: $version");
+            throw new NanoRPCException("Invalid API: $API");
         }
         
-        $this->version = $version;
+        $this->API = $API;
     }
     
     
@@ -169,11 +169,11 @@ class NanoRPC
         // # Version switch
         
         // v1
-        if ($this->version == 1) {
+        if ($this->API == 1) {
             $request = $arguments;
             $request['action'] = $method;   
         // v2
-        } elseif ($this->version == 2) {
+        } elseif ($this->API == 2) {
             $request = [
                 'id'           => $this->id,
                 'message_type' => $method,
@@ -255,12 +255,12 @@ class NanoRPC
         // # Version switch
         
         // v1
-        if ($this->version == 1) {
+        if ($this->API == 1) {
             if (isset($this->response['error'])) {
                 $this->error = $this->response['error'];
             }
         // v2
-        } elseif ($this->version == 2) {
+        } elseif ($this->API == 2) {
             $this->responseType = $this->response['message_type'];
             
             if (isset($this->response['time'])) {
@@ -273,8 +273,10 @@ class NanoRPC
             
             if ($this->response['message_type'] == 'Error') {
                 $this->error     = $this->response['message'];
-                $this->errorCode = (int) $this->response['code'];
+                $this->errorCode = (int) $this->response['message']['code'];
             }
+            
+            $this->response = $this->response['message'];
         } else {
             //
         }
