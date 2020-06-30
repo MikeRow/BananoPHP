@@ -20,14 +20,14 @@ var_dump($nanorpc);
 
 // # API v2
 
-$nanorpc2 = new php4nano\NanoRPC('localhost', 7076, 'api/v2');
+$nanorpc = new php4nano\NanoRPC('localhost', 7076, 'api/v2');
 
-$nanorpc2->setAPI(2);
+$nanorpc->setAPI(2);
 
 $t0 = microtime(true);
 
-$nanorpc2->AccountWeight(['account' => $account]);
+$nanorpc->AccountWeight(['account' => $account]);
 
 echo 'Time v2: ' . (microtime(true) - $t0) . PHP_EOL;
 
-var_dump($nanorpc2);
+var_dump($nanorpc);
