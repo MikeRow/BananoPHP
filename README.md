@@ -45,9 +45,9 @@ Nothing planned
 <details><summary>PHP faces troubles when dealing with Nano amounts ...</summary>
 <p>
 
-- floats aren't very precise at certain decimal depths
+- `float` isn't very precise at certain decimal depths
   
-- integers aren't be bigger than 64 bit
+- `integer` can't be bigger than 64 bit
 
 A good solution is to perform calculations in raws using [GNU Multiple Precision](https://www.php.net/manual/en/book.gmp.php)
 
