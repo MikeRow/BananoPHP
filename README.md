@@ -46,16 +46,10 @@ Nothing planned
 <p>
 
 - floats aren't very precise at certain decimal depths
-
-  Depending on denomination, you may have more than 30 decimals
   
-- integers can't be bigger than 64bit
-  
-  Nano uses 128bit for balances/amounts/weights
+- integers aren't be bigger than 64 bit
 
-I suggest to perform calculations in raws using a proper tool
-
-[GNU Multiple Precision](https://www.php.net/manual/en/book.gmp.php) (GMP) is a default PHP extension that fits the job
+A good solution is to perform calculations in raws using [GNU Multiple Precision](https://www.php.net/manual/en/book.gmp.php)
 
 </p>
 </details>

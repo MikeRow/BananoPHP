@@ -24,13 +24,12 @@ class NanoIPC
     
     // # Results and debug
     
-    public $error;
-    public $errorCode;
+    public $response;
+    public $responseRaw;
     public $responseType;
     public $responseTime;
-    public $responseRaw;
-    public $responseId;
-    public $response;
+    public $error;
+    public $errorCode;
     
     
     // #
@@ -145,13 +144,12 @@ class NanoIPC
     public function __call($method, array $params)
     {
         $this->id++;
-        $this->error        = null;
-        $this->errorCode    = null;
+        $this->response     = null;
+        $this->responseRaw  = null;
         $this->responseType = null;
         $this->responseTime = null;
-        $this->responseRaw  = null;
-        $this->responseId   = null;
-        $this->response     = null;
+        $this->error        = null;
+        $this->errorCode    = null;
         
         
         // # Request
@@ -252,10 +250,6 @@ class NanoIPC
                 $this->responseTime = (int) $this->response['time'];
             }
             
-            if (isset($this->response['id'])) {
-                $this->responseId = (int) $this->response['id'];
-            }
-            
             if ($this->response['message_type'] == 'Error') {
                 $this->error     = $this->response['message'];
                 $this->errorCode = (int) $this->response['message']['code'];
@@ -265,6 +259,7 @@ class NanoIPC
         } else {
             //
         }
+        
         
         // # Return
         

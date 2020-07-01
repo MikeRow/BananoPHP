@@ -24,15 +24,14 @@ class NanoRPC
 
     
     // # Results and debug
-    
+
+    public $response;
+    public $responseRaw;
+    public $responseType;
+    public $responseTime;
     public $status;
     public $error;
     public $errorCode;
-    public $responseType;
-    public $responseTime;
-    public $responseRaw;
-    public $responseId;
-    public $response;
     
     
     // #
@@ -147,14 +146,13 @@ class NanoRPC
     public function __call($method, array $params)
     {
         $this->id++;
+        $this->response     = null;
+        $this->responseRaw  = null;
+        $this->responseType = null;
+        $this->responseTime = null;
         $this->status       = null;
         $this->error        = null;
         $this->errorCode    = null;
-        $this->responseType = null;
-        $this->responseTime = null;
-        $this->responseRaw  = null;
-        $this->responseId   = null;
-        $this->response     = null;
         
         
         // # Request
@@ -269,10 +267,6 @@ class NanoRPC
                 $this->responseTime = (int) $this->response['time'];
             }
             
-            if (isset($this->response['id'])) {
-                $this->responseId = (int) $this->response['id'];
-            }
-            
             if ($this->response['message_type'] == 'Error') {
                 $this->error     = $this->response['message'];
                 $this->errorCode = (int) $this->response['message']['code'];
@@ -284,7 +278,7 @@ class NanoRPC
         }
 
         
-        // # cURL errors check
+        // # cURL errors
         
         // If the status is not 200, something is wrong
         $this->status = curl_getinfo($curl, CURLINFO_HTTP_CODE);

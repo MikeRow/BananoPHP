@@ -27,8 +27,8 @@ class NanoBlock
     
     // # Results and debug
     
-    public $blockId;
     public $block = [];
+    public $blockId;
 
 
     // #

@@ -16,8 +16,8 @@ class NanoCLI
     
     // # Results and debug
     
-    public $responseRaw;
     public $response;
+    public $responseRaw;
     
     
     // #
