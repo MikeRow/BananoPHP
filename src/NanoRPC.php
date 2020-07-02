@@ -3,6 +3,7 @@
 namespace php4nano;
 
 use \Exception;
+use \Google\FlatBuffers;
 
 class NanoRPCException extends Exception{}
 

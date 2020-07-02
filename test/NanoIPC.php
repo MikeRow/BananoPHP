@@ -13,28 +13,26 @@ $account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
 $t0 = microtime(true);
 
-$nanoipc_unix->account_weight(['account' => $account]);
+$return = $nanoipc_unix->account_weight(['account' => $account]);
 
 echo 'Time unix 2: ' . (microtime(true) - $t0) . PHP_EOL;
 
-var_dump($nanoipc_unix);
+print_r($return);
 
 
 // # Unix domain socket encoding 4
 
 $nanoipc_unix = new php4nano\NanoIPC('unix_domain_socket', ['path_to_socket' => '/tmp/nano']);
 
-$nanoipc_unix->setEncoding(4);
-
 $account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
 $t0 = microtime(true);
 
-$nanoipc_unix->AccountWeight(['account' => $account]);
+$return = $nanoipc_unix->AccountWeight(['account' => $account]);
 
 echo 'Time unix 4: ' . (microtime(true) - $t0) . PHP_EOL;
 
-var_dump($nanoipc_unix);
+print_r($return);
 
 
 // # TCP encoding 2
@@ -47,11 +45,11 @@ $account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
 $t0 = microtime(true);
 
-$nanoipc_tcp->account_weight(['account' => $account]);
+$return = $nanoipc_tcp->account_weight(['account' => $account]);
 
 echo 'Time TCP 2: ' . (microtime(true) - $t0) . PHP_EOL;
 
-var_dump($nanoipc_tcp);
+print_r($return);
 
 
 // # TCP encoding 4
@@ -64,8 +62,8 @@ $account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
 $t0 = microtime(true);
 
-$nanoipc_tcp->AccountWeight(['account' => $account]);
+$return = $nanoipc_tcp->AccountWeight(['account' => $account]);
 
 echo 'Time TCP 4: ' . (microtime(true) - $t0) . PHP_EOL;
 
-var_dump($nanoipc_tcp);
+print_r($return);

@@ -45,9 +45,8 @@ Nothing planned
 <details><summary>PHP faces troubles when dealing with Nano amounts ...</summary>
 <p>
 
-- `float` isn't very precise at certain decimal depths
-  
-- `integer` can't be bigger than 64 bit
+- Data type `float` isn't precise at certain decimal depths
+- Data type `integer` size is limited to 64 bit
 
 A good solution is to perform calculations in raws using [GNU Multiple Precision](https://www.php.net/manual/en/book.gmp.php)
 
@@ -59,8 +58,8 @@ A good solution is to perform calculations in raws using [GNU Multiple Precision
 <details><summary>Some limitations prevent the use of libsodium ...</summary>
 <p>
 
-- `sodium_crypto_sign_*` use SHA-2 instead Blake2
-- `sodium_crypto_generichash_*` don't allow output smaller than 16 bytes
+- Functions `sodium_crypto_sign_*` use SHA-2 instead Blake2
+- Functions `sodium_crypto_generichash_*` don't allow output smaller than 16 bytes
 
 </p>
 </details>
@@ -74,6 +73,7 @@ Thanks a lot for the work and effort of
 - [jaimehgb/RaiBlocksPHP](https://github.com/jaimehgb/RaiBlocksPHP)
 - [Textalk/websocket-php](https://github.com/Textalk/websocket-php)
 - [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
+- [google/flatbuffers](https://github.com/google/flatbuffers)
 - [FriendsOfPHP/PHP-CS-Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
 - [squizlabs/PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer)
 - [Sergey Kroshnin](https://github.com/SergiySW)

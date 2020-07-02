@@ -5,7 +5,6 @@
 	"keywords" : [
 		"nano",
 		"raiblocks",
-		"raiblockscommunity",
 		"node",
 		"crypto",
 		"currency",
@@ -16,14 +15,11 @@
 		"IPC",
 		"RPC",
 		"RPC2",
-		"RPCExt",
 		"WebSocket",
 		"tools",
 		"blocks",
 		"library",
-		"libraries",
-		"class",
-		"classes"
+		"class"
 	],
 	"homepage" : "https://github.com/mikerow/php4nano",
 	"license" : "MIT",
@@ -45,7 +41,8 @@
 		"ext-gmp" : "*",
 		"ext-mbstring" : "*",
 		"ext-openssl" : "*",
-		"textalk/websocket" : "*"
+		"textalk/websocket" : "*",
+		"google/flatbuffers" : "*"
 	},
 	"suggest" : {
 		"ext-blake2" : "Install blake2 extension in order to speed up some functions: https://github.com/strawbrary/php-blake2"

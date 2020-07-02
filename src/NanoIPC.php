@@ -3,6 +3,7 @@
 namespace php4nano;
 
 use \Exception;
+use \Google\FlatBuffers;
 
 class NanoIPCException extends Exception{}
 
@@ -90,7 +91,7 @@ class NanoIPC
         }
         
         $this->transportType = $transport_type;
-        $this->preamble      = 'N' . chr(1) . chr(0) . chr(0);
+        $this->preamble      = 'N' . chr(4) . chr(0) . chr(0);
     }
 
     
