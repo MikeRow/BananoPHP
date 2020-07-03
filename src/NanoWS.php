@@ -54,7 +54,7 @@ class NanoWS
     // ## Subscribe to topic
     // #
     
-    public function subscribe(string $topic, array $options = [], bool $ack = true): int
+    public function subscribe(string $topic, array $options = [], bool $ack = false): int
     {
         if (empty($topic)){
             throw new NanoWSException("Invalid topic: $topic");
@@ -87,7 +87,7 @@ class NanoWS
     // ## Update subscription
     // #
     
-    public function update(string $topic, array $options = [], bool $ack = true): int
+    public function update(string $topic, array $options = [], bool $ack = false): int
     {
         if (empty($topic)){
             throw new NanoWSException("Invalid topic: $topic");
@@ -118,7 +118,7 @@ class NanoWS
     // ## Unsubscribe to topic
     // #
     
-    public function unsubscribe(string $topic, bool $ack = true): int
+    public function unsubscribe(string $topic, bool $ack = false): int
     {
         if (empty($topic)){
             throw new NanoWSException("Invalid topic: $topic");
