@@ -57,7 +57,7 @@ class NanoRPC
         $this->port     = $port;
         $this->url      = $url;
         $this->proto    = 'http';
-        $this->API  = 1;
+        $this->API      = 1;
     }
     
     
@@ -176,9 +176,9 @@ class NanoRPC
         // v2
         } elseif ($this->API == 2) {
             $request = [
-                'id'           => $this->id,
-                'message_type' => $method,
-                'message'      => $arguments
+                'correlation_id' => (string) $this->id,
+                'message_type'   => $method,
+                'message'        => $arguments
             ];
             
             // Nano auth type
@@ -266,6 +266,12 @@ class NanoRPC
             
             if (isset($this->response['time'])) {
                 $this->responseTime = (int) $this->response['time'];
+            }
+            
+            if (isset($this->response['correlation_id'])) {
+                if ((int) $this->response['correlation_id'] != $this->id) {
+                    $this->error = 'Correlation ID doesn\'t match';
+                }
             }
             
             if ($this->response['message_type'] == 'Error') {

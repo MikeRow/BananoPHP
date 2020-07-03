@@ -91,7 +91,8 @@ class NanoIPC
         }
         
         $this->transportType = $transport_type;
-        $this->preamble      = 'N' . chr(4) . chr(0) . chr(0);
+        $this->encoding      = 4;
+        $this->preamble      = 'N' . chr($this->encoding) . chr(0) . chr(0);
     }
 
     
@@ -175,9 +176,9 @@ class NanoIPC
         // 4
         } elseif ($this->encoding == 4) {
             $request = [
-                'id'           => $this->id,
-                'message_type' => $method,
-                'message'      => $arguments
+                'correlation_id' => (string) $this->id,
+                'message_type'   => $method,
+                'message'        => $arguments
             ];
             
             // Nano auth type
@@ -249,6 +250,12 @@ class NanoIPC
             
             if (isset($this->response['time'])) {
                 $this->responseTime = (int) $this->response['time'];
+            }
+            
+            if (isset($this->response['correlation_id'])) {
+                if ((int) $this->response['correlation_id'] != $this->id) {
+                    $this->error = 'Correlation ID doesn\'t match';
+                }
             }
             
             if ($this->response['message_type'] == 'Error') {

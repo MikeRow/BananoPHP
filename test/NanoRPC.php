@@ -11,11 +11,11 @@ $account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
 $t0 = microtime(true);
 
-$return = $nanorpc->account_weight(['account' => $account]);
+$nanorpc->account_weight(['account' => $account]);
 
 echo 'Time v1: ' . (microtime(true) - $t0) . PHP_EOL;
 
-print_r($return);
+var_dump($nanorpc);
 
 
 // # API v2
@@ -26,8 +26,8 @@ $nanorpc->setAPI(2);
 
 $t0 = microtime(true);
 
-$return = $nanorpc->AccountWeight(['account' => $account]);
+$nanorpc->AccountWeight(['account' => $account]);
 
 echo 'Time v2: ' . (microtime(true) - $t0) . PHP_EOL;
 
-print_r($return);
+var_dump($nanorpc);
