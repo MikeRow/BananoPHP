@@ -54,7 +54,7 @@ class NanoWS
     // ## Subscribe to topic
     // #
     
-    public function subscribe(string $topic, array $options = []): int
+    public function subscribe(string $topic, array $options = [], bool $ack = true): int
     {
         if (empty($topic)){
             throw new NanoWSException("Invalid topic: $topic");
@@ -65,9 +65,12 @@ class NanoWS
         $subscribe = [
             'action' => 'subscribe',
             'topic'  => $topic,
-            'ack'    => true,
             'id'     => $this->id
         ];
+        
+        if ($ack) {
+            $subscribe['ack'] = true;
+        }
         
         if (!empty($options)) {
             $subscribe['options'] = $options;
@@ -84,7 +87,7 @@ class NanoWS
     // ## Update subscription
     // #
     
-    public function update(string $topic, array $options = []): int
+    public function update(string $topic, array $options = [], bool $ack = true): int
     {
         if (empty($topic)){
             throw new NanoWSException("Invalid topic: $topic");
@@ -95,9 +98,12 @@ class NanoWS
         $update = [
             'action' => 'update',
             'topic'  => $topic,
-            'ack'    => true,
             'id'     => $this->id
         ];
+        
+        if ($ack) {
+            $update['ack'] = true;
+        }
         
         $update['options'] = $options;
         
@@ -112,7 +118,7 @@ class NanoWS
     // ## Unsubscribe to topic
     // #
     
-    public function unsubscribe(string $topic): int
+    public function unsubscribe(string $topic, bool $ack = true): int
     {
         if (empty($topic)){
             throw new NanoWSException("Invalid topic: $topic");
@@ -123,9 +129,12 @@ class NanoWS
         $unsubscribe = [
             'action' => 'unsubscribe',
             'topic'  => $topic,
-            'ack'    => true,
             'id'     => $this->id
         ];
+        
+        if ($ack) {
+            $unsubscribe['ack'] = true;
+        }
         
         $unsubscribe = json_encode($unsubscribe);
         $this->websocket->send($unsubscribe);
