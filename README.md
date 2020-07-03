@@ -77,7 +77,6 @@ Thanks a lot for the work and effort of
 - [jaimehgb/RaiBlocksPHP](https://github.com/jaimehgb/RaiBlocksPHP)
 - [Textalk/websocket-php](https://github.com/Textalk/websocket-php)
 - [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
-- [google/flatbuffers](https://github.com/google/flatbuffers)
 - [FriendsOfPHP/PHP-CS-Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
 - [squizlabs/PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer)
 - [Sergey Kroshnin](https://github.com/SergiySW)

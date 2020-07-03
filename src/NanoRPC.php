@@ -3,7 +3,6 @@
 namespace php4nano;
 
 use \Exception;
-use \Google\FlatBuffers;
 
 class NanoRPCException extends Exception{}
 
@@ -53,11 +52,11 @@ class NanoRPC
             }
         }
         
-        $this->hostname = $hostname;
-        $this->port     = $port;
-        $this->url      = $url;
-        $this->proto    = 'http';
-        $this->API      = 1;
+        $this->hostname    = $hostname;
+        $this->port        = $port;
+        $this->url         = $url;
+        $this->proto       = 'http';
+        $this->API         = 1;
     }
     
     
@@ -264,14 +263,10 @@ class NanoRPC
         } elseif ($this->API == 2) {
             $this->responseType = $this->response['message_type'];
             
-            if (isset($this->response['time'])) {
-                $this->responseTime = (int) $this->response['time'];
-            }
+            $this->responseTime = (int) $this->response['time'];
             
-            if (isset($this->response['correlation_id'])) {
-                if ((int) $this->response['correlation_id'] != $this->id) {
-                    $this->error = 'Correlation ID doesn\'t match';
-                }
+            if ((int) $this->response['correlation_id'] != $this->id) {
+                $this->error = 'Correlation ID doesn\'t match';
             }
             
             if ($this->response['message_type'] == 'Error') {

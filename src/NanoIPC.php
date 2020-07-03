@@ -3,7 +3,6 @@
 namespace php4nano;
 
 use \Exception;
-use \Google\FlatBuffers;
 
 class NanoIPCException extends Exception{}
 
@@ -205,7 +204,7 @@ class NanoIPC
                 return false;
             }
             
-            // Response size
+            // Response lenght
             $size = fread($this->transport, 4);
             if ($size === false) {
                 $this->error = 'Unable to receive response lenght';
@@ -248,14 +247,10 @@ class NanoIPC
         } elseif ($this->encoding == 4) {
             $this->responseType = $this->response['message_type'];
             
-            if (isset($this->response['time'])) {
-                $this->responseTime = (int) $this->response['time'];
-            }
+            $this->responseTime = (int) $this->response['time'];
             
-            if (isset($this->response['correlation_id'])) {
-                if ((int) $this->response['correlation_id'] != $this->id) {
-                    $this->error = 'Correlation ID doesn\'t match';
-                }
+            if ((int) $this->response['correlation_id'] != $this->id) {
+                $this->error = 'Correlation ID doesn\'t match';
             }
             
             if ($this->response['message_type'] == 'Error') {
