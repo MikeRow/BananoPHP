@@ -10,14 +10,16 @@ class NanoIPC
 {
     // # Settings
     
-    private $transportType;
     private $transport;
+    private $transportType;
     private $encoding;
     private $preamble;
     private $pathToSocket;
     private $hostname;
     private $port;
-    private $authType;
+    private $timeout;
+    private $flags;
+    private $context;
     private $nanoAPIKey;
     private $id = 0;
    
@@ -38,7 +40,7 @@ class NanoIPC
     
     public function __construct(string $transport_type, array $params)
     {
-        // # Unix domain Socket
+        // # Unix domain socket
         
         if ($transport_type == 'unix_domain_socket') { 
             // Path to socket
@@ -48,35 +50,26 @@ class NanoIPC
             
             // Timeout
             if (isset($params['timeout'])) {
-                $timeout = (float) $params['timeout'];
+                $this->timeout = (float) $params['timeout'];
             } else {
-                $timeout = 15;
+                $this->timeout = 15;
             }
             
             // Flags
             if (isset($params['flags'])) {
-                $flags = (int) $params['flags'];
+                $this->flags = (int) $params['flags'];
             } else {
-                $flags = STREAM_CLIENT_CONNECT;
+                $this->flags = STREAM_CLIENT_CONNECT;
             }
             
             // Context
-            if (isset($params['context'])) {
-                $context = stream_context_create($params['context']);
+            if (isset($params['context']) && is_array($params['context'])) {
+                $this->context = stream_context_create($params['context']);
             } else {
-                $context = stream_context_create([]);
+                $this->context = stream_context_create([]);
             }
             
-            // Open socket
             $this->pathToSocket = $params['path_to_socket'];
-            $this->transport    = stream_socket_client(
-                "unix://{$this->pathToSocket}",
-                $this->errorCode,
-                $this->error,
-                $timeout,
-                $flags,
-                $context
-            );
             
             
         // # TCP
@@ -101,36 +94,27 @@ class NanoIPC
             
             // Timeout
             if (isset($params['timeout'])) {
-                $timeout = (float) $params['timeout'];
+                $this->timeout = (float) $params['timeout'];
             } else {
-                $timeout = 15;
+                $this->timeout = 15;
             }
             
             // Flags
             if (isset($params['flags'])) {
-                $flags = (int) $params['flags'];
+                $this->flags = (int) $params['flags'];
             } else {
-                $flags = STREAM_CLIENT_CONNECT;
+                $this->flags = STREAM_CLIENT_CONNECT;
             }
             
             // Context
-            if (isset($params['context'])) {
-                $context = stream_context_create($params['context']);
+            if (isset($params['context']) && is_array($params['context'])) {
+                $this->context = stream_context_create($params['context']);
             } else {
-                $context = stream_context_create([]);
+                $this->context = stream_context_create([]);
             }
             
-            // Open socket
             $this->hostname  = $params['hostname'];
             $this->port      = (int) $params['port'];
-            $this->transport = stream_socket_client(
-                "tcp://{$this->hostname}:{$this->port}",
-                $this->errorCode,
-                $this->error,
-                $timeout,
-                $flags,
-                $context
-            );
             
             
         // #
@@ -142,8 +126,8 @@ class NanoIPC
         $this->transportType = $transport_type;
         $this->encoding      = 4;
         $this->preamble      = 'N' . chr($this->encoding) . chr(0) . chr(0);
-    }
-
+    }    
+    
     
     // #
     // ## Set encoding
@@ -164,6 +148,63 @@ class NanoIPC
     
     
     // #
+    // ## Open connection
+    // #
+    
+    public function open()
+    {
+        // # Unix domain socket
+        
+        if ($this->transportType == 'unix_domain_socket') {
+            $this->transport    = stream_socket_client(
+                "unix://{$this->pathToSocket}",
+                $this->errorCode,
+                $this->error,
+                $this->timeout,
+                $this->flags,
+                $this->context
+            );
+        
+            
+        // # TCP    
+            
+        } elseif ($this->transportType == 'TCP') {
+            $this->transport = stream_socket_client(
+                "tcp://{$this->hostname}:{$this->port}",
+                $this->errorCode,
+                $this->error,
+                $this->timeout,
+                $this->flags,
+                $this->context
+            );
+            
+        
+        // #
+            
+        } else {
+        }
+        
+        if ($this->transport) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    
+    // #
+    // ## Close connection
+    // #
+    
+    public function close()
+    {
+        if ($this->transport != null) {
+            stream_socket_shutdown($this->transport, STREAM_SHUT_RDWR );
+        }      
+    }
+    
+    
+    // #
     // ## Set Nano authentication
     // #
     
@@ -173,7 +214,6 @@ class NanoIPC
             throw new NanoIPCException("Invalid Nano API key: $nano_api_key");
         }
         
-        $this->authType   = 'Nano';
         $this->nanoAPIKey = $nano_api_key;
     }
     
@@ -184,6 +224,11 @@ class NanoIPC
     
     public function __call($method, array $params)
     {
+        // Check transport connection
+        if ($this->transport == null) {
+            throw new NanoIPCException("Transport connection is not opened");
+        }
+        
         $this->id++;
         $this->response     = null;
         $this->responseRaw  = null;
@@ -221,8 +266,8 @@ class NanoIPC
             ];
             
             // Nano auth type
-            if ($this->authType == 'Nano') {
-                $request['credentials'] = $this->nanoAPIkey;
+            if ($this->nanoAPIKey != null) {
+                $request['credentials'] = $this->nanoAPIKey;
             }
         } else {
             //
