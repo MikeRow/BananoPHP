@@ -15,8 +15,8 @@ class NanoRPC
     private $port;
     private $url;
     private $options;
-    private $nanoAPI;
-    private $nanoAPIKey;
+    private $nanoApi;
+    private $nanoApiKey;
     private $id = 0;
 
     
@@ -68,7 +68,7 @@ class NanoRPC
         $this->hostname = $hostname;
         $this->port     = $port;
         $this->url      = $url;
-        $this->nanoAPI  = 1;
+        $this->nanoApi  = 1;
         
         $this->options =
         [
@@ -91,7 +91,7 @@ class NanoRPC
     // ## Set Nano API
     // #
     
-    public function setNanoAPI(int $nano_api)
+    public function setNanoApi(int $nano_api)
     {
         if ($nano_api != 1 &&
             $nano_api != 2
@@ -99,7 +99,7 @@ class NanoRPC
             throw new NanoRPCException("Invalid Nano API: $nano_api");
         }
         
-        $this->nanoAPI = $nano_api;
+        $this->nanoApi = $nano_api;
     }
     
     
@@ -107,13 +107,13 @@ class NanoRPC
     // ## Set Nano API key
     // #
     
-    public function setNanoAPIKey(string $nano_api_key = null)
+    public function setNanoApiKey(string $nano_api_key = null)
     {
         if (empty($nano_api_key)){
             throw new NanoRPCException("Invalid Nano API key: $nano_api_key");
         }
         
-        $this->nanoAPIKey = $nano_api_key;
+        $this->nanoApiKey = $nano_api_key;
     }
     
     
@@ -147,11 +147,12 @@ class NanoRPC
         // # API switch
         
         // v1
-        if ($this->nanoAPI == 1) {
+        if ($this->nanoApi == 1) {
             $request = $arguments;
-            $request['action'] = $method;   
+            $request['action'] = $method; 
+            
         // v2
-        } elseif ($this->nanoAPI == 2) {
+        } elseif ($this->nanoApi == 2) {
             $request = [
                 'correlation_id' => (string) $this->id,
                 'message_type'   => $method,
@@ -159,8 +160,8 @@ class NanoRPC
             ];
             
             // Nano API key
-            if ($this->nanoAPIKey != null) {
-                $request['credentials'] = $this->nanoAPIKey;
+            if ($this->nanoApiKey != null) {
+                $request['credentials'] = $this->nanoApiKey;
             }
         } else {
             //
@@ -195,12 +196,13 @@ class NanoRPC
         // # API switch
         
         // v1
-        if ($this->nanoAPI == 1) {
+        if ($this->nanoApi == 1) {
             if (isset($this->response['error'])) {
                 $this->error = $this->response['error'];
             }
+            
         // v2
-        } elseif ($this->nanoAPI == 2) {
+        } elseif ($this->nanoApi == 2) {
             $this->responseType = $this->response['message_type'];
             
             $this->responseTime = (int) $this->response['time'];

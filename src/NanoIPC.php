@@ -20,7 +20,7 @@ class NanoIPC
     private $context;
     private $nanoPreamble;
     private $nanoEncoding;
-    private $nanoAPIKey;
+    private $nanoApiKey;
     private $id = 0;
    
     
@@ -151,13 +151,13 @@ class NanoIPC
     // ## Set Nano API key
     // #
     
-    public function setNanoAPIKey(string $nano_api_key = null)
+    public function setNanoApiKey(string $nano_api_key = null)
     {
         if (empty($nano_api_key)){
             throw new NanoIPCException("Invalid Nano API key: $nano_api_key");
         }
         
-        $this->nanoAPIKey = $nano_api_key;
+        $this->nanoApiKey = $nano_api_key;
     }
     
     
@@ -258,6 +258,7 @@ class NanoIPC
         ) {
             $request = $arguments;
             $request['action'] = $method;
+            
         // 4
         } elseif ($this->nanoEncoding == 4) {
             $request = [
@@ -267,8 +268,8 @@ class NanoIPC
             ];
             
             // Nano API key
-            if ($this->nanoAPIKey != null) {
-                $request['credentials'] = $this->nanoAPIKey;
+            if ($this->nanoApiKey != null) {
+                $request['credentials'] = $this->nanoApiKey;
             }
         } else {
             //
@@ -329,6 +330,7 @@ class NanoIPC
             if (isset($this->response['error'])) {
                 $this->error = $this->response['error'];
             }
+            
         // 4
         } elseif ($this->nanoEncoding == 4) {
             $this->responseType = $this->response['message_type'];
