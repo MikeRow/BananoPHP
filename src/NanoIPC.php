@@ -182,6 +182,7 @@ class NanoIPC
         // #
             
         } else {
+            return false;
         }
         
         if ($this->transport) {
