@@ -67,6 +67,7 @@ class NanoIPC
                 $context = stream_context_create([]);
             }
             
+            // Open socket
             $this->pathToSocket = $params['path_to_socket'];
             $this->transport    = stream_socket_client(
                 "unix://{$this->pathToSocket}",
@@ -76,9 +77,6 @@ class NanoIPC
                 $flags,
                 $context
             );
-            if ($this->transport === false) {
-                return false;
-            }
             
             
         // # TCP
@@ -122,6 +120,7 @@ class NanoIPC
                 $context = stream_context_create([]);
             }
             
+            // Open socket
             $this->hostname  = $params['hostname'];
             $this->port      = (int) $params['port'];
             $this->transport = stream_socket_client(
