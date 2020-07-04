@@ -15,9 +15,7 @@ class NanoIPC
     private $pathToSocket;
     private $hostname;
     private $port;
-    private $timeout;
-    private $flags;
-    private $context;
+    private $options;
     private $nanoPreamble;
     private $nanoEncoding;
     private $nanoApiKey;
@@ -38,83 +36,82 @@ class NanoIPC
     // ## Initialization
     // #
     
-    public function __construct(string $transport_type, array $params)
-    {
+    public function __construct(
+        string $transport_type,
+        array  $params         = null,
+        array  $options        = null
+    ) {
         // # Unix domain socket
         
         if ($transport_type == 'unix_domain_socket') { 
             // Path to socket
-            if (!isset($params['path_to_socket']) || !is_string($params['path_to_socket'])) {
-                throw new NanoIPCException("Invalid path to socket: " . $params['path_to_socket']);
+            if (isset($params['path_to_socket'])) {
+                $this->pathToSocket = (string) $params['path_to_socket'];
+            } else {
+                $this->pathToSocket = '/tmp/nano';
             }
             
             // Timeout
-            if (isset($params['options']['timeout'])) {
-                $this->timeout = (float) $params['options']['timeout'];
+            if (isset($options['timeout'])) {
+                $this->options['timeout'] = (float) $options['timeout'];
             } else {
-                $this->timeout = 15;
+                $this->options['timeout'] = 15;
             }
             
             // Flags
-            if (isset($params['options']['flags'])) {
-                $this->flags = (int) $params['options']['flags'];
+            if (isset($options['flags'])) {
+                $this->options['flags'] = (int) $options['flags'];
             } else {
-                $this->flags = STREAM_CLIENT_CONNECT;
+                $this->options['flags'] = STREAM_CLIENT_CONNECT;
             }
             
             // Context
-            if (isset($params['options']['context']) && is_array($params['options']['context'])) {
-                $this->context = stream_context_create($params['options']['context']);
+            if (isset($options['context']) && is_array($options['context'])) {
+                $this->options['context'] = stream_context_create($options['context']);
             } else {
-                $this->context = stream_context_create([]);
+                $this->options['context'] = stream_context_create([]);
             }
             
-            $this->pathToSocket = $params['path_to_socket'];
+            
             
             
         // # TCP
         
         } elseif ($transport_type == 'TCP') {
             // Hostname
-            if (!isset($params['hostname']) || !is_string($params['hostname'])) {
-                throw new NanoIPCException("Invalid hostname: " . $params['hostname']);
-            }
-            
-            if (strpos($params['hostname'], 'http://') === 0) {
-                $params['hostname'] = substr($params['hostname'], 7);
-            }
-            if (strpos($params['hostname'], 'https://') === 0) {
-                $params['hostname'] = substr($params['hostname'], 8);
+            if (isset($params['hostname'])) {
+                $this->hostname = (string) $params['hostname'];
+            } else {
+                $this->hostname = 'localhost';
             }
             
             // Port
-            if (!isset($params['port']) || !is_int((int) $params['port'])) {
-                throw new NanoIPCException("Invalid port: " . $params['port']);
+            if (isset($params['port'])) {
+                $this->port = (int) $params['port'];
+            } else {
+                $this->port = 7077;
             }
             
             // Timeout
-            if (isset($params['options']['timeout'])) {
-                $this->timeout = (float) $params['options']['timeout'];
+            if (isset($options['timeout'])) {
+                $this->options['timeout'] = (float) $options['timeout'];
             } else {
-                $this->timeout = 15;
+                $this->options['timeout'] = 15;
             }
             
             // Flags
-            if (isset($params['options']['flags'])) {
-                $this->flags = (int) $params['options']['flags'];
+            if (isset($options['flags'])) {
+                $this->options['flags'] = (int) $options['flags'];
             } else {
-                $this->flags = STREAM_CLIENT_CONNECT;
+                $this->options['flags'] = STREAM_CLIENT_CONNECT;
             }
             
             // Context
-            if (isset($params['options']['context']) && is_array($params['options']['context'])) {
-                $this->context = stream_context_create($params['options']['context']);
+            if (isset($options['context']) && is_array($options['context'])) {
+                $this->options['context'] = stream_context_create($options['context']);
             } else {
-                $this->context = stream_context_create([]);
+                $this->options['context'] = stream_context_create([]);
             }
-            
-            $this->hostname  = $params['hostname'];
-            $this->port      = (int) $params['port'];
             
             
         // #
@@ -174,9 +171,9 @@ class NanoIPC
                 "unix://{$this->pathToSocket}",
                 $this->errorCode,
                 $this->error,
-                $this->timeout,
-                $this->flags,
-                $this->context
+                $this->options['timeout'],
+                $this->options['flags'],
+                $this->options['context']
             );
         
             
@@ -187,9 +184,9 @@ class NanoIPC
                 "tcp://{$this->hostname}:{$this->port}",
                 $this->errorCode,
                 $this->error,
-                $this->timeout,
-                $this->flags,
-                $this->context
+                $this->options['timeout'],
+                $this->options['flags'],
+                $this->options['context']
             );
             
         
