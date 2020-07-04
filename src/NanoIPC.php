@@ -200,7 +200,7 @@ class NanoIPC
     public function close()
     {
         if ($this->transport != null) {
-            stream_socket_shutdown($this->transport, STREAM_SHUT_RDWR );
+            stream_socket_shutdown($this->transport, STREAM_SHUT_RDWR);
         }      
     }
     
