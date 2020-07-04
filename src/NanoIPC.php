@@ -11,15 +11,15 @@ class NanoIPC
     // # Settings
     
     private $transport;
-    private $transportType;
-    private $encoding;
-    private $preamble;
+    private $transportType;  
     private $pathToSocket;
     private $hostname;
     private $port;
     private $timeout;
     private $flags;
     private $context;
+    private $nanoPreamble;
+    private $nanoEncoding;
     private $nanoAPIKey;
     private $id = 0;
    
@@ -124,26 +124,40 @@ class NanoIPC
         }
         
         $this->transportType = $transport_type;
-        $this->encoding      = 4;
-        $this->preamble      = 'N' . chr($this->encoding) . chr(0) . chr(0);
+        $this->nanoEncoding  = 4;
+        $this->nanoPreamble  = 'N' . chr($this->nanoEncoding) . chr(0) . chr(0);
     }    
     
     
     // #
-    // ## Set encoding
+    // ## Set Nano encoding
     // #
     
-    public function setEncoding(int $encoding)
+    public function setNanoEncoding(int $nano_encoding)
     {
-        if ($encoding != 1 &&
-            $encoding != 2 &&
-            $encoding != 4
+        if ($nano_encoding != 1 &&
+            $nano_encoding != 2 &&
+            $nano_encoding != 4
         ) {
-            throw new NanoIPCException("Invalid encoding: $encoding");
+            throw new NanoIPCException("Invalid Nano encoding: $nano_encoding");
         }
         
-        $this->encoding = $encoding;
-        $this->preamble = 'N' . chr($this->encoding) . chr(0) . chr(0);
+        $this->nanoEncoding = $nano_encoding;
+        $this->nanoPreamble = 'N' . chr($this->nanoEncoding) . chr(0) . chr(0);
+    }
+    
+    
+    // #
+    // ## Set Nano API key
+    // #
+    
+    public function setNanoAPIKey(string $nano_api_key = null)
+    {
+        if (empty($nano_api_key)){
+            throw new NanoIPCException("Invalid Nano API key: $nano_api_key");
+        }
+        
+        $this->nanoAPIKey = $nano_api_key;
     }
     
     
@@ -156,7 +170,7 @@ class NanoIPC
         // # Unix domain socket
         
         if ($this->transportType == 'unix_domain_socket') {
-            $this->transport    = stream_socket_client(
+            $this->transport = stream_socket_client(
                 "unix://{$this->pathToSocket}",
                 $this->errorCode,
                 $this->error,
@@ -206,20 +220,6 @@ class NanoIPC
     
     
     // #
-    // ## Set Nano authentication
-    // #
-    
-    public function setNanoAuth(string $nano_api_key = null)
-    {
-        if (empty($nano_api_key)){
-            throw new NanoIPCException("Invalid Nano API key: $nano_api_key");
-        }
-        
-        $this->nanoAPIKey = $nano_api_key;
-    }
-    
-    
-    // #
     // ## Call
     // #
     
@@ -250,23 +250,23 @@ class NanoIPC
         }
         
         
-        // # Encoding switch
+        // # Nano encoding switch
         
         // 1/2
-        if ($this->encoding == 1 || 
-            $this->encoding == 2
+        if ($this->nanoEncoding == 1 || 
+            $this->nanoEncoding == 2
         ) {
             $request = $arguments;
             $request['action'] = $method;
         // 4
-        } elseif ($this->encoding == 4) {
+        } elseif ($this->nanoEncoding == 4) {
             $request = [
                 'correlation_id' => (string) $this->id,
                 'message_type'   => $method,
                 'message'        => $arguments
             ];
             
-            // Nano auth type
+            // Nano API key
             if ($this->nanoAPIKey != null) {
                 $request['credentials'] = $this->nanoAPIKey;
             }
@@ -275,7 +275,7 @@ class NanoIPC
         }
         
         $request = json_encode($request);
-        $buffer  = $this->preamble . pack("N", strlen($request)) . $request;
+        $buffer  = $this->nanoPreamble . pack("N", strlen($request)) . $request;
         
         
         // # Transport switch
@@ -320,17 +320,17 @@ class NanoIPC
         $this->response = json_decode($this->responseRaw, true);
         
         
-        // # Encoding switch
+        // # Nano encoding switch
         
         // 1/2
-        if ($this->encoding == 1 ||
-            $this->encoding == 2
+        if ($this->nanoEncoding == 1 ||
+            $this->nanoEncoding == 2
         ) {
             if (isset($this->response['error'])) {
                 $this->error = $this->response['error'];
             }
         // 4
-        } elseif ($this->encoding == 4) {
+        } elseif ($this->nanoEncoding == 4) {
             $this->responseType = $this->response['message_type'];
             
             $this->responseTime = (int) $this->response['time'];

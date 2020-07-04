@@ -10,7 +10,7 @@ class NanoCLI
 {
     // # Settings
     
-    private $path_to_app;
+    private $pathToApp;
     private $id = 0;
     
     
@@ -26,7 +26,7 @@ class NanoCLI
     
     public function __construct(string $path_to_app = '/home/nano/nano_node')
     {
-        $this->path_to_app = escapeshellarg($path_to_app);
+        $this->pathToApp = escapeshellarg($path_to_app);
     }
 
     
@@ -48,7 +48,7 @@ class NanoCLI
             }
         }
             
-        $this->responseRaw = shell_exec($this->path_to_app . $request);
+        $this->responseRaw = shell_exec($this->pathToApp . $request);
             
         if ($this->responseRaw != null) {
             $this->response = explode("\n", $this->responseRaw);

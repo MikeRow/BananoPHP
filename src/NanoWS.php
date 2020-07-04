@@ -11,11 +11,11 @@ class NanoWS
     // # Settings
     
     private $websocket;
+    private $protocol;
     private $hostname;
     private $port;
     private $url;
     private $options;
-    private $protocol;
     private $id = 0;
    
     
@@ -23,8 +23,20 @@ class NanoWS
     // ## Initialization
     // #
     
-    public function __construct(string $hostname = 'localhost', int $port = 7078, string $url = null, array $options = null)
-    {
+    public function __construct(
+        string $protocol = 'ws',
+        string $hostname = 'localhost',
+        int    $port     = 7078,
+        string $url      = null,
+        array  $options  = null
+    ) {
+        // Protocol
+        if ($protocol != 'ws' &&
+            $protocol != 'wss'
+        ) {
+            throw new NanoWSException("Invalid protocol: $protocol");
+        }
+        
         // Hostname
         if (strpos($hostname, 'ws://') === 0) {
             $hostname = substr($hostname, 5);
@@ -62,28 +74,12 @@ class NanoWS
             $this->options['headers'] = $options['headers'];
         }
         
+        $this->protocol = $protocol;  
         $this->hostname = $hostname;
         $this->port     = $port;
         $this->url      = $url;
-        $this->protocol = 'ws';             
     }
     
-    
-    // #
-    // ## Set protocol
-    // #
-    
-    public function setProtocol(string $protocol)
-    {
-        if ($protocol != 'ws' &&
-            $protocol != 'wss'
-        ) {
-            throw new NanoWSException("Invalid protocol: $protocol");
-        }
-        
-        $this->protocol = $protocol;
-    }
-
     
     // #
     // ## Open connection
@@ -95,8 +91,7 @@ class NanoWS
             $this->websocket = new \WebSocket\Client("{$this->protocol}://{$this->hostname}:{$this->port}/{$this->url}", $this->options);
             return true;
         } catch (\WebSocket\ConnectionException $e) {
-            $this->websocket = null;
-            return $e;
+            return false;
         }
     }
     

@@ -5,7 +5,7 @@ require_once __DIR__ . '/autoload.php';
 
 // # API v1
 
-$nanorpc = new php4nano\NanoRPC('localhost', 7076);
+$nanorpc = new php4nano\NanoRPC('http', 'localhost', 7076);
 
 $account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
@@ -20,7 +20,7 @@ var_dump($nanorpc);
 
 // # API v2
 
-$nanorpc = new php4nano\NanoRPC('localhost', 7076, 'api/v2');
+$nanorpc = new php4nano\NanoRPC('http', 'localhost', 7076, 'api/v2');
 
 $nanorpc->setAPI(2);
 

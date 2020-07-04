@@ -7,7 +7,7 @@ require_once __DIR__ . '/autoload.php';
 
 $nanoipc_unix = new php4nano\NanoIPC('unix_domain_socket', ['path_to_socket' => '/tmp/nano']);
 
-$nanoipc_unix->setEncoding(2);
+$nanoipc_unix->setNanoEncoding(2);
 
 $nanoipc_unix->open();
 
@@ -47,7 +47,7 @@ $nanoipc_unix->close();
 
 $nanoipc_tcp = new php4nano\NanoIPC('TCP', ['hostname' => 'localhost', 'port' => 7077]);
 
-$nanoipc_tcp->setEncoding(2);
+$nanoipc_tcp->setNanoEncoding(2);
 
 $nanoipc_tcp->open();
 
@@ -67,8 +67,6 @@ $nanoipc_tcp->close();
 // # TCP encoding 4
 
 $nanoipc_tcp = new php4nano\NanoIPC('TCP', ['hostname' => 'localhost', 'port' => 7077]);
-
-$nanoipc_tcp->setEncoding(4);
 
 $nanoipc_tcp->open();
 
