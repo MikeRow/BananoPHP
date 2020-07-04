@@ -14,6 +14,7 @@ class NanoWS
     private $hostname;
     private $port;
     private $url;
+    private $protocol;
     private $id = 0;
    
     
@@ -26,6 +27,9 @@ class NanoWS
         if (strpos($hostname, 'ws://') === 0) {
             $hostname = substr($hostname, 5);
         }
+        if (strpos($hostname, 'wss://') === 0) {
+            $hostname = substr($hostname, 6);
+        }
         if (!empty($url)) {
             if (strpos($url, '/') === 0) {
                 $url = substr($url, 1);
@@ -35,18 +39,52 @@ class NanoWS
         $this->hostname = $hostname;
         $this->port     = $port;
         $this->url      = $url;
-        
-        $this->websocket = new \WebSocket\Client("ws://{$this->hostname}:{$this->port}/{$this->url}");
+        $this->protocol = 'ws';             
     }
 
+    
+    // #
+    // ## Open connection
+    // #
+    
+    public function open(int $timeout = 5, int $fragment_size = 4096, array $context = null, array $headers = null)
+    {  
+        $options = [
+            'timeout'       => $timeout,
+            'fragment_size' => $fragment_size
+        ];
+        
+        if ($context != null) {
+            if (is_array($context) && isset($context['ssl'])) {
+                $this->protocol = 'wss';
+            }
+            
+            $options['context'] = stream_context_create($context);
+        }
+        
+        if ($headers != null) {
+            $options['headers'] = $headers;
+        }
+        
+        try {
+            $this->websocket = new \WebSocket\Client("{$this->protocol}://{$this->hostname}:{$this->port}/{$this->url}", $options);
+            return true;
+        } catch (\WebSocket\ConnectionException $e) {
+            $this->websocket = null;
+            return $e;
+        }
+    }
+    
     
     // #
     // ## Close connection
     // #
     
-    public function __destruct()
+    public function close()
     {
-        $this->websocket->close();
+        if ($this->websocket != null) {
+            $this->websocket->close();
+        }
     }
     
     
@@ -54,8 +92,14 @@ class NanoWS
     // ## Subscribe to topic
     // #
     
-    public function subscribe(string $topic, array $options = [], bool $ack = false): int
+    public function subscribe(string $topic, array $options = null, bool $ack = false): int
     {
+        // Check WebSocket connection
+        if ($this->websocket == null) {
+            throw new NanoWSException("WebSocket connection is not opened");
+        }
+        
+        // Check inputs
         if (empty($topic)){
             throw new NanoWSException("Invalid topic: $topic");
         }
@@ -68,12 +112,12 @@ class NanoWS
             'id'     => $this->id
         ];
         
-        if ($ack) {
-            $subscribe['ack'] = true;
-        }
-        
         if (!empty($options)) {
             $subscribe['options'] = $options;
+        }
+        
+        if ($ack) {
+            $subscribe['ack'] = true;
         }
         
         $subscribe = json_encode($subscribe);
@@ -87,8 +131,14 @@ class NanoWS
     // ## Update subscription
     // #
     
-    public function update(string $topic, array $options = [], bool $ack = false): int
+    public function update(string $topic, array $options, bool $ack = false): int
     {
+        // Check WebSocket connection
+        if ($this->websocket == null) {
+            throw new NanoWSException("WebSocket connection is not opened");
+        }
+        
+        // Check inputs
         if (empty($topic)){
             throw new NanoWSException("Invalid topic: $topic");
         }
@@ -96,16 +146,15 @@ class NanoWS
         $this->id++;
         
         $update = [
-            'action' => 'update',
-            'topic'  => $topic,
-            'id'     => $this->id
+            'action'  => 'update',
+            'topic'   => $topic,
+            'id'      => $this->id,
+            'options' => $options
         ];
         
         if ($ack) {
             $update['ack'] = true;
         }
-        
-        $update['options'] = $options;
         
         $update = json_encode($update);
         $this->websocket->send($update);
@@ -120,6 +169,12 @@ class NanoWS
     
     public function unsubscribe(string $topic, bool $ack = false): int
     {
+        // Check WebSocket connection
+        if ($this->websocket == null) {
+            throw new NanoWSException("WebSocket connection is not opened");
+        }
+        
+        // Check inputs
         if (empty($topic)){
             throw new NanoWSException("Invalid topic: $topic");
         }
@@ -149,6 +204,11 @@ class NanoWS
     
     public function keepalive(): int
     {
+        // Check WebSocket connection
+        if ($this->websocket == null) {
+            throw new NanoWSException("WebSocket connection is not opened");
+        }
+        
         $this->id++;
         
         $keepalive = [
@@ -169,11 +229,16 @@ class NanoWS
     
     public function listen(): array
     {
+        // Check WebSocket connection
+        if ($this->websocket == null) {
+            throw new NanoWSException("WebSocket connection is not opened");
+        }
+        
         while (true) {
             try {
                 return json_decode($this->websocket->receive(), true);
             } catch (\WebSocket\ConnectionException $e) {
-                //return ['error' => $e];
+                //
             }
         }
     }

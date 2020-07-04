@@ -14,7 +14,7 @@ class NanoRPC
     private $port;
     private $url;
     private $API;
-    private $proto;
+    private $protocol;
     private $pathToCACertificate;
     private $authType;
     private $username;
@@ -55,7 +55,7 @@ class NanoRPC
         $this->hostname    = $hostname;
         $this->port        = $port;
         $this->url         = $url;
-        $this->proto       = 'http';
+        $this->protocol    = 'http';
         $this->API         = 1;
     }
     
@@ -82,7 +82,7 @@ class NanoRPC
      
     public function setSSL(string $path_to_CACertificate = null)
     {
-        $this->proto               = 'https';
+        $this->protocol               = 'https';
         $this->pathToCACertificate = $path_to_CACertificate;
     }
     
@@ -93,7 +93,7 @@ class NanoRPC
     
     public function unsetSSL()
     {
-        $this->proto               = 'http';
+        $this->protocol               = 'http';
         $this->pathToCACertificate = null;
     }
     
@@ -193,7 +193,7 @@ class NanoRPC
         
         // # Build the cURL session
         
-        $curl = curl_init("{$this->proto}://{$this->hostname}:{$this->port}/{$this->url}");
+        $curl = curl_init("{$this->protocol}://{$this->hostname}:{$this->port}/{$this->url}");
         
         $options =
         [
@@ -226,7 +226,7 @@ class NanoRPC
         
         // # HTTPS
         
-        if ($this->proto == 'https') {
+        if ($this->protocol == 'https') {
             // If the CA Certificate was specified we change CURL to look for it
             if ($this->pathToCACertificate != null) {
                 $options[CURLOPT_CAINFO] = $this->pathToCACertificate;
