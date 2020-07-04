@@ -70,9 +70,7 @@ class NanoIPC
                 $this->options['context'] = stream_context_create($options['context']);
             } else {
                 $this->options['context'] = stream_context_create([]);
-            }
-            
-            
+            } 
             
             
         // # TCP
