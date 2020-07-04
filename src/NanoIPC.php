@@ -41,15 +41,40 @@ class NanoIPC
         // # Unix domain Socket
         
         if ($transport_type == 'unix_domain_socket') { 
+            // Path to socket
             if (!isset($params['path_to_socket']) || !is_string($params['path_to_socket'])) {
                 throw new NanoIPCException("Invalid path to socket: " . $params['path_to_socket']);
+            }
+            
+            // Timeout
+            if (isset($params['timeout'])) {
+                $timeout = (float) $params['timeout'];
+            } else {
+                $timeout = 15;
+            }
+            
+            // Flags
+            if (isset($params['flags'])) {
+                $flags = (int) $params['flags'];
+            } else {
+                $flags = STREAM_CLIENT_CONNECT;
+            }
+            
+            // Context
+            if (isset($params['context'])) {
+                $context = stream_context_create($params['context']);
+            } else {
+                $context = stream_context_create([]);
             }
             
             $this->pathToSocket = $params['path_to_socket'];
             $this->transport    = stream_socket_client(
                 "unix://{$this->pathToSocket}",
                 $this->errorCode,
-                $this->error
+                $this->error,
+                $timeout,
+                $flags,
+                $context
             );
             if ($this->transport === false) {
                 return false;
@@ -59,11 +84,9 @@ class NanoIPC
         // # TCP
         
         } elseif ($transport_type == 'TCP') {
+            // Hostname
             if (!isset($params['hostname']) || !is_string($params['hostname'])) {
                 throw new NanoIPCException("Invalid hostname: " . $params['hostname']);
-            }
-            if (!isset($params['port']) || !is_int((int) $params['port'])) {
-                throw new NanoIPCException("Invalid port: " . $params['port']);
             }
             
             if (strpos($params['hostname'], 'http://') === 0) {
@@ -73,13 +96,41 @@ class NanoIPC
                 $params['hostname'] = substr($params['hostname'], 8);
             }
             
+            // Port
+            if (!isset($params['port']) || !is_int((int) $params['port'])) {
+                throw new NanoIPCException("Invalid port: " . $params['port']);
+            }
+            
+            // Timeout
+            if (isset($params['timeout'])) {
+                $timeout = (float) $params['timeout'];
+            } else {
+                $timeout = 15;
+            }
+            
+            // Flags
+            if (isset($params['flags'])) {
+                $flags = (int) $params['flags'];
+            } else {
+                $flags = STREAM_CLIENT_CONNECT;
+            }
+            
+            // Context
+            if (isset($params['context'])) {
+                $context = stream_context_create($params['context']);
+            } else {
+                $context = stream_context_create([]);
+            }
+            
             $this->hostname  = $params['hostname'];
             $this->port      = (int) $params['port'];
             $this->transport = stream_socket_client(
                 "tcp://{$this->hostname}:{$this->port}",
                 $this->errorCode,
                 $this->error,
-                15
+                $timeout,
+                $flags,
+                $context
             );
             
             
@@ -125,16 +176,6 @@ class NanoIPC
         
         $this->authType   = 'Nano';
         $this->nanoAPIKey = $nano_api_key;
-    }
-    
-    
-    // #
-    // ## Unset authentication
-    // #
-    
-    public function unsetAuth()
-    {
-        $this->authType = null;
     }
     
     

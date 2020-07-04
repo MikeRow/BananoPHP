@@ -41,6 +41,22 @@ class NanoWS
         $this->url      = $url;
         $this->protocol = 'ws';             
     }
+    
+    
+    // #
+    // ## Set protocol
+    // #
+    
+    public function setProtocol(string $protocol)
+    {
+        if ($protocol != 'ws' &&
+            $protocol != 'wss'
+        ) {
+            throw new NanoWSException("Invalid protocol: $protocol");
+        }
+        
+        $this->protocol = $protocol;
+    }
 
     
     // #
@@ -55,10 +71,6 @@ class NanoWS
         ];
         
         if ($context != null) {
-            if (is_array($context) && isset($context['ssl'])) {
-                $this->protocol = 'wss';
-            }
-            
             $options['context'] = stream_context_create($context);
         }
         

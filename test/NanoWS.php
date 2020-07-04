@@ -9,7 +9,7 @@ $nanows->open();
 $nanows->subscribe('confirmation', null, true);
 
 $i = 0;
-while ($i<10) {
+while ($i<5) {
     print_r($nanows->listen());
     $i++;
 }

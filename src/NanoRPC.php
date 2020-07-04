@@ -13,12 +13,9 @@ class NanoRPC
     private $hostname;
     private $port;
     private $url;
-    private $API;
     private $protocol;
-    private $pathToCACertificate;
-    private $authType;
-    private $username;
-    private $password;
+    private $options;
+    private $API;
     private $nanoAPIKey;
     private $id = 0;
 
@@ -57,6 +54,43 @@ class NanoRPC
         $this->url         = $url;
         $this->protocol    = 'http';
         $this->API         = 1;
+        
+        $this->options =
+        [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_USERAGENT      => 'php4nano/NanoRPC',
+            CURLOPT_MAXREDIRS      => 10,
+            CURLOPT_HTTPHEADER     => ['Content-type: application/json']
+        ];
+    }
+    
+    
+    // #
+    // ## Set protocol
+    // #
+    
+    public function setProtocol(string $protocol)
+    {
+        if ($protocol != 'http' &&
+            $protocol != 'https'
+        ) {
+            throw new NanoRPCException("Invalid protocol: $protocol");
+        }
+        
+        $this->protocol = $protocol;
+    }
+    
+    
+    // #
+    // ## Set cURL options
+    // #
+    
+    public function setOptions(array $options)
+    {
+        foreach ($options as $key => $value) {
+            $this->options[$key] = $value;
+        }
     }
     
     
@@ -77,44 +111,6 @@ class NanoRPC
     
     
     // #
-    // ## Set SSL
-    // #
-     
-    public function setSSL(string $path_to_CACertificate = null)
-    {
-        $this->protocol               = 'https';
-        $this->pathToCACertificate = $path_to_CACertificate;
-    }
-    
-    
-    // #
-    // ## Unset SSL
-    // #
-    
-    public function unsetSSL()
-    {
-        $this->protocol               = 'http';
-        $this->pathToCACertificate = null;
-    }
-    
-    
-    // #
-    // ## Set basic authentication
-    // #
-    
-    public function setBasicAuth(string $username, string $password = null)
-    {
-        if (empty($username)){
-            throw new NanoRPCException("Invalid username: $username");
-        }
-        
-        $this->authType = 'Basic';
-        $this->username = $username;
-        $this->password = $password;
-    }
-    
-    
-    // #
     // ## Set Nano authentication
     // #
     
@@ -124,18 +120,7 @@ class NanoRPC
             throw new NanoRPCException("Invalid Nano API key: $nano_api_key");
         }
         
-        $this->authType   = 'Nano';
         $this->nanoAPIKey = $nano_api_key;
-    }
-    
-    
-    // #
-    // ## Unset authentication
-    // #
-    
-    public function unsetAuth()
-    {
-        $this->authType = null;
     }
     
     
@@ -181,7 +166,7 @@ class NanoRPC
             ];
             
             // Nano auth type
-            if ($this->authType == 'Nano') {
+            if ($this->nanoAPIKey != null) {
                 $request['credentials'] = $this->nanoAPIkey;
             }
         } else {
@@ -195,47 +180,9 @@ class NanoRPC
         
         $curl = curl_init("{$this->protocol}://{$this->hostname}:{$this->port}/{$this->url}");
         
-        $options =
-        [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_USERAGENT      => 'php4nano/NanoRPC',
-            CURLOPT_MAXREDIRS      => 10,
-            CURLOPT_HTTPHEADER     => ['Content-type: application/json'],
-            CURLOPT_POST           => true,
-            CURLOPT_POSTFIELDS     => $request
-        ];
+        $this->options[CURLOPT_POST]       = true;
+        $this->options[CURLOPT_POSTFIELDS] = $request;
         
-        
-        // # cURL auth type
-        
-        if ($this->authType == 'Basic') {
-            $options[CURLOPT_HTTPAUTH] = CURLAUTH_BASIC;
-            
-            if ($this->username != null) {
-                if ($this->password != null) {
-                    $options[CURLOPT_USERPWD] = $this->username . ':' . $this->password;
-                } else {
-                    $options[CURLOPT_USERPWD] = $this->username;
-                }
-            }
-        } else {
-            // No auth
-        }
-
-        
-        // # HTTPS
-        
-        if ($this->protocol == 'https') {
-            // If the CA Certificate was specified we change CURL to look for it
-            if ($this->pathToCACertificate != null) {
-                $options[CURLOPT_CAINFO] = $this->pathToCACertificate;
-                $options[CURLOPT_CAPATH] = DIRNAME($this->pathToCACertificate);
-            } else {
-                $options[CURLOPT_SSL_VERIFYPEER] = false;
-            }
-        }
-
         
         // # Call
         
@@ -245,7 +192,7 @@ class NanoRPC
             unset($options[CURLOPT_FOLLOWLOCATION]);
         }
         
-        curl_setopt_array($curl, $options);
+        curl_setopt_array($curl, $this->options);
 
         // Execute the request and decode to an array
         $this->responseRaw = curl_exec($curl); 
