@@ -49,21 +49,21 @@ class NanoIPC
             }
             
             // Timeout
-            if (isset($params['timeout'])) {
+            if (isset($params['options']['timeout'])) {
                 $this->timeout = (float) $params['timeout'];
             } else {
                 $this->timeout = 15;
             }
             
             // Flags
-            if (isset($params['flags'])) {
+            if (isset($params['options']['flags'])) {
                 $this->flags = (int) $params['flags'];
             } else {
                 $this->flags = STREAM_CLIENT_CONNECT;
             }
             
             // Context
-            if (isset($params['context']) && is_array($params['context'])) {
+            if (isset($params['options']['context']) && is_array($params['options']['context'])) {
                 $this->context = stream_context_create($params['context']);
             } else {
                 $this->context = stream_context_create([]);
@@ -93,21 +93,21 @@ class NanoIPC
             }
             
             // Timeout
-            if (isset($params['timeout'])) {
+            if (isset($params['options']['timeout'])) {
                 $this->timeout = (float) $params['timeout'];
             } else {
                 $this->timeout = 15;
             }
             
             // Flags
-            if (isset($params['flags'])) {
+            if (isset($params['options']['flags'])) {
                 $this->flags = (int) $params['flags'];
             } else {
                 $this->flags = STREAM_CLIENT_CONNECT;
             }
             
             // Context
-            if (isset($params['context']) && is_array($params['context'])) {
+            if (isset($params['options']['context']) && is_array($params['options']['context'])) {
                 $this->context = stream_context_create($params['context']);
             } else {
                 $this->context = stream_context_create([]);
