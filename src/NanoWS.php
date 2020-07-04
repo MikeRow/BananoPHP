@@ -14,6 +14,7 @@ class NanoWS
     private $hostname;
     private $port;
     private $url;
+    private $options;
     private $protocol;
     private $id = 0;
    
@@ -22,18 +23,43 @@ class NanoWS
     // ## Initialization
     // #
     
-    public function __construct(string $hostname = 'localhost', int $port = 7078, string $url = null)
+    public function __construct(string $hostname = 'localhost', int $port = 7078, string $url = null, array $options = null)
     {
+        // Hostname
         if (strpos($hostname, 'ws://') === 0) {
             $hostname = substr($hostname, 5);
         }
         if (strpos($hostname, 'wss://') === 0) {
             $hostname = substr($hostname, 6);
         }
+        
+        // Url
         if (!empty($url)) {
             if (strpos($url, '/') === 0) {
                 $url = substr($url, 1);
             }
+        }
+        
+        $this->options = [];
+        
+        // Timeout
+        if (isset($options['timeout'])) {
+            $this->options['timeout'] = (float) $options['timeout'];
+        } 
+        
+        // Fragment size
+        if (isset($options['fragment_size'])) {
+            $this->options['fragment_size'] = (int) $options['fragment_size'];
+        } 
+        
+        // Context
+        if (isset($options['context']) && is_array($options['context'])) {
+            $this->options['context'] = stream_context_create($options['context']);
+        }
+        
+        // Headers
+        if (isset($options['headers']) && is_array($options['headers'])) {
+            $this->options['headers'] = $options['headers'];
         }
         
         $this->hostname = $hostname;
@@ -63,23 +89,10 @@ class NanoWS
     // ## Open connection
     // #
     
-    public function open(int $timeout = 5, int $fragment_size = 4096, array $context = null, array $headers = null)
-    {  
-        $options = [
-            'timeout'       => $timeout,
-            'fragment_size' => $fragment_size
-        ];
-        
-        if ($context != null) {
-            $options['context'] = stream_context_create($context);
-        }
-        
-        if ($headers != null) {
-            $options['headers'] = $headers;
-        }
-        
+    public function open()
+    {   
         try {
-            $this->websocket = new \WebSocket\Client("{$this->protocol}://{$this->hostname}:{$this->port}/{$this->url}", $options);
+            $this->websocket = new \WebSocket\Client("{$this->protocol}://{$this->hostname}:{$this->port}/{$this->url}", $this->options);
             return true;
         } catch (\WebSocket\ConnectionException $e) {
             $this->websocket = null;
