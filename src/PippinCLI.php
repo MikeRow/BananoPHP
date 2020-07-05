@@ -17,15 +17,19 @@ class PippinCLI
     // # Results and debug
     
     public $response;
-    public $responseRaw;
+    public $code;
     
     
     // #
     // ## Initialization
     // #
     
-    public function __construct(string $path_to_app = 'pippin-cli')
+    public function __construct(string $path_to_app = '/home/nano/.local/bin/pippin-cli')
     {
+        if (!file_exists($path_to_app)) {
+            throw new PippinCLIException("Invalid path to app: $path_to_app");
+        }
+        
         $this->pathToApp = escapeshellarg($path_to_app);
     }
 
@@ -36,9 +40,9 @@ class PippinCLI
     
     public function __call($method, array $params)
     {
-        $this->id++;      
-        $this->response    = null;
-        $this->responseRaw = null;
+        $this->id++;
+        $this->response = null;
+        $this->code     = null;
         
         $request = ' ' . $method;
         
@@ -48,24 +52,12 @@ class PippinCLI
             }
         }
             
-        $this->responseRaw = shell_exec($this->pathToApp . $request);
-            
-        if ($this->responseRaw != null) {
-            $this->response = explode("\n", $this->responseRaw);
-            
-            foreach ($this->response as $key => $value) {
-                if ($value == null) {
-                    unset($this->response[$key]);
-                }
-            }
-            
-            if (count($this->response) < 1) {
-                $this->response = null;
-            }
-            
+        exec($this->pathToApp . $request, $this->response, $this->code);
+        
+        if ($this->code == 0) {
             return $this->response;
         } else {
-            return $this->response;
+            return false;
         }
     }
 }
