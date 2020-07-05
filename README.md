@@ -38,6 +38,10 @@ Documentation at [php4nano/wiki](https://github.com/mikerow/php4nano/wiki)
 
   class for interfacing to Nano node WebSocket
   
+- [PippinCLI](https://github.com/mikerow/php4nano/wiki/PippinCLI)
+
+  class for interfacing to Pippin wallet CLI
+  
 ## To do ...
 
 Nothing planned
