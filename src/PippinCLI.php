@@ -26,10 +26,6 @@ class PippinCLI
     
     public function __construct(string $path_to_app = '/home/nano/.local/bin/pippin-cli')
     {
-        if (!file_exists($path_to_app)) {
-            throw new PippinCLIException("Invalid path to app: $path_to_app");
-        }
-        
         $this->pathToApp = escapeshellarg($path_to_app);
     }
 
@@ -52,7 +48,7 @@ class PippinCLI
             }
         }
             
-        exec($this->pathToApp . $request, $this->response, $this->status);
+        @exec($this->pathToApp . $request, $this->response, $this->status);
         
         if ($this->status == 0) {
             return $this->response;

@@ -26,10 +26,6 @@ class NanoCLI
     
     public function __construct(string $path_to_app = '/home/nano/nano_node')
     {
-        if (!file_exists($path_to_app)) {
-            throw new NanoCLIException("Invalid path to app: $path_to_app");
-        }
-        
         $this->pathToApp = escapeshellarg($path_to_app);
     }
 
@@ -52,7 +48,7 @@ class NanoCLI
             }
         }
             
-        exec($this->pathToApp . $request, $this->response, $this->status);
+        @exec($this->pathToApp . $request, $this->response, $this->status);
         
         if ($this->status == 0) {
             return $this->response;
