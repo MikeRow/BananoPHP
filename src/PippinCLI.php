@@ -18,6 +18,7 @@ class PippinCLI
     
     public $response;
     public $status;
+    public $error;
     
     
     // #
@@ -38,7 +39,8 @@ class PippinCLI
     {
         $this->id++;
         $this->response = null;
-        $this->status     = null;
+        $this->status   = null;
+        $this->error    = null;
         
         $request = ' ' . $method;
         
@@ -48,11 +50,13 @@ class PippinCLI
             }
         }
             
-        @exec($this->pathToApp . $request . ' 2> /dev/null', $this->response, $this->status);
+        $this->error = exec($this->pathToApp . $request . ' 2>&1', $this->response, $this->status);
         
         if ($this->status == 0) {
+            $this->error = null;
             return $this->response;
         } else {
+            $this->response = null;
             return false;
         }
     }

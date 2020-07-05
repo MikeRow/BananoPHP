@@ -38,8 +38,8 @@ class NanoIPC
     
     public function __construct(
         string $transport_type,
-        array  $params         = null,
-        array  $options        = null
+        array  $params          = null,
+        array  $options         = null
     ) {
         // # Unix domain socket
         
