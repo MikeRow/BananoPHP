@@ -47,8 +47,8 @@ class NanoCLI
                 $request .= ' --' . $key . '=' . $value;
             }
         }
-            
-        @exec($this->pathToApp . $request, $this->response, $this->status);
+        
+        @exec($this->pathToApp . $request . ' 2> /dev/null', $this->response, $this->status);
         
         if ($this->status == 0) {
             return $this->response;
