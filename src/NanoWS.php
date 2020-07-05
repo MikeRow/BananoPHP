@@ -37,14 +37,6 @@ class NanoWS
             throw new NanoWSException("Invalid protocol: $protocol");
         }
         
-        // Hostname
-        if (strpos($hostname, 'ws://') === 0) {
-            $hostname = substr($hostname, 5);
-        }
-        if (strpos($hostname, 'wss://') === 0) {
-            $hostname = substr($hostname, 6);
-        }
-        
         // Url
         if (!empty($url)) {
             if (strpos($url, '/') === 0) {

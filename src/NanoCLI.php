@@ -36,9 +36,9 @@ class NanoCLI
     
     public function __call($method, array $params)
     {
-        $this->id++;
-        $this->responseRaw = null;
+        $this->id++;      
         $this->response    = null;
+        $this->responseRaw = null;
         
         $request = ' --' . $method;
         
@@ -59,10 +59,12 @@ class NanoCLI
                 }
             }
             
+            if (count($this->response) < 1) {
+                $this->response = null;
+            }
+            
             return $this->response;
         } else {
-            $this->response = null;
-            
             return $this->response;
         }
     }

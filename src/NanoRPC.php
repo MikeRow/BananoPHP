@@ -49,14 +49,6 @@ class NanoRPC
             throw new NanoRPCException("Invalid protocol: $protocol");
         }
         
-        // Hostname
-        if (strpos($hostname, 'http://') === 0) {
-            $hostname = substr($hostname, 7);
-        }
-        if (strpos($hostname, 'https://') === 0) {
-            $hostname = substr($hostname, 8);
-        }
-        
         // Url
         if (!empty($url)) {
             if (strpos($url, '/') === 0) {
