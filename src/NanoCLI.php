@@ -17,7 +17,7 @@ class NanoCLI
     // # Results and debug
     
     public $response;
-    public $code;
+    public $status;
     
     
     // #
@@ -42,7 +42,7 @@ class NanoCLI
     {       
         $this->id++;      
         $this->response = null;
-        $this->code     = null;
+        $this->status     = null;
         
         $request = ' --' . $method;
         
@@ -52,9 +52,9 @@ class NanoCLI
             }
         }
             
-        exec($this->pathToApp . $request, $this->response, $this->code);
+        exec($this->pathToApp . $request, $this->response, $this->status);
         
-        if ($this->code == 0) {
+        if ($this->status == 0) {
             return $this->response;
         } else {
             return false;
