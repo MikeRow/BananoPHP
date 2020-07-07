@@ -99,7 +99,7 @@ class NanoRPC
     // ## Set Nano API key
     // #
     
-    public function setNanoApiKey(string $nano_api_key = null)
+    public function setNanoApiKey(string $nano_api_key)
     {
         if (empty($nano_api_key)){
             throw new NanoRPCException("Invalid Nano API key: $nano_api_key");

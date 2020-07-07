@@ -60,8 +60,8 @@ class NanoBlock
             throw new NanoBlockException("Invalid previous block array count: less than 8");
         }
         
-        $this->prevBlockId  = $prev_block_id;
-        $this->prevBlock = $prev_block;
+        $this->prevBlockId = $prev_block_id;
+        $this->prevBlock   = $prev_block;
     }
     
     
@@ -93,7 +93,7 @@ class NanoBlock
     // ## Build open block
     // #
     
-    public function open(string $pairing_block_id, string $received_amount, string $representative) : array
+    public function open(string $pairing_block_id, string $received_amount, string $representative): array
     {
         // Check inputs
         if (strlen($pairing_block_id) != 64 || !hex2bin($pairing_block_id)) {
@@ -155,7 +155,7 @@ class NanoBlock
     // ## Build receive block
     // #
     
-    public function receive(string $pairing_block_id, string $received_amount, string $representative = null) : array
+    public function receive(string $pairing_block_id, string $received_amount, string $representative = null): array
     {
         // Check previous block info and ID
         if (!isset($this->prevBlock['balance']) ||
@@ -236,7 +236,7 @@ class NanoBlock
     // ## Build send block
     // #
     
-    public function send(string $destination, string $sending_amount, string $representative = null) : array
+    public function send(string $destination, string $sending_amount, string $representative = null): array
     {
         // Check previous block info and ID
         if (!isset($this->prevBlock['balance']) ||
@@ -320,7 +320,7 @@ class NanoBlock
     // ## Build change block
     // #
     
-    public function change(string $representative) : array
+    public function change(string $representative): array
     {
         // Check previous block info and ID
         if (!isset($this->prevBlock['balance']) ||
