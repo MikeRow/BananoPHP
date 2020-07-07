@@ -15,7 +15,7 @@ $account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
 $t0 = microtime(true);
 
-for ($i = 0; $i < 10000; $i++) {
+for ($i = 0; $i < 100000; $i++) {
     $nanoipc_unix->account_weight(['account' => $account]);
 }
 
@@ -32,13 +32,13 @@ $nanoipc_unix->open();
 
 $account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
-$t0 = microtime(true);
+$t0 = time();
 
-for ($i = 0; $i < 10000; $i++) {
+for ($i = 0; $i < 100000; $i++) {
     $nanoipc_unix->AccountWeight(['account' => $account]);
 }
 
-echo 'Time unix enc 4: ' . (microtime(true) - $t0) . PHP_EOL;
+echo 'Time unix enc 4: ' . (time() - $t0) . PHP_EOL;
 
 $nanoipc_unix->close();
 
@@ -53,13 +53,13 @@ $nanoipc_tcp->open();
 
 $account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
-$t0 = microtime(true);
+$t0 = time();
 
-for ($i = 0; $i < 10000; $i++) {
+for ($i = 0; $i < 100000; $i++) {
     $nanoipc_tcp->account_weight(['account' => $account]);
 }
 
-echo 'Time TCP enc 2: ' . (microtime(true) - $t0) . PHP_EOL;
+echo 'Time TCP enc 2: ' . (time() - $t0) . PHP_EOL;
 
 $nanoipc_tcp->close();
 
@@ -72,12 +72,12 @@ $nanoipc_tcp->open();
 
 $account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
-$t0 = microtime(true);
+$t0 = time();
 
-for ($i = 0; $i < 10000; $i++) {
+for ($i = 0; $i < 100000; $i++) {
     $nanoipc_tcp->AccountWeight(['account' => $account]);
 }
 
-echo 'Time TCP enc 4: ' . (microtime(true) - $t0) . PHP_EOL;
+echo 'Time TCP enc 4: ' . (time() - $t0) . PHP_EOL;
 
 $nanoipc_tcp->close();
