@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/../autoload.php';
 
+$account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
+
 
 // # Unix domain socket encoding 2
 
@@ -10,8 +12,6 @@ $nanoipc_unix = new php4nano\NanoIPC('unix_domain_socket', ['path_to_socket' => 
 $nanoipc_unix->setNanoEncoding(2);
 
 $nanoipc_unix->open();
-
-$account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
 $t0 = time();
 
@@ -29,8 +29,6 @@ $nanoipc_unix->close();
 $nanoipc_unix = new php4nano\NanoIPC('unix_domain_socket', ['path_to_socket' => '/tmp/nano']);
 
 $nanoipc_unix->open();
-
-$account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
 $t0 = time();
 
@@ -51,8 +49,6 @@ $nanoipc_tcp->setNanoEncoding(2);
 
 $nanoipc_tcp->open();
 
-$account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
-
 $t0 = time();
 
 for ($i = 0; $i < 100000; $i++) {
@@ -69,8 +65,6 @@ $nanoipc_tcp->close();
 $nanoipc_tcp = new php4nano\NanoIPC('TCP', ['hostname' => 'localhost', 'port' => 7077]);
 
 $nanoipc_tcp->open();
-
-$account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
 $t0 = time();
 

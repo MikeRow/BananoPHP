@@ -2,12 +2,12 @@
 
 require_once __DIR__ . '/../autoload.php';
 
+$account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
+
 
 // # API v1
 
 $nanorpc = new php4nano\NanoRPC('http', 'localhost', 7076);
-
-$account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
 $t0 = time();
 
@@ -23,8 +23,6 @@ echo 'Time v1: ' . (time() - $t0) . PHP_EOL;
 $nanorpc = new php4nano\NanoRPC('http', 'localhost', 7076, 'api/v2');
 
 $nanorpc->setNanoApi(2);
-
-$account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
 $t0 = time();
 
