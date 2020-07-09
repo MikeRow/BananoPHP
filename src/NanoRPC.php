@@ -125,7 +125,7 @@ class NanoRPC
         $this->errorCode    = null;
         
         
-        // # Request
+        // # Build arguments
         
         $arguments = [];
         
@@ -136,7 +136,7 @@ class NanoRPC
         }
         
         
-        // # API switch
+        // # Request: API switch
         
         // v1
         if ($this->nanoApi == 1) {
@@ -185,7 +185,7 @@ class NanoRPC
         $this->response    = json_decode($this->responseRaw, true);
         
         
-        // # API switch
+        // # Response: API switch
         
         // v1
         if ($this->nanoApi == 1) {
@@ -199,7 +199,7 @@ class NanoRPC
             
             $this->responseTime = (int) $this->response['time'];
             
-            if ((int) $this->response['correlation_id'] != $this->id) {
+            if ($this->response['correlation_id'] != $this->id) {
                 $this->error = 'Correlation ID doesn\'t match';
             }
             

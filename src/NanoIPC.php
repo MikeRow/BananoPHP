@@ -43,7 +43,7 @@ class NanoIPC
     ) {
         // # Unix domain socket
         
-        if ($transport_type == 'unix_domain_socket') { 
+        if ($transport_type == 'unix') { 
             // Path to socket
             if (isset($params[0])) {
                 $this->pathToSocket = (string) $params[0];
@@ -75,7 +75,7 @@ class NanoIPC
             
         // # TCP
         
-        } elseif ($transport_type == 'TCP') {
+        } elseif ($transport_type == 'tcp') {
             // Hostname
             if (isset($params[0])) {
                 $this->hostname = (string) $params[0];
@@ -164,7 +164,7 @@ class NanoIPC
     {
         // # Unix domain socket
         
-        if ($this->transportType == 'unix_domain_socket') {
+        if ($this->transportType == 'unix') {
             $this->transport = stream_socket_client(
                 "unix://{$this->pathToSocket}",
                 $this->errorCode,
@@ -177,7 +177,7 @@ class NanoIPC
             
         // # TCP    
             
-        } elseif ($this->transportType == 'TCP') {
+        } elseif ($this->transportType == 'tcp') {
             $this->transport = stream_socket_client(
                 "tcp://{$this->hostname}:{$this->port}",
                 $this->errorCode,
@@ -234,7 +234,7 @@ class NanoIPC
         $this->errorCode    = null;
         
         
-        // # Request
+        // # Build arguments
         
         $arguments = [];
  
@@ -245,7 +245,7 @@ class NanoIPC
         }
         
         
-        // # Request Nano encoding switch
+        // # Request: Nano encoding switch
         
         // 1/2
         if ($this->nanoEncoding == 1 || 
@@ -274,10 +274,10 @@ class NanoIPC
         $buffer  = $this->nanoPreamble . pack("N", strlen($request)) . $request;
         
         
-        // # Request/Response transport switch
+        // # Request/Response: transport switch
         
-        if ($this->transportType == 'unix_domain_socket' ||
-            $this->transportType == 'TCP'
+        if ($this->transportType == 'unix' ||
+            $this->transportType == 'tcp'
         ) {
             // Request
             $socket = fwrite($this->transport, $buffer);
@@ -316,7 +316,7 @@ class NanoIPC
         $this->response = json_decode($this->responseRaw, true);
         
         
-        // # Response Nano encoding switch
+        // # Response: Nano encoding switch
         
         // 1/2
         if ($this->nanoEncoding == 1 ||
@@ -332,7 +332,7 @@ class NanoIPC
             
             $this->responseTime = (int) $this->response['time'];
             
-            if ((int) $this->response['correlation_id'] != $this->id) {
+            if ($this->response['correlation_id'] != $this->id) {
                 $this->error = 'Correlation ID doesn\'t match';
             }
             

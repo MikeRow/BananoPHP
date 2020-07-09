@@ -80,6 +80,7 @@ Thanks a lot for the work and effort of
 - [strawbrary/php-blake2](https://github.com/strawbrary/php-blake2)
 - [jaimehgb/RaiBlocksPHP](https://github.com/jaimehgb/RaiBlocksPHP)
 - [Textalk/websocket-php](https://github.com/Textalk/websocket-php)
+- [google/flatbuffers](https://github.com/google/flatbuffers)
 - [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
 - [FriendsOfPHP/PHP-CS-Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
 - [squizlabs/PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer)
