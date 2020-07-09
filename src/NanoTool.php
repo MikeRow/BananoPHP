@@ -411,10 +411,10 @@ class NanoTool
     // ## Master seed to keypair
     // #
     
-    public static function mseed2keys(string $seed, int $index = 0, bool $get_account = false): array
+    public static function mseed2keys(string $mseed, int $index = 0, bool $get_account = false): array
     {
-        if (strlen($seed) != 128 || !hex2bin($seed)) {
-            throw new NanoToolException("Invalid master seed: $seed");
+        if (strlen($mseed) != 128 || !hex2bin($mseed)) {
+            throw new NanoToolException("Invalid master seed: $mseed");
         }
         if ($index < 0 || $index > 4294967295) {
             throw new NanoToolException("Invalid index: $index");
@@ -422,7 +422,7 @@ class NanoTool
         
         $path = ["44","165","$index"];
         
-        $I     = hash_hmac('sha512', hex2bin($seed), 'ed25519 seed', true);
+        $I     = hash_hmac('sha512', hex2bin($mseed), 'ed25519 seed', true);
         $HDKey = [substr($I, 0, 32),substr($I, 32, 32)];
         
         foreach ($path as $entry) {
