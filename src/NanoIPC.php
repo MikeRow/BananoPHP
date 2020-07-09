@@ -45,8 +45,8 @@ class NanoIPC
         
         if ($transport_type == 'unix_domain_socket') { 
             // Path to socket
-            if (isset($params['path_to_socket'])) {
-                $this->pathToSocket = (string) $params['path_to_socket'];
+            if (isset($params[0])) {
+                $this->pathToSocket = (string) $params[0];
             } else {
                 $this->pathToSocket = '/tmp/nano';
             }
@@ -77,15 +77,15 @@ class NanoIPC
         
         } elseif ($transport_type == 'TCP') {
             // Hostname
-            if (isset($params['hostname'])) {
-                $this->hostname = (string) $params['hostname'];
+            if (isset($params[0])) {
+                $this->hostname = (string) $params[0];
             } else {
                 $this->hostname = 'localhost';
             }
             
             // Port
-            if (isset($params['port'])) {
-                $this->port = (int) $params['port'];
+            if (isset($params[1])) {
+                $this->port = (int) $params[1];
             } else {
                 $this->port = 7077;
             }
@@ -191,7 +191,7 @@ class NanoIPC
         // #
             
         } else {
-            return false;
+            throw new NanoIPCException("Invalid transport type");
         }
         
         if ($this->transport) {
@@ -245,7 +245,7 @@ class NanoIPC
         }
         
         
-        // # Nano encoding switch
+        // # Request Nano encoding switch
         
         // 1/2
         if ($this->nanoEncoding == 1 || 
@@ -274,7 +274,7 @@ class NanoIPC
         $buffer  = $this->nanoPreamble . pack("N", strlen($request)) . $request;
         
         
-        // # Transport switch
+        // # Request/Response transport switch
         
         if ($this->transportType == 'unix_domain_socket' ||
             $this->transportType == 'TCP'
@@ -316,7 +316,7 @@ class NanoIPC
         $this->response = json_decode($this->responseRaw, true);
         
         
-        // # Nano encoding switch
+        // # Response Nano encoding switch
         
         // 1/2
         if ($this->nanoEncoding == 1 ||
