@@ -2,7 +2,11 @@
 
 namespace php4nano;
 
+require_once __DIR__ . '/../lib/flatbuffers/autoload.php';
+
 use \Exception;
+use \Google;
+use \nanoapi;
 
 class NanoRPCException extends Exception{}
 
@@ -105,7 +109,7 @@ class NanoRPC
             throw new NanoRPCException("Invalid Nano API key: $nano_api_key");
         }
         
-        $this->nanoApiKey = $nano_api_key;
+        $this->nanoApiKey = (string) $nano_api_key;
     }
     
     
@@ -125,30 +129,21 @@ class NanoRPC
         $this->errorCode    = null;
         
         
-        // # Build arguments
-        
-        $arguments = [];
-        
-        if (isset($params[0])) {
-            foreach ($params[0] as $key => $value) {
-                $arguments[$key] = $value;
-            }
-        }
-        
-        
         // # Request: API switch
         
         // v1
         if ($this->nanoApi == 1) {
-            $request = $arguments;
+            $request = $params[0];
             $request['action'] = $method; 
+            
+            $request = json_encode($request);
             
         // v2
         } elseif ($this->nanoApi == 2) {
             $request = [
                 'correlation_id' => (string) $this->id,
                 'message_type'   => $method,
-                'message'        => $arguments
+                'message'        => $params[0]
             ];
             
             // Nano API key
@@ -156,11 +151,9 @@ class NanoRPC
                 $request['credentials'] = $this->nanoApiKey;
             }
         } else {
-            //
+            throw new NanoRPCException("Invalid Nano API key");
         }
         
-        $request = json_encode($request);
-
         
         // # Build the cURL session
         
@@ -185,12 +178,13 @@ class NanoRPC
         $this->response    = json_decode($this->responseRaw, true);
         
         
-        // # Response: API switch
-        
+        # Response: API switch
+               
         // v1
         if ($this->nanoApi == 1) {
             if (isset($this->response['error'])) {
                 $this->error = $this->response['error'];
+                $this->response = null;
             }
             
         // v2
@@ -206,15 +200,16 @@ class NanoRPC
             if ($this->response['message_type'] == 'Error') {
                 $this->error     = $this->response['message'];
                 $this->errorCode = (int) $this->response['message']['code'];
-            }
-            
-            $this->response = $this->response['message'];
+                $this->response  = null;
+            } else {
+                $this->response = $this->response['message'];
+            }       
         } else {
-            //
+            throw new NanoRPCException("Invalid Nano API key");
         }
 
         
-        // # cURL errors
+        # cURL errors
         
         // If the status is not 200, something is wrong
         $this->status = curl_getinfo($curl, CURLINFO_HTTP_CODE);

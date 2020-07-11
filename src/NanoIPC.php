@@ -2,7 +2,11 @@
 
 namespace php4nano;
 
+require_once __DIR__ . '/../lib/flatbuffers/autoload.php';
+
 use \Exception;
+use \Google;
+use \nanoapi;
 
 class NanoIPCException extends Exception{}
 
@@ -132,6 +136,7 @@ class NanoIPC
     {
         if ($nano_encoding != 1 &&
             $nano_encoding != 2 &&
+            $nano_encoding != 3 &&
             $nano_encoding != 4
         ) {
             throw new NanoIPCException("Invalid Nano encoding: $nano_encoding");
@@ -152,7 +157,7 @@ class NanoIPC
             throw new NanoIPCException("Invalid Nano API key: $nano_api_key");
         }
         
-        $this->nanoApiKey = $nano_api_key;
+        $this->nanoApiKey = (string) $nano_api_key;
     }
     
     
@@ -234,43 +239,88 @@ class NanoIPC
         $this->errorCode    = null;
         
         
-        // # Build arguments
-        
-        $arguments = [];
- 
-        if (isset($params[0])) {
-            foreach ($params[0] as $key => $value) {
-                $arguments[$key] = $value;
-            }
-        }
-        
-        
         // # Request: Nano encoding switch
         
         // 1/2
         if ($this->nanoEncoding == 1 || 
             $this->nanoEncoding == 2
-        ) {
-            $request = $arguments;
+        ) { 
+            $request = $params[0];
             $request['action'] = $method;
+        
+            $request = json_encode($request);
             
+        // 3
+        } elseif ($this->nanoEncoding == 3) {
+            if (!class_exists('nanoapi\\' . $method, false)) {
+               $this->error = 'Invalid call';
+               return false;
+            }
+            
+            $builder = new Google\FlatBuffers\FlatbufferBuilder(0);
+            
+            foreach ($params[0] as $key => $value) {
+                $params[0][$key] = $builder->createString($value);
+            }
+            
+            $correlation_id = $builder->createString((string) $this->id);
+            $credentials    = $builder->createString($this->nanoApiKey);
+            $message_type   = constant("nanoapi\Message::$method");
+            
+            // Build arguments
+            call_user_func_array(
+                'nanoapi\\' . $method . '::start' . $method,
+                [$builder]
+            );
+            
+            foreach ($params[0] as $key => $value) {
+                if (!method_exists('nanoapi\\' . $method, 'add' . $key)) {
+                    $this->error = 'Invalid call';
+                    return false;
+                }
+                call_user_func_array(
+                    'nanoapi\\' . $method . '::add' . $key,
+                    [$builder, $value]
+                );
+            }
+            
+            $message = call_user_func_array(
+                'nanoapi\\' . $method . '::end' . $method,
+                [$builder]
+            );
+            
+            // Build envelope
+            $envelope = nanoapi\Envelope::createEnvelope(
+                $builder,
+                null,
+                $credentials,
+                $correlation_id,
+                $message_type,
+                $message
+            );
+
+            $builder->finish($envelope);
+            $request = $builder->sizedByteArray();
+           
         // 4
         } elseif ($this->nanoEncoding == 4) {
+            
             $request = [
                 'correlation_id' => (string) $this->id,
                 'message_type'   => $method,
-                'message'        => $arguments
+                'message'        => $params[0]
             ];
             
             // Nano API key
             if ($this->nanoApiKey != null) {
                 $request['credentials'] = $this->nanoApiKey;
             }
+            
+            $request = json_encode($request);   
         } else {
-            //
+            throw new NanoIPCException("Invalid Nano encoding");
         }
         
-        $request = json_encode($request);
         $buffer  = $this->nanoPreamble . pack("N", strlen($request)) . $request;
         
         
@@ -305,15 +355,9 @@ class NanoIPC
                 $this->error = 'Unable to receive response';
                 return false;
             }
-          
-            
-        // #
-        
         } else {
-            
+            throw new NanoIPCException("Invalid transport type");
         }
-        
-        $this->response = json_decode($this->responseRaw, true);
         
         
         // # Response: Nano encoding switch
@@ -322,12 +366,45 @@ class NanoIPC
         if ($this->nanoEncoding == 1 ||
             $this->nanoEncoding == 2
         ) {
+            $this->response = json_decode($this->responseRaw, true);
+            
             if (isset($this->response['error'])) {
                 $this->error = $this->response['error'];
+                $this->response = null;
+            }
+        
+        // 3
+        } elseif ($this->nanoEncoding == 3) {
+            $buffer = Google\FlatBuffers\ByteBuffer::wrap($this->responseRaw);
+            $envelope = nanoapi\Envelope::getRootAsEnvelope($buffer);
+            
+            $this->responseType = nanoapi\Message::Name($envelope->getMessageType()); 
+            $this->responseTime = $envelope->getTime();
+            
+            if ($envelope->getCorrelationId() != $this->id) {
+                $this->error = 'Correlation ID doesn\'t match';
+            }
+            
+            if ($this->responseType == 'Error') {
+                $this->error     = $envelope->getMessage(new nanoapi\Error())->getMessage();
+                $this->errorCode = $envelope->getMessage(new nanoapi\Error())->getCode();
+            } else {     
+                $model = 'nanoapi\\' . $this->responseType;
+                
+                $methods = get_class_methods($model);
+                foreach ($methods as $method) {
+                    if (substr($method, 0, 3) == 'get' &&
+                        $method != 'getRootAs' . $this->responseType
+                    ) {
+                        $this->response[substr($method, 3)] = $envelope->getMessage(new $model())->$method();
+                    }
+                }
             }
             
         // 4
         } elseif ($this->nanoEncoding == 4) {
+            $this->response = json_decode($this->responseRaw, true);
+            
             $this->responseType = $this->response['message_type'];
             
             $this->responseTime = (int) $this->response['time'];
@@ -339,11 +416,12 @@ class NanoIPC
             if ($this->response['message_type'] == 'Error') {
                 $this->error     = $this->response['message'];
                 $this->errorCode = (int) $this->response['message']['code'];
-            }
-            
-            $this->response = $this->response['message'];
+                $this->response  = null;
+            } else {
+                $this->response = $this->response['message'];
+            }              
         } else {
-            //
+            throw new NanoIPCException("Invalid Nano encoding");
         }
         
         

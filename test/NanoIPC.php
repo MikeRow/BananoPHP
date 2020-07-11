@@ -20,6 +20,21 @@ var_dump($nanoipc_unix);
 $nanoipc_unix->close();
 
 
+// # Unix domain socket encoding 3
+
+$nanoipc_unix = new php4nano\NanoIPC('unix', ['/tmp/nano']);
+
+$nanoipc_unix->setNanoEncoding(3);
+
+$nanoipc_unix->open();
+
+$nanoipc_unix->AccountWeight(['Account' => $account]);
+
+var_dump($nanoipc_unix);
+
+$nanoipc_unix->close();
+
+
 // # Unix domain socket encoding 4
 
 $nanoipc_unix = new php4nano\NanoIPC('unix', ['/tmp/nano']);
@@ -42,6 +57,21 @@ $nanoipc_tcp->setNanoEncoding(2);
 $nanoipc_tcp->open();
 
 $nanoipc_tcp->account_weight(['account' => $account]);
+
+var_dump($nanoipc_tcp);
+
+$nanoipc_tcp->close();
+
+
+// # TCP encoding 3
+
+$nanoipc_tcp = new php4nano\NanoIPC('tcp', ['localhost', 7077]);
+
+$nanoipc_tcp->setNanoEncoding(3);
+
+$nanoipc_tcp->open();
+
+$nanoipc_tcp->AccountWeight(['Account' => $account]);
 
 var_dump($nanoipc_tcp);
 
