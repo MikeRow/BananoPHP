@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/autoload.php';
 
-$nanows = new php4nano\NanoWS('ws', 'localhost', 7078);
+$nanows = new mikerow\php4nano\NanoWS('ws', 'localhost', 7078);
 
 $nanows->open();
 

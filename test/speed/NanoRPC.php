@@ -7,7 +7,7 @@ $account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
 // # API v1
 
-$nanorpc = new php4nano\NanoRPC('http', 'localhost', 7076);
+$nanorpc = new mikerow\php4nano\NanoRPC('http', 'localhost', 7076);
 
 $t0 = microtime(true);
 
@@ -20,7 +20,7 @@ echo 'Time v1: ' . (microtime(true) - $t0) . PHP_EOL;
 
 // # API v2
 
-$nanorpc = new php4nano\NanoRPC('http', 'localhost', 7076, 'api/v2');
+$nanorpc = new mikerow\php4nano\NanoRPC('http', 'localhost', 7076, 'api/v2');
 
 $nanorpc->setNanoApi(2);
 

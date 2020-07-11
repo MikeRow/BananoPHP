@@ -50,7 +50,7 @@
 	},
 	"autoload" : {
 		"psr-4" : {
-			"php4nano\\" : "src/"
+			"mikerow\\php4nano\\" : "src/"
 		}
 	},
 	"support" : {

@@ -1,6 +1,6 @@
 <?php
 
-namespace php4nano;
+namespace mikerow\php4nano;
 
 use \Exception;
 

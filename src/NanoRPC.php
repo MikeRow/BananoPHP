@@ -1,6 +1,6 @@
 <?php
 
-namespace php4nano;
+namespace mikerow\php4nano;
 
 require_once __DIR__ . '/../lib/flatbuffers/autoload.php';
 
@@ -134,9 +134,7 @@ class NanoRPC
         // v1
         if ($this->nanoApi == 1) {
             $request = $params[0];
-            $request['action'] = $method; 
-            
-            $request = json_encode($request);
+            $request['action'] = $method;  
             
         // v2
         } elseif ($this->nanoApi == 2) {
@@ -153,6 +151,8 @@ class NanoRPC
         } else {
             throw new NanoRPCException("Invalid Nano API key");
         }
+        
+        $request = json_encode($request);
         
         
         // # Build the cURL session

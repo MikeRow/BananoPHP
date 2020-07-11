@@ -1,6 +1,6 @@
 <?php
 
-namespace php4nano;
+namespace mikerow\php4nano;
 
 require_once __DIR__ . '/../lib/flatbuffers/autoload.php';
 
