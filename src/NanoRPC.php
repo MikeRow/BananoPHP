@@ -174,7 +174,7 @@ class NanoRPC
         $this->response    = json_decode($this->responseRaw, true);
         
         
-        # Response: API switch
+        // # Response: API switch
                
         // v1
         if ($this->nanoApi == 1) {
@@ -205,7 +205,7 @@ class NanoRPC
         }
 
         
-        # cURL errors
+        // # cURL errors
         
         // If the status is not 200, something is wrong
         $this->status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
