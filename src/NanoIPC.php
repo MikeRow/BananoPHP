@@ -242,7 +242,7 @@ class NanoIPC
             
         // 3
         } elseif ($this->nanoEncoding == 3) {
-            if (!class_exists('nanoapi\\' . $method, false)) {
+            if (!class_exists('nanoapi\\' . $method, true)) {
                $this->error = 'Invalid call';
                return false;
             }

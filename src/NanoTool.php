@@ -3,7 +3,7 @@
 namespace mikerow\php4nano;
 
 use \Exception;
-use mikerow\php4nano\util;
+use \mikerow\php4nano\util;
 use \SplFixedArray;
 use \Blake2b;
 use \Salt;
@@ -161,9 +161,9 @@ class NanoTool
                     $b2b->finish($ctx, $key_hash);
                     $key_hash = array_reverse(array_slice($key_hash->toArray(), 0, 5));
                 } else {
-                    $key_uint8 = util\arr2bin((array) $key_uint8);
+                    $key_uint8 = util\Bin::arr2bin((array) $key_uint8);
                     $key_hash = blake2($key_uint8, 5, null, true);
-                    $key_hash = util\bin2arr(strrev($key_hash));
+                    $key_hash = util\Bin::bin2arr(strrev($key_hash));
                 }
                 
                 if ($hash_uint8 == $key_hash) {
@@ -203,10 +203,10 @@ class NanoTool
             $checksum = $hash->toString();
         } else {
             $key = util\Uint::fromHex($public_key)->toUint8();
-            $key = util\arr2bin((array) $key);
+            $key = util\Bin::arr2bin((array) $key);
             
             $hash = blake2($key, 5, null, true);
-            $hash = util\bin2arr(strrev($hash));
+            $hash = util\Bin::bin2arr(strrev($hash));
             $checksum = util\Uint::fromUint8Array($hash)->toString();
         }
         
@@ -359,8 +359,8 @@ class NanoTool
         $mnemonic = [];
         
         $hex = util\Uint::fromHex($hex)->toUint8();
-        $check = hash('sha256', util\arr2bin((array) $hex), true);
-        $hex  = array_merge((array) $hex, util\bin2arr(substr($check, 0, 1)));
+        $check = hash('sha256', util\Bin::arr2bin((array) $hex), true);
+        $hex  = array_merge((array) $hex, util\Bin::bin2arr(substr($check, 0, 1)));
         
         foreach ($hex as $byte) {
             $bits_raw = decbin($byte);
@@ -626,14 +626,14 @@ class NanoTool
                 $output = array_reverse($output);
                 //$output = util\Uint::fromUint8Array($output)->toHexString();
                 
-                if (strcasecmp(util\arr2bin($output), $difficulty) >= 0) {
+                if (strcasecmp(util\Bin::arr2bin($output), $difficulty) >= 0) {
                     return util\Uint::fromUint8Array(array_reverse($rng))->toHexString();
                 }
 
                 $rng = $output;
             }
         } else {
-            $hash = util\arr2bin((array) $hash);
+            $hash = util\Bin::arr2bin((array) $hash);
             $rng = random_bytes(8);
             
             while (true) {
