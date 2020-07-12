@@ -49,9 +49,21 @@
 		"ext-blake2" : "Install blake2 extension in order to speed up some functions: https://github.com/strawbrary/php-blake2"
 	},
 	"autoload" : {
-		"psr-4" : {
-			"mikerow\\php4nano\\" : "src/"
-		}
+		"files" : [
+			"lib/Salt/autoload.php",
+			"lib/flatbuffers/autoload.php",
+			"lib/util/base.php",
+			"lib/util/bin.php",
+			"lib/util/Uint.php",
+			"src/NanoBlock.php",
+			"src/NanoCLI.php",
+			"src/NanoIPC.php",
+			"src/NanoRPC.php",
+			"src/NanoRPCExt.php",
+			"src/NanoTool.php",
+			"src/NanoWS.php",
+			"src/PippinCLI.php"
+		]
 	},
 	"support" : {
 		"wiki" : "https://github.com/mikerow/php4nano/wiki"
