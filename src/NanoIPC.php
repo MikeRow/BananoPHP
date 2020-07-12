@@ -2,8 +2,6 @@
 
 namespace mikerow\php4nano;
 
-require_once __DIR__ . '/../lib/flatbuffers/autoload.php';
-
 use \Exception;
 use \Google;
 use \nanoapi;
@@ -114,10 +112,6 @@ class NanoIPC
             } else {
                 $this->options['context'] = stream_context_create([]);
             }
-            
-            
-        // #
-            
         } else {
             throw new NanoIPCException("Invalid transport type: $transport_type");
         }
@@ -191,10 +185,6 @@ class NanoIPC
                 $this->options['flags'],
                 $this->options['context']
             );
-            
-        
-        // #
-            
         } else {
             throw new NanoIPCException("Invalid transport type");
         }

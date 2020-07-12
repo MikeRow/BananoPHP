@@ -1,5 +1,7 @@
 <?php
 
+namespace mikerow\php4nano\util;
+
 // # Integer array to binary string
 
 function arr2bin(array $array): string

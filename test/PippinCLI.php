@@ -1,6 +1,6 @@
 <?php 
 
-require_once __DIR__ . '/autoload.php';
+require __DIR__ . '/autoload.php';
 
 $pippincli = new mikerow\php4nano\PippinCLI('/home/nano/.local/bin/pippin-cli');
 

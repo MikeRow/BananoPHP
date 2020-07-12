@@ -1,6 +1,6 @@
 <?php 
 
-require_once __DIR__ . '/autoload.php';
+require __DIR__ . '/autoload.php';
 
 $nanocli = new mikerow\php4nano\NanoCLI('/home/nano/nano_node');
 

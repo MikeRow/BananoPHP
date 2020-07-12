@@ -1,6 +1,6 @@
 <?php 
 
-require_once __DIR__ . '/autoload.php';
+require __DIR__ . '/autoload.php';
 
 $account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 

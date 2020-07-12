@@ -1,5 +1,7 @@
 <?php
 
+namespace mikerow\php4nano\util;
+
 // from here > http://www.danvk.org/hex2dec.html
 
 /**

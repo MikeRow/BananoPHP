@@ -1,6 +1,6 @@
 <?php 
 
-require_once __DIR__ . '/autoload.php';
+require __DIR__ . '/autoload.php';
 
 $nanorpcext = new mikerow\php4nano\NanoRPCExt('http', 'localhost', 7076);
 

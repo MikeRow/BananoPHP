@@ -1,5 +1,9 @@
 <?php
 
+namespace mikerow\php4nano\util;
+
+use \SplFixedArray;
+
 class Uint
 {
     public $u8;
