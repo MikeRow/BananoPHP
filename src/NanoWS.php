@@ -20,7 +20,7 @@ class NanoWS
    
     
     // #
-    // ## Initialization
+    // # Initialization
     // #
     
     public function __construct(
@@ -74,7 +74,7 @@ class NanoWS
     
     
     // #
-    // ## Open connection
+    // # Open connection
     // #
     
     public function open()
@@ -89,7 +89,7 @@ class NanoWS
     
     
     // #
-    // ## Close connection
+    // # Close connection
     // #
     
     public function close()
@@ -101,7 +101,7 @@ class NanoWS
     
     
     // #
-    // ## Subscribe to topic
+    // # Subscribe to topic
     // #
     
     public function subscribe(string $topic, array $options = null, bool $ack = false): int
@@ -140,7 +140,7 @@ class NanoWS
     
     
     // #
-    // ## Update subscription
+    // # Update subscription
     // #
     
     public function update(string $topic, array $options, bool $ack = false): int
@@ -176,7 +176,7 @@ class NanoWS
     
     
     // #
-    // ## Unsubscribe to topic
+    // # Unsubscribe to topic
     // #
     
     public function unsubscribe(string $topic, bool $ack = false): int
@@ -211,7 +211,7 @@ class NanoWS
     
     
     // #
-    // ## Keepalive
+    // # Keepalive
     // #
     
     public function keepalive(): int
@@ -236,7 +236,7 @@ class NanoWS
     
     
     // #
-    // ## Listen
+    // # Listen
     // #
     
     public function listen(): array

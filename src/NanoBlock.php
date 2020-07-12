@@ -32,7 +32,7 @@ class NanoBlock
 
 
     // #
-    // ## Initialization
+    // # Initialization
     // #
     
     public function __construct(string $private_key)
@@ -48,7 +48,7 @@ class NanoBlock
     
     
     // #
-    // ## Set previous block
+    // # Set previous block
     // #
     
     public function setPrev(string $prev_block_id, array $prev_block)
@@ -66,7 +66,7 @@ class NanoBlock
     
     
     // #
-    // ## Automatically set previous block
+    // # Automatically set previous block
     // #
     
     public function autoPrev(bool $auto)
@@ -76,7 +76,7 @@ class NanoBlock
     
     
     // #
-    // ## Set work
+    // # Set work
     // #
     
     public function setWork(string $work)
@@ -90,7 +90,7 @@ class NanoBlock
     
     
     // #
-    // ## Build open block
+    // # Build open block
     // #
     
     public function open(string $pairing_block_id, string $received_amount, string $representative): array
@@ -152,7 +152,7 @@ class NanoBlock
     
     
     // #
-    // ## Build receive block
+    // # Build receive block
     // #
     
     public function receive(string $pairing_block_id, string $received_amount, string $representative = null): array
@@ -233,7 +233,7 @@ class NanoBlock
     
     
     // #
-    // ## Build send block
+    // # Build send block
     // #
     
     public function send(string $destination, string $sending_amount, string $representative = null): array
@@ -317,7 +317,7 @@ class NanoBlock
     
     
     // #
-    // ## Build change block
+    // # Build change block
     // #
     
     public function change(string $representative): array

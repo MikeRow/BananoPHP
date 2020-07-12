@@ -14,7 +14,7 @@ class NanoToolException extends Exception{}
 class NanoTool
 {
     // #
-    // ## Constants
+    // # Constants
     // #
     
     const RAWS = [
@@ -33,7 +33,7 @@ class NanoTool
        
     
     // #
-    // ## Denomination to raw
+    // # Denomination to raw
     // #
     
     public static function den2raw($amount, string $denomination): string
@@ -66,7 +66,7 @@ class NanoTool
 
 
     // #
-    // ## Raw to denomination
+    // # Raw to denomination
     // #
     
     public static function raw2den(string $amount, string $denomination): string
@@ -112,7 +112,7 @@ class NanoTool
     
     
     // #
-    // ## Denomination to denomination
+    // # Denomination to denomination
     // #
     
     public static function den2den($amount, string $denomination_from, string $denomination_to): string
@@ -131,7 +131,7 @@ class NanoTool
     
     
     // #
-    // ## Account to public key
+    // # Account to public key
     // #
     
     public static function account2public(string $account, bool $get_public_key = true)
@@ -181,7 +181,7 @@ class NanoTool
     
     
     // #
-    // ## Public key to account
+    // # Public key to account
     // #
     
     public static function public2account(string $public_key): string
@@ -217,7 +217,7 @@ class NanoTool
     
     
     // #
-    // ## Private key to public key
+    // # Private key to public key
     // #
     
     public static function private2public(string $private_key): string
@@ -235,7 +235,7 @@ class NanoTool
     
     
     // #
-    // ## Get random keypair
+    // # Get random keypair
     // #
     
     public static function keys(bool $get_account = false): array
@@ -255,7 +255,7 @@ class NanoTool
     
     
     // #
-    // ## Seed to keypair
+    // # Seed to keypair
     // #
     
     public static function seed2keys(string $seed, int $index = 0, bool $get_account = false): array
@@ -301,7 +301,7 @@ class NanoTool
     
     
     // #
-    // ## Mnemonic seed to hexadecimal string
+    // # Mnemonic seed to hexadecimal string
     // #
     
     public static function mnem2hex(array $words): string
@@ -341,7 +341,7 @@ class NanoTool
     
     
     // #
-    // ## Hexadecimal string to mnemonic words
+    // # Hexadecimal string to mnemonic words
     // #
     
     public static function hex2mnem(string $hex): array
@@ -376,7 +376,7 @@ class NanoTool
     
     
     // #
-    // ## Mnemonic words to master seed
+    // # Mnemonic words to master seed
     // #
     
     public static function mnem2mseed(array $words, string $passphrase = ''): string
@@ -401,7 +401,7 @@ class NanoTool
     
     
     // #
-    // ## Master seed to keypair
+    // # Master seed to keypair
     // #
     
     public static function mseed2keys(string $mseed, int $index = 0, bool $get_account = false): array
@@ -441,7 +441,7 @@ class NanoTool
     
     
     // #
-    // ## Hash array of hexadecimals
+    // # Hash array of hexadecimals
     // #
     
     public static function hashHexs(array $hexs, int $size = 32): string
@@ -477,7 +477,7 @@ class NanoTool
     
     
     // #
-    // ## Sign message
+    // # Sign message
     // #
     
     public static function sign(string $msg, string $private_key): string
@@ -509,7 +509,7 @@ class NanoTool
     
     
     // #
-    // ## Validate signature
+    // # Validate signature
     // #
     
     public static function validSign(string $msg, string $sig, string $account)
@@ -552,7 +552,7 @@ class NanoTool
     
     
     // #
-    // ## Multiplier to difficulty
+    // # Multiplier to difficulty
     // #
     
     public static function mult2diff(string $difficulty, float $multiplier): string
@@ -572,7 +572,7 @@ class NanoTool
     
     
     // #
-    // ## Difficulty to muliplier
+    // # Difficulty to muliplier
     // #
     
     public static function diff2mult(string $base_difficulty, string $difficulty): float
@@ -593,7 +593,7 @@ class NanoTool
     
     
     // #
-    // ## Generate work
+    // # Generate work
     // #
     
     public static function work(string $hash, string $difficulty): string
@@ -650,7 +650,7 @@ class NanoTool
     
     
     // #
-    // ## Validate work
+    // # Validate work
     // #
     
     public static function validWork(string $hash, string $difficulty, string $work): bool

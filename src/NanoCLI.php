@@ -22,7 +22,7 @@ class NanoCLI
     
     
     // #
-    // ## Initialization
+    // # Initialization
     // #
     
     public function __construct(string $path_to_app = '/home/nano/nano_node')
@@ -32,7 +32,7 @@ class NanoCLI
 
     
     // #
-    // ## Call
+    // # Call
     // #
     
     public function __call($method, array $params)

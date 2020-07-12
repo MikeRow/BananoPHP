@@ -35,7 +35,7 @@ class NanoIPC
     
     
     // #
-    // ## Initialization
+    // # Initialization
     // #
     
     public function __construct(
@@ -123,7 +123,7 @@ class NanoIPC
     
     
     // #
-    // ## Set Nano encoding
+    // # Set Nano encoding
     // #
     
     public function setNanoEncoding(int $nano_encoding)
@@ -142,7 +142,7 @@ class NanoIPC
     
     
     // #
-    // ## Set Nano API key
+    // # Set Nano API key
     // #
     
     public function setNanoApiKey(string $nano_api_key)
@@ -156,7 +156,7 @@ class NanoIPC
     
     
     // #
-    // ## Open connection
+    // # Open connection
     // #
     
     public function open()
@@ -198,7 +198,7 @@ class NanoIPC
     
     
     // #
-    // ## Close connection
+    // # Close connection
     // #
     
     public function close()
@@ -210,7 +210,7 @@ class NanoIPC
     
     
     // #
-    // ## Call
+    // # Call
     // #
     
     public function __call($method, array $params)

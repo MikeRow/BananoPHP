@@ -9,7 +9,7 @@ class NanoRPCExtException extends Exception{}
 class NanoRPCExt extends NanoRPC
 {
     // #
-    // ## Wallet sweep
+    // # Wallet sweep
     // #
     
     public function wallet_sweep(array $args)
@@ -118,7 +118,7 @@ class NanoRPCExt extends NanoRPC
     
     
     // #
-    // ## Wallet send
+    // # Wallet send
     // #
     
     public function wallet_send(array $args)
@@ -250,7 +250,7 @@ class NanoRPCExt extends NanoRPC
     
      
     // #
-    // ## Wallet weight
+    // # Wallet weight
     // #
     
     public function wallet_weight(array $args)

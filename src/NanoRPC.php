@@ -32,7 +32,7 @@ class NanoRPC
     
     
     // #
-    // ## Initialization
+    // # Initialization
     // #
     
     public function __construct(
@@ -80,7 +80,7 @@ class NanoRPC
     
     
     // #
-    // ## Set Nano API
+    // # Set Nano API
     // #
     
     public function setNanoApi(int $nano_api)
@@ -96,7 +96,7 @@ class NanoRPC
     
     
     // #
-    // ## Set Nano API key
+    // # Set Nano API key
     // #
     
     public function setNanoApiKey(string $nano_api_key)
@@ -110,7 +110,7 @@ class NanoRPC
     
     
     // #
-    // ## Call
+    // # Call
     // #
     
     public function __call($method, array $params)

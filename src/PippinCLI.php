@@ -22,7 +22,7 @@ class PippinCLI
     
     
     // #
-    // ## Initialization
+    // # Initialization
     // #
     
     public function __construct(string $path_to_app = '/home/nano/.local/bin/pippin-cli')
@@ -32,7 +32,7 @@ class PippinCLI
 
     
     // #
-    // ## Call
+    // # Call
     // #
     
     public function __call($method, array $params)

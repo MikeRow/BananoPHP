@@ -4,8 +4,6 @@ namespace mikerow\php4nano\util;
 
 class Bin
 {
-    // # Integer array to binary string
-    
     public static function arr2bin(array $array): string
     {
         foreach ($array as $value) {
@@ -18,10 +16,7 @@ class Bin
         }
         
         return implode(array_map('chr', $array));
-    }
-    
-    
-    // # Binary string to integer array
+    }    
     
     public static function bin2arr(string $string): array
     {
