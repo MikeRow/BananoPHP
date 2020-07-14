@@ -24,7 +24,7 @@ Documentation at [NanoPHP/wiki](https://github.com/MikeRow/NanoPHP/wiki)
 
 - [NanoRpcExt](https://github.com/MikeRow/NanoPHP/wiki/NanoRpcExt)
 
-  additional functions for NanoRPC
+  additional functions for NanoRpc
 
 - [NanoTool](https://github.com/MikeRow/NanoPHP/wiki/NanoTool)
 
