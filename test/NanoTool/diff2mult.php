@@ -2,7 +2,7 @@
 
 require __DIR__ . '/../autoload.php';
 
-use mikerow\php4nano\NanoTool;
+use MikeRow\NanoPHP\NanoTool;
 
 $base_difficulty = 'ffffffc000000000';
 $difficulty      = 'fffffe0000000000';

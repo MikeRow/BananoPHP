@@ -1,21 +1,23 @@
 <?php
 
-namespace mikerow\php4nano;
+namespace MikeRow\NanoPHP;
 
 use \Exception;
-use \mikerow\php4nano\util;
 use \SplFixedArray;
-use \Blake2b;
-use \Salt;
-use \FieldElement;
+use BitWasp\BitcoinLib\BIP39;
+use MikeRow\PHPUtil as util;
+use MikeRow\NanoSalt\Blake2b\Blake2b;
+use MikeRow\NanoSalt\Ed25519\Ed25519;
+use MikeRow\NanoSalt\Salt;
+use MikeRow\NanoSalt\FieldElement;
 
 class NanoToolException extends Exception{}
 
 class NanoTool
 {
-    // #
-    // # Constants
-    // #
+    // *
+    // *  Constants
+    // *
     
     const RAWS = [
         'unano' =>                '1000000000000000000',
@@ -32,9 +34,9 @@ class NanoTool
     const HARDENED =  0x80000000;
        
     
-    // #
-    // # Denomination to raw
-    // #
+    // *
+    // *  Denomination to raw
+    // *
     
     public static function den2raw($amount, string $denomination): string
     {
@@ -65,9 +67,9 @@ class NanoTool
     }
 
 
-    // #
-    // # Raw to denomination
-    // #
+    // *
+    // *  Raw to denomination
+    // *
     
     public static function raw2den(string $amount, string $denomination): string
     {
@@ -111,9 +113,9 @@ class NanoTool
     }
     
     
-    // #
-    // # Denomination to denomination
-    // #
+    // *
+    // *  Denomination to denomination
+    // *
     
     public static function den2den($amount, string $denomination_from, string $denomination_to): string
     {
@@ -130,9 +132,9 @@ class NanoTool
     }
     
     
-    // #
-    // # Account to public key
-    // #
+    // *
+    // *  Account to public key
+    // *
     
     public static function account2public(string $account, bool $get_public_key = true)
     {
@@ -180,9 +182,9 @@ class NanoTool
     }
     
     
-    // #
-    // # Public key to account
-    // #
+    // *
+    // *  Public key to account
+    // *
     
     public static function public2account(string $public_key): string
     {
@@ -216,9 +218,9 @@ class NanoTool
     }
     
     
-    // #
-    // # Private key to public key
-    // #
+    // *
+    // *  Private key to public key
+    // *
     
     public static function private2public(string $private_key): string
     {
@@ -234,9 +236,9 @@ class NanoTool
     }
     
     
-    // #
-    // # Get random keypair
-    // #
+    // *
+    // *  Get random keypair
+    // *
     
     public static function keys(bool $get_account = false): array
     {
@@ -254,9 +256,9 @@ class NanoTool
     }
     
     
-    // #
-    // # Seed to keypair
-    // #
+    // *
+    // *  Seed to keypair (Blake2b)
+    // *
     
     public static function seed2keys(string $seed, int $index = 0, bool $get_account = false): array
     {
@@ -279,7 +281,7 @@ class NanoTool
         }
         
         $index = util\Uint::fromUint8Array($index)->toUint8();
-        $private_key    = new SplFixedArray(64);
+        $private_key = new SplFixedArray(64);
         
         $b2b = new Blake2b();
         $ctx = $b2b->init(null, 32);
@@ -300,9 +302,9 @@ class NanoTool
     }
     
     
-    // #
-    // # Mnemonic seed to hexadecimal string
-    // #
+    // *
+    // *  Mnemonic seed to hexadecimal string (BIP39)
+    // *
     
     public static function mnem2hex(array $words): string
     {
@@ -310,7 +312,8 @@ class NanoTool
             throw new NanoToolException("Invalid words array count: not 12 or 24");
         }
         
-        $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib/BIP39/words_en.json'), true);
+        $bip39 = new BIP39\BIP39EnglishWordList();    
+        $bip39_words = $bip39->getWords();
         $mnem_count = count($words);
         $bits = [];
         $hex  = [];
@@ -340,9 +343,9 @@ class NanoTool
     }
     
     
-    // #
-    // # Hexadecimal string to mnemonic words
-    // #
+    // *
+    // *  Hexadecimal string to mnemonic words (BIP39)
+    // *
     
     public static function hex2mnem(string $hex): array
     {
@@ -353,7 +356,8 @@ class NanoTool
             throw new NanoToolException("Invalid hexadecimal string: $hex");
         }
         
-        $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib/BIP39/words_en.json'), true);
+        $bip39 = new BIP39\BIP39EnglishWordList();
+        $bip39_words = $bip39->getWords();
         $hex_lenght = strlen($hex);
         $bits     = [];
         $mnemonic = [];
@@ -375,9 +379,9 @@ class NanoTool
     }
     
     
-    // #
-    // # Mnemonic words to master seed
-    // #
+    // *
+    // *  Mnemonic words to master seed (BIP39/44)
+    // *
     
     public static function mnem2mseed(array $words, string $passphrase = ''): string
     {
@@ -385,7 +389,8 @@ class NanoTool
             throw new NanoToolException("Invalid words array count: less than 1");
         }
         
-        $bip39_words = json_decode(file_get_contents(__DIR__ . '/../lib/BIP39/words_en.json'), true);
+        $bip39 = new BIP39\BIP39EnglishWordList();
+        $bip39_words = $bip39->getWords();
         
         foreach ($words as $index => $value) {
             $word = array_search($value, $bip39_words);
@@ -400,9 +405,9 @@ class NanoTool
     }
     
     
-    // #
-    // # Master seed to keypair
-    // #
+    // *
+    // *  Master seed to keypair (BIP39/44)
+    // *
     
     public static function mseed2keys(string $mseed, int $index = 0, bool $get_account = false): array
     {
@@ -440,9 +445,9 @@ class NanoTool
     }
     
     
-    // #
-    // # Hash array of hexadecimals
-    // #
+    // *
+    // *  Hash array of hexadecimals
+    // *
     
     public static function hashHexs(array $hexs, int $size = 32): string
     {
@@ -476,9 +481,9 @@ class NanoTool
     }
     
     
-    // #
-    // # Sign message
-    // #
+    // *
+    // *  Sign message
+    // *
     
     public static function sign(string $msg, string $private_key): string
     {
@@ -508,9 +513,9 @@ class NanoTool
     }
     
     
-    // #
-    // # Validate signature
-    // #
+    // *
+    // *  Validate signature
+    // *
     
     public static function validSign(string $msg, string $sig, string $account)
     {
@@ -551,9 +556,9 @@ class NanoTool
     }
     
     
-    // #
-    // # Multiplier to difficulty
-    // #
+    // *
+    // *  Multiplier to difficulty
+    // *
     
     public static function mult2diff(string $difficulty, float $multiplier): string
     {
@@ -571,9 +576,9 @@ class NanoTool
     }
     
     
-    // #
-    // # Difficulty to muliplier
-    // #
+    // *
+    // *  Difficulty to muliplier
+    // *
     
     public static function diff2mult(string $base_difficulty, string $difficulty): float
     {
@@ -592,9 +597,9 @@ class NanoTool
     }
     
     
-    // #
-    // # Generate work
-    // #
+    // *
+    // *  Generate work
+    // *
     
     public static function work(string $hash, string $difficulty): string
     {
@@ -649,9 +654,9 @@ class NanoTool
     }
     
     
-    // #
-    // # Validate work
-    // #
+    // *
+    // *  Validate work
+    // *
     
     public static function validWork(string $hash, string $difficulty, string $work): bool
     {

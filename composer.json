@@ -1,11 +1,11 @@
 {
-	"name" : "mikerow/php4nano",
+	"name" : "mikerow/nanophp",
 	"type" : "library",
 	"description" : "PHP libraries and tools for the Nano currency",
 	"keywords" : [
-		"nano",
-		"raiblocks",
-		"pippin",
+		"Nano",
+		"RaiBlocks",
+		"Pippin",
 		"node",
 		"crypto",
 		"currency",
@@ -22,10 +22,10 @@
 		"library",
 		"class"
 	],
-	"homepage" : "https://github.com/mikerow/php4nano",
+	"homepage" : "https://github.com/MikeRow/NanoPHP",
 	"license" : "MIT",
 	"authors" : [{
-			"name" : "Mike Row",
+			"name" : "MikeRow",
 			"role" : "Developer"
 		}
 	],
@@ -42,6 +42,9 @@
 		"ext-gmp" : "*",
 		"ext-mbstring" : "*",
 		"ext-openssl" : "*",
+		"mikerow/nanosalt" : "*",
+		"mikerow/phputil" : "*",
+		"bitwasp/bitcoin-lib" : "1.0.*",
 		"textalk/websocket" : "*",
 		"google/flatbuffers" : "*"
 	},
@@ -50,14 +53,10 @@
 	},
 	"autoload" : {
 		"psr-4" : {
-			"mikerow\\php4nano\\" : "src/",
-			"nanoapi\\" : "lib/flatbuffers/nanoapi/"
-		},
-		"files" : [
-			"lib/Salt/autoload.php"
-		]
+			"MikeRow\\NanoPHP\\" : "src/"
+		}
 	},
 	"support" : {
-		"wiki" : "https://github.com/mikerow/php4nano/wiki"
+		"wiki" : "https://github.com/MikeRow/NanoPHP/wiki"
 	}
 }

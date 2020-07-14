@@ -2,7 +2,7 @@
 
 require __DIR__ . '/../autoload.php';
 
-use mikerow\php4nano\NanoTool;
+use MikeRow\NanoPHP\NanoTool;
 
 $hash       = 'A36B0B8CC84253E57C90E959755816EA51F00FA3497B8D2C665551FAECFBD0D0';
 $difficulty = 'ffffffc000000000';

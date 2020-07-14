@@ -2,7 +2,7 @@
 
 require __DIR__ . '/../autoload.php';
 
-use mikerow\php4nano\NanoTool;
+use MikeRow\NanoPHP\NanoTool;
 
 var_dump(NanoTool::keys());
 
