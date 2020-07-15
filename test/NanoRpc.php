@@ -9,6 +9,8 @@ $account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
 $nanorpc = new MikeRow\NanoPHP\NanoRpc('http', 'localhost', 7076);
 
+$nanorpc->setNanoApi(1);
+
 $nanorpc->account_weight(['account' => $account]);
 
 var_dump($nanorpc);

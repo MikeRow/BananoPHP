@@ -42,6 +42,10 @@ class PippinCli
         $this->status   = null;
         $this->error    = null;
         
+        if (!isset($params[0])) {
+            $params[0] = [];
+        }
+        
         $request = ' ' . $method;
         
         if (isset($params[0])) {

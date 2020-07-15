@@ -4,6 +4,8 @@ require __DIR__ . '/../autoload.php';
 
 $account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
+$cycles = 10000;
+
 
 // * Unix domain socket encoding 1
 
@@ -15,7 +17,7 @@ $nanoipc_unix->open();
 
 $t0 = microtime(true);
 
-for ($i = 0; $i < 1000; $i++) {
+for ($i = 0; $i < $cycles; $i++) {
     $nanoipc_unix->account_weight(['account' => $account]);
 }
 
@@ -34,7 +36,7 @@ $nanoipc_unix->open();
 
 $t0 = microtime(true);
 
-for ($i = 0; $i < 1000; $i++) {
+for ($i = 0; $i < $cycles; $i++) {
     $nanoipc_unix->account_weight(['account' => $account]);
 }
 
@@ -53,7 +55,7 @@ $nanoipc_unix->open();
 
 $t0 = microtime(true);
 
-for ($i = 0; $i < 1000; $i++) {
+for ($i = 0; $i < $cycles; $i++) {
     $nanoipc_unix->AccountWeight(['Account' => $account]);
 }
 
@@ -66,11 +68,13 @@ $nanoipc_unix->close();
 
 $nanoipc_unix = new MikeRow\NanoPHP\NanoIpc('unix', ['/tmp/nano']);
 
+$nanoipc_unix->setNanoEncoding(4);
+
 $nanoipc_unix->open();
 
 $t0 = microtime(true);
 
-for ($i = 0; $i < 1000; $i++) {
+for ($i = 0; $i < $cycles; $i++) {
     $nanoipc_unix->AccountWeight(['account' => $account]);
 }
 
@@ -89,7 +93,7 @@ $nanoipc_tcp->open();
 
 $t0 = microtime(true);
 
-for ($i = 0; $i < 1000; $i++) {
+for ($i = 0; $i < $cycles; $i++) {
     $nanoipc_tcp->account_weight(['account' => $account]);
 }
 
@@ -108,7 +112,7 @@ $nanoipc_tcp->open();
 
 $t0 = microtime(true);
 
-for ($i = 0; $i < 1000; $i++) {
+for ($i = 0; $i < $cycles; $i++) {
     $nanoipc_tcp->account_weight(['account' => $account]);
 }
 
@@ -127,7 +131,7 @@ $nanoipc_tcp->open();
 
 $t0 = microtime(true);
 
-for ($i = 0; $i < 1000; $i++) {
+for ($i = 0; $i < $cycles; $i++) {
     $nanoipc_tcp->AccountWeight(['Account' => $account]);
 }
 
@@ -140,11 +144,13 @@ $nanoipc_tcp->close();
 
 $nanoipc_tcp = new MikeRow\NanoPHP\NanoIpc('tcp', ['localhost', 7077]);
 
+$nanoipc_tcp->setNanoEncoding(4);
+
 $nanoipc_tcp->open();
 
 $t0 = microtime(true);
 
-for ($i = 0; $i < 1000; $i++) {
+for ($i = 0; $i < $cycles; $i++) {
     $nanoipc_tcp->AccountWeight(['account' => $account]);
 }
 

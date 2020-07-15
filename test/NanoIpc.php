@@ -54,6 +54,8 @@ $nanoipc_unix->close();
 
 $nanoipc_unix = new MikeRow\NanoPHP\NanoIpc('unix', ['/tmp/nano']);
 
+$nanoipc_unix->setNanoEncoding(4);
+
 $nanoipc_unix->open();
 
 $nanoipc_unix->AccountWeight(['account' => $account]);
@@ -111,6 +113,8 @@ $nanoipc_tcp->close();
 // * TCP encoding 4
 
 $nanoipc_tcp = new MikeRow\NanoPHP\NanoIpc('tcp', ['localhost', 7077]);
+
+$nanoipc_tcp->setNanoEncoding(4);
 
 $nanoipc_tcp->open();
 

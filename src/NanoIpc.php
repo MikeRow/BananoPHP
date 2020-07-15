@@ -15,6 +15,7 @@ class NanoIpc
     private $pathToSocket;
     private $hostname;
     private $port;
+    private $listen;
     private $options;
     private $nanoPreamble;
     private $nanoEncoding;
@@ -117,7 +118,18 @@ class NanoIpc
         $this->transportType = $transport_type;
         $this->nanoEncoding  = 4;
         $this->nanoPreamble  = 'N' . chr($this->nanoEncoding) . chr(0) . chr(0);
+        $this->listen        = false;
     }    
+    
+    
+    // *
+    // *  Set listening
+    // *  
+    
+    public function setListening(bool $listening)
+    {
+        $this->listen = $listening;
+    }
     
     
     // *
@@ -209,6 +221,77 @@ class NanoIpc
     
     
     // *
+    // *  Listen
+    // *
+    
+    public function listen()
+    {  
+        // Check transport connection
+        if ($this->transport == null) {
+            throw new NanoIpcException("Transport connection is not opened");
+        }
+        
+        
+        // *
+        // *  Response: transport switch
+        // *
+        
+        if ($this->transportType == 'unix' ||
+            $this->transportType == 'tcp'
+        ) {
+            // Response lenght
+            $size = fread($this->transport, 4);
+            if ($size === false) {
+                $this->error = 'Unable to receive response lenght';
+                return false;
+            }
+            if (strlen($size) == 0) {
+                $this->error = 'Unable to receive response lenght';
+                return false;
+            }
+            
+            $size = unpack("N", $size);
+            
+            // Response
+            $this->responseRaw = fread($this->transport, $size[1]);
+            if ($this->responseRaw === false) {
+                $this->error = 'Unable to receive response';
+                return false;
+            }
+        } else {
+            throw new NanoIpcException("Invalid transport type");
+        }
+        
+        
+        // *
+        // *  Response: Nano encoding switch
+        // *
+        
+        // * 1/2
+        
+        if ($this->nanoEncoding == 1 ||
+            $this->nanoEncoding == 2
+        ) {
+            return json_decode($this->responseRaw, true);
+            
+            
+        // * 3
+            
+        } elseif ($this->nanoEncoding == 3) {
+            return \Google\FlatBuffers\ByteBuffer::wrap($this->responseRaw);
+            
+            
+        // * 4
+            
+        } elseif ($this->nanoEncoding == 4) {
+            return json_decode($this->responseRaw, true);
+        } else {
+            throw new NanoIpcException("Invalid Nano encoding");
+        }
+    }
+    
+    
+    // *
     // *  Call
     // *
     
@@ -227,10 +310,17 @@ class NanoIpc
         $this->error        = null;
         $this->errorCode    = null;
         
+        if (!isset($params[0])) {
+            $params[0] = [];
+        }
         
-        // * Request: Nano encoding switch
         
-        // 1/2
+        // *
+        // *  Request: Nano encoding switch
+        // *        
+        
+        // * 1/2
+        
         if ($this->nanoEncoding == 1 || 
             $this->nanoEncoding == 2
         ) { 
@@ -239,7 +329,9 @@ class NanoIpc
         
             $request = json_encode($request);
             
-        // 3
+            
+        // * 3
+        
         } elseif ($this->nanoEncoding == 3) {
             if (!class_exists('\\MikeRow\\NanoPHP\\NanoApi\\' . $method, true)) {
                $this->error = 'Invalid call';
@@ -263,10 +355,10 @@ class NanoIpc
             );
             
             foreach ($params[0] as $key => $value) {
-                /*if (!method_exists('NanoApi\\' . $method, 'add' . $key)) {
+                if (!method_exists('\\MikeRow\\NanoPHP\\NanoApi\\' . $method, 'add' . $key)) {
                     $this->error = 'Invalid call';
                     return false;
-                }*/
+                }
                 call_user_func_array(
                     '\\MikeRow\\NanoPHP\\NanoApi\\' . $method . '::add' . $key,
                     [$builder, $value]
@@ -290,10 +382,11 @@ class NanoIpc
 
             $builder->finish($envelope);
             $request = $builder->sizedByteArray();
-           
-        // 4
-        } elseif ($this->nanoEncoding == 4) {
+        
             
+        // * 4
+        
+        } elseif ($this->nanoEncoding == 4) {         
             $request = [
                 'correlation_id' => (string) $this->id,
                 'message_type'   => $method,
@@ -313,7 +406,9 @@ class NanoIpc
         $buffer  = $this->nanoPreamble . pack("N", strlen($request)) . $request;
         
         
-        // * Request/Response: transport switch
+        // *
+        // *  Request/Response: transport switch
+        // *
         
         if ($this->transportType == 'unix' ||
             $this->transportType == 'tcp'
@@ -323,6 +418,11 @@ class NanoIpc
             if ($socket === false) {
                 $this->error = 'Unable to send request';
                 return false;
+            }
+            
+            // If listening, skip response
+            if ($this->listen) {
+                return;
             }
             
             // Response lenght
@@ -349,9 +449,12 @@ class NanoIpc
         }
         
         
-        // * Response: Nano encoding switch
+        // *
+        // *  Response: Nano encoding switch
+        // *       
         
-        // 1/2
+        // * 1/2
+        
         if ($this->nanoEncoding == 1 ||
             $this->nanoEncoding == 2
         ) {
@@ -361,13 +464,15 @@ class NanoIpc
                 $this->error = $this->response['error'];
                 $this->response = null;
             }
-        
-        // 3
+                
+                
+        // * 3
+            
         } elseif ($this->nanoEncoding == 3) {
             $buffer = \Google\FlatBuffers\ByteBuffer::wrap($this->responseRaw);
             $envelope = \MikeRow\NanoPHP\NanoApi\Envelope::getRootAsEnvelope($buffer);
             
-            $this->responseType = \MikeRow\NanoPHP\NanoApi\Message::Name($envelope->getMessageType()); 
+            $this->responseType = \MikeRow\NanoPHP\NanoApi\Message::Name($envelope->getMessageType());
             $this->responseTime = $envelope->getTime();
             
             if ($envelope->getCorrelationId() != $this->id) {
@@ -377,7 +482,7 @@ class NanoIpc
             if ($this->responseType == 'Error') {
                 $this->error     = $envelope->getMessage(new \MikeRow\NanoPHP\NanoApi\Error())->getMessage();
                 $this->errorCode = $envelope->getMessage(new \MikeRow\NanoPHP\NanoApi\Error())->getCode();
-            } else {     
+            } else {
                 $model = '\\MikeRow\\NanoPHP\\NanoApi\\' . $this->responseType;
                 
                 $methods = get_class_methods($model);
@@ -390,7 +495,9 @@ class NanoIpc
                 }
             }
             
-        // 4
+                
+        // * 4
+            
         } elseif ($this->nanoEncoding == 4) {
             $this->response = json_decode($this->responseRaw, true);
             
@@ -408,7 +515,7 @@ class NanoIpc
                 $this->response  = null;
             } else {
                 $this->response = $this->response['message'];
-            }              
+            }
         } else {
             throw new NanoIpcException("Invalid Nano encoding");
         }

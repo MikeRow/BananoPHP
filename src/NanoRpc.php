@@ -60,7 +60,7 @@ class NanoRpc
         $this->hostname = $hostname;
         $this->port     = $port;
         $this->url      = $url;
-        $this->nanoApi  = 1;
+        $this->nanoApi  = 2;
         
         $this->options =
         [
@@ -124,15 +124,24 @@ class NanoRpc
         $this->error        = null;
         $this->errorCode    = null;
         
+        if (!isset($params[0])) {
+            $params[0] = [];
+        }
         
-        // * Request: API switch
         
-        // v1
+        // *
+        // *  Request: API switch
+        // *       
+        
+        // * v1
+        
         if ($this->nanoApi == 1) {
             $request = $params[0];
             $request['action'] = $method;  
             
-        // v2
+            
+        // * v2
+        
         } elseif ($this->nanoApi == 2) {
             $request = [
                 'correlation_id' => (string) $this->id,
@@ -174,16 +183,21 @@ class NanoRpc
         $this->response    = json_decode($this->responseRaw, true);
         
         
-        // * Response: API switch
-               
-        // v1
+        // *
+        // *  Response: API switch
+        // *
+        
+        // * v1
+        
         if ($this->nanoApi == 1) {
             if (isset($this->response['error'])) {
                 $this->error = $this->response['error'];
                 $this->response = null;
             }
+        
             
-        // v2
+        // * v2
+        
         } elseif ($this->nanoApi == 2) {
             $this->responseType = $this->response['message_type'];
             

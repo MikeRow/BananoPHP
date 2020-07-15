@@ -1,3 +1,5 @@
 composer.lock
 .project
+/src/exp
+/test/exp
 /vendor
