@@ -123,12 +123,12 @@ class NanoIpc
     
     
     // *
-    // *  Set listening
+    // *  Set listen
     // *  
     
-    public function setListening(bool $listening)
+    public function setListen(bool $listen)
     {
-        $this->listen = $listening;
+        $this->listen = $listen;
     }
     
     
@@ -217,77 +217,6 @@ class NanoIpc
             stream_socket_shutdown($this->transport, STREAM_SHUT_RDWR);
             $this->transport = null;
         }      
-    }
-    
-    
-    // *
-    // *  Listen
-    // *
-    
-    public function listen()
-    {  
-        // Check transport connection
-        if ($this->transport == null) {
-            throw new NanoIpcException("Transport connection is not opened");
-        }
-        
-        
-        // *
-        // *  Response: transport switch
-        // *
-        
-        if ($this->transportType == 'unix' ||
-            $this->transportType == 'tcp'
-        ) {
-            // Response lenght
-            $size = fread($this->transport, 4);
-            if ($size === false) {
-                $this->error = 'Unable to receive response lenght';
-                return false;
-            }
-            if (strlen($size) == 0) {
-                $this->error = 'Unable to receive response lenght';
-                return false;
-            }
-            
-            $size = unpack("N", $size);
-            
-            // Response
-            $this->responseRaw = fread($this->transport, $size[1]);
-            if ($this->responseRaw === false) {
-                $this->error = 'Unable to receive response';
-                return false;
-            }
-        } else {
-            throw new NanoIpcException("Invalid transport type");
-        }
-        
-        
-        // *
-        // *  Response: Nano encoding switch
-        // *
-        
-        // * 1/2
-        
-        if ($this->nanoEncoding == 1 ||
-            $this->nanoEncoding == 2
-        ) {
-            return json_decode($this->responseRaw, true);
-            
-            
-        // * 3
-            
-        } elseif ($this->nanoEncoding == 3) {
-            return \Google\FlatBuffers\ByteBuffer::wrap($this->responseRaw);
-            
-            
-        // * 4
-            
-        } elseif ($this->nanoEncoding == 4) {
-            return json_decode($this->responseRaw, true);
-        } else {
-            throw new NanoIpcException("Invalid Nano encoding");
-        }
     }
     
     
@@ -527,6 +456,77 @@ class NanoIpc
             return false;
         } else {
             return $this->response;
+        }
+    }
+    
+    
+    // *
+    // *  Listen
+    // *
+    
+    public function listen()
+    {
+        // Check transport connection
+        if ($this->transport == null) {
+            throw new NanoIpcException("Transport connection is not opened");
+        }
+        
+        
+        // *
+        // *  Response: transport switch
+        // *
+        
+        if ($this->transportType == 'unix' ||
+            $this->transportType == 'tcp'
+        ) {
+            // Response lenght
+            $size = fread($this->transport, 4);
+            if ($size === false) {
+                $this->error = 'Unable to receive response lenght';
+                return false;
+            }
+            if (strlen($size) == 0) {
+                $this->error = 'Unable to receive response lenght';
+                return false;
+            }
+            
+            $size = unpack("N", $size);
+            
+            // Response
+            $this->responseRaw = fread($this->transport, $size[1]);
+            if ($this->responseRaw === false) {
+                $this->error = 'Unable to receive response';
+                return false;
+            }
+        } else {
+            throw new NanoIpcException("Invalid transport type");
+        }
+        
+        
+        // *
+        // *  Response: Nano encoding switch
+        // *
+        
+        // * 1/2
+        
+        if ($this->nanoEncoding == 1 ||
+            $this->nanoEncoding == 2
+        ) {
+            return json_decode($this->responseRaw, true);
+            
+            
+        // * 3
+            
+        } elseif ($this->nanoEncoding == 3) {
+            return \Google\FlatBuffers\ByteBuffer::wrap($this->responseRaw);
+            
+            
+        // * 4
+            
+        } elseif ($this->nanoEncoding == 4) {
+            return json_decode($this->responseRaw, true);
+        } else {
+            throw new NanoIpcException("Invalid Nano encoding");
         }
     }
 }

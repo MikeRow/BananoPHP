@@ -9,11 +9,15 @@ $account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
 $nanoipc_unix = new MikeRow\NanoPHP\NanoIpc('unix', ['/tmp/nano']);
 
-$nanoipc_unix->setNanoEncoding(4);
+$nanoipc_unix->setNanoEncoding(3);
 
-$nanoipc_unix->setListening(true);
+$nanoipc_unix->setListen(true);
 
 $nanoipc_unix->open();
+
+$args = [
+    'ServiceName' => 'TopicConfirmation'
+];
 
 $nanoipc_unix->ServiceRegister($args);
 
