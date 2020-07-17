@@ -471,6 +471,11 @@ class NanoIpc
             throw new NanoIpcException("Transport connection is not opened");
         }
         
+        // Check if listen is enabled
+        if (!$this->listen) {
+            throw new NanoIpcException("Listen is not enabled");
+        }
+        
         
         // *
         // *  Response: transport switch
