@@ -10,31 +10,31 @@ Documentation at [NanoPHP/wiki](https://github.com/MikeRow/NanoPHP/wiki)
 
   class for building Nano blocks
 
-- [NanoCli](https://github.com/MikeRow/NanoPHP/wiki/NanoCli)
+- [NanoCLI](https://github.com/MikeRow/NanoPHP/wiki/NanoCLI)
 
   class for interfacing to Nano node CLI
   
-- [NanoIpc](https://github.com/MikeRow/NanoPHP/wiki/NanoIpc)
+- [NanoIPC](https://github.com/MikeRow/NanoPHP/wiki/NanoIPC)
 
   class for interfacing to Nano node IPC
 
-- [NanoRpc](https://github.com/MikeRow/NanoPHP/wiki/NanoRpc)
+- [NanoRPC](https://github.com/MikeRow/NanoPHP/wiki/NanoRPC)
 
   class for interfacing to Nano node RPC
 
-- [NanoRpcExt](https://github.com/MikeRow/NanoPHP/wiki/NanoRpcExt)
+- [NanoRPCExt](https://github.com/MikeRow/NanoPHP/wiki/NanoRPCExt)
 
-  additional functions for NanoRpc
+  additional functions for NanoRPC
 
 - [NanoTool](https://github.com/MikeRow/NanoPHP/wiki/NanoTool)
 
   class for node-independent Nano functions
   
-- [NanoWs](https://github.com/MikeRow/NanoPHP/wiki/NanoWs)
+- [NanoWS](https://github.com/MikeRow/NanoPHP/wiki/NanoWS)
 
   class for interfacing to Nano node WebSocket
   
-- [PippinCli](https://github.com/MikeRow/NanoPHP/wiki/PippinCli)
+- [PippinCLI](https://github.com/MikeRow/NanoPHP/wiki/PippinCLI)
 
   class for interfacing to Pippin wallet CLI
   

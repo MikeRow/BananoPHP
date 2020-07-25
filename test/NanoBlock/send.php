@@ -15,8 +15,8 @@ $destination     = '';
 $sending_amount  = '';
 $representative  = '';
 
-// Initialize NanoRpc and NanoBlock
-$nanorpc    = new MikeRow\NanoPHP\NanoRpc();
+// Initialize NanoRPC and NanoBlock
+$nanorpc    = new MikeRow\NanoPHP\NanoRPC();
 $nanoblock  = new MikeRow\NanoPHP\NanoBlock($private_key);
 
 // Get previous block data
