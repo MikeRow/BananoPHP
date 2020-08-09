@@ -405,7 +405,7 @@ class NanoIPC
             $this->responseTime = $envelope->getTime();
             
             if ($envelope->getCorrelationId() != $this->id) {
-                $this->error = 'Correlation ID doesn\'t match';
+                $this->error = 'Correlation Id doesn\'t match';
             }
             
             if ($this->responseType == 'Error') {
@@ -435,7 +435,7 @@ class NanoIPC
             $this->responseTime = (int) $this->response['time'];
             
             if ($this->response['correlation_id'] != $this->id) {
-                $this->error = 'Correlation ID doesn\'t match';
+                $this->error = 'Correlation Id doesn\'t match';
             }
             
             if ($this->response['message_type'] == 'Error') {

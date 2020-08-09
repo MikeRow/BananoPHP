@@ -43,7 +43,7 @@
 		"ext-mbstring" : "*",
 		"ext-openssl" : "*",
 		"mikerow/nanosalt" : "*",
-		"mikerow/phputil" : "*",
+		"mikerow/phputils" : "*",
 		"bitwasp/bitcoin-lib" : "1.0.*",
 		"textalk/websocket" : "*",
 		"google/flatbuffers" : "*"
