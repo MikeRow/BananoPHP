@@ -6,10 +6,10 @@ use \Exception;
 use \SplFixedArray;
 use BitWasp\BitcoinLib\BIP39;
 use MikeRow\PHPUtils as utils;
-use MikeRow\NanoSalt\Blake2b\Blake2b;
-use MikeRow\NanoSalt\Ed25519\Ed25519;
-use MikeRow\NanoSalt\Salt;
-use MikeRow\NanoSalt\FieldElement;
+use MikeRow\Salt\Blake2b\Blake2b;
+use MikeRow\Salt\Ed25519\Ed25519;
+use MikeRow\Salt\NanoSalt;
+use MikeRow\Salt\FieldElement;
 
 class NanoToolException extends Exception{}
 
@@ -228,7 +228,7 @@ class NanoTool
             throw new NanoToolException("Invalid private key: $private_key");
         }
         
-        $salt = Salt::instance();
+        $salt = NanoSalt::instance();
         $private_key = utils\Uint::fromHex($private_key)->toUint8();
         $public_key = $salt::crypto_sign_public_from_secret_key($private_key);
         
@@ -242,7 +242,7 @@ class NanoTool
     
     public static function keys(bool $get_account = false): array
     {
-        $salt = Salt::instance();
+        $salt = NanoSalt::instance();
         $keys = $salt->crypto_sign_keypair();
         
         $keys[0] = utils\Uint::fromUint8Array(array_slice($keys[0]->toArray(), 0, 32))->toHexString();
@@ -494,9 +494,9 @@ class NanoTool
             throw new NanoToolException("Invalid private key: $private_key");
         }
         
-        $salt = Salt::instance();
+        $salt = NanoSalt::instance();
         $private_key = FieldElement::fromArray(utils\Uint::fromHex($private_key)->toUint8());
-        $public_key  = Salt::crypto_sign_public_from_secret_key($private_key);
+        $public_key  = NanoSalt::crypto_sign_public_from_secret_key($private_key);
         
         $private_key->setSize(64);
         $private_key->copy($public_key, 32, 32);
@@ -544,7 +544,7 @@ class NanoTool
             $sm[$i+64] = $msg[$i];
         }
         
-        $open2 = Salt::crypto_sign_open2($m, $sm, count($sm), $public_key);
+        $open2 = NanoSalt::crypto_sign_open2($m, $sm, count($sm), $public_key);
         
         if ($open2 == null) {
             return false;

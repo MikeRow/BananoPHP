@@ -42,7 +42,7 @@
 		"ext-gmp" : "*",
 		"ext-mbstring" : "*",
 		"ext-openssl" : "*",
-		"mikerow/nanosalt" : "*",
+		"mikerow/salt" : "*",
 		"mikerow/phputils" : "*",
 		"bitwasp/bitcoin-lib" : "1.0.*",
 		"textalk/websocket" : "*",
