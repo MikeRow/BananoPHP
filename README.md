@@ -40,7 +40,10 @@ Documentation at [NanoPHP/wiki](https://github.com/MikeRow/NanoPHP/wiki)
   
 ## To do ...
 
-Nothing planned
+- Add support to NanoBlock for Epoch v2
+- Add support to NanoWS for FlatBuffers
+- Increase FlatBuffers performances
+- Enable listening on IPC
 
 ## FAQ
 
