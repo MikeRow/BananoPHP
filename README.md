@@ -44,6 +44,7 @@ Documentation at [NanoPHP/wiki](https://github.com/MikeRow/NanoPHP/wiki)
 - Add support to NanoWS for FlatBuffers
 - Increase FlatBuffers performances
 - Enable listening on IPC
+- Allow different mnemonic words counts
 
 ## FAQ
 
