@@ -1,6 +1,6 @@
 # NanoPHP
 
-PHP libraries and tools for the Nano currency
+PHP libraries and tools for the Nano/Banano currency
 
 Documentation at [NanoPHP/wiki](https://github.com/MikeRow/NanoPHP/wiki)
 
