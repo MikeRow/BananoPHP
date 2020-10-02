@@ -1,7 +1,7 @@
 {
 	"name" : "mikerow/bandano",
 	"type" : "library",
-	"description" : "PHP libraries and tools for Nano and Banano currency",
+	"description" : "PHP libraries and tools for Nano and Banano currencies",
 	"keywords" : [
 		"Nano",
 		"RaiBlocks",
