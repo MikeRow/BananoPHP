@@ -1,42 +1,42 @@
 # Bandano
 
-PHP libraries and tools for the Nano and Banano currencies
+PHP libraries and tools for Nano and Banano currencies
 
-Documentation at [NanoPHP/wiki](https://github.com/MikeRow/NanoPHP/wiki)
+Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
 ### Nano features
 
-- [NanoBlock](https://github.com/MikeRow/NanoPHP/wiki/NanoBlock)
+- [NanoBlock](https://github.com/MikeRow/Bandano/wiki/NanoBlock)
 
   class for building Nano blocks
 
-- [NanoCLI](https://github.com/MikeRow/NanoPHP/wiki/NanoCLI)
+- [NanoCLI](https://github.com/MikeRow/Bandano/wiki/NanoCLI)
 
   class for interfacing to Nano node CLI
   
-- [NanoIPC](https://github.com/MikeRow/NanoPHP/wiki/NanoIPC)
+- [NanoIPC](https://github.com/MikeRow/Bandano/wiki/NanoIPC)
 
   class for interfacing to Nano node IPC
 
-- [NanoRPC](https://github.com/MikeRow/NanoPHP/wiki/NanoRPC)
+- [NanoRPC](https://github.com/MikeRow/Bandano/wiki/NanoRPC)
 
   class for interfacing to Nano node RPC
 
-- [NanoRPCExt](https://github.com/MikeRow/NanoPHP/wiki/NanoRPCExt)
+- [NanoRPCExt](https://github.com/MikeRow/Bandano/wiki/NanoRPCExt)
 
   additional functions for NanoRPC
 
-- [NanoTool](https://github.com/MikeRow/NanoPHP/wiki/NanoTool)
+- [NanoTool](https://github.com/MikeRow/Bandano/wiki/NanoTool)
 
   class for node-independent Nano functions
   
-- [NanoWS](https://github.com/MikeRow/NanoPHP/wiki/NanoWS)
+- [NanoWS](https://github.com/MikeRow/Bandano/wiki/NanoWS)
 
   class for interfacing to Nano node WebSocket
   
 ### Other features
   
-- [PippinCLI](https://github.com/MikeRow/NanoPHP/wiki/PippinCLI)
+- [PippinCLI](https://github.com/MikeRow/Bandano/wiki/PippinCLI)
 
   class for interfacing to Pippin wallet CLI
   
@@ -87,4 +87,4 @@ Thanks a lot for the work and effort of
 
 ## Support
 
-[nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m](https://mynano.ninja/account/mikerow)
+[nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m](https://mynano.ninja/account/nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m)
