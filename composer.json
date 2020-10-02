@@ -1,10 +1,11 @@
 {
-	"name" : "mikerow/nanophp",
+	"name" : "mikerow/bandano",
 	"type" : "library",
-	"description" : "PHP libraries and tools for the Nano currency",
+	"description" : "PHP libraries and tools for Nano and Banano currency",
 	"keywords" : [
 		"Nano",
 		"RaiBlocks",
+		"Banano",
 		"Pippin",
 		"node",
 		"crypto",
@@ -22,7 +23,7 @@
 		"library",
 		"class"
 	],
-	"homepage" : "https://github.com/MikeRow/NanoPHP",
+	"homepage" : "https://github.com/MikeRow/Bandano",
 	"license" : "MIT",
 	"authors" : [{
 			"name" : "MikeRow",
@@ -57,6 +58,6 @@
 		}
 	},
 	"support" : {
-		"wiki" : "https://github.com/MikeRow/NanoPHP/wiki"
+		"wiki" : "https://github.com/MikeRow/Bandano/wiki"
 	}
 }
