@@ -1,10 +1,10 @@
-# NanoPHP
+# Bandano
 
 PHP libraries and tools for the Nano and Banano currencies
 
 Documentation at [NanoPHP/wiki](https://github.com/MikeRow/NanoPHP/wiki)
 
-## Features
+### Nano features
 
 - [NanoBlock](https://github.com/MikeRow/NanoPHP/wiki/NanoBlock)
 
@@ -33,6 +33,8 @@ Documentation at [NanoPHP/wiki](https://github.com/MikeRow/NanoPHP/wiki)
 - [NanoWS](https://github.com/MikeRow/NanoPHP/wiki/NanoWS)
 
   class for interfacing to Nano node WebSocket
+  
+### Other features
   
 - [PippinCLI](https://github.com/MikeRow/NanoPHP/wiki/PippinCLI)
 
@@ -85,4 +87,4 @@ Thanks a lot for the work and effort of
 
 ## Support
 
-Send funds to [my representative](https://mynano.ninja/account/mikerow)
+[nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m](https://mynano.ninja/account/mikerow)
