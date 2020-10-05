@@ -4,6 +4,36 @@ PHP libraries and tools for Banano and Nano currencies
 
 Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
+### Banano features
+
+- [BananoBlock](https://github.com/MikeRow/Bandano/wiki/BananoBlock)
+
+  class for building Banano blocks
+
+- [BananoCLI](https://github.com/MikeRow/Bandano/wiki/BananoCLI)
+
+  class for interfacing to Banano node CLI
+  
+- [BananoIPC](https://github.com/MikeRow/Bandano/wiki/BananoIPC)
+
+  class for interfacing to Banano node IPC
+
+- [BananoRPC](https://github.com/MikeRow/Bandano/wiki/BananoRPC)
+
+  class for interfacing to Banano node RPC
+
+- [BananoRPCExt](https://github.com/MikeRow/Bandano/wiki/BananoRPCExt)
+
+  additional functions for BananoRPC
+
+- [BananoTool](https://github.com/MikeRow/Bandano/wiki/BananoTool)
+
+  class for node-independent Banano functions
+  
+- [BananoWS](https://github.com/MikeRow/Bandano/wiki/BananoWS)
+
+  class for interfacing to Banano node WebSocket
+
 ### Nano features
 
 - [NanoBlock](https://github.com/MikeRow/Bandano/wiki/NanoBlock)
@@ -42,8 +72,8 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
   
 ## To do ...
 
-- Add support to NanoBlock for Epoch v2
-- Add support to NanoWS for FlatBuffers
+- Add support to BananoBlock/NanoBlock for Epoch v2
+- Add support to BananoWS/NanoWS for FlatBuffers
 - Increase FlatBuffers performances
 - Enable listening on IPC
 - Allow different mnemonic words counts
