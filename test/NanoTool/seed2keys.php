@@ -2,7 +2,7 @@
 
 require __DIR__ . '/../autoload.php';
 
-use MikeRow\NanoPHP\NanoTool;
+use MikeRow\Bandano\NanoTool;
 
 list($seed) = NanoTool::keys();
 

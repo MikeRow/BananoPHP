@@ -4,9 +4,9 @@ namespace MikeRow\Bandano;
 
 use \Exception;
 
-class NanoWSException extends Exception{}
+class BananoWSException extends Exception{}
 
-class NanoWS
+class BananoWS
 {
     // * Settings
     
@@ -34,7 +34,7 @@ class NanoWS
         if ($protocol != 'ws' &&
             $protocol != 'wss'
         ) {
-            throw new NanoWSException("Invalid protocol: $protocol");
+            throw new BananoWSException("Invalid protocol: $protocol");
         }
         
         // Url
@@ -109,12 +109,12 @@ class NanoWS
     {
         // Check WebSocket connection
         if ($this->websocket == null) {
-            throw new NanoWSException("WebSocket connection is not opened");
+            throw new BananoWSException("WebSocket connection is not opened");
         }
         
         // Check inputs
         if (empty($topic)){
-            throw new NanoWSException("Invalid topic: $topic");
+            throw new BananoWSException("Invalid topic: $topic");
         }
         
         $this->id++;
@@ -148,12 +148,12 @@ class NanoWS
     {
         // Check WebSocket connection
         if ($this->websocket == null) {
-            throw new NanoWSException("WebSocket connection is not opened");
+            throw new BananoWSException("WebSocket connection is not opened");
         }
         
         // Check inputs
         if (empty($topic)){
-            throw new NanoWSException("Invalid topic: $topic");
+            throw new BananoWSException("Invalid topic: $topic");
         }
         
         $this->id++;
@@ -184,12 +184,12 @@ class NanoWS
     {
         // Check WebSocket connection
         if ($this->websocket == null) {
-            throw new NanoWSException("WebSocket connection is not opened");
+            throw new BananoWSException("WebSocket connection is not opened");
         }
         
         // Check inputs
         if (empty($topic)){
-            throw new NanoWSException("Invalid topic: $topic");
+            throw new BananoWSException("Invalid topic: $topic");
         }
         
         $this->id++;
@@ -219,7 +219,7 @@ class NanoWS
     {
         // Check WebSocket connection
         if ($this->websocket == null) {
-            throw new NanoWSException("WebSocket connection is not opened");
+            throw new BananoWSException("WebSocket connection is not opened");
         }
         
         $this->id++;
@@ -244,7 +244,7 @@ class NanoWS
     {
         // Check WebSocket connection
         if ($this->websocket == null) {
-            throw new NanoWSException("WebSocket connection is not opened");
+            throw new BananoWSException("WebSocket connection is not opened");
         }
         
         while (true) {

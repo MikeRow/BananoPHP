@@ -4,9 +4,9 @@ namespace MikeRow\Bandano;
 
 use \Exception;
 
-class NanoRPCException extends Exception{}
+class BananoRPCException extends Exception{}
 
-class NanoRPC
+class BananoRPC
 {
     // * Settings
     
@@ -15,8 +15,8 @@ class NanoRPC
     private $port;
     private $url;
     private $options;
-    private $nanoApi;
-    private $nanoApiKey;
+    private $bananoApi;
+    private $bananoApiKey;
     private $id = 0;
 
     
@@ -46,7 +46,7 @@ class NanoRPC
         if ($protocol != 'http' &&
             $protocol != 'https'
         ) {
-            throw new NanoRPCException("Invalid protocol: $protocol");
+            throw new BananoRPCException("Invalid protocol: $protocol");
         }
         
         // Url
@@ -60,13 +60,13 @@ class NanoRPC
         $this->hostname = $hostname;
         $this->port     = $port;
         $this->url      = $url;
-        $this->nanoApi  = 1;
+        $this->bananoApi  = 1;
         
         $this->options =
         [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_USERAGENT      => 'Bandano/NanoRPC',
+            CURLOPT_USERAGENT      => 'Bandano/BananoRPC',
             CURLOPT_MAXREDIRS      => 10,
             CURLOPT_HTTPHEADER     => ['Content-type: application/json']
         ];
@@ -80,32 +80,32 @@ class NanoRPC
     
     
     // *
-    // *  Set Nano API
+    // *  Set Banano API
     // *
     
-    public function setNanoApi(int $nano_api)
+    public function setBananoApi(int $banano_api)
     {
-        if ($nano_api != 1 &&
-            $nano_api != 2
+        if ($banano_api != 1 &&
+            $banano_api != 2
         ) {
-            throw new NanoRPCException("Invalid Nano API: $nano_api");
+            throw new BananoRPCException("Invalid Banano API: $banano_api");
         }
         
-        $this->nanoApi = $nano_api;
+        $this->bananoApi = $banano_api;
     }
     
     
     // *
-    // *  Set Nano API key
+    // *  Set Banano API key
     // *
     
-    public function setNanoApiKey(string $nano_api_key)
+    public function setBananoApiKey(string $banano_api_key)
     {
-        if (empty($nano_api_key)){
-            throw new NanoRPCException("Invalid Nano API key: $nano_api_key");
+        if (empty($banano_api_key)){
+            throw new BananoRPCException("Invalid Banano API key: $banano_api_key");
         }
         
-        $this->nanoApiKey = (string) $nano_api_key;
+        $this->bananoApiKey = (string) $banano_api_key;
     }
     
     
@@ -135,26 +135,26 @@ class NanoRPC
         
         // * v1
         
-        if ($this->nanoApi == 1) {
+        if ($this->bananoApi == 1) {
             $request = $params[0];
             $request['action'] = $method;  
             
             
         // * v2
         
-        } elseif ($this->nanoApi == 2) {
+        } elseif ($this->bananoApi == 2) {
             $request = [
                 'correlation_id' => (string) $this->id,
                 'message_type'   => $method,
                 'message'        => $params[0]
             ];
             
-            // Nano API key
-            if ($this->nanoApiKey != null) {
-                $request['credentials'] = $this->nanoApiKey;
+            // Banano API key
+            if ($this->bananoApiKey != null) {
+                $request['credentials'] = $this->bananoApiKey;
             }
         } else {
-            throw new NanoRPCException("Invalid Nano API key");
+            throw new BananoRPCException("Invalid Banano API key");
         }
         
         $request = json_encode($request);
@@ -189,7 +189,7 @@ class NanoRPC
         
         // * v1
         
-        if ($this->nanoApi == 1) {
+        if ($this->bananoApi == 1) {
             if (isset($this->response['error'])) {
                 $this->error = $this->response['error'];
                 $this->response = null;
@@ -198,7 +198,7 @@ class NanoRPC
             
         // * v2
         
-        } elseif ($this->nanoApi == 2) {
+        } elseif ($this->bananoApi == 2) {
             $this->responseType = $this->response['message_type'];
             
             $this->responseTime = (int) $this->response['time'];
@@ -215,7 +215,7 @@ class NanoRPC
                 $this->response = $this->response['message'];
             }       
         } else {
-            throw new NanoRPCException("Invalid Nano API key");
+            throw new BananoRPCException("Invalid Banano API key");
         }
 
         

@@ -1,6 +1,6 @@
 # Bandano
 
-PHP libraries and tools for Nano and Banano currencies
+PHP libraries and tools for Banano and Nano currencies
 
 Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
@@ -50,9 +50,9 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
 ## FAQ
 
-#### How to perform calculations with Nano denominations or raws?
+#### How to perform calculations with Banano/Nano denominations or raws?
 
-<details><summary>PHP faces troubles when dealing with Nano amounts ...</summary>
+<details><summary>PHP faces troubles when dealing with Banano/Nano amounts ...</summary>
 <p>
 
 - Data type `float` isn't precise at certain decimal depths
@@ -87,4 +87,5 @@ Thanks a lot for the work and effort of
 
 ## Support
 
+[ban_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m](https://creeper.banano.cc/explorer/account/ban_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m) <br/>
 [nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m](https://mynano.ninja/account/nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m)

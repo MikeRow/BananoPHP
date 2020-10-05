@@ -2,7 +2,7 @@
 
 require __DIR__ . '/autoload.php';
 
-$nanocli = new MikeRow\NanoPHP\NanoCLI('/home/nano/nano_node');
+$nanocli = new MikeRow\Bandano\NanoCLI('/home/nano/nano_node');
 
 $account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 

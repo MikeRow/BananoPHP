@@ -2,7 +2,7 @@
 
 require __DIR__ . '/../autoload.php';
 
-use MikeRow\NanoPHP\NanoTool;
+use MikeRow\Bandano\NanoTool;
 
 // Owner data
 $private_key = '';
@@ -14,8 +14,8 @@ $change_difficulty = 'fffffff800000000';
 $representative    = '';
 
 // Initialize NanoRPC and NanoBlock
-$nanorpc   = new MikeRow\NanoPHP\NanoRPC();
-$nanoblock = new MikeRow\NanoPHP\NanoBlock($private_key);
+$nanorpc   = new MikeRow\Bandano\NanoRPC();
+$nanoblock = new MikeRow\Bandano\NanoBlock($private_key);
 
 // Get previous block data
 $account_info = $nanorpc->account_info(['account' => $account]);

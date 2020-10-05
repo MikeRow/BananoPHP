@@ -4,9 +4,9 @@ namespace MikeRow\Bandano;
 
 use \Exception;
 
-class NanoCLIException extends Exception{}
+class BananoCLIException extends Exception{}
 
-class NanoCLI
+class BananoCLI
 {
     // * Settings
     
@@ -25,7 +25,7 @@ class NanoCLI
     // *  Initialization
     // *
     
-    public function __construct(string $path_to_app = '/home/nano/nano_node')
+    public function __construct(string $path_to_app = '/home/banano/banano_node')
     {
         $this->pathToApp = escapeshellarg($path_to_app);
     }

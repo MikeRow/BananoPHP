@@ -4,9 +4,9 @@ namespace MikeRow\Bandano;
 
 use \Exception;
 
-class NanoBlockException extends Exception{}
+class BananoBlockException extends Exception{}
 
-class NanoBlock
+class BananoBlock
 {
     // * Owner informations
     
@@ -38,12 +38,12 @@ class NanoBlock
     public function __construct(string $private_key)
     {
         if (strlen($private_key) != 64 || !hex2bin($private_key)) {
-            throw new NanoBlockException("Invalid private key: $private_key");
+            throw new BananoBlockException("Invalid private key: $private_key");
         }
         
         $this->privateKey = $private_key;
-        $this->publicKey  = NanoTool::private2public($private_key);
-        $this->account    = NanoTool::public2account($this->publicKey);
+        $this->publicKey  = BananoTool::private2public($private_key);
+        $this->account    = BananoTool::public2account($this->publicKey);
     }
     
     
@@ -54,10 +54,10 @@ class NanoBlock
     public function setPrev(string $prev_block_id, array $prev_block)
     {
         if (strlen($prev_block_id) != 64 || !hex2bin($prev_block_id)) {
-            throw new NanoBlockException("Invalid previous block ID: $prev_block_id");
+            throw new BananoBlockException("Invalid previous block ID: $prev_block_id");
         }
         if (count($prev_block) < 8) {
-            throw new NanoBlockException("Invalid previous block array count: less than 8");
+            throw new BananoBlockException("Invalid previous block array count: less than 8");
         }
         
         $this->prevBlockId = $prev_block_id;
@@ -82,7 +82,7 @@ class NanoBlock
     public function setWork(string $work)
     {
         if (strlen($work) != 16 || !hex2bin($work)) {
-            throw new NanoBlockException("Invalid work: $work");
+            throw new BananoBlockException("Invalid work: $work");
         }
         
         $this->work = $work;
@@ -97,17 +97,17 @@ class NanoBlock
     {
         // Check inputs
         if (strlen($pairing_block_id) != 64 || !hex2bin($pairing_block_id)) {
-            throw new NanoBlockException("Invalid pairing block ID: $pairing_block_id");
+            throw new BananoBlockException("Invalid pairing block ID: $pairing_block_id");
         }
         if (!ctype_digit($received_amount)) {
-            throw new NanoBlockException("Invalid received amount: $received_amount");
+            throw new BananoBlockException("Invalid received amount: $received_amount");
         }
-        if (!NanoTool::account2public($representative, false)) {
-            throw new NanoBlockException("Invalid representative: $representative");
+        if (!BananoTool::account2public($representative, false)) {
+            throw new BananoBlockException("Invalid representative: $representative");
         }
         if ($this->work != null) {
             if (strlen($this->work) != 16 || !hex2bin($this->work)) {
-                throw new NanoBlockException("Invalid work: {$this->work}");
+                throw new BananoBlockException("Invalid work: {$this->work}");
             }
         }
         
@@ -116,20 +116,20 @@ class NanoBlock
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
         $this->rawBlockId   = [];
-        $this->rawBlockId[] = NanoTool::PREAMBLE;
+        $this->rawBlockId[] = BananoTool::PREAMBLE;
         $this->rawBlockId[] = $this->publicKey;
-        $this->rawBlockId[] = NanoTool::EMPTY32;
-        $this->rawBlockId[] = NanoTool::account2public($representative);
+        $this->rawBlockId[] = BananoTool::EMPTY32;
+        $this->rawBlockId[] = BananoTool::account2public($representative);
         $this->rawBlockId[] = $balance;
         $this->rawBlockId[] = $pairing_block_id;
         
-        $this->blockId   = NanoTool::hashHexs($this->rawBlockId);
-        $this->signature = NanoTool::sign($this->blockId, $this->privateKey);
+        $this->blockId   = BananoTool::hashHexs($this->rawBlockId);
+        $this->signature = BananoTool::sign($this->blockId, $this->privateKey);
         
         $this->block = [
             'type'           => 'state',
             'account'        => $this->account,
-            'previous'       => NanoTool::EMPTY32,
+            'previous'       => BananoTool::EMPTY32,
             'representative' => $representative,
             'balance'        => hexdec($balance),
             'link'           => $pairing_block_id,
@@ -161,30 +161,30 @@ class NanoBlock
         if (!isset($this->prevBlock['balance']) ||
             !isset($this->prevBlock['representative']) ||
             !ctype_digit($this->prevBlock['balance']) ||
-            !NanoTool::account2public($this->prevBlock['representative'], false)
+            !BananoTool::account2public($this->prevBlock['representative'], false)
         ) {
-            throw new NanoBlockException("Invalid previous block");
+            throw new BananoBlockException("Invalid previous block");
         }
         if (strlen($this->prevBlockId) != 64 || !hex2bin($this->prevBlockId)) {
-            throw new NanoBlockException("Invalid previous block ID: {$this->prevBlockId}");
+            throw new BananoBlockException("Invalid previous block ID: {$this->prevBlockId}");
         }
         
         // Check inputs
         if (strlen($pairing_block_id) != 64 || !hex2bin($pairing_block_id)) {
-            throw new NanoBlockException("Invalid pairing block ID: $pairing_block_id");
+            throw new BananoBlockException("Invalid pairing block ID: $pairing_block_id");
         }
         if (!ctype_digit($received_amount)) {
-            throw new NanoBlockException("Invalid received amount: $received_amount");
+            throw new BananoBlockException("Invalid received amount: $received_amount");
         }
         if ($representative == null) {
             $representative = $this->prevBlock['representative'];
         }
-        if (!NanoTool::account2public($representative, false)) {
-            throw new NanoBlockException("Invalid representative: $representative");
+        if (!BananoTool::account2public($representative, false)) {
+            throw new BananoBlockException("Invalid representative: $representative");
         }
         if ($this->work != null) {
             if (strlen($this->work) != 16 || !hex2bin($this->work)) {
-                throw new NanoBlockException("Invalid work: {$this->work}");
+                throw new BananoBlockException("Invalid work: {$this->work}");
             }
         }
         
@@ -197,15 +197,15 @@ class NanoBlock
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
         $this->rawBlockId   = [];
-        $this->rawBlockId[] = NanoTool::PREAMBLE;
+        $this->rawBlockId[] = BananoTool::PREAMBLE;
         $this->rawBlockId[] = $this->publicKey;
         $this->rawBlockId[] = $this->prevBlockId;
-        $this->rawBlockId[] = NanoTool::account2public($representative);
+        $this->rawBlockId[] = BananoTool::account2public($representative);
         $this->rawBlockId[] = $balance;
         $this->rawBlockId[] = $pairing_block_id;
         
-        $this->blockId   = NanoTool::hashHexs($this->rawBlockId);
-        $this->signature = NanoTool::sign($this->blockId, $this->privateKey);
+        $this->blockId   = BananoTool::hashHexs($this->rawBlockId);
+        $this->signature = BananoTool::sign($this->blockId, $this->privateKey);
         
         $this->block = [
             'type'           => 'state',
@@ -242,30 +242,30 @@ class NanoBlock
         if (!isset($this->prevBlock['balance']) ||
             !isset($this->prevBlock['representative']) ||
             !ctype_digit($this->prevBlock['balance']) ||
-            !NanoTool::account2public($this->prevBlock['representative'], false)
+            !BananoTool::account2public($this->prevBlock['representative'], false)
         ) {
-            throw new NanoBlockException("Invalid previous block");
+            throw new BananoBlockException("Invalid previous block");
         }
         if (strlen($this->prevBlockId) != 64 || !hex2bin($this->prevBlockId)) {
-            throw new NanoBlockException("Invalid previous block ID: {$this->prevBlockId}");
+            throw new BananoBlockException("Invalid previous block ID: {$this->prevBlockId}");
         }
                 
         // Check inputs
-        if (!NanoTool::account2public($destination, false)) {
-            throw new NanoBlockException("Invalid destination: $destination");
+        if (!BananoTool::account2public($destination, false)) {
+            throw new BananoBlockException("Invalid destination: $destination");
         }
         if (!ctype_digit($sending_amount)) {
-            throw new NanoBlockException("Invalid sending amount: $sending_amount");
+            throw new BananoBlockException("Invalid sending amount: $sending_amount");
         }
         if ($representative == null) {
             $representative = $this->prevBlock['representative'];
         }
-        if (!NanoTool::account2public($representative, false)) {
-            throw new NanoBlockException("Invalid representative: $representative");
+        if (!BananoTool::account2public($representative, false)) {
+            throw new BananoBlockException("Invalid representative: $representative");
         }
         if ($this->work != null) {
             if (strlen($this->work) != 16 || !hex2bin($this->work)) {
-                throw new NanoBlockException("Invalid work: {$this->work}");
+                throw new BananoBlockException("Invalid work: {$this->work}");
             }
         }
         
@@ -276,20 +276,20 @@ class NanoBlock
             )
         );
         if (strpos($balance, '-') !== false) {
-            throw new NanoBlockException("Insufficient balance: $balance");
+            throw new BananoBlockException("Insufficient balance: $balance");
         }
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
         $this->rawBlockId   = [];
-        $this->rawBlockId[] = NanoTool::PREAMBLE;
+        $this->rawBlockId[] = BananoTool::PREAMBLE;
         $this->rawBlockId[] = $this->publicKey;
         $this->rawBlockId[] = $this->prevBlockId;
-        $this->rawBlockId[] = NanoTool::account2public($representative);
+        $this->rawBlockId[] = BananoTool::account2public($representative);
         $this->rawBlockId[] = $balance;
-        $this->rawBlockId[] = NanoTool::account2public($destination);
+        $this->rawBlockId[] = BananoTool::account2public($destination);
         
-        $this->blockId   = NanoTool::hashHexs($this->rawBlockId);
-        $this->signature = NanoTool::sign($this->blockId, $this->privateKey);
+        $this->blockId   = BananoTool::hashHexs($this->rawBlockId);
+        $this->signature = BananoTool::sign($this->blockId, $this->privateKey);
         
         $this->block = [
             'type'           => 'state',
@@ -326,21 +326,21 @@ class NanoBlock
         if (!isset($this->prevBlock['balance']) ||
             !isset($this->prevBlock['representative']) ||
             !ctype_digit($this->prevBlock['balance']) ||
-            !NanoTool::account2public($this->prevBlock['representative'], false)
+            !BananoTool::account2public($this->prevBlock['representative'], false)
         ) {
-            throw new NanoBlockException("Invalid previous block");
+            throw new BananoBlockException("Invalid previous block");
         }
         if (strlen($this->prevBlockId) != 64 || !hex2bin($this->prevBlockId)) {
-            throw new NanoBlockException("Invalid previous block ID: {$this->prevBlockId}");
+            throw new BananoBlockException("Invalid previous block ID: {$this->prevBlockId}");
         }
                 
         // Check inputs
-        if (!NanoTool::account2public($representative, false)) {
-            throw new NanoBlockException("Invalid representative: $representative");
+        if (!BananoTool::account2public($representative, false)) {
+            throw new BananoBlockException("Invalid representative: $representative");
         }
         if ($this->work != null) {
             if (strlen($this->work) != 16 || !hex2bin($this->work)) {
-                throw new NanoBlockException("Invalid work: {$this->work}");
+                throw new BananoBlockException("Invalid work: {$this->work}");
             }
         }
         
@@ -349,15 +349,15 @@ class NanoBlock
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
         $this->rawBlockId   = [];
-        $this->rawBlockId[] = NanoTool::PREAMBLE;
+        $this->rawBlockId[] = BananoTool::PREAMBLE;
         $this->rawBlockId[] = $this->publicKey;
         $this->rawBlockId[] = $this->prevBlockId;
-        $this->rawBlockId[] = NanoTool::account2public($representative);
+        $this->rawBlockId[] = BananoTool::account2public($representative);
         $this->rawBlockId[] = $balance;
-        $this->rawBlockId[] = NanoTool::EMPTY32;
+        $this->rawBlockId[] = BananoTool::EMPTY32;
         
-        $this->blockId   = NanoTool::hashHexs($this->rawBlockId);
-        $this->signature = NanoTool::sign($this->blockId, $this->privateKey);
+        $this->blockId   = BananoTool::hashHexs($this->rawBlockId);
+        $this->signature = BananoTool::sign($this->blockId, $this->privateKey);
         
         $this->block = [
             'type'           => 'state',
@@ -365,7 +365,7 @@ class NanoBlock
             'previous'       => $this->prevBlockId,
             'representative' => $representative,
             'balance'        => hexdec($balance),
-            'link'           => NanoTool::EMPTY32,
+            'link'           => BananoTool::EMPTY32,
             'signature'      => $this->signature,
             'work'           => $this->work
         ];

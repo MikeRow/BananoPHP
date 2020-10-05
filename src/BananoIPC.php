@@ -4,9 +4,9 @@ namespace MikeRow\Bandano;
 
 use \Exception;
 
-class NanoIPCException extends Exception{}
+class BananoIPCException extends Exception{}
 
-class NanoIPC
+class BananoIPC
 {
     // * Settings
     
@@ -17,9 +17,9 @@ class NanoIPC
     private $port;
     private $listen;
     private $options;
-    private $nanoPreamble;
-    private $nanoEncoding;
-    private $nanoAPIKey;
+    private $bananoPreamble;
+    private $bananoEncoding;
+    private $bananoAPIKey;
     private $id = 0;
    
     
@@ -49,7 +49,7 @@ class NanoIPC
             if (isset($params[0])) {
                 $this->pathToSocket = (string) $params[0];
             } else {
-                $this->pathToSocket = '/tmp/nano';
+                $this->pathToSocket = '/tmp/banano';
             }
             
             // Timeout
@@ -112,12 +112,12 @@ class NanoIPC
                 $this->options['context'] = stream_context_create([]);
             }
         } else {
-            throw new NanoIPCException("Invalid transport type: $transport_type");
+            throw new BananoIPCException("Invalid transport type: $transport_type");
         }
         
         $this->transportType = $transport_type;
-        $this->nanoEncoding  = 2;
-        $this->nanoPreamble  = 'N' . chr($this->nanoEncoding) . chr(0) . chr(0);
+        $this->bananoEncoding  = 2;
+        $this->bananoPreamble  = 'N' . chr($this->bananoEncoding) . chr(0) . chr(0);
         $this->listen        = false;
     }    
     
@@ -133,35 +133,35 @@ class NanoIPC
     
     
     // *
-    // *  Set Nano encoding
+    // *  Set Banano encoding
     // *
     
-    public function setNanoEncoding(int $nano_encoding)
+    public function setBananoEncoding(int $banano_encoding)
     {
-        if ($nano_encoding != 1 &&
-            $nano_encoding != 2 &&
-            $nano_encoding != 3 &&
-            $nano_encoding != 4
+        if ($banano_encoding != 1 &&
+            $banano_encoding != 2 &&
+            $banano_encoding != 3 &&
+            $banano_encoding != 4
         ) {
-            throw new NanoIPCException("Invalid Nano encoding: $nano_encoding");
+            throw new BananoIPCException("Invalid Banano encoding: $banano_encoding");
         }
         
-        $this->nanoEncoding = $nano_encoding;
-        $this->nanoPreamble = 'N' . chr($this->nanoEncoding) . chr(0) . chr(0);
+        $this->bananoEncoding = $banano_encoding;
+        $this->bananoPreamble = 'N' . chr($this->bananoEncoding) . chr(0) . chr(0);
     }
     
     
     // *
-    // *  Set Nano API key
+    // *  Set Banano API key
     // *
     
-    public function setNanoAPIKey(string $nano_api_key)
+    public function setBananoAPIKey(string $banano_api_key)
     {
-        if (empty($nano_api_key)){
-            throw new NanoIPCException("Invalid Nano API key: $nano_api_key");
+        if (empty($banano_api_key)){
+            throw new BananoIPCException("Invalid Banano API key: $banano_api_key");
         }
         
-        $this->nanoAPIKey = (string) $nano_api_key;
+        $this->bananoAPIKey = (string) $banano_api_key;
     }
     
     
@@ -196,7 +196,7 @@ class NanoIPC
                 $this->options['context']
             );
         } else {
-            throw new NanoIPCException("Invalid transport type");
+            throw new BananoIPCException("Invalid transport type");
         }
         
         if ($this->transport) {
@@ -228,7 +228,7 @@ class NanoIPC
     {
         // Check transport connection
         if ($this->transport == null) {
-            throw new NanoIPCException("Transport connection is not opened");
+            throw new BananoIPCException("Transport connection is not opened");
         }
         
         $this->id++;
@@ -245,13 +245,13 @@ class NanoIPC
         
         
         // *
-        // *  Request: Nano encoding switch
+        // *  Request: Banano encoding switch
         // *        
         
         // * 1/2
         
-        if ($this->nanoEncoding == 1 || 
-            $this->nanoEncoding == 2
+        if ($this->bananoEncoding == 1 || 
+            $this->bananoEncoding == 2
         ) { 
             $request = $params[0];
             $request['action'] = $method;
@@ -261,8 +261,8 @@ class NanoIPC
             
         // * 3
         
-        } elseif ($this->nanoEncoding == 3) {
-            if (!class_exists('\\MikeRow\\NanoPHP\\NanoAPI\\' . $method, true)) {
+        } elseif ($this->bananoEncoding == 3) {
+            if (!class_exists('\\MikeRow\\BananoPHP\\BananoAPI\\' . $method, true)) {
                $this->error = 'Invalid call';
                return false;
             }
@@ -274,33 +274,33 @@ class NanoIPC
             }
             
             $correlation_id = $builder->createString((string) $this->id);
-            $credentials    = $builder->createString($this->nanoAPIKey);
-            $message_type   = constant("\\MikeRow\\NanoPHP\\NanoAPI\\Message::$method");
+            $credentials    = $builder->createString($this->bananoAPIKey);
+            $message_type   = constant("\\MikeRow\\BananoPHP\\BananoAPI\\Message::$method");
             
             // Build arguments
             call_user_func_array(
-                '\\MikeRow\\NanoPHP\\NanoAPI\\' . $method . '::start' . $method,
+                '\\MikeRow\\BananoPHP\\BananoAPI\\' . $method . '::start' . $method,
                 [$builder]
             );
             
             foreach ($params[0] as $key => $value) {
-                if (!method_exists('\\MikeRow\\NanoPHP\\NanoAPI\\' . $method, 'add' . $key)) {
+                if (!method_exists('\\MikeRow\\BananoPHP\\BananoAPI\\' . $method, 'add' . $key)) {
                     $this->error = 'Invalid call';
                     return false;
                 }
                 call_user_func_array(
-                    '\\MikeRow\\NanoPHP\\NanoAPI\\' . $method . '::add' . $key,
+                    '\\MikeRow\\BananoPHP\\BananoAPI\\' . $method . '::add' . $key,
                     [$builder, $value]
                 );
             }
             
             $message = call_user_func_array(
-                '\\MikeRow\\NanoPHP\\NanoAPI\\' . $method . '::end' . $method,
+                '\\MikeRow\\BananoPHP\\BananoAPI\\' . $method . '::end' . $method,
                 [$builder]
             );
             
             // Build envelope
-            $envelope = \MikeRow\Bandano\NanoAPI\Envelope::createEnvelope(
+            $envelope = \MikeRow\Bandano\BananoAPI\Envelope::createEnvelope(
                 $builder,
                 null,
                 $credentials,
@@ -315,24 +315,24 @@ class NanoIPC
             
         // * 4
         
-        } elseif ($this->nanoEncoding == 4) {         
+        } elseif ($this->bananoEncoding == 4) {         
             $request = [
                 'correlation_id' => (string) $this->id,
                 'message_type'   => $method,
                 'message'        => $params[0]
             ];
             
-            // Nano API key
-            if ($this->nanoAPIKey != null) {
-                $request['credentials'] = $this->nanoAPIKey;
+            // Banano API key
+            if ($this->bananoAPIKey != null) {
+                $request['credentials'] = $this->bananoAPIKey;
             }
             
             $request = json_encode($request);   
         } else {
-            throw new NanoIPCException("Invalid Nano encoding");
+            throw new BananoIPCException("Invalid Banano encoding");
         }
         
-        $buffer  = $this->nanoPreamble . pack("N", strlen($request)) . $request;
+        $buffer  = $this->bananoPreamble . pack("N", strlen($request)) . $request;
         
         
         // *
@@ -374,18 +374,18 @@ class NanoIPC
                 return false;
             }
         } else {
-            throw new NanoIPCException("Invalid transport type");
+            throw new BananoIPCException("Invalid transport type");
         }
         
         
         // *
-        // *  Response: Nano encoding switch
+        // *  Response: Banano encoding switch
         // *       
         
         // * 1/2
         
-        if ($this->nanoEncoding == 1 ||
-            $this->nanoEncoding == 2
+        if ($this->bananoEncoding == 1 ||
+            $this->bananoEncoding == 2
         ) {
             $this->response = json_decode($this->responseRaw, true);
             
@@ -397,11 +397,11 @@ class NanoIPC
                 
         // * 3
             
-        } elseif ($this->nanoEncoding == 3) {
+        } elseif ($this->bananoEncoding == 3) {
             $buffer = \Google\FlatBuffers\ByteBuffer::wrap($this->responseRaw);
-            $envelope = \MikeRow\Bandano\NanoAPI\Envelope::getRootAsEnvelope($buffer);
+            $envelope = \MikeRow\Bandano\BananoAPI\Envelope::getRootAsEnvelope($buffer);
             
-            $this->responseType = \MikeRow\Bandano\NanoAPI\Message::Name($envelope->getMessageType());
+            $this->responseType = \MikeRow\Bandano\BananoAPI\Message::Name($envelope->getMessageType());
             $this->responseTime = $envelope->getTime();
             
             if ($envelope->getCorrelationId() != $this->id) {
@@ -409,10 +409,10 @@ class NanoIPC
             }
             
             if ($this->responseType == 'Error') {
-                $this->error     = $envelope->getMessage(new \MikeRow\Bandano\NanoAPI\Error())->getMessage();
-                $this->errorCode = $envelope->getMessage(new \MikeRow\Bandano\NanoAPI\Error())->getCode();
+                $this->error     = $envelope->getMessage(new \MikeRow\Bandano\BananoAPI\Error())->getMessage();
+                $this->errorCode = $envelope->getMessage(new \MikeRow\Bandano\BananoAPI\Error())->getCode();
             } else {
-                $model = '\\MikeRow\\NanoPHP\\NanoAPI\\' . $this->responseType;
+                $model = '\\MikeRow\\BananoPHP\\BananoAPI\\' . $this->responseType;
                 
                 $methods = get_class_methods($model);
                 foreach ($methods as $method) {
@@ -427,7 +427,7 @@ class NanoIPC
                 
         // * 4
             
-        } elseif ($this->nanoEncoding == 4) {
+        } elseif ($this->bananoEncoding == 4) {
             $this->response = json_decode($this->responseRaw, true);
             
             $this->responseType = $this->response['message_type'];
@@ -446,7 +446,7 @@ class NanoIPC
                 $this->response = $this->response['message'];
             }
         } else {
-            throw new NanoIPCException("Invalid Nano encoding");
+            throw new BananoIPCException("Invalid Banano encoding");
         }
         
         
@@ -468,12 +468,12 @@ class NanoIPC
     {
         // Check transport connection
         if ($this->transport == null) {
-            throw new NanoIPCException("Transport connection is not opened");
+            throw new BananoIPCException("Transport connection is not opened");
         }
         
         // Check if listen is enabled
         if (!$this->listen) {
-            throw new NanoIPCException("Listen is not enabled");
+            throw new BananoIPCException("Listen is not enabled");
         }
         
         
@@ -504,34 +504,34 @@ class NanoIPC
                 return false;
             }
         } else {
-            throw new NanoIPCException("Invalid transport type");
+            throw new BananoIPCException("Invalid transport type");
         }
         
         
         // *
-        // *  Response: Nano encoding switch
+        // *  Response: Banano encoding switch
         // *
         
         // * 1/2
         
-        if ($this->nanoEncoding == 1 ||
-            $this->nanoEncoding == 2
+        if ($this->bananoEncoding == 1 ||
+            $this->bananoEncoding == 2
         ) {
             return json_decode($this->responseRaw, true);
             
             
         // * 3
             
-        } elseif ($this->nanoEncoding == 3) {
+        } elseif ($this->bananoEncoding == 3) {
             return \Google\FlatBuffers\ByteBuffer::wrap($this->responseRaw);
             
             
         // * 4
             
-        } elseif ($this->nanoEncoding == 4) {
+        } elseif ($this->bananoEncoding == 4) {
             return json_decode($this->responseRaw, true);
         } else {
-            throw new NanoIPCException("Invalid Nano encoding");
+            throw new BananoIPCException("Invalid Banano encoding");
         }
     }
 }

@@ -2,6 +2,6 @@
 
 require __DIR__ . '/../autoload.php';
 
-use MikeRow\NanoPHP\NanoTool;
+use MikeRow\Bandano\NanoTool;
 
 var_dump(NanoTool::den2den('5', 'NANO', 'nano'));

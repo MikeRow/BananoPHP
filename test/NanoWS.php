@@ -2,7 +2,7 @@
 
 require __DIR__ . '/autoload.php';
 
-$nanows = new MikeRow\NanoPHP\NanoWS('ws', 'localhost', 7078);
+$nanows = new MikeRow\Bandano\NanoWS('ws', 'localhost', 7078);
 
 $nanows->open();
 

@@ -4,9 +4,9 @@ namespace MikeRow\Bandano;
 
 use \Exception;
 
-class NanoRPCExtException extends Exception{}
+class BananoRPCExtException extends Exception{}
 
-class NanoRPCExt extends NanoRPC
+class BananoRPCExt extends BananoRPC
 {
     // *
     // *  Wallet sweep
@@ -38,7 +38,7 @@ class NanoRPCExt extends NanoRPC
         }
         
         // Destination ok?
-        if (!NanoTool::account2public($destination, false)) {
+        if (!BananoTool::account2public($destination, false)) {
             $this->error = 'Bad destination';
             return false;
         }
@@ -97,7 +97,7 @@ class NanoRPCExt extends NanoRPC
                 'amount' => $balances['balance']
             ];
             
-            if ($send['block'] == NanoTool::EMPTY32) {
+            if ($send['block'] == BananoTool::EMPTY32) {
                 $return['balances'][$account] = [
                     'error'  => 'Bad send',
                     'amount' => $balances['balance']
@@ -142,7 +142,7 @@ class NanoRPCExt extends NanoRPC
         }
     
         // Destination ok?
-        if (!NanoTool::account2public($destination, false)) {
+        if (!BananoTool::account2public($destination, false)) {
             $this->error = 'Bad destination';
             return false;
         }
@@ -234,7 +234,7 @@ class NanoRPCExt extends NanoRPC
                 'amount' => $balances['balance']
             ];
             
-            if ($send['block'] == NanoTool::EMPTY32) {
+            if ($send['block'] == BananoTool::EMPTY32) {
                 $return['balances'][$account] = [
                     'error'  => 'Bad send',
                     'amount' => $balances['balance']

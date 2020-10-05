@@ -1,6 +1,6 @@
 <?php
 
-namespace MikeRow\NanoPHP;
+namespace MikeRow\Bandano;
 
 use \Exception;
 

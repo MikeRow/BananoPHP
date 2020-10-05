@@ -7,7 +7,7 @@ $account = 'nano_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
 // * Unix domain socket listening
 
-$nanoipc_unix = new MikeRow\NanoPHP\NanoIPC('unix', ['/tmp/nano']);
+$nanoipc_unix = new MikeRow\Bandano\NanoIPC('unix', ['/tmp/nano']);
 
 $nanoipc_unix->setNanoEncoding(3);
 
