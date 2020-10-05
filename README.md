@@ -4,7 +4,9 @@ PHP libraries and tools for Banano and Nano currencies
 
 Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
-### Banano features
+## Features
+
+### Banano
 
 - [BananoBlock](https://github.com/MikeRow/Bandano/wiki/BananoBlock)
 
@@ -34,7 +36,7 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
   class for interfacing to Banano node WebSocket
 
-### Nano features
+### Nano
 
 - [NanoBlock](https://github.com/MikeRow/Bandano/wiki/NanoBlock)
 
@@ -64,7 +66,7 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
   class for interfacing to Nano node WebSocket
   
-### Other features
+### Other
   
 - [PippinCLI](https://github.com/MikeRow/Bandano/wiki/PippinCLI)
 
