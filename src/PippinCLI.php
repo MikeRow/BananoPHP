@@ -25,7 +25,7 @@ class PippinCLI
     // *  Initialization
     // *
     
-    public function __construct(string $path_to_app = '/home/nano/.local/bin/pippin-cli')
+    public function __construct(string $path_to_app = '/home/pippin/.local/bin/pippin-cli')
     {
         $this->pathToApp = escapeshellarg($path_to_app);
     }
