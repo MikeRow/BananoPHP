@@ -262,7 +262,7 @@ class BananoIPC
         // * 3
         
         } elseif ($this->bananoEncoding == 3) {
-            if (!class_exists('\\MikeRow\\BananoPHP\\BananoAPI\\' . $method, true)) {
+            if (!class_exists('\\MikeRow\\Bandano\\BananoAPI\\' . $method, true)) {
                $this->error = 'Invalid call';
                return false;
             }
@@ -275,27 +275,27 @@ class BananoIPC
             
             $correlation_id = $builder->createString((string) $this->id);
             $credentials    = $builder->createString($this->bananoAPIKey);
-            $message_type   = constant("\\MikeRow\\BananoPHP\\BananoAPI\\Message::$method");
+            $message_type   = constant("\\MikeRow\\Bandano\\BananoAPI\\Message::$method");
             
             // Build arguments
             call_user_func_array(
-                '\\MikeRow\\BananoPHP\\BananoAPI\\' . $method . '::start' . $method,
+                '\\MikeRow\\Bandano\\BananoAPI\\' . $method . '::start' . $method,
                 [$builder]
             );
             
             foreach ($params[0] as $key => $value) {
-                if (!method_exists('\\MikeRow\\BananoPHP\\BananoAPI\\' . $method, 'add' . $key)) {
+                if (!method_exists('\\MikeRow\\Bandano\\BananoAPI\\' . $method, 'add' . $key)) {
                     $this->error = 'Invalid call';
                     return false;
                 }
                 call_user_func_array(
-                    '\\MikeRow\\BananoPHP\\BananoAPI\\' . $method . '::add' . $key,
+                    '\\MikeRow\\Bandano\\BananoAPI\\' . $method . '::add' . $key,
                     [$builder, $value]
                 );
             }
             
             $message = call_user_func_array(
-                '\\MikeRow\\BananoPHP\\BananoAPI\\' . $method . '::end' . $method,
+                '\\MikeRow\\Bandano\\BananoAPI\\' . $method . '::end' . $method,
                 [$builder]
             );
             
@@ -412,7 +412,7 @@ class BananoIPC
                 $this->error     = $envelope->getMessage(new \MikeRow\Bandano\BananoAPI\Error())->getMessage();
                 $this->errorCode = $envelope->getMessage(new \MikeRow\Bandano\BananoAPI\Error())->getCode();
             } else {
-                $model = '\\MikeRow\\BananoPHP\\BananoAPI\\' . $this->responseType;
+                $model = '\\MikeRow\\Bandano\\BananoAPI\\' . $this->responseType;
                 
                 $methods = get_class_methods($model);
                 foreach ($methods as $method) {

@@ -133,8 +133,8 @@ class BananoTool
     
     public static function account2public(string $account, bool $get_public_key = true)
     {
-        if ((strpos($account, 'xrb_1') === 0  ||  
-             strpos($account, 'xrb_3') === 0) &&
+        if ((strpos($account, 'ban_1') === 0  ||  
+             strpos($account, 'ban_3') === 0) &&
              strlen($account) == 64
         ) {
             $crop = explode('_', $account);
@@ -206,7 +206,7 @@ class BananoTool
         
         $c_account = utils\Uint::fromHex('0' . $public_key)->toString();
         
-        return 'nano_' . $c_account . $checksum;
+        return 'ban_' . $c_account . $checksum;
     }
     
     
@@ -410,7 +410,7 @@ class BananoTool
             throw new BananoToolException("Invalid index: $index");
         }
         
-        $path = ["44","165","$index"];
+        $path = ["44","198","$index"];
         
         $I     = hash_hmac('sha512', hex2bin($mseed), 'ed25519 seed', true);
         $HDKey = [substr($I, 0, 32),substr($I, 32, 32)];

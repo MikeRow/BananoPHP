@@ -33,9 +33,6 @@
 	"funding" : [{
 			"type" : "Banano",
 			"url" : "https://creeper.banano.cc/explorer/account/ban_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m"
-		},
-		{	"type" : "Nano",
-			"url" : "https://mynano.ninja/account/nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m"
 		}
 	],
 	"minimum-stability" : "stable",
