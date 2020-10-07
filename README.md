@@ -6,9 +6,7 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
 ---
 
-## Features
-
-### Banano
+## Banano
 
 - [BananoBlock](https://github.com/MikeRow/Bandano/wiki/BananoBlock)
 
@@ -38,7 +36,9 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
   class for interfacing to Banano node WebSocket
 
-### Nano
+---
+
+## Nano
 
 - [NanoBlock](https://github.com/MikeRow/Bandano/wiki/NanoBlock)
 
@@ -68,7 +68,9 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
   class for interfacing to Nano node WebSocket
 
-### Other
+---
+
+## Other
 
 - [PippinCLI](https://github.com/MikeRow/Bandano/wiki/PippinCLI)
 
