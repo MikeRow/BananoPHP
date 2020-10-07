@@ -10,7 +10,7 @@ use MikeRow\Salt\Ed25519\Ed25519;
 use MikeRow\Salt\NanoSalt;
 use MikeRow\Salt\FieldElement;
 
-class BaBananoToolException extends Exception{}
+class BananoToolException extends Exception{}
 
 class BananoTool
 {
