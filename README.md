@@ -4,7 +4,11 @@ PHP libraries and tools for Banano and Nano currencies
 
 Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
+---
+
 ## Features
+
+### Banano
 
 - [BananoBlock](https://github.com/MikeRow/Bandano/wiki/BananoBlock)
 
@@ -34,7 +38,7 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
   class for interfacing to Banano node WebSocket
 
----
+### Nano
 
 - [NanoBlock](https://github.com/MikeRow/Bandano/wiki/NanoBlock)
 
@@ -63,12 +67,14 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 - [NanoWS](https://github.com/MikeRow/Bandano/wiki/NanoWS)
 
   class for interfacing to Nano node WebSocket
-  
----
+
+### Other
 
 - [PippinCLI](https://github.com/MikeRow/Bandano/wiki/PippinCLI)
 
   class for interfacing to Pippin wallet CLI
+
+---
 
 ## To do ...
 
@@ -76,6 +82,8 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 - Add support to BananoWS/NanoWS for FlatBuffers
 - Increase FlatBuffers performances
 - Enable listening on IPC
+
+---
 
 ## FAQ
 
@@ -103,6 +111,8 @@ A good solution is to perform calculations in raws using [GNU Multiple Precision
 </p>
 </details>
 
+---
+
 ## Credits
 
 Thanks a lot for the work and effort of
@@ -113,6 +123,8 @@ Thanks a lot for the work and effort of
 - [Bit-Wasp/bitcoin-lib-php](https://github.com/Bit-Wasp/bitcoin-lib-php)
 - [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
 - [Sergey Kroshnin](https://github.com/SergiySW)
+
+---
 
 ## Support
 
