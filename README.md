@@ -34,6 +34,8 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
   class for interfacing to Banano node WebSocket
 
+---
+
 - [NanoBlock](https://github.com/MikeRow/Bandano/wiki/NanoBlock)
 
   class for building Nano blocks
@@ -61,6 +63,8 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 - [NanoWS](https://github.com/MikeRow/Bandano/wiki/NanoWS)
 
   class for interfacing to Nano node WebSocket
+  
+---
 
 - [PippinCLI](https://github.com/MikeRow/Bandano/wiki/PippinCLI)
 
