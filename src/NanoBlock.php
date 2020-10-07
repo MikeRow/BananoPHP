@@ -116,9 +116,9 @@ class NanoBlock
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
         $this->rawBlockId   = [];
-        $this->rawBlockId[] = NanoTool::PREAMBLE;
+        $this->rawBlockId[] = NanoTool::PREAMBLE_HEX;
         $this->rawBlockId[] = $this->publicKey;
-        $this->rawBlockId[] = NanoTool::EMPTY32;
+        $this->rawBlockId[] = NanoTool::EMPTY32_HEX;
         $this->rawBlockId[] = NanoTool::account2public($representative);
         $this->rawBlockId[] = $balance;
         $this->rawBlockId[] = $pairing_block_id;
@@ -129,7 +129,7 @@ class NanoBlock
         $this->block = [
             'type'           => 'state',
             'account'        => $this->account,
-            'previous'       => NanoTool::EMPTY32,
+            'previous'       => NanoTool::EMPTY32_HEX,
             'representative' => $representative,
             'balance'        => hexdec($balance),
             'link'           => $pairing_block_id,
@@ -197,7 +197,7 @@ class NanoBlock
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
         $this->rawBlockId   = [];
-        $this->rawBlockId[] = NanoTool::PREAMBLE;
+        $this->rawBlockId[] = NanoTool::PREAMBLE_HEX;
         $this->rawBlockId[] = $this->publicKey;
         $this->rawBlockId[] = $this->prevBlockId;
         $this->rawBlockId[] = NanoTool::account2public($representative);
@@ -281,7 +281,7 @@ class NanoBlock
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
         $this->rawBlockId   = [];
-        $this->rawBlockId[] = NanoTool::PREAMBLE;
+        $this->rawBlockId[] = NanoTool::PREAMBLE_HEX;
         $this->rawBlockId[] = $this->publicKey;
         $this->rawBlockId[] = $this->prevBlockId;
         $this->rawBlockId[] = NanoTool::account2public($representative);
@@ -349,12 +349,12 @@ class NanoBlock
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
         $this->rawBlockId   = [];
-        $this->rawBlockId[] = NanoTool::PREAMBLE;
+        $this->rawBlockId[] = NanoTool::PREAMBLE_HEX;
         $this->rawBlockId[] = $this->publicKey;
         $this->rawBlockId[] = $this->prevBlockId;
         $this->rawBlockId[] = NanoTool::account2public($representative);
         $this->rawBlockId[] = $balance;
-        $this->rawBlockId[] = NanoTool::EMPTY32;
+        $this->rawBlockId[] = NanoTool::EMPTY32_HEX;
         
         $this->blockId   = NanoTool::hashHexs($this->rawBlockId);
         $this->signature = NanoTool::sign($this->blockId, $this->privateKey);
@@ -365,7 +365,7 @@ class NanoBlock
             'previous'       => $this->prevBlockId,
             'representative' => $representative,
             'balance'        => hexdec($balance),
-            'link'           => NanoTool::EMPTY32,
+            'link'           => NanoTool::EMPTY32_HEX,
             'signature'      => $this->signature,
             'work'           => $this->work
         ];

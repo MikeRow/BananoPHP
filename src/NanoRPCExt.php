@@ -97,7 +97,7 @@ class NanoRPCExt extends NanoRPC
                 'amount' => $balances['balance']
             ];
             
-            if ($send['block'] == NanoTool::EMPTY32) {
+            if ($send['block'] == NanoTool::EMPTY32_HEX) {
                 $return['balances'][$account] = [
                     'error'  => 'Bad send',
                     'amount' => $balances['balance']
@@ -234,7 +234,7 @@ class NanoRPCExt extends NanoRPC
                 'amount' => $balances['balance']
             ];
             
-            if ($send['block'] == NanoTool::EMPTY32) {
+            if ($send['block'] == NanoTool::EMPTY32_HEX) {
                 $return['balances'][$account] = [
                     'error'  => 'Bad send',
                     'amount' => $balances['balance']

@@ -97,7 +97,7 @@ class BananoRPCExt extends BananoRPC
                 'amount' => $balances['balance']
             ];
             
-            if ($send['block'] == BananoTool::EMPTY32) {
+            if ($send['block'] == BananoTool::EMPTY32_HEX) {
                 $return['balances'][$account] = [
                     'error'  => 'Bad send',
                     'amount' => $balances['balance']
@@ -234,7 +234,7 @@ class BananoRPCExt extends BananoRPC
                 'amount' => $balances['balance']
             ];
             
-            if ($send['block'] == BananoTool::EMPTY32) {
+            if ($send['block'] == BananoTool::EMPTY32_HEX) {
                 $return['balances'][$account] = [
                     'error'  => 'Bad send',
                     'amount' => $balances['balance']

@@ -116,9 +116,9 @@ class BananoBlock
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
         $this->rawBlockId   = [];
-        $this->rawBlockId[] = BananoTool::PREAMBLE;
+        $this->rawBlockId[] = BananoTool::PREAMBLE_HEX;
         $this->rawBlockId[] = $this->publicKey;
-        $this->rawBlockId[] = BananoTool::EMPTY32;
+        $this->rawBlockId[] = BananoTool::EMPTY32_HEX;
         $this->rawBlockId[] = BananoTool::account2public($representative);
         $this->rawBlockId[] = $balance;
         $this->rawBlockId[] = $pairing_block_id;
@@ -129,7 +129,7 @@ class BananoBlock
         $this->block = [
             'type'           => 'state',
             'account'        => $this->account,
-            'previous'       => BananoTool::EMPTY32,
+            'previous'       => BananoTool::EMPTY32_HEX,
             'representative' => $representative,
             'balance'        => hexdec($balance),
             'link'           => $pairing_block_id,
@@ -197,7 +197,7 @@ class BananoBlock
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
         $this->rawBlockId   = [];
-        $this->rawBlockId[] = BananoTool::PREAMBLE;
+        $this->rawBlockId[] = BananoTool::PREAMBLE_HEX;
         $this->rawBlockId[] = $this->publicKey;
         $this->rawBlockId[] = $this->prevBlockId;
         $this->rawBlockId[] = BananoTool::account2public($representative);
@@ -281,7 +281,7 @@ class BananoBlock
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
         $this->rawBlockId   = [];
-        $this->rawBlockId[] = BananoTool::PREAMBLE;
+        $this->rawBlockId[] = BananoTool::PREAMBLE_HEX;
         $this->rawBlockId[] = $this->publicKey;
         $this->rawBlockId[] = $this->prevBlockId;
         $this->rawBlockId[] = BananoTool::account2public($representative);
@@ -349,12 +349,12 @@ class BananoBlock
         $balance = str_repeat('0', (32 - strlen($balance))) . $balance;
         
         $this->rawBlockId   = [];
-        $this->rawBlockId[] = BananoTool::PREAMBLE;
+        $this->rawBlockId[] = BananoTool::PREAMBLE_HEX;
         $this->rawBlockId[] = $this->publicKey;
         $this->rawBlockId[] = $this->prevBlockId;
         $this->rawBlockId[] = BananoTool::account2public($representative);
         $this->rawBlockId[] = $balance;
-        $this->rawBlockId[] = BananoTool::EMPTY32;
+        $this->rawBlockId[] = BananoTool::EMPTY32_HEX;
         
         $this->blockId   = BananoTool::hashHexs($this->rawBlockId);
         $this->signature = BananoTool::sign($this->blockId, $this->privateKey);
@@ -365,7 +365,7 @@ class BananoBlock
             'previous'       => $this->prevBlockId,
             'representative' => $representative,
             'balance'        => hexdec($balance),
-            'link'           => BananoTool::EMPTY32,
+            'link'           => BananoTool::EMPTY32_HEX,
             'signature'      => $this->signature,
             'work'           => $this->work
         ];
