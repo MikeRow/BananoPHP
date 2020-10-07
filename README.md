@@ -6,9 +6,6 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
 ## Features
 
-|Banano|Nano|Other|
-|---|---|---|
-|
 - [BananoBlock](https://github.com/MikeRow/Bandano/wiki/BananoBlock)
 
   class for building Banano blocks
@@ -36,7 +33,7 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 - [BananoWS](https://github.com/MikeRow/Bandano/wiki/BananoWS)
 
   class for interfacing to Banano node WebSocket
-|
+
 - [NanoBlock](https://github.com/MikeRow/Bandano/wiki/NanoBlock)
 
   class for building Nano blocks
@@ -64,11 +61,10 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 - [NanoWS](https://github.com/MikeRow/Bandano/wiki/NanoWS)
 
   class for interfacing to Nano node WebSocket
-|
+
 - [PippinCLI](https://github.com/MikeRow/Bandano/wiki/PippinCLI)
 
   class for interfacing to Pippin wallet CLI
-|
 
 ## To do ...
 
