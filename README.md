@@ -8,6 +8,9 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
 ### Banano
 
+<details><summary>...</summary>
+<p>
+
 - [BananoBlock](https://github.com/MikeRow/Bandano/wiki/BananoBlock)
 
   class for building Banano blocks
@@ -36,7 +39,13 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
   class for interfacing to Banano node WebSocket
 
+</p>
+</details>
+
 ### Nano
+
+<details><summary>...</summary>
+<p>
 
 - [NanoBlock](https://github.com/MikeRow/Bandano/wiki/NanoBlock)
 
@@ -65,7 +74,10 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 - [NanoWS](https://github.com/MikeRow/Bandano/wiki/NanoWS)
 
   class for interfacing to Nano node WebSocket
-  
+
+</p>
+</details>
+ 
 ### Other
 
 <details><summary>...</summary>
