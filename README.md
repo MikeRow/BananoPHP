@@ -68,7 +68,7 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
   
 ### Other
 
-<details><summary>list ...</summary>
+<details><summary>...</summary>
 <p>
 
 - [PippinCLI](https://github.com/MikeRow/Bandano/wiki/PippinCLI)
