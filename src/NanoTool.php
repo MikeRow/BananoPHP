@@ -308,13 +308,19 @@ class NanoTool
     
     public static function mnem2hex(array $words): string
     {
-        if (count($words) != 12 && count($words) != 24) {
-            throw new NanoToolException("Invalid words array count: not 12 or 24");
+		$mnem_count = count($words);
+		
+        if ($mnem_count != 12 &&
+            $mnem_count != 15 &&
+            $mnem_count != 18 &&
+            $mnem_count != 21 &&
+		    $mnem_count != 24
+	    ) {
+            throw new NanoToolException("Invalid words array count: not 12,15,18,21,24");
         }
         
         $bip39 = new BIP39\BIP39EnglishWordList();    
         $bip39_words = $bip39->getWords();
-        $mnem_count = count($words);
         $bits = [];
         $hex  = [];
         
@@ -332,12 +338,12 @@ class NanoTool
             }
         }
         
-        for ($i = 0; $i < ceil($mnem_count*2.66); $i++) {
+        for ($i = 0; $i < ceil($mnem_count*2.66666); $i++) {
             $hex[] = bindec(implode('', array_slice($bits, $i * 8, 8)));
         }
         
         $hex = utils\Uint::fromUint8Array($hex)->toHexString();
-        $hex = substr($hex, 0, ceil($mnem_count*2.66));
+        $hex = substr($hex, 0, ceil($mnem_count*2.66666));
         
         return $hex;
     }
@@ -349,8 +355,13 @@ class NanoTool
     
     public static function hex2mnem(string $hex): array
     {
-        if ((strlen($hex) != 32 &&
-             strlen($hex) != 64) ||
+		$hex_lenght = strlen($hex);
+		
+        if (($hex_lenght != 32 &&
+             $hex_lenght != 40 &&
+             $hex_lenght != 48 &&
+             $hex_lenght != 56 &&
+             $hex_lenght != 64) ||
             !hex2bin($hex)
         ) {
             throw new NanoToolException("Invalid hexadecimal string: $hex");
@@ -358,7 +369,6 @@ class NanoTool
         
         $bip39 = new BIP39\BIP39EnglishWordList();
         $bip39_words = $bip39->getWords();
-        $hex_lenght = strlen($hex);
         $bits     = [];
         $mnemonic = [];
         
@@ -371,7 +381,7 @@ class NanoTool
             $bits     = array_merge($bits, str_split(str_repeat('0', (8 - strlen($bits_raw))) . $bits_raw));
         }
         
-        for ($i = 0; $i < floor($hex_lenght/2.66); $i++) {
+        for ($i = 0; $i < floor($hex_lenght/2.66666); $i++) {
             $mnemonic[] = $bip39_words[bindec(implode('', array_slice($bits, $i * 11, 11)))];
         }
         
