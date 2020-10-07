@@ -66,11 +66,15 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
   class for interfacing to Nano node WebSocket
   
-### Other
-  
+<details><summary>### Other</summary>
+<p>
+
 - [PippinCLI](https://github.com/MikeRow/Bandano/wiki/PippinCLI)
 
   class for interfacing to Pippin wallet CLI
+
+</p>
+</details>
   
 ## To do ...
 
