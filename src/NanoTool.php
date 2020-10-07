@@ -5,7 +5,6 @@ namespace MikeRow\Bandano;
 use \Exception;
 use \SplFixedArray;
 use BitWasp\BitcoinLib\BIP39;
-use MikeRow\PHPUtils as utils;
 use MikeRow\Salt\Blake2b\Blake2b;
 use MikeRow\Salt\Ed25519\Ed25519;
 use MikeRow\Salt\NanoSalt;
@@ -149,11 +148,11 @@ class NanoTool
             $crop = $crop[1];
             
             if (preg_match('/^[13456789abcdefghijkmnopqrstuwxyz]+$/', $crop)) {
-                $aux = utils\Uint::fromString(substr($crop, 0, 52))->toUint4()->toArray();
+                $aux = MikeRow\PHPUtils\Uint::fromString(substr($crop, 0, 52))->toUint4()->toArray();
                 array_shift($aux);
                 $key_uint4  = $aux;
-                $hash_uint8 = utils\Uint::fromString(substr($crop, 52, 60))->toUint8()->toArray();
-                $key_uint8  = utils\Uint::fromUint4Array($key_uint4)->toUint8();
+                $hash_uint8 = MikeRow\PHPUtils\Uint::fromString(substr($crop, 52, 60))->toUint8()->toArray();
+                $key_uint8  = MikeRow\PHPUtils\Uint::fromUint4Array($key_uint4)->toUint8();
                 
                 if (!extension_loaded('blake2')) {
                     $key_hash = new SplFixedArray(64);
@@ -163,14 +162,14 @@ class NanoTool
                     $b2b->finish($ctx, $key_hash);
                     $key_hash = array_reverse(array_slice($key_hash->toArray(), 0, 5));
                 } else {
-                    $key_uint8 = utils\Bin::arr2bin((array) $key_uint8);
+                    $key_uint8 = MikeRow\PHPUtils\Bin::arr2bin((array) $key_uint8);
                     $key_hash = blake2($key_uint8, 5, null, true);
-                    $key_hash = utils\Bin::bin2arr(strrev($key_hash));
+                    $key_hash = MikeRow\PHPUtils\Bin::bin2arr(strrev($key_hash));
                 }
                 
                 if ($hash_uint8 == $key_hash) {
                     if ($get_public_key) {
-                        return utils\Uint::fromUint4Array($key_uint4)->toHexString();
+                        return MikeRow\PHPUtils\Uint::fromUint4Array($key_uint4)->toHexString();
                     } else {
                         return true;
                     }
@@ -193,7 +192,7 @@ class NanoTool
         }
 
         if (!extension_loaded('blake2')) {
-            $key = utils\Uint::fromHex($public_key);
+            $key = MikeRow\PHPUtils\Uint::fromHex($public_key);
             $checksum;
             $hash = new SplFixedArray(64);
             
@@ -201,18 +200,18 @@ class NanoTool
             $ctx = $b2b->init(null, 5);
             $b2b->update($ctx, $key->toUint8(), 32);
             $b2b->finish($ctx, $hash);
-            $hash = utils\Uint::fromUint8Array(array_slice($hash->toArray(), 0, 5))->reverse();
+            $hash = MikeRow\PHPUtils\Uint::fromUint8Array(array_slice($hash->toArray(), 0, 5))->reverse();
             $checksum = $hash->toString();
         } else {
-            $key = utils\Uint::fromHex($public_key)->toUint8();
-            $key = utils\Bin::arr2bin((array) $key);
+            $key = MikeRow\PHPUtils\Uint::fromHex($public_key)->toUint8();
+            $key = MikeRow\PHPUtils\Bin::arr2bin((array) $key);
             
             $hash = blake2($key, 5, null, true);
-            $hash = utils\Bin::bin2arr(strrev($hash));
-            $checksum = utils\Uint::fromUint8Array($hash)->toString();
+            $hash = MikeRow\PHPUtils\Bin::bin2arr(strrev($hash));
+            $checksum = MikeRow\PHPUtils\Uint::fromUint8Array($hash)->toString();
         }
         
-        $c_account = utils\Uint::fromHex('0' . $public_key)->toString();
+        $c_account = MikeRow\PHPUtils\Uint::fromHex('0' . $public_key)->toString();
         
         return 'nano_' . $c_account . $checksum;
     }
@@ -229,10 +228,10 @@ class NanoTool
         }
         
         $salt = NanoSalt::instance();
-        $private_key = utils\Uint::fromHex($private_key)->toUint8();
+        $private_key = MikeRow\PHPUtils\Uint::fromHex($private_key)->toUint8();
         $public_key = $salt::crypto_sign_public_from_secret_key($private_key);
         
-        return utils\Uint::fromUint8Array($public_key)->toHexString();
+        return MikeRow\PHPUtils\Uint::fromUint8Array($public_key)->toHexString();
     }
     
     
@@ -245,8 +244,8 @@ class NanoTool
         $salt = NanoSalt::instance();
         $keys = $salt->crypto_sign_keypair();
         
-        $keys[0] = utils\Uint::fromUint8Array(array_slice($keys[0]->toArray(), 0, 32))->toHexString();
-        $keys[1] = utils\Uint::fromUint8Array($keys[1])->toHexString();
+        $keys[0] = MikeRow\PHPUtils\Uint::fromUint8Array(array_slice($keys[0]->toArray(), 0, 32))->toHexString();
+        $keys[1] = MikeRow\PHPUtils\Uint::fromUint8Array($keys[1])->toHexString();
         
         if ($get_account) {
             $keys[] = self::public2account($keys[1]);
@@ -269,8 +268,8 @@ class NanoTool
             throw new NanoToolException("Invalid index: $index");
         }
         
-        $seed  = utils\Uint::fromHex($seed)->toUint8();
-        $index = utils\Uint::fromDec($index)->toUint8()->toArray();
+        $seed  = MikeRow\PHPUtils\Uint::fromHex($seed)->toUint8();
+        $index = MikeRow\PHPUtils\Uint::fromDec($index)->toUint8()->toArray();
         
         if (count($index) < 4) {
             $missing_bytes = [];
@@ -280,7 +279,7 @@ class NanoTool
             $index = array_merge($missing_bytes, $index);
         }
         
-        $index = utils\Uint::fromUint8Array($index)->toUint8();
+        $index = MikeRow\PHPUtils\Uint::fromUint8Array($index)->toUint8();
         $private_key = new SplFixedArray(64);
         
         $b2b = new Blake2b();
@@ -289,7 +288,7 @@ class NanoTool
         $b2b->update($ctx, $index, 4);
         $b2b->finish($ctx, $private_key);
         
-        $private_key = utils\Uint::fromUint8Array(array_slice($private_key->toArray(), 0, 32))->toHexString();
+        $private_key = MikeRow\PHPUtils\Uint::fromUint8Array(array_slice($private_key->toArray(), 0, 32))->toHexString();
         $public_key = self::private2public($private_key);
         
         $keys = [$private_key,$public_key];
@@ -342,7 +341,7 @@ class NanoTool
             $hex[] = bindec(implode('', array_slice($bits, $i * 8, 8)));
         }
         
-        $hex = utils\Uint::fromUint8Array($hex)->toHexString();
+        $hex = MikeRow\PHPUtils\Uint::fromUint8Array($hex)->toHexString();
         $hex = substr($hex, 0, ceil($mnem_count*2.66666));
         
         return $hex;
@@ -372,9 +371,9 @@ class NanoTool
         $bits     = [];
         $mnemonic = [];
         
-        $hex = utils\Uint::fromHex($hex)->toUint8();
-        $check = hash('sha256', utils\Bin::arr2bin((array) $hex), true);
-        $hex  = array_merge((array) $hex, utils\Bin::bin2arr(substr($check, 0, 1)));
+        $hex = MikeRow\PHPUtils\Uint::fromHex($hex)->toUint8();
+        $check = hash('sha256', MikeRow\PHPUtils\Bin::arr2bin((array) $hex), true);
+        $hex  = array_merge((array) $hex, MikeRow\PHPUtils\Bin::bin2arr(substr($check, 0, 1)));
         
         foreach ($hex as $byte) {
             $bits_raw = decbin($byte);
@@ -478,14 +477,14 @@ class NanoTool
                 throw new NanoToolException("Invalid hexadecimal string: $value");
             }
             
-            $value = utils\Uint::fromHex($value)->toUint8();
+            $value = MikeRow\PHPUtils\Uint::fromHex($value)->toUint8();
             $b2b->update($ctx, $value, count($value));
         }
 
         $b2b->finish($ctx, $hash);
         $hash = $hash->toArray();
         $hash = array_slice($hash, 0, $size);
-        $hash = utils\Uint::fromUint8Array($hash)->toHexString();
+        $hash = MikeRow\PHPUtils\Uint::fromUint8Array($hash)->toHexString();
         
         return $hash;
     }
@@ -505,13 +504,13 @@ class NanoTool
         }
         
         $salt = NanoSalt::instance();
-        $private_key = FieldElement::fromArray(utils\Uint::fromHex($private_key)->toUint8());
+        $private_key = FieldElement::fromArray(MikeRow\PHPUtils\Uint::fromHex($private_key)->toUint8());
         $public_key  = NanoSalt::crypto_sign_public_from_secret_key($private_key);
         
         $private_key->setSize(64);
         $private_key->copy($public_key, 32, 32);
         
-        $msg = utils\Uint::fromHex($msg)->toUint8();
+        $msg = MikeRow\PHPUtils\Uint::fromHex($msg)->toUint8();
         $sm  = $salt->crypto_sign($msg, count($msg), $private_key);
         
         $signature = [];
@@ -519,7 +518,7 @@ class NanoTool
             $signature[$i] = $sm[$i];
         }
         
-        return utils\Uint::fromUint8Array($signature)->toHexString();
+        return MikeRow\PHPUtils\Uint::fromUint8Array($signature)->toHexString();
     }
     
     
@@ -540,9 +539,9 @@ class NanoTool
             throw new NanoToolException("Invalid account: $account");
         }
         
-        $sig = utils\Uint::fromHex($sig)->toUint8();
-        $msg = utils\Uint::fromHex($msg)->toUint8();
-        $public_key  = utils\Uint::fromHex($public_key)->toUint8();
+        $sig = MikeRow\PHPUtils\Uint::fromHex($sig)->toUint8();
+        $msg = MikeRow\PHPUtils\Uint::fromHex($msg)->toUint8();
+        $public_key  = MikeRow\PHPUtils\Uint::fromHex($public_key)->toUint8();
         
         $sm = new SplFixedArray(64 + count($msg));
         $m  = new SplFixedArray(64 + count($msg));
@@ -560,7 +559,7 @@ class NanoTool
             return false;
         }
         
-        $open2 = utils\Uint::fromUint8Array($open2)->toHexString();
+        $open2 = MikeRow\PHPUtils\Uint::fromUint8Array($open2)->toHexString();
         
         return $open2;
     }
@@ -620,13 +619,13 @@ class NanoTool
             throw new NanoToolException("Invalid difficulty: $difficulty");
         }
         
-        $hash = utils\Uint::fromHex($hash)->toUint8();
+        $hash = MikeRow\PHPUtils\Uint::fromHex($hash)->toUint8();
         $difficulty = hex2bin($difficulty);
         
         if (!extension_loaded('blake2')) {
             $b2b = new Blake2b();
             $rng = random_bytes(8);
-            $rng = utils\bin2arr($rng);
+            $rng = MikeRow\PHPUtils\bin2arr($rng);
             
             while (true) {
                 $output = new SplFixedArray(64);
@@ -639,23 +638,23 @@ class NanoTool
                 $output = $output->toArray();
                 $output = array_slice($output, 0, 8);
                 $output = array_reverse($output);
-                //$output = utils\Uint::fromUint8Array($output)->toHexString();
+                //$output = MikeRow\PHPUtils\Uint::fromUint8Array($output)->toHexString();
                 
-                if (strcasecmp(utils\Bin::arr2bin($output), $difficulty) >= 0) {
-                    return utils\Uint::fromUint8Array(array_reverse($rng))->toHexString();
+                if (strcasecmp(MikeRow\PHPUtils\Bin::arr2bin($output), $difficulty) >= 0) {
+                    return MikeRow\PHPUtils\Uint::fromUint8Array(array_reverse($rng))->toHexString();
                 }
 
                 $rng = $output;
             }
         } else {
-            $hash = utils\Bin::arr2bin((array) $hash);
+            $hash = MikeRow\PHPUtils\Bin::arr2bin((array) $hash);
             $rng = random_bytes(8);
             
             while (true) {
                 $output = strrev(blake2($rng . $hash, 8, null, true));
                 
                 if (strcasecmp($output, $difficulty) >= 0) {
-                    return utils\Uint::fromUint8Array(array_reverse(utils\bin2arr($rng)))->toHexString();
+                    return MikeRow\PHPUtils\Uint::fromUint8Array(array_reverse(MikeRow\PHPUtils\bin2arr($rng)))->toHexString();
                 }
                 
                 $rng = $output;
@@ -680,8 +679,8 @@ class NanoTool
             throw new NanoToolException("Invalid work: $work");
         }
         
-        $hash = utils\Uint::fromHex($hash)->toUint8();
-        $work = utils\Uint::fromHex($work)->toUint8();
+        $hash = MikeRow\PHPUtils\Uint::fromHex($hash)->toUint8();
+        $work = MikeRow\PHPUtils\Uint::fromHex($work)->toUint8();
         $work = array_reverse($work->toArray());
         $work = SplFixedArray::fromArray($work);
         
@@ -696,7 +695,7 @@ class NanoTool
         $res = $res->toArray();
         $res = array_slice($res, 0, 8);
         $res = array_reverse($res);
-        $res = utils\Uint::fromUint8Array($res)->toHexString();
+        $res = MikeRow\PHPUtils\Uint::fromUint8Array($res)->toHexString();
         
         if (hexdec($res) >= hexdec($difficulty)) {
             return true;
