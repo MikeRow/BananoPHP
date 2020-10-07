@@ -66,7 +66,9 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
   class for interfacing to Nano node WebSocket
   
-<details><summary>**Other**</summary>
+### Other
+
+<details><summary>[...]</summary>
 <p>
 
 - [PippinCLI](https://github.com/MikeRow/Bandano/wiki/PippinCLI)
@@ -88,7 +90,7 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
 #### How to perform calculations with Banano/Nano denominations or raws?
 
-<details><summary>PHP faces troubles when dealing with Banano/Nano amounts ...</summary>
+<details><summary>PHP faces troubles when dealing with Banano/Nano amounts [...]</summary>
 <p>
 
 - Data type `float` isn't precise at certain decimal depths
@@ -101,7 +103,7 @@ A good solution is to perform calculations in raws using [GNU Multiple Precision
 
 #### Why not use libsodium instead of Salt or php-blake2?
 
-<details><summary>Some limitations prevent the use of libsodium ...</summary>
+<details><summary>Some limitations prevent the use of libsodium [...]</summary>
 <p>
 
 - Functions `sodium_crypto_sign_*` use SHA-2 instead Blake2
