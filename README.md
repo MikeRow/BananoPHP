@@ -8,7 +8,7 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
 ### Banano
 
-<details><summary>...</summary>
+<details><summary>Banano contents ...</summary>
 <p>
 
 - [BananoBlock](https://github.com/MikeRow/Bandano/wiki/BananoBlock)
@@ -44,7 +44,7 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
 ### Nano
 
-<details><summary>...</summary>
+<details><summary>Nano contents ...</summary>
 <p>
 
 - [NanoBlock](https://github.com/MikeRow/Bandano/wiki/NanoBlock)
@@ -80,7 +80,7 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
  
 ### Other
 
-<details><summary>...</summary>
+<details><summary>Other contents ...</summary>
 <p>
 
 - [PippinCLI](https://github.com/MikeRow/Bandano/wiki/PippinCLI)
