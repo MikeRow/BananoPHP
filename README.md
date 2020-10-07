@@ -66,9 +66,7 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
   class for interfacing to Nano node WebSocket
   
-### Other
-
-<details><summary>List</summary>
+<details><summary>**Other**</summary>
 <p>
 
 - [PippinCLI](https://github.com/MikeRow/Bandano/wiki/PippinCLI)
