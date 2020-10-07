@@ -6,11 +6,9 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
 ## Features
 
-### Banano
-
-<details><summary>Show</summary>
-<p>
-
+|Banano|Nano|Other|
+|---|---|---|
+|
 - [BananoBlock](https://github.com/MikeRow/Bandano/wiki/BananoBlock)
 
   class for building Banano blocks
@@ -38,15 +36,7 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 - [BananoWS](https://github.com/MikeRow/Bandano/wiki/BananoWS)
 
   class for interfacing to Banano node WebSocket
-
-</p>
-</details>
-
-### Nano
-
-<details><summary>Show</summary>
-<p>
-
+|
 - [NanoBlock](https://github.com/MikeRow/Bandano/wiki/NanoBlock)
 
   class for building Nano blocks
@@ -74,22 +64,12 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 - [NanoWS](https://github.com/MikeRow/Bandano/wiki/NanoWS)
 
   class for interfacing to Nano node WebSocket
-
-</p>
-</details>
- 
-### Other
-
-<details><summary>Show</summary>
-<p>
-
+|
 - [PippinCLI](https://github.com/MikeRow/Bandano/wiki/PippinCLI)
 
   class for interfacing to Pippin wallet CLI
+|
 
-</p>
-</details>
-  
 ## To do ...
 
 - Add support to BananoBlock/NanoBlock for Epoch v2
