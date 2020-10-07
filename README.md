@@ -96,7 +96,6 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 - Add support to BananoWS/NanoWS for FlatBuffers
 - Increase FlatBuffers performances
 - Enable listening on IPC
-- Allow different mnemonic words counts
 
 ## FAQ
 
