@@ -251,10 +251,6 @@ class NanoTool
             throw new NanoToolException("Invalid filling character: $filling_char");
         }
         
-        if (strlen($string) > 51) {
-            $string = substr($string, 0, 51);
-        }
-        
         $string = $leading_char . $string . str_repeat($filling_char, (51 - strlen($string)));
         
         $aux = \MikeRow\Bandano\Util\Uint::fromString($string)->toUint4()->toArray();
