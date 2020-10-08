@@ -124,6 +124,7 @@ Thanks a lot for the work and effort of
 - [google/flatbuffers](https://github.com/google/flatbuffers)
 - [Bit-Wasp/bitcoin-lib-php](https://github.com/Bit-Wasp/bitcoin-lib-php)
 - [aceat64/EasyBitcoin-PHP](https://github.com/aceat64/EasyBitcoin-PHP)
+- [jaimehgb/RaiBlocksPHP](https://github.com/jaimehgb/RaiBlocksPHP)
 - [Sergey Kroshnin](https://github.com/SergiySW)
 
 ---
