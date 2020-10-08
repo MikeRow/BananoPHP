@@ -19,8 +19,8 @@ class BananoTool
     // *
     
     const RAWS = [
-      'banoshi' =>      '1000000000000000000000000000',
-       'BANANO' =>    '100000000000000000000000000000'
+      'banoshi' =>   '1000000000000000000000000000',
+       'BANANO' => '100000000000000000000000000000'
     ];
     
     const PREAMBLE_HEX = '0000000000000000000000000000000000000000000000000000000000000006';
@@ -233,7 +233,7 @@ class BananoTool
     
     public static function string2burn(string $string, string $leading_char = '1', string $filling_char = '1'): string
     {
-        if (!preg_match('/^[13456789abcdefghijkmnopqrstuwxyz]+$/', $string)) {
+        if (!preg_match('/^[13456789abcdefghijkmnopqrstuwxyz]+$/', $string) || strlen($string) > 51) {
             throw new BananoToolException("Invalid string: $string");
         }
         if ($leading_char != '1' && $leading_char != '3') {
@@ -241,10 +241,6 @@ class BananoTool
         }
         if (!preg_match('/^[13456789abcdefghijkmnopqrstuwxyz]+$/', $filling_char) || strlen($filling_char != 1)) {
             throw new BananoToolException("Invalid filling character: $filling_char");
-        }
-        
-        if (strlen($string) > 51) {
-            $string = substr($string, 0, 51);
         }
         
         $string = $leading_char . $string . str_repeat($filling_char, (51 - strlen($string)));
