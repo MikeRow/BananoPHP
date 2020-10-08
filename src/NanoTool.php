@@ -236,6 +236,55 @@ class NanoTool
     
     
     // *
+    // *  String to burn account
+    // *
+    
+    public static function string2burn(string $string, string $leading_char = '1', string $filling_char = '1'): string
+    {
+        if (!preg_match('/^[13456789abcdefghijkmnopqrstuwxyz]+$/', $string)) {
+            throw new NanoToolException("Invalid string: $string");
+        }
+        if ($leading_char != '1' && $leading_char != '3') {
+            throw new NanoToolException("Invalid leading character: $leading_char");
+        }
+        if (!preg_match('/^[13456789abcdefghijkmnopqrstuwxyz]+$/', $filling_char) || strlen($filling_char != 1)) {
+            throw new NanoToolException("Invalid filling character: $filling_char");
+        }
+        
+        if (strlen($string) > 51) {
+            $string = substr($string, 0, 51);
+        }
+        
+        $string = $leading_char . $string . str_repeat($filling_char, (51 - strlen($string)));
+        
+        $aux = \MikeRow\PHPUtils\Uint::fromString($string)->toUint4()->toArray();
+        array_shift($aux);
+        $key_uint4  = $aux;
+        $key_uint8  = \MikeRow\PHPUtils\Uint::fromUint4Array($key_uint4)->toUint8();
+        
+        if (!extension_loaded('blake2')) {
+            $checksum;
+            $hash = new SplFixedArray(64);
+            
+            $b2b = new Blake2b();
+            $ctx = $b2b->init(null, 5);
+            $b2b->update($ctx, $key_uint8, 32);
+            $b2b->finish($ctx, $hash);
+            $hash = \MikeRow\PHPUtils\Uint::fromUint8Array(array_slice($hash->toArray(), 0, 5))->reverse();
+            $checksum = $hash->toString();
+        } else {
+            $key = \MikeRow\PHPUtils\Bin::arr2bin((array) $key_uint8);
+            
+            $hash = blake2($key, 5, null, true);
+            $hash = \MikeRow\PHPUtils\Bin::bin2arr(strrev($hash));
+            $checksum = \MikeRow\PHPUtils\Uint::fromUint8Array($hash)->toString();
+        }
+        
+        return 'nano_' . $string . $checksum;
+    }
+    
+    
+    // *
     // *  Get random keypair
     // *
     
