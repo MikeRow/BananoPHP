@@ -241,7 +241,7 @@ class NanoTool
     
     public static function string2burn(string $string, string $leading_char = '1', string $filling_char = '1'): string
     {
-        if (!preg_match('/^[13456789abcdefghijkmnopqrstuwxyz]+$/', $string) || strlen($string) > 51) {
+        if (!preg_match('/^[13456789abcdefghijkmnopqrstuwxyz]+$/', $string) || strlen($string) < 1 || strlen($string) > 51) {
             throw new NanoToolException("Invalid string: $string");
         }
         if ($leading_char != '1' && $leading_char != '3') {
