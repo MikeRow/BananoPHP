@@ -70,14 +70,6 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
 ---
 
-## Other
-
-- [PippinCLI](https://github.com/MikeRow/Bandano/wiki/PippinCLI)
-
-  class for interfacing to Pippin wallet CLI
-
----
-
 ## To do ...
 
 - Add support to BananoBlock/NanoBlock for Epoch v2
