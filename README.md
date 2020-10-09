@@ -1,12 +1,12 @@
 # Bandano
 
-PHP libraries and tools for Banano and Nano currencies
+PHP libraries and tools for Banano currency
 
 Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
 ---
 
-## Banano
+## Features
 
 - [BananoBlock](https://github.com/MikeRow/Bandano/wiki/BananoBlock)
 
@@ -38,42 +38,10 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
 ---
 
-## Nano
-
-- [NanoBlock](https://github.com/MikeRow/Bandano/wiki/NanoBlock)
-
-  class for building Nano blocks
-
-- [NanoCLI](https://github.com/MikeRow/Bandano/wiki/NanoCLI)
-
-  class for interfacing to Nano node CLI
-  
-- [NanoIPC](https://github.com/MikeRow/Bandano/wiki/NanoIPC)
-
-  class for interfacing to Nano node IPC
-
-- [NanoRPC](https://github.com/MikeRow/Bandano/wiki/NanoRPC)
-
-  class for interfacing to Nano node RPC
-
-- [NanoRPCExt](https://github.com/MikeRow/Bandano/wiki/NanoRPCExt)
-
-  additional functions for NanoRPC
-
-- [NanoTool](https://github.com/MikeRow/Bandano/wiki/NanoTool)
-
-  class for node-independent Nano functions
-  
-- [NanoWS](https://github.com/MikeRow/Bandano/wiki/NanoWS)
-
-  class for interfacing to Nano node WebSocket
-
----
-
 ## To do ...
 
-- Add support to BananoBlock/NanoBlock for Epoch v2
-- Add support to BananoWS/NanoWS for FlatBuffers
+- Add support to BananoBlock for Epoch v2
+- Add support to BananoWS for FlatBuffers
 - Increase FlatBuffers performances
 - Enable listening on IPC
 
@@ -81,9 +49,9 @@ Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
 
 ## FAQ
 
-#### How to perform calculations with Banano/Nano denominations or raws?
+#### How to perform calculations with Banano denominations or raws?
 
-<details><summary>PHP faces troubles when dealing with Banano/Nano amounts ...</summary>
+<details><summary>PHP faces troubles when dealing with Banano amounts ...</summary>
 <p>
 
 - Data type `float` isn't precise at certain decimal depths
@@ -124,4 +92,3 @@ Thanks a lot for the work and effort of
 ## Support
 
 [ban_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m](https://creeper.banano.cc/explorer/account/ban_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m) <br/>
-[nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m](https://nanocrawler.cc/explorer/account/nano_1mikerow9bqzyqo4ejra6ugr1srerq1egwmacerquch3dz1wry7mkrz4768m)
