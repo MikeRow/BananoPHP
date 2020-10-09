@@ -7,7 +7,7 @@ $account = 'ban_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
 // * Unix domain socket encoding 1
 
-$bananoipc_unix = new MikeRow\Bandano\BananoIPC('unix', ['/tmp/nano']);
+$bananoipc_unix = new MikeRow\BananoPHP\BananoIPC('unix', ['/tmp/nano']);
 
 $bananoipc_unix->setBananoEncoding(1);
 
@@ -22,7 +22,7 @@ $bananoipc_unix->close();
 
 // * Unix domain socket encoding 2
 
-$bananoipc_unix = new MikeRow\Bandano\BananoIPC('unix', ['/tmp/nano']);
+$bananoipc_unix = new MikeRow\BananoPHP\BananoIPC('unix', ['/tmp/nano']);
 
 $bananoipc_unix->setBananoEncoding(2);
 
@@ -37,7 +37,7 @@ $bananoipc_unix->close();
 
 // * Unix domain socket encoding 3
 
-$bananoipc_unix = new MikeRow\Bandano\BananoIPC('unix', ['/tmp/nano']);
+$bananoipc_unix = new MikeRow\BananoPHP\BananoIPC('unix', ['/tmp/nano']);
 
 $bananoipc_unix->setBananoEncoding(3);
 
@@ -52,7 +52,7 @@ $bananoipc_unix->close();
 
 // * Unix domain socket encoding 4
 
-$bananoipc_unix = new MikeRow\Bandano\BananoIPC('unix', ['/tmp/nano']);
+$bananoipc_unix = new MikeRow\BananoPHP\BananoIPC('unix', ['/tmp/nano']);
 
 $bananoipc_unix->setBananoEncoding(4);
 
@@ -67,7 +67,7 @@ $bananoipc_unix->close();
 
 // * TCP encoding 1
 
-$bananoipc_tcp = new MikeRow\Bandano\BananoIPC('tcp', ['localhost', 7077]);
+$bananoipc_tcp = new MikeRow\BananoPHP\BananoIPC('tcp', ['localhost', 7077]);
 
 $bananoipc_tcp->setBananoEncoding(1);
 
@@ -82,7 +82,7 @@ $bananoipc_tcp->close();
 
 // * TCP encoding 2
 
-$bananoipc_tcp = new MikeRow\Bandano\BananoIPC('tcp', ['localhost', 7077]);
+$bananoipc_tcp = new MikeRow\BananoPHP\BananoIPC('tcp', ['localhost', 7077]);
 
 $bananoipc_tcp->setBananoEncoding(2);
 
@@ -97,7 +97,7 @@ $bananoipc_tcp->close();
 
 // * TCP encoding 3
 
-$bananoipc_tcp = new MikeRow\Bandano\BananoIPC('tcp', ['localhost', 7077]);
+$bananoipc_tcp = new MikeRow\BananoPHP\BananoIPC('tcp', ['localhost', 7077]);
 
 $bananoipc_tcp->setBananoEncoding(3);
 
@@ -112,7 +112,7 @@ $bananoipc_tcp->close();
 
 // * TCP encoding 4
 
-$bananoipc_tcp = new MikeRow\Bandano\BananoIPC('tcp', ['localhost', 7077]);
+$bananoipc_tcp = new MikeRow\BananoPHP\BananoIPC('tcp', ['localhost', 7077]);
 
 $bananoipc_tcp->setBananoEncoding(4);
 

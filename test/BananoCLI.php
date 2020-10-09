@@ -2,7 +2,7 @@
 
 require __DIR__ . '/autoload.php';
 
-$bananocli = new MikeRow\Bandano\BananoCLI('/home/banano/banano_node');
+$bananocli = new MikeRow\BananoPHP\BananoCLI('/home/banano/banano_node');
 
 $account = 'ban_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 

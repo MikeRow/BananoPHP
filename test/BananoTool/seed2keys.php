@@ -2,7 +2,7 @@
 
 require __DIR__ . '/../autoload.php';
 
-use MikeRow\Bandano\BananoTool;
+use MikeRow\BananoPHP\BananoTool;
 
 list($seed) = BananoTool::keys();
 

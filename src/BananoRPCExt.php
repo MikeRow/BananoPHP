@@ -1,6 +1,6 @@
 <?php
 
-namespace MikeRow\Bandano;
+namespace MikeRow\BananoPHP;
 
 use \Exception;
 

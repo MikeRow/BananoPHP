@@ -2,7 +2,7 @@
 
 require __DIR__ . '/../autoload.php';
 
-use MikeRow\Bandano\BananoTool;
+use MikeRow\BananoPHP\BananoTool;
 
 $difficulty = 'ffffffc000000000';
 $multiplier = 0.125;

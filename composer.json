@@ -1,5 +1,5 @@
 {
-	"name" : "mikerow/bandano",
+	"name" : "mikerow/bananophp",
 	"type" : "library",
 	"description" : "PHP libraries and tools for Banano currency",
 	"keywords" : [
@@ -12,7 +12,7 @@
 		"tools,",
 		"blocks"
 	],
-	"homepage" : "https://github.com/MikeRow/Bandano",
+	"homepage" : "https://github.com/MikeRow/BananoPHP",
 	"license" : "MIT",
 	"authors" : [{
 			"name" : "MikeRow",
@@ -33,7 +33,7 @@
 		"ext-mbstring" : "*",
 		"ext-openssl" : "*",
 		"mikerow/salt" : "*",
-		"mikerow/nando" : "*",
+		"mikerow/nanophp" : "*",
 		"bitwasp/bitcoin-lib" : "1.0.*",
 		"textalk/websocket" : "*",
 		"google/flatbuffers" : "*"
@@ -43,10 +43,10 @@
 	},
 	"autoload" : {
 		"psr-4" : {
-			"MikeRow\\Bandano\\" : "src/"
+			"MikeRow\\BananoPHP\\" : "src/"
 		}
 	},
 	"support" : {
-		"wiki" : "https://github.com/MikeRow/Bandano/wiki"
+		"wiki" : "https://github.com/MikeRow/BananoPHP/wiki"
 	}
 }

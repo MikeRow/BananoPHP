@@ -1,38 +1,38 @@
-# Bandano
+# BananoPHPPHP
 
 PHP libraries and tools for Banano currency
 
-Documentation at [Bandano/wiki](https://github.com/MikeRow/Bandano/wiki)
+Documentation at [BananoPHP/wiki](https://github.com/MikeRow/BananoPHP/wiki)
 
 ---
 
 ## Features
 
-- [BananoBlock](https://github.com/MikeRow/Bandano/wiki/BananoBlock)
+- [BananoBlock](https://github.com/MikeRow/BananoPHP/wiki/BananoBlock)
 
   class for building Banano blocks
 
-- [BananoCLI](https://github.com/MikeRow/Bandano/wiki/BananoCLI)
+- [BananoCLI](https://github.com/MikeRow/BananoPHP/wiki/BananoCLI)
 
   class for interfacing to Banano node CLI
   
-- [BananoIPC](https://github.com/MikeRow/Bandano/wiki/BananoIPC)
+- [BananoIPC](https://github.com/MikeRow/BananoPHP/wiki/BananoIPC)
 
   class for interfacing to Banano node IPC
 
-- [BananoRPC](https://github.com/MikeRow/Bandano/wiki/BananoRPC)
+- [BananoRPC](https://github.com/MikeRow/BananoPHP/wiki/BananoRPC)
 
   class for interfacing to Banano node RPC
 
-- [BananoRPCExt](https://github.com/MikeRow/Bandano/wiki/BananoRPCExt)
+- [BananoRPCExt](https://github.com/MikeRow/BananoPHP/wiki/BananoRPCExt)
 
   additional functions for BananoRPC
 
-- [BananoTool](https://github.com/MikeRow/Bandano/wiki/BananoTool)
+- [BananoTool](https://github.com/MikeRow/BananoPHP/wiki/BananoTool)
 
   class for node-independent Banano functions
   
-- [BananoWS](https://github.com/MikeRow/Bandano/wiki/BananoWS)
+- [BananoWS](https://github.com/MikeRow/BananoPHP/wiki/BananoWS)
 
   class for interfacing to Banano node WebSocket
 

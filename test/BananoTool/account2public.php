@@ -2,7 +2,7 @@
 
 require __DIR__ . '/../autoload.php';
 
-use MikeRow\Bandano\BananoTool;
+use MikeRow\BananoPHP\BananoTool;
 
 $t0 = microtime(true);
 var_dump(BananoTool::account2public('nano_3ieu9rjq8uyd3h1taykfb3s14g5p6mnu73hep4iox8w91hew3147eejgogxx'));

@@ -9,7 +9,7 @@ $cycles = 10000;
 
 // * API v1
 
-$bananorpc = new MikeRow\Bandano\BananoRPC('http', 'localhost', 7076);
+$bananorpc = new MikeRow\BananoPHP\BananoRPC('http', 'localhost', 7076);
 
 $bananorpc->setBananoApi(1);
 
@@ -24,7 +24,7 @@ echo 'Time v1: ' . (microtime(true) - $t0) . PHP_EOL;
 
 // * API v2
 
-$bananorpc = new MikeRow\Bandano\BananoRPC('http', 'localhost', 7076, 'api/v2');
+$bananorpc = new MikeRow\BananoPHP\BananoRPC('http', 'localhost', 7076, 'api/v2');
 
 $bananorpc->setBananoApi(2);
 

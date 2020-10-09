@@ -7,7 +7,7 @@ $account = 'ban_3dyo9e7wkf8kuykghbjdt78njux3yudhdrhtwaymc8fsmxhxpt1h48zffbse';
 
 // * Unix domain socket listening
 
-$bananoipc_unix = new MikeRow\Bandano\BananoIPC('unix', ['/tmp/nano']);
+$bananoipc_unix = new MikeRow\BananoPHP\BananoIPC('unix', ['/tmp/nano']);
 
 $bananoipc_unix->setBananoEncoding(3);
 

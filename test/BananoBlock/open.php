@@ -2,7 +2,7 @@
 
 require __DIR__ . '/../autoload.php';
 
-use MikeRow\Bandano\BananoTool;
+use MikeRow\BananoPHP\BananoTool;
 
 // Owner data
 $private_key = '';
@@ -16,8 +16,8 @@ $received_amount  = '';
 $representative   = '';
 
 // Initialize BananoRPC and BananoBlock
-$bananorpc    = new MikeRow\Bandano\BananoRPC();
-$bananoblock  = new MikeRow\Bandano\BananoBlock($private_key);
+$bananorpc    = new MikeRow\BananoPHP\BananoRPC();
+$bananoblock  = new MikeRow\BananoPHP\BananoBlock($private_key);
 
 // Generate work
 $work = BananoTool::work($public_key, $open_difficulty);

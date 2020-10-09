@@ -2,7 +2,7 @@
 
 require __DIR__ . '/../autoload.php';
 
-use MikeRow\Bandano\BananoTool;
+use MikeRow\BananoPHP\BananoTool;
 
 var_dump(BananoTool::keys());
 

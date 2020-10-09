@@ -2,7 +2,7 @@
 
 require __DIR__ . '/autoload.php';
 
-$bananows = new MikeRow\Bandano\BananoWS('ws', 'localhost', 7078);
+$bananows = new MikeRow\BananoPHP\BananoWS('ws', 'localhost', 7078);
 
 $bananows->open();
 
