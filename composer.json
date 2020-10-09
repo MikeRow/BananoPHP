@@ -16,7 +16,6 @@
 		"CLI",
 		"IPC",
 		"RPC",
-		"RPC2",
 		"WebSocket",
 		"tools",
 		"blocks",
