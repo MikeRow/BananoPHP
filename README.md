@@ -1,4 +1,4 @@
-# BananoPHPPHP
+# BananoPHP
 
 PHP libraries and tools for Banano currency
 
