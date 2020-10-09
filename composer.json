@@ -7,20 +7,12 @@
 		"nano",
 		"raiblocks",
 		"php",
-		"node",
-		"crypto",
-		"currency",
-		"cryptocurrency",
-		"coin",
-		"protocol",
 		"cli",
-		"ipc",
 		"rpc",
+		"ipc",
 		"websocket",
-		"tools",
-		"blocks",
-		"library",
-		"class"
+		"tools,"
+		"blocks"
 	],
 	"homepage" : "https://github.com/MikeRow/Bandano",
 	"license" : "MIT",
