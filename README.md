@@ -40,8 +40,8 @@ Documentation at [BananoPHP/wiki](https://github.com/MikeRow/BananoPHP/wiki)
 
 ## To do ...
 
-- Add support to BananoBlock for Epoch v2
-- Add support to BananoWS for FlatBuffers
+- Add Epoch v2 support to BananoBlock
+- Add FlatBuffers support to BananoWS
 - Increase FlatBuffers performances
 - Enable listening on IPC
 
