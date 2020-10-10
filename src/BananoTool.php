@@ -140,11 +140,11 @@ class BananoTool
             $crop = $crop[1];
             
             if (preg_match('/^[13456789abcdefghijkmnopqrstuwxyz]+$/', $crop)) {
-                $aux = \MikeRow\NanoPHP\Util\Uint::fromString(substr($crop, 0, 52))->toUint4()->toArray();
+                $aux = \MikeRow\BananoPHP\Util\Uint::fromString(substr($crop, 0, 52))->toUint4()->toArray();
                 array_shift($aux);
                 $key_uint4  = $aux;
-                $hash_uint8 = \MikeRow\NanoPHP\Util\Uint::fromString(substr($crop, 52, 60))->toUint8()->toArray();
-                $key_uint8  = \MikeRow\NanoPHP\Util\Uint::fromUint4Array($key_uint4)->toUint8();
+                $hash_uint8 = \MikeRow\BananoPHP\Util\Uint::fromString(substr($crop, 52, 60))->toUint8()->toArray();
+                $key_uint8  = \MikeRow\BananoPHP\Util\Uint::fromUint4Array($key_uint4)->toUint8();
                 
                 if (!extension_loaded('blake2')) {
                     $key_hash = new SplFixedArray(64);
@@ -154,14 +154,14 @@ class BananoTool
                     $b2b->finish($ctx, $key_hash);
                     $key_hash = array_reverse(array_slice($key_hash->toArray(), 0, 5));
                 } else {
-                    $key_uint8 = \MikeRow\NanoPHP\Util\Bin::arr2bin((array) $key_uint8);
+                    $key_uint8 = \MikeRow\BananoPHP\Util\Bin::arr2bin((array) $key_uint8);
                     $key_hash = blake2($key_uint8, 5, null, true);
-                    $key_hash = \MikeRow\NanoPHP\Util\Bin::bin2arr(strrev($key_hash));
+                    $key_hash = \MikeRow\BananoPHP\Util\Bin::bin2arr(strrev($key_hash));
                 }
                 
                 if ($hash_uint8 == $key_hash) {
                     if ($get_public_key) {
-                        return \MikeRow\NanoPHP\Util\Uint::fromUint4Array($key_uint4)->toHexString();
+                        return \MikeRow\BananoPHP\Util\Uint::fromUint4Array($key_uint4)->toHexString();
                     } else {
                         return true;
                     }
@@ -184,7 +184,7 @@ class BananoTool
         }
 
         if (!extension_loaded('blake2')) {
-            $key = \MikeRow\NanoPHP\Util\Uint::fromHex($public_key);
+            $key = \MikeRow\BananoPHP\Util\Uint::fromHex($public_key);
             $checksum;
             $hash = new SplFixedArray(64);
             
@@ -192,18 +192,18 @@ class BananoTool
             $ctx = $b2b->init(null, 5);
             $b2b->update($ctx, $key->toUint8(), 32);
             $b2b->finish($ctx, $hash);
-            $hash = \MikeRow\NanoPHP\Util\Uint::fromUint8Array(array_slice($hash->toArray(), 0, 5))->reverse();
+            $hash = \MikeRow\BananoPHP\Util\Uint::fromUint8Array(array_slice($hash->toArray(), 0, 5))->reverse();
             $checksum = $hash->toString();
         } else {
-            $key = \MikeRow\NanoPHP\Util\Uint::fromHex($public_key)->toUint8();
-            $key = \MikeRow\NanoPHP\Util\Bin::arr2bin((array) $key);
+            $key = \MikeRow\BananoPHP\Util\Uint::fromHex($public_key)->toUint8();
+            $key = \MikeRow\BananoPHP\Util\Bin::arr2bin((array) $key);
             
             $hash = blake2($key, 5, null, true);
-            $hash = \MikeRow\NanoPHP\Util\Bin::bin2arr(strrev($hash));
-            $checksum = \MikeRow\NanoPHP\Util\Uint::fromUint8Array($hash)->toString();
+            $hash = \MikeRow\BananoPHP\Util\Bin::bin2arr(strrev($hash));
+            $checksum = \MikeRow\BananoPHP\Util\Uint::fromUint8Array($hash)->toString();
         }
         
-        $c_account = \MikeRow\NanoPHP\Util\Uint::fromHex('0' . $public_key)->toString();
+        $c_account = \MikeRow\BananoPHP\Util\Uint::fromHex('0' . $public_key)->toString();
         
         return 'ban_' . $c_account . $checksum;
     }
@@ -220,10 +220,10 @@ class BananoTool
         }
         
         $salt = NanoSalt::instance();
-        $private_key = \MikeRow\NanoPHP\Util\Uint::fromHex($private_key)->toUint8();
+        $private_key = \MikeRow\BananoPHP\Util\Uint::fromHex($private_key)->toUint8();
         $public_key = $salt::crypto_sign_public_from_secret_key($private_key);
         
-        return \MikeRow\NanoPHP\Util\Uint::fromUint8Array($public_key)->toHexString();
+        return \MikeRow\BananoPHP\Util\Uint::fromUint8Array($public_key)->toHexString();
     }
     
     
@@ -245,10 +245,10 @@ class BananoTool
         
         $string = $leading_char . $string . str_repeat($filling_char, (51 - strlen($string)));
         
-        $aux = \MikeRow\NanoPHP\Util\Uint::fromString($string)->toUint4()->toArray();
+        $aux = \MikeRow\BananoPHP\Util\Uint::fromString($string)->toUint4()->toArray();
         array_shift($aux);
         $key_uint4  = $aux;
-        $key_uint8  = \MikeRow\NanoPHP\Util\Uint::fromUint4Array($key_uint4)->toUint8();
+        $key_uint8  = \MikeRow\BananoPHP\Util\Uint::fromUint4Array($key_uint4)->toUint8();
         
         if (!extension_loaded('blake2')) {
             $checksum;
@@ -258,14 +258,14 @@ class BananoTool
             $ctx = $b2b->init(null, 5);
             $b2b->update($ctx, $key_uint8, 32);
             $b2b->finish($ctx, $hash);
-            $hash = \MikeRow\NanoPHP\Util\Uint::fromUint8Array(array_slice($hash->toArray(), 0, 5))->reverse();
+            $hash = \MikeRow\BananoPHP\Util\Uint::fromUint8Array(array_slice($hash->toArray(), 0, 5))->reverse();
             $checksum = $hash->toString();
         } else {
-            $key = \MikeRow\NanoPHP\Util\Bin::arr2bin((array) $key_uint8);
+            $key = \MikeRow\BananoPHP\Util\Bin::arr2bin((array) $key_uint8);
             
             $hash = blake2($key, 5, null, true);
-            $hash = \MikeRow\NanoPHP\Util\Bin::bin2arr(strrev($hash));
-            $checksum = \MikeRow\NanoPHP\Util\Uint::fromUint8Array($hash)->toString();
+            $hash = \MikeRow\BananoPHP\Util\Bin::bin2arr(strrev($hash));
+            $checksum = \MikeRow\BananoPHP\Util\Uint::fromUint8Array($hash)->toString();
         }
         
         return 'ban_' . $string . $checksum;
@@ -281,8 +281,8 @@ class BananoTool
         $salt = NanoSalt::instance();
         $keys = $salt->crypto_sign_keypair();
         
-        $keys[0] = \MikeRow\NanoPHP\Util\Uint::fromUint8Array(array_slice($keys[0]->toArray(), 0, 32))->toHexString();
-        $keys[1] = \MikeRow\NanoPHP\Util\Uint::fromUint8Array($keys[1])->toHexString();
+        $keys[0] = \MikeRow\BananoPHP\Util\Uint::fromUint8Array(array_slice($keys[0]->toArray(), 0, 32))->toHexString();
+        $keys[1] = \MikeRow\BananoPHP\Util\Uint::fromUint8Array($keys[1])->toHexString();
         
         if ($get_account) {
             $keys[] = self::public2account($keys[1]);
@@ -305,8 +305,8 @@ class BananoTool
             throw new BananoToolException("Invalid index: $index");
         }
         
-        $seed  = \MikeRow\NanoPHP\Util\Uint::fromHex($seed)->toUint8();
-        $index = \MikeRow\NanoPHP\Util\Uint::fromDec($index)->toUint8()->toArray();
+        $seed  = \MikeRow\BananoPHP\Util\Uint::fromHex($seed)->toUint8();
+        $index = \MikeRow\BananoPHP\Util\Uint::fromDec($index)->toUint8()->toArray();
         
         if (count($index) < 4) {
             $missing_bytes = [];
@@ -316,7 +316,7 @@ class BananoTool
             $index = array_merge($missing_bytes, $index);
         }
         
-        $index = \MikeRow\NanoPHP\Util\Uint::fromUint8Array($index)->toUint8();
+        $index = \MikeRow\BananoPHP\Util\Uint::fromUint8Array($index)->toUint8();
         $private_key = new SplFixedArray(64);
         
         $b2b = new Blake2b();
@@ -325,7 +325,7 @@ class BananoTool
         $b2b->update($ctx, $index, 4);
         $b2b->finish($ctx, $private_key);
         
-        $private_key = \MikeRow\NanoPHP\Util\Uint::fromUint8Array(array_slice($private_key->toArray(), 0, 32))->toHexString();
+        $private_key = \MikeRow\BananoPHP\Util\Uint::fromUint8Array(array_slice($private_key->toArray(), 0, 32))->toHexString();
         $public_key = self::private2public($private_key);
         
         $keys = [$private_key,$public_key];
@@ -378,7 +378,7 @@ class BananoTool
             $hex[] = bindec(implode('', array_slice($bits, $i * 8, 8)));
         }
         
-        $hex = \MikeRow\NanoPHP\Util\Uint::fromUint8Array($hex)->toHexString();
+        $hex = \MikeRow\BananoPHP\Util\Uint::fromUint8Array($hex)->toHexString();
         $hex = substr($hex, 0, ceil($mnem_count*2.66666));
         
         return $hex;
@@ -408,9 +408,9 @@ class BananoTool
         $bits     = [];
         $mnemonic = [];
         
-        $hex = \MikeRow\NanoPHP\Util\Uint::fromHex($hex)->toUint8();
-        $check = hash('sha256', \MikeRow\NanoPHP\Util\Bin::arr2bin((array) $hex), true);
-        $hex  = array_merge((array) $hex, \MikeRow\NanoPHP\Util\Bin::bin2arr(substr($check, 0, 1)));
+        $hex = \MikeRow\BananoPHP\Util\Uint::fromHex($hex)->toUint8();
+        $check = hash('sha256', \MikeRow\BananoPHP\Util\Bin::arr2bin((array) $hex), true);
+        $hex  = array_merge((array) $hex, \MikeRow\BananoPHP\Util\Bin::bin2arr(substr($check, 0, 1)));
         
         foreach ($hex as $byte) {
             $bits_raw = decbin($byte);
@@ -514,14 +514,14 @@ class BananoTool
                 throw new BananoToolException("Invalid hexadecimal string: $value");
             }
             
-            $value = \MikeRow\NanoPHP\Util\Uint::fromHex($value)->toUint8();
+            $value = \MikeRow\BananoPHP\Util\Uint::fromHex($value)->toUint8();
             $b2b->update($ctx, $value, count($value));
         }
 
         $b2b->finish($ctx, $hash);
         $hash = $hash->toArray();
         $hash = array_slice($hash, 0, $size);
-        $hash = \MikeRow\NanoPHP\Util\Uint::fromUint8Array($hash)->toHexString();
+        $hash = \MikeRow\BananoPHP\Util\Uint::fromUint8Array($hash)->toHexString();
         
         return $hash;
     }
@@ -541,13 +541,13 @@ class BananoTool
         }
         
         $salt = NanoSalt::instance();
-        $private_key = FieldElement::fromArray(\MikeRow\NanoPHP\Util\Uint::fromHex($private_key)->toUint8());
+        $private_key = FieldElement::fromArray(\MikeRow\BananoPHP\Util\Uint::fromHex($private_key)->toUint8());
         $public_key  = NanoSalt::crypto_sign_public_from_secret_key($private_key);
         
         $private_key->setSize(64);
         $private_key->copy($public_key, 32, 32);
         
-        $msg = \MikeRow\NanoPHP\Util\Uint::fromHex($msg)->toUint8();
+        $msg = \MikeRow\BananoPHP\Util\Uint::fromHex($msg)->toUint8();
         $sm  = $salt->crypto_sign($msg, count($msg), $private_key);
         
         $signature = [];
@@ -555,7 +555,7 @@ class BananoTool
             $signature[$i] = $sm[$i];
         }
         
-        return \MikeRow\NanoPHP\Util\Uint::fromUint8Array($signature)->toHexString();
+        return \MikeRow\BananoPHP\Util\Uint::fromUint8Array($signature)->toHexString();
     }
     
     
@@ -576,9 +576,9 @@ class BananoTool
             throw new BananoToolException("Invalid account: $account");
         }
         
-        $sig = \MikeRow\NanoPHP\Util\Uint::fromHex($sig)->toUint8();
-        $msg = \MikeRow\NanoPHP\Util\Uint::fromHex($msg)->toUint8();
-        $public_key  = \MikeRow\NanoPHP\Util\Uint::fromHex($public_key)->toUint8();
+        $sig = \MikeRow\BananoPHP\Util\Uint::fromHex($sig)->toUint8();
+        $msg = \MikeRow\BananoPHP\Util\Uint::fromHex($msg)->toUint8();
+        $public_key  = \MikeRow\BananoPHP\Util\Uint::fromHex($public_key)->toUint8();
         
         $sm = new SplFixedArray(64 + count($msg));
         $m  = new SplFixedArray(64 + count($msg));
@@ -596,7 +596,7 @@ class BananoTool
             return false;
         }
         
-        $open2 = \MikeRow\NanoPHP\Util\Uint::fromUint8Array($open2)->toHexString();
+        $open2 = \MikeRow\BananoPHP\Util\Uint::fromUint8Array($open2)->toHexString();
         
         return $open2;
     }
@@ -656,13 +656,13 @@ class BananoTool
             throw new BananoToolException("Invalid difficulty: $difficulty");
         }
         
-        $hash = \MikeRow\NanoPHP\Util\Uint::fromHex($hash)->toUint8();
+        $hash = \MikeRow\BananoPHP\Util\Uint::fromHex($hash)->toUint8();
         $difficulty = hex2bin($difficulty);
         
         if (!extension_loaded('blake2')) {
             $b2b = new Blake2b();
             $rng = random_bytes(8);
-            $rng = \MikeRow\NanoPHP\Util\bin2arr($rng);
+            $rng = \MikeRow\BananoPHP\Util\bin2arr($rng);
             
             while (true) {
                 $output = new SplFixedArray(64);
@@ -675,23 +675,23 @@ class BananoTool
                 $output = $output->toArray();
                 $output = array_slice($output, 0, 8);
                 $output = array_reverse($output);
-                //$output = \MikeRow\NanoPHP\Util\Uint::fromUint8Array($output)->toHexString();
+                //$output = \MikeRow\BananoPHP\Util\Uint::fromUint8Array($output)->toHexString();
                 
-                if (strcasecmp(\MikeRow\NanoPHP\Util\Bin::arr2bin($output), $difficulty) >= 0) {
-                    return \MikeRow\NanoPHP\Util\Uint::fromUint8Array(array_reverse($rng))->toHexString();
+                if (strcasecmp(\MikeRow\BananoPHP\Util\Bin::arr2bin($output), $difficulty) >= 0) {
+                    return \MikeRow\BananoPHP\Util\Uint::fromUint8Array(array_reverse($rng))->toHexString();
                 }
 
                 $rng = $output;
             }
         } else {
-            $hash = \MikeRow\NanoPHP\Util\Bin::arr2bin((array) $hash);
+            $hash = \MikeRow\BananoPHP\Util\Bin::arr2bin((array) $hash);
             $rng = random_bytes(8);
             
             while (true) {
                 $output = strrev(blake2($rng . $hash, 8, null, true));
                 
                 if (strcasecmp($output, $difficulty) >= 0) {
-                    return \MikeRow\NanoPHP\Util\Uint::fromUint8Array(array_reverse(\MikeRow\NanoPHP\Util\bin2arr($rng)))->toHexString();
+                    return \MikeRow\BananoPHP\Util\Uint::fromUint8Array(array_reverse(\MikeRow\BananoPHP\Util\bin2arr($rng)))->toHexString();
                 }
                 
                 $rng = $output;
@@ -716,8 +716,8 @@ class BananoTool
             throw new BananoToolException("Invalid work: $work");
         }
         
-        $hash = \MikeRow\NanoPHP\Util\Uint::fromHex($hash)->toUint8();
-        $work = \MikeRow\NanoPHP\Util\Uint::fromHex($work)->toUint8();
+        $hash = \MikeRow\BananoPHP\Util\Uint::fromHex($hash)->toUint8();
+        $work = \MikeRow\BananoPHP\Util\Uint::fromHex($work)->toUint8();
         $work = array_reverse($work->toArray());
         $work = SplFixedArray::fromArray($work);
         
@@ -732,7 +732,7 @@ class BananoTool
         $res = $res->toArray();
         $res = array_slice($res, 0, 8);
         $res = array_reverse($res);
-        $res = \MikeRow\NanoPHP\Util\Uint::fromUint8Array($res)->toHexString();
+        $res = \MikeRow\BananoPHP\Util\Uint::fromUint8Array($res)->toHexString();
         
         if (hexdec($res) >= hexdec($difficulty)) {
             return true;
