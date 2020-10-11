@@ -44,8 +44,5 @@
 		"psr-4" : {
 			"MikeRow\\BananoPHP\\" : "src/"
 		}
-	},
-	"support" : {
-		"wiki" : "https://github.com/MikeRow/BananoPHP/wiki"
 	}
 }
