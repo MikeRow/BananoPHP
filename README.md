@@ -6,6 +6,14 @@ Examples at [BananoPHP/test](https://github.com/MikeRow/BananoPHP/tree/master/te
 
 ---
 
+## Install
+
+<pre>
+composer require mikerow/bananophp
+</pre>
+
+---
+
 ## Features
 
 - [BananoBlock](https://github.com/MikeRow/BananoPHP/blob/master/src/BananoBlock.php)
