@@ -344,7 +344,7 @@ class BananoTool
     
     public static function mnem2hex(array $words): string
     {
-		$mnem_count = count($words);
+        $mnem_count = count($words);
 		
         if ($mnem_count != 12 &&
             $mnem_count != 15 &&
@@ -391,7 +391,7 @@ class BananoTool
     
     public static function hex2mnem(string $hex): array
     {
-		$hex_lenght = strlen($hex);
+        $hex_lenght = strlen($hex);
 		
         if (($hex_lenght != 32 &&
              $hex_lenght != 40 &&
