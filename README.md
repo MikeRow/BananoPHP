@@ -46,15 +46,6 @@ composer require mikerow/bananophp
 
 ---
 
-## To do ...
-
-- Add Epoch v2 support to BananoBlock
-- Add FlatBuffers support to BananoWS
-- Increase FlatBuffers performances
-- Enable listening on IPC
-
----
-
 ## FAQ
 
 #### How to perform calculations with Banano denominations or raws?
@@ -80,6 +71,15 @@ A good solution is to perform calculations in raws using [GNU Multiple Precision
 
 </p>
 </details>
+
+---
+
+## To do
+
+- Add Epoch v2 support to BananoBlock
+- Add FlatBuffers support to BananoWS
+- Increase FlatBuffers performances
+- Enable listening on IPC
 
 ---
 
